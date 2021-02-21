@@ -2,6 +2,7 @@
     section: Private
 #>
 $private = @(
+    'module_variables'
 )
 
 foreach ($file in $private) {
@@ -15,6 +16,10 @@ foreach ($file in $private) {
 $public = @(
     # misc
     'Get-DotfilePath'
+    'Add-DotfilePath'
+    'New-DotfilePathRecord'
+    'Start-DotfileCollect'
+    'Set-DotfileRoot'
 )
 
 <#
@@ -29,11 +34,11 @@ foreach ($file in $public) {
 }
 
 $functionsToExport = @(
-    # console formatting
     'Get-DotfilePath'
     'Add-DotfilePath'
-
-
+    'New-DotfilePathRecord'
+    'Start-DotfileCollect'
+    'Set-DotfileRoot'
 )
 Export-ModuleMember -Function $functionsToExport
 
