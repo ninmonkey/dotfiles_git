@@ -32,15 +32,13 @@ function Add-DotfilePath {
         return
     }
 
-    # $pathRecord = [ordered]@{
-    #     Label        = $Label
-    #     RelativePath = $Path
-    #     FullPath     = $FullPath
-    # }
-
     $pathRecord = New-DotfilePathRecord -Label $Label -RelativePath $Path
     $pathRecord | Format-HashTable | Write-Debug
 
+    if ($_dotfilePath.ContainsKey($Label)) {
+        Write-Error "KeyAlreadyExists: '$Label'"
+        return
+    }
 
     $_dotfilePath.Add( $Label, $pathRecord )
 }

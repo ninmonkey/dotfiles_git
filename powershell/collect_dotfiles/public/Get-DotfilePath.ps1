@@ -49,7 +49,10 @@ function Get-DotfilePath {
             #     break
             # }
             { $ListAll -or 'ListAll' } {
-                $_dotfilePath
+                # $_dotfilePath
+                $_dotfilePath.getenumerator() | ForEach-Object {
+                    [pscustomobject]$_.value
+                }
                 break
             }
 

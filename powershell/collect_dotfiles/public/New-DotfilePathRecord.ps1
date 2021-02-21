@@ -7,6 +7,7 @@ function New-DotfilePathRecord {
         future: allow caller to decide write-error stops or not
     #>
     [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
     param(
         # Description
         [Parameter(Mandatory, Position = 0)]
@@ -32,7 +33,7 @@ function New-DotfilePathRecord {
     if (! $maybeExistingPath) {
         $maybeExistingPath = Join-Path -Path $root -ChildPath $RelativePath
     }
-    $record = [ordered]@{
+    $record = @{
         Label        = $Label
         RelativePath = $RelativePath
         FullName     = $maybeExistingPath
