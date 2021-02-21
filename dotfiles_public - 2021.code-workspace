@@ -37,10 +37,17 @@
         "version": "0.2.0",
         "configurations": [
             {
-                "name": "CollectDotfiles.ps1",
+                "name": "CollectDotfiles.ps1 ⇢ ",
                 "type": "PowerShell",
                 "request": "launch",
                 "script": "${workspaceFolder}/collect_dotfiles.ps1",
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "Pester",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "Invoke-Pester",
                 "cwd": "${workspaceFolder}"
             }
         ]
