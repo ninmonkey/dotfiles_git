@@ -1,4 +1,4 @@
-
+# or Reset-DotfilePath
 $_dotfilePath = @{
     # BasePath = Get-Item -ea stop $PSScriptRoot | ForEach-Object tostring
     Root = @{

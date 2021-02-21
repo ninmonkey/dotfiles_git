@@ -2,6 +2,7 @@
 # now: Simply invoke module / and / or configure
 h1 'collect_dotfiles.ps1'
 # Set-DotfileRoot $PSScriptRoot -Verbose # or '.' ?
+Reset-DotfilePath
 Set-DotfileRoot '.'
 
 h1 'config'

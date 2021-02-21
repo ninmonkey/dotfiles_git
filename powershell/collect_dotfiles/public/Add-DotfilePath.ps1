@@ -25,11 +25,13 @@ function Add-DotfilePath {
     )
 
     if ($RelativeTo) {
-        throw "wip: Add-DotfilePath: -RelativeTo" ;
-        return
+        $Target = Get-DotfilePath -Label $RelativeTo | Get-Item -ea 'stop'
+        $FinalPath = Join-Path $Target $Path
+    } else {
+        $FinalPath = $Path
     }
 
-    $pathRecord = New-DotfilePathRecord -Label $Label -RelativePath $Path
+    $pathRecord = New-DotfilePathRecord -Label $Label -RelativePath $FinalPath
     $pathRecord | Format-HashTable | Write-Debug
 
     if ($_dotfilePath.ContainsKey($Label)) {

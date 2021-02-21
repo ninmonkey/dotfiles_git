@@ -20,6 +20,7 @@ $public = @(
     'New-DotfilePathRecord'
     'Start-DotfileCollect'
     'Set-DotfileRoot'
+    'Reset-DotfilePath'
 )
 
 <#
@@ -39,6 +40,7 @@ $functionsToExport = @(
     'New-DotfilePathRecord'
     'Start-DotfileCollect'
     'Set-DotfileRoot'
+    'Reset-DotfilePath'
 )
 Export-ModuleMember -Function $functionsToExport
 
