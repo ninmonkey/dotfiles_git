@@ -32,5 +32,17 @@
         ],
         "powershell.scriptAnalysis.enable": true,
         "workbench.settings.editor": "json"
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "CollectDotfiles.ps1",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/collect_dotfiles.ps1",
+                "cwd": "${workspaceFolder}"
+            }
+        ]
     }
 }

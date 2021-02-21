@@ -8,7 +8,13 @@
 }
 
 function New-DotfilePathRecord {
-    [CmdletBinding(DefaultParameterSetName = 'ForcePath')]
+    <#
+    .synopsis
+        generates a new structured record
+    .notes
+        future: allow caller to decide write-error stops or not
+    #>
+    [CmdletBinding()]
     param(
         # Description
         [Parameter(Mandatory, Position = 0)]
@@ -16,31 +22,43 @@ function New-DotfilePathRecord {
 
         # RelativePath to Root
         [Parameter(Mandatory, Position = 1)]
-        [string]$RelativePath,
+        [string]$RelativePath
 
+        # removed logic to force a path, not worth it
         # Path FullName, otherwise defaults to "Root + RelativePath"
-        [Parameter(
-            ParameterSetName = 'ForcePath',
-            Mandatory,
-            Position = 2)]
-        [object]$Fullpath
+        # [Parameter(
+        #     ParameterSetName = 'ForcePath',
+        #     # Mandatory,
+        #     Position = 2)]
+        # [object]$Fullpath
     )
+    $root = Get-DotfilePath 'Root' | ForEach-Object FullPath | Get-Item -ea stop
 
+    $maybeExistingPath = Join-Path -Path $root -ChildPath $RelativePath
+    | Get-Item -ea SilentlyContinue
+
+    if (! $maybeExistingPath) {
+        $maybeExistingPath = Join-Path -Path $root -ChildPath $RelativePath
+    }
     $record = [ordered]@{
         Label        = $Label
         RelativePath = $RelativePath
+        FullName     = $maybeExistingPath
     }
 
-    if ($PSCmdlet.ParameterSetName -eq 'ForcePath') {
-        $TargetPath = Get-Item -ea Stop $Fullpath # stop or write-error?
-        $record['FullPath'] = $TargetPath
-    } else {
-        $TargetPath = $PSScriptRoot | Get-Item -ea Stop # stop or write-error?
-        $record['FullPath'] = $TargetPath
-    }
+
+    # if ($PSCmdlet.ParameterSetName -eq 'ForcePath') {
+    #     $TargetPath = Get-Item -ea Continue $Fullpath # stop or write-error?
+    #     $record['FullPath'] = $TargetPath
+    # } else {
+    # $TargetPath = $PSScriptRoot | Get-Item -ea Continue # stop or write-error?
+    # $record['FullPath'] = $TargetPath
+    # }
 
     $record | Format-HashTable -Title 'DotfilePathRecord' | Write-Debug
-    $_dotfilePath.Add( $Label, $record )
+    $record
+    return
+    # $_dotfilePath.Add( $Label, $record )
 }
 
 function Add-DotfilePath {
@@ -71,7 +89,10 @@ function Add-DotfilePath {
     # $FullPath = Join-Path $_dotfilePath.BasePath $Path
     # $Item = Get-Item -ea continue $Path # continue or stop?
 
-    if ($RelativeTo) { throw "wip" ; return }
+    if ($RelativeTo) {
+        throw "wip: Add-DotfilePath: -RelativeTo" ;
+        return
+    }
 
     # $pathRecord = [ordered]@{
     #     Label        = $Label
@@ -79,8 +100,11 @@ function Add-DotfilePath {
     #     FullPath     = $FullPath
     # }
 
+    $pathRecord = New-DotfilePathRecord -Label $Label -RelativePath $Path
     $pathRecord | Format-HashTable | Write-Debug
-    $_dotfilePath.Add( $Label, $Path )
+
+
+    $_dotfilePath.Add( $Label, $pathRecord )
 }
 
 $DebugPreference = 'Continue'
@@ -92,6 +116,9 @@ function Get-DotfilePath {
     <#
     .description
         read saved values
+    .notes
+        returns either [hashtable] if -All
+        else returns FullPath as string
     #>
     param(
         # Label or Id or Key
@@ -121,6 +148,13 @@ function Get-DotfilePath {
     process {
         switch ($PSCmdlet.ParameterSetName) {
             'GetOnePath' {
+                if (!($_dotfilePath.Contains($Label))) {
+                    Write-Error "KeyNotFound: '$Label'"
+                    break
+                }
+
+                # $_dotfilePath[$Label].FullPath | ForEach-Object tostring
+                $_dotfilePath[$Label]
                 break
             }
             # 'GetOnePathPipeline' {
