@@ -25,7 +25,7 @@ function New-DotfilePathRecord {
         #     Position = 2)]
         # [object]$Fullpath
     )
-    $root = Get-DotfilePath 'Root' | ForEach-Object FullPath | Get-Item -ea stop
+    $root = Get-DotfilePath 'Root' |  Get-Item -ea stop
 
     $maybeExistingPath = Join-Path -Path $root -ChildPath $RelativePath
     | Get-Item -ea SilentlyContinue
@@ -36,20 +36,10 @@ function New-DotfilePathRecord {
     $record = @{
         Label        = $Label
         RelativePath = $RelativePath
-        FullName     = $maybeExistingPath
+        Path         = $maybeExistingPath
     }
-
-
-    # if ($PSCmdlet.ParameterSetName -eq 'ForcePath') {
-    #     $TargetPath = Get-Item -ea Continue $Fullpath # stop or write-error?
-    #     $record['FullPath'] = $TargetPath
-    # } else {
-    # $TargetPath = $PSScriptRoot | Get-Item -ea Continue # stop or write-error?
-    # $record['FullPath'] = $TargetPath
-    # }
 
     $record | Format-HashTable -Title 'DotfilePathRecord' | Write-Debug
     $record
     return
-    # $_dotfilePath.Add( $Label, $record )
 }

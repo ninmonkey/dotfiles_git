@@ -3,16 +3,25 @@
 }
 
 Describe "Get-DotfilePath" -Tag 'wip' {
+    BeforeAll {
+        Set-DotfileRoot "$Env:UserProfile\Documents\2021\dotfiles_git\powershell"
+    }
+
     It 'Integration test' {
-        Add-DotfilePath -Label 'vs-code'
+        Write-Warning 'future: test should use Pester temp drive'
+        if ($false) {
+            here $PSScriptRoot
+
+            Add-DotfilePath -Label 'vs-code' 'dsf'
+            Add-DotfilePath -Label 'vs-code' -Path 'vscode\.auto_export'
+            Add-DotfilePath -Label 'vs-code-snippets' -Path 'snippets' -RelativeTo 'vs-code'
+        }
 
     }
 }
 
 
 # # function _test1 {
-# Add-DotfilePath -Label 'vs-code' -Path 'vscode\.auto_export'
-# # Add-DotfilePath -Label 'vs-code-snippets' -Path 'snippets' -RelativeTo 'vs-code'
 # Get-DotfilePath -ListAll
 # $result = Get-DotfilePath -Label 'vs-code-snippets'
 # }

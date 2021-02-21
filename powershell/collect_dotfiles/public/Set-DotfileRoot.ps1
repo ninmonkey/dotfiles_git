@@ -6,5 +6,5 @@ function Set-DotfileRoot {
     )
 
     $Item = Get-Item -ea stop $Path
-    $_dotfilePath['Root'].FullPath = $Item
+    $_dotfilePath['Root'].Path = $Item
 }

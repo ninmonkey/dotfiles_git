@@ -1,6 +1,7 @@
 ﻿
 function Get-DotfilePath {
     [CmdletBinding(DefaultParameterSetName = 'GetOnePath')]
+    [OutputType('System.String', [System.Collections.Hashtable])]
     <#
     .description
         read saved values
@@ -14,9 +15,9 @@ function Get-DotfilePath {
             Mandatory, Position = 0,
             ParameterSetName = 'GetOnePath')]
         [string]$Label,
-        # [Parameter(
-        #     Mandatory, ValueFromPipeline,
-        #     ParameterSetName = 'GetOnePathPipeline')]
+
+        # Returns metadata hashtable
+        [Parameter()][switch]$PassThru,
 
         # Label or Id or Key
         [Alias('All')]
@@ -24,14 +25,8 @@ function Get-DotfilePath {
             Mandatory,
             ParameterSetName = 'ListAll')]
         [switch]$ListAll
-
-
-        # # Label Directory Name
-        # [Parameter(Mandatory, Position = 1)]
-        # [string]$Path
     )
 
-    # future: allow labels from pipeline
 
     process {
         switch ($PSCmdlet.ParameterSetName) {
@@ -41,15 +36,18 @@ function Get-DotfilePath {
                     break
                 }
 
-                # $_dotfilePath[$Label].FullPath | ForEach-Object tostring
-                $_dotfilePath[$Label]
+                if ($PassThru) {
+                    $_dotfilePath[$Label]
+                } else {
+                    $_dotfilePath[$Label].Path
+                }
                 break
             }
-            # 'GetOnePathPipeline' {
+            # future: 'GetOnePathPipeline' {
             #     break
             # }
             { $ListAll -or 'ListAll' } {
-                # $_dotfilePath
+
                 $_dotfilePath.getenumerator() | ForEach-Object {
                     [pscustomobject]$_.value
                 }
@@ -60,11 +58,6 @@ function Get-DotfilePath {
         }
 
     }
-
-    # $FullPath = Join-Path $_dotfilePath.BasePath $Path
-    # $Item = Get-Item -ea continue $Path # continue or stop?
-
-    # $_dotfilePath.Add( $Label, $Path )
 }
 
 

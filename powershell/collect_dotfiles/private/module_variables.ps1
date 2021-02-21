@@ -4,6 +4,6 @@ $_dotfilePath = @{
     Root = @{
         Label        = 'Root'
         RelativePath = '.'
-        FullPath     = $null #$null $PSScriptRoot | Get-Item -ea stop # nnow in a module, does this break?
+        Path         = $null #$null $PSScriptRoot | Get-Item -ea stop # nnow in a module, does this break?
     }
 }

@@ -24,9 +24,6 @@ function Add-DotfilePath {
         [string]$RelativeTo
     )
 
-    # $FullPath = Join-Path $_dotfilePath.BasePath $Path
-    # $Item = Get-Item -ea continue $Path # continue or stop?
-
     if ($RelativeTo) {
         throw "wip: Add-DotfilePath: -RelativeTo" ;
         return
