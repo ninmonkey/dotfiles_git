@@ -1,0 +1,8 @@
+**/*.lock
+**/*.lnk
+**/*.exe
+**/*.zip
+**/*.pyc
+**/*.min.js
+**/*.min.css
+# **/*.log ?
