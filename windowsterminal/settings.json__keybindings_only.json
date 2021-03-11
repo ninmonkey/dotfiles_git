@@ -1,0 +1,210 @@
+{
+    // Add custom keybindings to this array.
+    // To unbind a key combination from your defaults.json, set the command to "unbound".
+    // To learn more about keybindings, visit https://aka.ms/terminal-keybindings
+    "keybindings": [
+        /*
+        Copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V in your defaults.json.
+        These two lines additionally bind them to Ctrl+C and Ctrl+V.
+        To learn more about selection, visit https://aka.ms/terminal-selection
+
+        see option: https://docs.microsoft.com/en-us/windows/terminal/customize-settings/global-settings#warn-when-the-text-to-paste-contains-multiple-lines-preview
+        */
+        // {
+        //     // if singleline, then multiline pastes as a single line as wanted.
+        //     // however currently externally copied values still paste multiline
+        //     // therefore **unbind copy** and use **PSReadline paste** keybind
+        //     "command": {
+        //         "action": "copy",
+        //         "singleLine": true
+        //     },
+        //     "keys": "ctrl+c"
+        // },
+        {
+            "command": {
+                "action": "commandPalette"
+            },
+            "keys": "f1"
+        },
+        /* todo: refactor per-profile ? */
+        {
+            /* indent text */
+            "command": {
+                "action": "sendInput",
+                "input": "    "
+            },
+            "keys": "alt+]"
+        },
+        {
+            /* un-indent text (actually it's backspace).
+            note: if you use 'ctrl + \u001b[8' then it's the same as
+            control+backspace which deletes the full line
+                */
+            "command": {
+                "action": "sendInput",
+                // "input": "\u001b[8"
+                "input": "\u0008"
+            },
+            "keys": "alt+["
+        },
+        /* preview-only settings:
+    {
+      "command": "toggleRetroEffect",
+      "keys": "ctrl+v"
+    },
+    {
+      "command": "toggleAlwaysOnTop",
+      "keys": "ctrl+v"
+    },
+    */
+        {
+            // warning: this pastes backwards
+            "command": "paste",
+            "keys": "numpad_7"
+            //   "keys": "ctrl+v"
+        },
+        // Press Ctrl+Shift+F to open the search box
+        {
+            "command": "find",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            /*
+                warning: in ipython:
+                    alt+enter is inserting a "\[" (codepoint 0x1b)
+                    when this is set to commamnd unbound
+            */
+            "command": "unbound",
+            "keys": "alt+enter"
+            // # I use it for multi-line hotkeys
+        },
+        /*
+
+        section: testing terminal (preview) functions
+
+
+        */
+        /*
+         Alt+Shift+D to open a new pane.
+            - "split": "auto" makes this pane open in the direction that provides the most surface area.
+            - "splitMode": "duplicate" makes the new pane use the focused pane's profile.
+            To learn more about panes, visit https://aka.ms/terminal-panes
+        */
+        {
+            "command": {
+                "action": "splitPane",
+                "split": "auto",
+                "splitMode": "duplicate"
+            },
+            "keys": "alt+shift+d"
+        },
+        // run terminal borderless
+        {
+            "command": "toggleFocusMode",
+            "keys": "ctrl+numpad_2"
+        },
+        // always on top
+        {
+            "command": "toggleAlwaysOnTop",
+            "keys": "ctrl+numpad_3"
+        },
+        /* Rename a tab to "Foo"
+            double click title bar to edit
+        */
+        {
+            "command": {
+                "action": "renameTab",
+                "title": "Foo"
+            },
+            "keys": ""
+        },
+        {
+            "command": "tabSearch",
+            "keys": "ctrl+shift+o"
+        },
+        // Reset the tab's n,ame
+        {
+            "command": {
+                "action": "renameTab",
+                "title": null
+            },
+            "keys": ""
+        },
+        // Change the tab's color , same as the tab -> RMB menu
+        {
+            "command": {
+                "action": "setTabColor",
+                "color": "#3f20f4"
+            },
+            "keys": ""
+        },
+        // Reset the tab's color
+        {
+            "command": {
+                "action": "setTabColor",
+                "color": null
+            },
+            "keys": ""
+        },
+        {
+            "command": "openTabColorPicker",
+            "keys": ""
+        },
+        {
+            "command": "tabSearch",
+            "keys": "ctrl+shift+o"
+        },
+        {
+            "command": "toggleRetroEffect",
+            // "keys": "numpad_9"
+        },
+        {
+            // what profile to load
+            "command": "openNewTabDropdown",
+            "keys": ""
+        },
+        {
+            "command": "togglePaneZoom",
+            "keys": "ctrl+numpad_1"
+        },
+        /*
+        send raw text to the terminal.
+        Ansi sequences uses the prefix '\u001b['
+
+            https://docs.microsoft.com/en-us/windows/terminal/customize-settings/key-bindings#send-input-preview
+            https://en.wikipedia.org/wiki/ANSI_escape_code#Terminal_output_sequences
+
+        */
+        {
+            /* xterm 'arrow up' */
+            "command": {
+                "action": "sendInput",
+                "input": "\u001b[A"
+            },
+            "keys": ""
+        },
+        {
+            /* xterm indent' */
+            "command": {
+                "action": "sendInput",
+                "input": "    "
+            },
+            "keys": "ctrl+numpad_4"
+        },
+        /*
+        opens a single new tab, that contains 3 panes
+        (in the current window, not a new wt)
+
+        if you ran in powershell:
+            wt new-tab pwsh.exe `; split-pane -p \"Command Prompt\" -d C:\\ `; split-pane -p \"PowerShell\" -H
+
+        it would spawn a new `wt` instance
+        */
+        {
+            "command": {
+                "action": "wt",
+                "commandline": "new-tab pwsh.exe ; split-pane -p \"Command Prompt\" -d C:\\ ; split-pane -p \"PowerShell\" -H"
+            },
+            "keys": "ctrl+numpad_8"
+        }
+    ]
