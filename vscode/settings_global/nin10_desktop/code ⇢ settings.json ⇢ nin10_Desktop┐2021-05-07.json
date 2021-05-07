@@ -150,7 +150,7 @@
     "workbench.settings.openDefaultSettings": false,
     /*
 
-### Sect: Truly Experimental
+###### SubSect: Truly Experimental
 
     */
     "search.experimental.searchInOpenEditors": true,
@@ -200,6 +200,11 @@
     "workbench.editor.enablePreviewFromCodeNavigation": true,
     /*
 
+###### SubSect: Searching
+
+    */
+    /*
+
     "search.mode":
             Default search mode
 
@@ -209,9 +214,12 @@
         "newEditor"        Search in a new search editor
         "reuseEditor"      Search in an existing search editor if present, otherwise in a new search editor
 
-        */
+    */
     // "search.mode": "view",
     // "search.mode": "reuseEditor",
+    "search.searchEditor.doubleClickBehaviour": "goToLocation", // "openLocationToSide", "goToLocation"
+    "search.searchEditor.defaultNumberOfContextLines": 1, // grep -C <n>
+    "search.searchEditor.reusePriorSearchConfiguration": true,
     "search.mode": "newEditor",
     "powershell.codeFormatting.whitespaceBetweenParameters": false,
     "editor.snippetSuggestions": "none",
@@ -266,6 +274,7 @@
 
     */
     "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    "powerquery.trace.server": "verbose",
     "python.analysis.logLevel": "Warning", // error/warnining/info/trace
     /*
 
@@ -297,6 +306,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode", // prettier
         "editor.defaultFormatter": "vscode.html-language-features", // built-in
     },
+    // "powershell.powerShellDefaultVersion": "",
     "[powershell]": {
         "editor.formatOnSave": true,
         // "editor.snippetSuggestions": "none",
@@ -311,6 +321,41 @@
         "editor.autoIndent": "advanced",
         "editor.semanticHighlighting.enabled": true,
     },
+    /*
+
+###### SubSect: Extension: ⇢ mypy ( todo: sort / cleanup / test these)
+
+    */
+    /*
+    test: mypy:
+    config: https://mypy.readthedocs.io/en/latest/config_file.html
+
+    */
+    // "mypy.configFile": "",
+    /*
+    "mypy.executable": "",
+    "mypy.targets": [
+        "."
+    ],
+    /*
+
+    test: python
+
+    */
+    /*
+    "python.linting.mypyArgs": [
+        "--ignore-missing-imports",
+        "--follow-imports=silent",
+        "--show-column-numbers"
+    ],
+    "pythonlinting.mypyCategorySeverity.error": "Warning",
+    "python.linting.mypyCategorySeverity.note": "Warning",
+    */
+    // "python.linting.mypyPath": "mypy",
+    // "python.linting.mypyPath": "mypy",
+    // "python.analysis.memory.keepLibraryAst": false,
+    // "python.analysis.errors": false,
+    // "python.analysis.errors": [],\
     /*
 
 ###### SubSect: Extension: ⇢ markdown
@@ -354,6 +399,13 @@
             "pattern": "**/*.Types.ps1xml"
         }
     ],
+    /*
+
+###### SubSect: Extension: ⇢ dotnet / C#: 'csharpextensions'
+
+    */
+    "csharpextensions.privateMemberPrefix": "_",
+    "csharpextensions.useThisForCtorAssignments": false,
     /*
 
 ### Sect: File Associations
@@ -423,7 +475,7 @@
     },
     /*
 
-### Sect: Unsorted / misc
+### Sect: Unsorted / misc / to go through
 
     */
     "search.useReplacePreview": true,
@@ -439,19 +491,93 @@
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.fontSize": 16,
     "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+    // "editor.trimAutoWhitespace": true,
+    // "diffEditor.ignoreTrimWhitespace": true,
+    // "editor.suggest.maxVisibleSuggestions": 15, : this is obsolete as of 2020-11
+    // "html.autoClosingTags": true,
+    // "powershell.enableProfileLoading": true,
+    "workbench.settings.editor": "json",
+    // "workbench.settings.enableNaturalLanguageSearch": false,
+    // "workbench.settings.settingsSearchTocBehavior": "filter",
+    // "workbench.editor.labelFormat": "long",
+    // "editor.cursorWidth": 60,
+    "editor.cursorBlinking": "smooth", // "smooth",
+    // "editor.cursorStyle": "block-outline",
+    "editor.cursorStyle": " underline",
+    /* cursor config for screenshots */
+    "editor.cursorBlinking": "solid", // "smooth",
+    "editor.cursorStyle": "block-outline",
+    // "editor.cursorSurrounding"underline"s": 50,
+    // "terminal.integrated.cursorWidth": 1,
+    // "terminal.integrated.cursorWidth": 1,
+    // "editor.hideCursorInOverviewRuler": false,
+    "docsView.documentationView.updateMode": "live",
+    // "debug.console.historySuggestions": true,
+    // makes left click instant
+    "editor.cursorSmoothCaretAnimation": false,
+    // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
+    // "powershell.developer.bundledModulesPath": "",
+    "powershell.integratedConsole.suppressStartupBanner": false,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    //
+    "powershell.codeFormatting.whitespaceAroundPipe": true,
+    // "powershell.buttons.showPanelMovementButtons": true,
+    // "powershell.buttons.showRunButtons": true,
+    // "powershell.codeFolding.showLastLine": true,
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+    // "powershell.codeFormatting.ignoreOneLineBlock": true,
+    // "powershell.codeFolding.enable": true,
+    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1", # relative workspace, else global:
+    "powershell.scriptAnalysis.settingsPath": "C:\\Users\\cppmo_000\\Documents\\2020\\dotfiles_git\\vs code profiles\\user\\PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.enable": true,
+    // "powershell.powerShellDefaultVersion": "",
+    // "[toml]": {
+    // "editor.snippetSuggestions": "inline",
+    // "editor.suggest.snippetsPreventQuickSuggestions": true,
+    // "editor.suggest.showSnippets": true,
+    // },
+    // "editor.autoClosingBrackets": "beforeWhitespace",
+    "workbench.list.automaticKeyboardNavigation": true,
+    // "python.autoComplete.addBrackets": false,
+    // "terminal.integrated.automationShell.linux": null,
     /*
 
 ### Sect: Terminal Config
 
     */
-    /*
-    "terminal.integrated.cwd": "c:\\data\\jake",
-    */
+    // "terminal.integrated.cwd": "c:\\data\\jake",
+    "terminal.integrated.commandsToSkipShell": [
+        "workbench.action.files.newUntitledFile",
+        "workbench.action.toggleSidebarVisibility",
+        "workbench.action.showAllSymbols",
+    ],
     /*
 
 ### Sect: Custom Colors/Themes/Fonts/Styles/CSS
 
     */
+    /*
+
+###### SubSect: Window title templates
+    see more: '//dotfiles_git/vscode/settings_global/Example Config Options ⇢ Window.Title Format Strings.json'
+
+    */
+    // output: NinMonkey.Console ⁞ settings.json ⁞ c:\foo\bar
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}|${separator}${activeFolderMedium}",
+    // output: NinMonkey.Console ⁞ settings.json ⁞ bar
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
+    // output: settings.json <- bar
+    "window.title": "${activeEditorShort}$ <- ${activeFolderShort}",
+    // output: Format-FileSize.ps1 ⇽ [public]
+    "window.title": "${activeEditorShort}$ ⇽ ${activeFolderShort}",
+    // output: Invoke-IPython.ps1 [native_wrapper] ⁞ NinMonkey.Console (Workspace)
+    "window.title": "${dirty}${activeEditorShort}$ [${activeFolderShort}]${separator}${rootName}",
+    // output: NinMonkey.Console (Workspace) ⁞ Invoke-IPython.ps1 ⁞ public\native_wrapper
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderMedium}",
+    // "window.title": "${dirty}${rootName} ┐ ${activeEditorShort}$ ⇽ ${folderName}",
+    "window.titleSeparator": " ⁞ ", // or: ┐ ⇽
     /*
 
 ###### SubSect: Workbench theme overrides
@@ -494,7 +620,8 @@
     },
     /*
 
-        font-sizes:
+###### Sect: font-sizes and font properties
+
     */
     // for zoom = 0
     "debug.console.fontSize": 14,
@@ -510,6 +637,7 @@
 ###### SubSect: Semantic highlighting
 
     */
+    "csharp.semanticHighlighting.enabled": true,
     "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
     "editor.semanticTokenColorCustomizations": {
         // per-theme

@@ -1,0 +1,62 @@
+    /*
+
+    section: <window title templates>
+
+    titlebar examples are using this example project:
+
+        Workspace:
+            C:\Users\<user>\Documents\2020\powershell\MyModules_Github\Ninmonkey.Console\Ninmonkey.Console.code-workspace
+
+        Selected Tab Filepath :
+            ${workspaceRoot}\public\native_wrapper\Invoke-IPython.ps1
+
+        "window.titleSeparator" = " ⁞ "
+    old ones
+
+\
+    */
+    // output: NinMonkey.Console ⁞ c:\foo\bar ⁞ settings.json
+    // "window.title": "${dirty}${rootName}${separator}${activeFolderMedium}${separator}${activeEditorShort}",
+    // output: NinMonkey.Console ⁞ settings.json ⁞ c:\foo\bar
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}|${separator}${activeFolderMedium}",
+    // output: NinMonkey.Console ⁞ settings.json ⁞ bar
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
+    // output: settings.json <- bar
+    "window.title": "${activeEditorShort}$ <- ${activeFolderShort}",
+    // output: settings.json [bar] ⁞ NinMonkey.Console
+    // output: settings.json [bar] ⁞ NinMonkey.Console
+    // output: Format-FileSize.ps1 [public] NinMonkey.Console (Workspace)
+    // output: Format-FileSize.ps1 ⇽ [public]
+    "window.title": "${activeEditorShort}$ ⇽ ${activeFolderShort}",
+    // output: Format-FileSize.ps1 [public] NinMonkey.Console (Workspace)
+    // output: Invoke-IPython.ps1 [native_wrapper] ⁞ NinMonkey.Console (Workspace)
+    "window.title": "${dirty}${activeEditorShort}$ [${activeFolderShort}]${separator}${rootName}",
+    // output: Invoke-IPython.ps1 [public\native_wrapper] ⁞ NinMonkey.Console (Workspace)
+    // "window.title": "${dirty}${activeEditorShort}$ [${activeFolderLong}]${separator}${rootName}",
+    // "window.title": "${dirty}${activeEditorShort}$ [${activeFolderMedium}]${separator}${rootName}",
+    /*
+
+    new ones:
+    */
+    // output: NinMonkey.Console (Workspace) ⁞ Invoke-IPython.ps1 ⁞ public\native_wrapper
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderMedium}",
+    // "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${activeFolderMedium}",
+    // output: NinMonkey.Console (Workspace) ⁞ Invoke-IPython.ps1 ⁞ native_wrapper
+    // "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
+    // output: NinMonkey.Console (Workspace) ┐ Invoke-IPython.ps1 ⇽ native_wrapper
+    // "window.title": "${dirty}${rootName} ┐ ${activeEditorShort}$ ⇽ ${activeFolderShort}",
+    // "window.title": "${dirty}${rootName} ┐ ${activeEditorShort}$ ⇽ ${folderName}",
+    "window.titleSeparator": " ⁞ ", // or: ┐ ⇽
+    /*
+
+    wip final
+
+    */
+    // output: NinMonkey.Console ⁞ c:\foo\bar ⁞ settings.json
+    // "window.title": "${dirty}${rootName}${separator}${activeFolderMedium}${separator}${activeEditorShort}",
+    // output: NinMonkey.Console ⁞ settings.json ⁞ bar
+    // output: settings.json <- bar
+    // output: NinMonkey.Console (Workspace) ┐ Format-FileSize.ps1 ⇽ [public]
+    /*
+    section: </window title templates>
+    */

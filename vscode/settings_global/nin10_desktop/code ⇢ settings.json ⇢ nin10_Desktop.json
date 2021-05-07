@@ -285,7 +285,7 @@
     ],
     // "editor.semanticHighlighting.enabled": false,
     // "editor.semanticTokenColorCustomizations": {
-    "enabled": true,
+    // "enabled": true,
     //     // "rules": {"xmlDocCommentAttributeQuotes": "#ff0000"},
     //     // "[PowerShell ISE]": {"rules": {}}
     // },
