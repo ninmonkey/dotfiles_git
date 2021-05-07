@@ -1,5 +1,6 @@
 {
     /*
+    self: I merged these settings
 
     See also:
         <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/settings.json>
@@ -768,7 +769,7 @@
     "terminal.integrated.drawBoldTextInBrightColors": true,
     // "editor.suggestLineHeight": 12,
     // "editor.quickSuggestions": {
-    "other": true,
+    // "other": true,
     //     "comments": false,
     //     "strings": false
     // },
