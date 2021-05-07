@@ -8,8 +8,12 @@ function New-DotfilesCodeConfigToc {
         .
     .notes
         future:
+            - **make markdown**
+                - that links to the separate settings.json
+                 **line numbers** in github as a regular .md url
+
             - auto sort by Path, Line inside the function), by collecting a list
-            - UseProfile: Autosuggest 'code' and 'code-insers' paths
+            - UseProfile: Auto suggest 'code' and 'code-insers' paths
     .example
         PS>
             New-DotfilesCodeConfigToc -list
@@ -153,11 +157,7 @@ function New-DotfilesCodeConfigToc {
         }
 
         $Regex = @{
-            'SectionHeader_iter1' = @'
-(?x)
-        ^\s*(?<Depth>\#{2,})\s*(?<Type>(Sect|SubSect|\w+)):\s*(?<Title>)$
-'@
-            'SectionHeader'       = @'
+            'SectionHeader' = @'
 (?x)
         ^\s*
         (?<Depth>\#{2,})
