@@ -1,6 +1,24 @@
+- [Example (from docs)](#example-from-docs)
+- [Buffer](#buffer)
+  - [Most Visited](#most-visited)
+- [Current config](#current-config)
+  - [main](#main)
+  - [still todo:](#still-todo)
+  - [All bookmarts tagged `todo_2021-03`, sorted by most recently created](#all-bookmarts-tagged-todo_2021-03-sorted-by-most-recently-created)
+  - [try tag search:](#try-tag-search)
+    - [iter1](#iter1)
+    - [ITER2](#iter2)
+    - [ITER3](#iter3)
+- [Arg docs:](#arg-docs)
+  - [`queryType` = `<int>`](#querytype--int)
+  - [`type` = `<int>`](#type--int)
+  - [`sort` = `<int>`](#sort--int)
+  - [`parent` = `<string>`](#parent--string)
+
 bookmark is sql query
 
 place:folder=BOOKMARKS_MENU&folder=UNFILED_BOOKMARKS&folder=TOOLBAR&queryType=1&sort=12&maxResults=10&excludeQueries=1
+
 
 ## docs:
 
