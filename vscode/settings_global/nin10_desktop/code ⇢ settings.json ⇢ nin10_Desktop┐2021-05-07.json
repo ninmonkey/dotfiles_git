@@ -154,6 +154,7 @@
 
     */
     "search.experimental.searchInOpenEditors": true,
+    "python.insidersChannel": "weekly",
     /*
 
 ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
@@ -374,6 +375,11 @@
             "filenamePattern": "*.ipynb"
         }
     ],
+    /*
+
+###### SubSect: Files ⇢ Files.Associations
+
+    */
     "files.associations": {
         "*.dax": "sql",
         "*.json": "jsonc",
@@ -388,8 +394,11 @@
         ".ripgreprc": "shellscript",
         "nuget.config": "xml",
     },
-    "python.insidersChannel": "weekly",
-    "editor.renderLineHighlightOnlyWhenFocus": true,
+    /*
+
+###### SubSect: Files ⇢ Files.Exclude
+
+    */
     "files.exclude": {
         "**/*.exe": true,
         "**/*.lnk": true,
@@ -402,11 +411,24 @@
         "**/.mypy_cache": true,
         "**/venv": true
     },
+    /*
+
+###### SubSect: Files ⇢ Search.Exclude
+
+    */
     "search.exclude": {
         // "**/*.mez": true,
         "**/*.lnk": true,
         "**/*.log": true,
     },
+    /*
+
+### Sect: Unsorted / misc
+
+    */
+    "search.useReplacePreview": true,
+    // "explorer.sortOrder": "modified", // nice for log files
+    "editor.renderLineHighlightOnlyWhenFocus": true,
     "editor.snippetSuggestions": "none",
     "editor.renderWhitespace": "none",
     "editor.renderControlCharacters": true,
@@ -427,7 +449,65 @@
     */
     /*
 
-### Sect: semantic highlighting
+### Sect: Custom Colors/Themes/Fonts/Styles/CSS
+
+    */
+    /*
+
+###### SubSect: Workbench theme overrides
+
+        docs: <https://code.visualstudio.com/api/references/theme-color>
+    */
+    "workbench.colorCustomizations": {
+        // highlight 'active' window, without being too bold
+        "window.activeBorder": "#a75715e3", // pretty bright
+        "window.activeBorder": "#a857ff85", // pretty bright
+        // "window.inactiveBorder": "#a7b67080",
+        // "statusBar.border": "magenta",
+        "window.inactiveBorder": "#a7b67000",
+        // "tree.indentGuidesStroke": "#ff0000"
+        // "debugView.valueChangedHighlight": "#ff0000"
+        // "diffEditor.insertedTextBackground": "#ff0000",
+        // "diffEditor.insertedTextBorder": "#ff0000",
+        // "diffEditor.removedTextBackground": "#ff0000",
+        // "diffEditor.border": "#ff0000",
+        // "window.inactiveBorder": "#ff000069",
+        // "editorCursor.foreground": "#ff0000"
+        // "editorCursor.background": "#ff0000"
+        /*
+            editor find
+        */
+        /*
+        "editor.findMatchBackground": "#ff0000",
+        "editor.findMatchBorder": "#ff0000",
+        "editor.findMatchHighlightBackground": "#ff0000",
+        "editor.findRangeHighlightBackground": "#ff0000",
+        "editor.findMatchHighlightBorder": "#ff0000",
+        "editor.findRangeHighlightBorder": "#ff0000",
+        "editorOverviewRuler.findMatchForeground": "#ff0000",
+        "searchEditor.findMatchBackground": "#ff0000",
+        "searchEditor.findMatchBorder": "#ff0000",
+        "editor.snippetFinalTabstopHighlightBorder": "#ff0000",
+        "editor.snippetFinalTabstopHighlightBackground": "#ff0000",
+        "editorOverviewRuler.modifiedForeground": "#ff0000",
+        */
+    },
+    /*
+
+        font-sizes:
+    */
+    // for zoom = 0
+    "debug.console.fontSize": 14,
+    // "editor.fontSize": 14, // for zoom -0
+    "editor.fontSize": 17, //18 16, // for zoom -1
+    "editor.fontSize": 15, // for zoom -0
+    "editor.suggestFontSize": 16, //14, // for zoom -1
+    // "editor.suggestFontSize": 12, // for zoom 0
+    // "terminal.integrated.fontSize": 15, // for zoom -1
+    "terminal.integrated.fontSize": 14, //12, // for zoom 0
+    /*
+
+###### SubSect: Semantic highlighting
 
     */
     "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
