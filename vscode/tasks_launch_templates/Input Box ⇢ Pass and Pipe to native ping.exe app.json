@@ -7,15 +7,22 @@
 
 ### Description
 
-    Several examples
-    - random dotfiles
+    Examples on How to invoke "foo.exe [args]":
 
-### Examples on How to invoke
+        ${defaultShell} > ping.exe 1.1.1.1
 
-        [defaultShell] > ping.exe
+        pwsh.exe> -nop -nol -c ping.exe 1.1.1.1 | rg '\d+'
 
-        [defaultShell] > ping.exe
+### Docs + Refs
 
+    [many launch examples](https://code.visualstudio.com/docs/editor/debugging#_variable-substitution)
+
+### to look up:
+
+    "terminal.external.windowsExec": "C:\\WINDOWS\\System32\\cmd.exe"
+    "terminal.explorerKind": "integrated"
+
+### 'tasks.json' starts here:
 
     */
     "version": "2.0.0",
