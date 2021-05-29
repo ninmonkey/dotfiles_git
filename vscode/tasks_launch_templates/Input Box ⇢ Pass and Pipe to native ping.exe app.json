@@ -1,0 +1,197 @@
+{
+    /*
+
+### About
+    [Jake's Dotfiles](https://github.com/ninmonkey/dotfiles_git)
+    original date: 2021-05-29
+
+### Description
+
+    Several examples
+    - random dotfiles
+
+### Examples on How to invoke
+
+        [defaultShell] > ping.exe
+
+        [defaultShell] > ping.exe
+
+
+    */
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "ng g",
+            "type": "shell",
+            "command": "ng",
+            "args": [
+                "g",
+                "${input:componentType}",
+                "${input:componentName}"
+            ]
+        },
+        {
+            "label": "[1] ping.exe it  | /w default shell",
+            "type": "shell",
+            "command": "ping.exe",
+            "args": [
+                "${input:PingTargetIP}"
+            ],
+            "problemMatcher": [],
+            "detail": "[1] User  of User Textbox Input passed to command",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {}
+        },
+        {
+            "label": "[2] ping it | using pwsh -c 'command'",
+            /*
+            note: VS Code will launch tasks via current shell, which includes profile
+            It's running:
+                pwsh -c { pwsh -Nop -Nol -c 'ping google.com' }
+            */
+            "type": "shell",
+            "command": "pwsh.exe",
+            "args": [
+                "-NoProfile",
+                "-NoLogo",
+                "-c",
+                "ping.exe",
+                "${input:PingTargetIP}"
+            ],
+            "problemMatcher": [],
+            "detail": "[2] This explicitly calls 'pwsh.exe -nop' without default shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {},
+            // "windows": {
+            //     "args": [],
+            //     "command": "",
+            //     "options": {},
+            //     "problemMatcher",
+            // }
+        },
+        {
+            "label": "[2.B] ping | Highlight 🎨",
+            /*
+            note: VS Code will launch tasks via current shell, which includes profile
+            It's running:
+                pwsh -c { pwsh -Nop -Nol -c 'ping google.com' | rg '\d+' }
+            */
+            "type": "shell",
+            "command": "pwsh.exe",
+            "args": [
+                "-NoProfile",
+                "-NoLogo",
+                "-c",
+                "ping.exe",
+                "${input:PingTargetIP}",
+                // now try pinging to 'rg "\d+"'
+                "|",
+                "rg",
+                "'\\d+'"
+            ],
+            "problemMatcher": [],
+            "detail": "[2.B] this is [2] with RipGrep for filtering and color",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {},
+            // "windows": {
+            //     "args": [],
+            //     "command": "",
+            //     "options": {},
+            //     "problemMatcher",
+            // }
+        },
+        {
+            "label": "[3] ping it | using default shell with no profile",
+            /*
+            note: VS Code will launch tasks via current shell, which includes profile
+            It's running:
+                pwsh -c { pwsh -Nop -Nol -c 'ping google.com' }
+
+            */
+            "type": "shell",
+            "command": "ping.exe",
+            "args": [
+                // ping -a -n 2 1.1.1.1
+                "-a",
+                // "-n 2", // warning, this passes as qouted "'-n 2'", which is not what we want
+                "-n",
+                "2",
+                "${input:PingTargetIP}"
+            ],
+            "problemMatcher": [],
+            "detail": "[3] This explicitly calls 'pwsh.exe -nop' without default shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {},
+            // "windows": {
+            //     "args": [],
+            //     "command": "",
+            //     "options": {},
+            //     "problemMatcher",
+            // }
+        },
+        {
+            "label": "NYI => Task Swaps Shell Type",
+            "command": "${input:variableID}"
+        },
+        {
+            "label": "Echo Variable's Value",
+            "type": "shell",
+            "command": "echo 'Env:workspaceFolder': ${workspaceFolder}",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "variableID",
+            "type": "pickString",
+            "default": "powershell.exe",
+            "description": "Select Powershell Version",
+            "options": [
+                "powershell.exe",
+                "pwsh.exe"
+            ]
+            // type specific configuration attributes
+        },
+        {
+            "id": "PingTargetIP",
+            "type": "promptString",
+            "description": "IP to ping",
+            "default": "1.1.1.1",
+        },
+        {
+            "id": "componentType",
+            "type": "pickString",
+            "description": "What type of component do you want to create?",
+            "options": [
+                "component",
+                "directive",
+                "pipe",
+                "service",
+                "class",
+                "guard",
+                "interface",
+                "enum",
+                "enum"
+            ],
+            "default": "component"
+        },
+        {
+            "id": "componentName",
+            "type": "promptString",
+            "description": "Name your component.",
+            "default": "my-new-component"
+        }
+    ]
+}
