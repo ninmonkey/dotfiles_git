@@ -31,7 +31,8 @@
             }
         ],
         "powershell.scriptAnalysis.enable": true,
-        "workbench.settings.editor": "json"
+        "workbench.settings.editor": "json",
+        "powershell.codeFormatting.addWhitespaceAroundPipe": true
     },
     "launch": {
         "version": "0.2.0",
