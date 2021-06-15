@@ -1,0 +1,137 @@
+/*
+Profile: Jake 2021-04 | Keybindings
+Config: VS Code **Insiders**
+
+Description:
+Table of Contents, search for sections named:
+
+"# h1: <header label>"
+
+Docs:
+
+- [complex `in` conditions](https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator)
+- [Keybinding Documentation](https://code.visualstudio.com/docs/getstarted/keybindings)
+- [Available `when` Contexts](https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts)
+- [New Commands: October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
+
+Cheat Sheet:
+    [List of Panel and View Names / ids](https://code.visualstudio.com/api/references/when-clause-contexts#activefocused-view-or-panel-when-clause-context)
+    See also:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+
+    */
+[
+    /*
+    */
+    {
+        "key": "ctrl+shift+c",
+        "command": "PowerShell.ShowAdditionalCommands",
+        // "when": "editorLangId == 'powershell'"
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'powershell'"
+        // "when": "editorTextFocus && editorLangId == 'powershell'"
+        // "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'swift'"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-filesExplorer.paste",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    /*
+
+    [section]: Debugging
+
+    */
+    {
+        /* manually opt in to languages  */
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "editor.action.joinLines",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+alt+enter",
+        "command": "notebook.cell.execute",
+        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-notebook.cell.execute",
+        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
+    },
+    {
+        "key": "ctrl+alt+enter",
+        "command": "jupyter.runcurrentcell",
+        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-jupyter.runcurrentcell",
+        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
+    },
+    {
+        "key": "alt+enter",
+        "command": "notebook.cell.executeAndSelectBelow",
+        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
+    },
+    {
+        "key": "shift+enter",
+        "command": "-notebook.cell.executeAndSelectBelow",
+        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
+    },
+    /*
+    section:
+        Toggle disabling ctrl+v for vscode-powershell
+        pasting bug
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "editor.action.clipboardPasteAction"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-editor.action.clipboardPasteAction"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "filesExplorer.paste",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    */
+    /*
+
+            section: unbind defaults
+
+            */
+]

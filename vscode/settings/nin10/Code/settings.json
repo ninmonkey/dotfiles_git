@@ -117,8 +117,9 @@
     "editor.suggest.showKeywords": true,
     // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
     "diffEditor.wordWrap": "inherit",
-    "editor.suggestSelection": "first",
     "editor.suggestSelection": "recentlyUsedByPrefix",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue"
     /*
     Can I make person JSON config rules?
 
@@ -311,9 +312,7 @@
     },
     "[jsonc]": {
         "editor.quickSuggestions": {
-            "strings": false, // I think this gave annoying matches especially in schema json
-            "comments": false,
-            "other": true
+            "strings": true
         },
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
@@ -321,9 +320,7 @@
     },
     "[json]": {
         "editor.quickSuggestions": {
-            "strings": false, // I think this gave annoying matches especially in schema json
-            "comments": false,
-            "other": true
+            "strings": true,
         },
         // "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.defaultFormatter": "vscode.json-language-features",
@@ -338,7 +335,6 @@
     },
     "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
     "[xml]": {
-        // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.formatOnSave": true,
         /* for formatting, try these depending on what's installed
         */
@@ -356,8 +352,6 @@
     },
     // "powershell.powerShellDefaultVersion": "",
     "[powershell]": {
-        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // previous default
-        "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // new default
         "editor.formatOnSave": true,
         // "editor.snippetSuggestions": "none",
         "files.encoding": "utf8bom",
@@ -487,6 +481,10 @@
     // "debug.inlineValues": true,
     /*
     test: mypy:
+
+    sdfssfdsf
+
+
     config: https://mypy.readthedocs.io/en/latest/config_file.html
 
     */
@@ -689,7 +687,6 @@
 
     */
     "python.formatting.provider": "black",
-    "editor.suggestSelection": "first",
     // "editor.renderControlCharacters": true,
     // "editor.fontLigatures": true,
     "workbench.editor.labelFormat": "medium",
@@ -708,8 +705,6 @@
     "terminal.integrated.unicodeVersion": "11",
     // "editor.autoIndent": false,
     "python.formatting.provider": "black",
-    "editor.suggestSelection": "first",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     // "editor.renderControlCharacters": true,
     // "editor.fontLigatures": true,
     "workbench.editor.labelFormat": "medium",
@@ -955,7 +950,7 @@ docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
     "terminal.integrated.experimentalLinkProvider": true,
     "terminal.integrated.rightClickBehavior": "copyPaste",
     "terminal.integrated.sendKeybindingsToShell": false,
-    "terminal.integrated.tabs.enabled": false,
+    "terminal.integrated.tabs.enabled": true,
     "terminal.integrated.tabs.location": "left",
     "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default changes per-language
     "terminal.integrated.tabs.focusMode": "doubleClick",
@@ -1027,68 +1022,8 @@ docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
     },
     "oneDarkPro.bold": true,
     "pesterExplorer.autoDiscoverOnOpen": true,
-    "snippets.viewer.showBuiltInExtensionSnippets": false,
     "editor.renderWhitespace": "trailing",
     "powershell.codeFormatting.pipelineIndentationStyle": "None",
-    // "terminal.integrated.tabs.enabled": true,
+    // snippets
+    "snippets.viewer.showBuiltInExtensionSnippets": false,
 }
-/*
-
-
-        section: maybe dup settings
-
-         "terminal.integrated.automationShell.windows": null,
-    // "powershell.developer.featureFlags": null,
-    "powershell.helpCompletion": "LineComment", // what does it do?
-    "powershell.integratedConsole.showOnStartup": true,
-    // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
-    "powershell.pester.debugOutputVerbosity": "Diagnostic",
-    "powershell.pester.outputVerbosity": "FromPreference",
-    "terminal.integrated.allowWorkspaceConfiguration": false,
-    "terminal.integrated.sendKeybindingsToShell": false,
-    "editor.mouseWheelScrollSensitivity": 2,
-    "terminal.integrated.mouseWheelScrollSensitivity": 2,
-    // "terminal.integrated.cwd": "",
-    "terminal.integrated.environmentChangesRelaunch": true,
-    "terminal.integrated.experimentalLinkProvider": true,
-    "terminal.integrated.letterSpacing": 0,
-    "terminal.integrated.lineHeight": 0,
-    "powershell.enableProfileLoading": true, // applies to [intellisense and term] but *not* [debug]
-    "terminal.integrated.rightClickBehavior": "copyPaste",
-    "terminal.integrated.scrollback": 4000,
-    "terminal.integrated.showExitAlert": false,
-    "terminal.integrated.tabs.enabled": true,
-    "terminal.integrated.tabs.focusMode": "doubleClick",
-    "terminal.integrated.tabs.hideCondition": "singleTerminal",
-    "terminal.integrated.tabs.location": "right", // values are the inverse of the side you want tabs
-    "terminal.integrated.tabs.showActiveTerminal": "singleTerminalOrNarrow",
-    "search.collapseResults": "auto", //"alwaysCollapse", alwaysExpand, auto
-    "search.actionsPosition": "right",
-    "search.mode": "view", //"reuseEditor",//"newEditor",
-    "search.quickOpen.history.filterSortOrder": "default", //"recency",
-    "search.searchEditor.defaultNumberOfContextLines": 1,
-    "search.searchOnType": true,
-    "search.seedOnFocus": true, // [ctrl+f] will use the current selection as the base
-    "search.searchEditor.reusePriorSearchConfiguration": false,
-    "search.smartCase": false,
-    "search.sortOrder": "modified", //"type",//"modified",//"fileNames",//"default",//"countDescending",//"countAscending",//"type",
-    "search.useIgnoreFiles": true,
-    "search.useReplacePreview": true,
-    "search.searchEditor.doubleClickBehaviour": "openLocationToSide", //"selectWord",//"openLocationToSide",//"goToLocation",
-    // "terminal.integrated.commandsToSkipShell": [],
-    "terminal.integrated.enableBell": false,
-    "terminal.integrated.defaultProfile.windows": "PowerShell",
-    "terminal.external.windowsExec": "wt.exe",
-    "python.terminal.launchArgs": [],
-    "terminal.integrated.environmentChangesIndicator": "warnonly", // "off", "on", "warnonly"
-    "terminal.integrated.useWslProfiles": true,
-    // "terminal.integrated.windowsEnableConpty": true,
-    "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default
-    "terminal.integrated.wordSeparators": "$ ()[]{}',\"`─", // testing $
-    "python.terminal.activateEnvInCurrentTerminal": false,
-    "python.terminal.activateEnvironment": true,
-    "debug.terminal.clearBeforeReusing": false,
-    // "terminal.explorerKind": "external",
-    "terminal.integrated.altClickMovesCursor": true, // interesting
-
-*/

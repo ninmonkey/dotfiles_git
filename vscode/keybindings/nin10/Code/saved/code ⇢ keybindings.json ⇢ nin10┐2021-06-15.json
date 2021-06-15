@@ -1,0 +1,148 @@
+// Place your key bindings in this file to override the defaults
+[
+    /*
+    See also:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+    New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
+    */
+    {
+        "key": "ctrl+shift+c",
+        "command": "PowerShell.ShowAdditionalCommands",
+        // "when": "editorLangId == 'powershell'"
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    /*
+
+    [section]: Debugging
+
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        /* manually opt in to languages  */
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'swift'"
+    },
+    {
+        //jump to breakpoints (only in the text editor)
+        "key": "ctrl+alt+numpad2",
+        "command": "editor.debug.action.goToNextBreakpoint",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+numpad1",
+        "command": "editor.debug.action.goToPreviousBreakpoint",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+alt+j",
+        "command": "code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-markdown.extension.editing.toggleBold",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == 'markdown'"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "editor.action.joinLines"
+    },
+
+    /*
+
+    Powershell: Pester
+    */
+    /*
+
+    h1: Toggle Ctrl+V keybinds on and off,
+        from ctrl+v to ctrl+shift+v
+
+        for debugging
+    {
+        "key": "ctrl+numpad1",
+        "command": "PowerShell.DebugPesterTestsFromFile",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "PowerShell.RunPesterTestsFromFile",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "editor.action.clipboardPasteAction"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-editor.action.clipboardPasteAction"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "filesExplorer.paste",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-filesExplorer.paste",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    */
+    // { //broke?
+    //     "key": "ctrl+numpad3",
+    //     "command": "PowerShell.RunPesterTests",
+    //     "when": "editorTextFocus && editorLangId == 'powershell'"
+    // },
+    /*
+    examples
+
+    [ex] Quick fix uses a regex
+    {
+        "key": "shift+alt+.",
+        "command": "editor.action.autoFix",
+        "when": "editorTextFocus && !editorReadonly && supportedCodeAction =~ /(\\s|^)quickfix\\b/"
+    },
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>)
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>:<otherwise>)
+
+
+        (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
+    */
+]

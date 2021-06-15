@@ -1,0 +1,152 @@
+{
+    /*
+
+    Snippets: Powershell
+
+    Description:
+
+    todo:
+        - [ ] autocollect -> dotfiles_github
+
+
+    Refs:
+        dotfiles:
+            $Env:userprofile\Documents\2020\MyModules_Github\VSCode-ConfigSnippets\snippet\powershell.json
+
+        snippet pattern examples:
+            <https://gist.github.com/ninmonkey/4fe8062d5ad1b2ad17e6f91a96984851>
+
+        extension dir:
+            $Env:UserProfile\.vscode\extensions\ms-vscode.powershell[-preview]-<version>\snippets\PowerShell.json
+        see:
+            https: //code.visualstudio.com/docs/editor/userdefinedsnippets#_choice
+
+    see also:
+
+        https: //github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
+
+    */
+    "Parameter ⇢ Basic": {
+        "prefix": "ninParameter [Parameter] : Basic",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position=0})]",
+            // "    HelpMessage='${2}')]",
+            "[${3:object}]$${4:ParameterName}$0",
+        ],
+        "description": "nin ⁞ A basic [Parameter()]"
+    },
+    "CmdletBinding()": {
+        "prefix": "[CmdletBinding()]",
+        "description": "nin ⁞ CmdletBinding with initial params",
+        "body": [
+            "[CmdletBinding()]",
+            "param (",
+            "    # ${3:docstring}",
+            "    [Parameter(Mandatory, Position=0,",
+            // Best practice is to use doc strings, not the attribute
+            // "        HelpMessage=\"doc\")]",
+            "    [${1:TypeName}]$${2:ParameterName}$0",
+            ")"
+        ]
+    },
+    "CalculatedProperty": {
+        "prefix": "Calculated-Property ⇢ SingleLine",
+        "body": [
+            "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
+        ],
+        "description": "nin ⁞ a CalculatedProperty on a Single Line",
+    },
+    "CalculatedProperty: Multiline": {
+        "prefix": "Calculated-Property ⇢ MultiLine",
+        "body": [
+            "@{",
+            "    Name = '${1:PropertyName}'",
+            "    Expression = {",
+            "        ${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}",
+            "   }",
+            "}",
+            "$0"
+        ],
+        "description": "nin ⁞ a CalculatedProperty using multiple lines",
+    },
+    "IfShouldProcess": {
+        "prefix": "IfShouldProcess",
+        "description": "nin ⁞ Creates ShouldProcess block from your Selection",
+        "body": [
+            "if (\\$PSCmdlet.ShouldProcess(\"${1:Target}\", \"${2:Operation}\")) {",
+            "    ${0:$TM_SELECTED_TEXT}",
+            "}"
+        ],
+    },
+    "Parameter ⇢ Switch": {
+        "prefix": "[Parameter] ⇢ Switch",
+        "description": "nin ⁞ adds a [switch] parameter",
+        "body": [
+            // "[Parameter(HelpMessage = \"$1\")][switch]\\$${0}"
+            "# ${1:Docstring}",
+            "[Parameter()][switch]\\$${0}"
+        ]
+    },
+    "Function ⇢ Basic": {
+        "prefix": "Function ⇢ Basic",
+        "description": "nin ⁞ A basic function",
+        "body": [
+            "function ${1:Name} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2}",
+            "    .description",
+            "        .",
+            "    .example",
+            "        PS>",
+            "    .notes",
+            "        .",
+            "    #>",
+            "    param (",
+            "        ${0}",
+            "    )",
+            "    begin {}",
+            "    process {}",
+            "    end {}",
+            "}",
+        ],
+    },
+    "Parameter: Completer ⇢ ValidateSet": {
+        "prefix": "Completer ⇢ ValidateSet",
+        "description": "nin ⁞ Autocompleter parameter from a static list using ValidateSet()",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(",
+            "    ${2:Mandatory}, ${3:Position=0},",
+            // "    HelpMessage='${3}')]",
+            "    [ValidateSet(${4})]",
+            "    [string[]]$${5:ParameterName})",
+            "$0",
+        ],
+    },
+    "Web ⇢ Invoke-RestMethod": {
+        "prefix": "Web ⇢ Invoke-RestMethod",
+        "description": "nin ⁞ Invoke-RestMethod | template saves response data",
+        "body": [
+            "\\$splat_irm = @{",
+            "    Uri                     = '${1:$TM_SELECTED_TEXT}'",
+            "    Body                    = @{",
+            "        ${2}",
+            "    }",
+            "    # Form = @{}",
+            "    Method                  = 'Get'",
+            "    SessionVariable         = 'sess_var'",
+            "    StatusCodeVariable      = 'status_var'",
+            "    ResponseHeadersVariable = 'response_var'",
+            "    # ContentType = ''",
+            "    # TimeoutSec = 0",
+            "    # Token = 'foo'",
+            "    # Authentication = 'OAuth'",
+            "    Headers                 = @{}",
+            "}",
+            "",
+            "\\$Response ??= Invoke-RestMethod @splat_irm${0}",
+        ],
+    },
+}

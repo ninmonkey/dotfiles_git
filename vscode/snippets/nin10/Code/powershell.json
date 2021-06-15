@@ -26,6 +26,16 @@
         https: //github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
+    "Parameter ⇢ Basic": {
+        "prefix": "ninParameter [Parameter] : Basic",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position=0})]",
+            // "    HelpMessage='${2}')]",
+            "[${3:object}]$${4:ParameterName}$0",
+        ],
+        "description": "nin ⁞ A basic [Parameter()]"
+    },
     "CmdletBinding()": {
         "prefix": "[CmdletBinding()]",
         "description": "nin ⁞ CmdletBinding with initial params",
@@ -68,16 +78,6 @@
             "    ${0:$TM_SELECTED_TEXT}",
             "}"
         ],
-    },
-    "Parameter ⇢ Basic": {
-        "prefix": "[Parameter] : Basic",
-        "body": [
-            "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
-            // "    HelpMessage='${2}')]",
-            "[${3:object}]$${4:ParameterName}$0",
-        ],
-        "description": "A basic [Parameter()]"
     },
     "Parameter ⇢ Switch": {
         "prefix": "[Parameter] ⇢ Switch",
