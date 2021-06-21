@@ -17,29 +17,6 @@
 ### Sect: Config Settings to Experiment with
 
     */
-    // what's new: Auto close task terms: https://code.visualstudio.com/updates/v1_57#_automatically-close-task-terminals
-    // what's new: in terminal profile: https://code.visualstudio.com/updates/v1_57#_terminal-profile-improvements
-    //
-    // what's new: trust: https://code.visualstudio.com/updates/v1_57#_workspace-trust
-    "editor.suggest.preview": true,
-    "editor.suggest.showDeprecated": true,
-    "notebook.editorOptionsCustomizations": {},
-    "security.workspace.trust.emptyWindow": true,
-    "security.workspace.trust.enabled": true,
-    "security.workspace.trust.startupPrompt": "once",
-    "security.workspace.trust.untrustedFiles": "prompt",
-    // "extensions.supportUntrustedWorkspaces": { },
-    /*
-
-    allowing pre-trusted API extensions
-
-    "extensions.supportUntrustedWorkspaces": {
-        "esbenp.prettier-vscode": {
-            "supported": true,
-            "version": "6.4.0"
-        },
-    },
-    */
     // will this prevent prompt from synapse (venv) automatically changing your prompt
     "python.analysis.typeCheckingMode": "basic",
     "python.terminal.activateEnvInCurrentTerminal": false,
@@ -61,7 +38,7 @@
     "debug.console.closeOnEnd": true,
     "debug.console.collapseIdenticalLines": true,
     "editor.copyWithSyntaxHighlighting": true,
-    "editor.codeLensFontFamily": "'arial', 'cascadia code'", // this changes "run tests" inside .ps1 pester blocks
+    "editor.codeLensFontFamily": "'cascadia code', 'arial', 'cascadia code'", // this changes "run tests" inside .ps1 pester blocks
     "editor.codeLensFontSize": 14,
     "editor.codeLens": true,
     // "editor.cursorSurroundingLines": 10,
@@ -163,8 +140,6 @@
     "window.confirmBeforeClose": "keyboardOnly", // https://code.visualstudio.com/updates/v1_51#_prevent-accidental-close
     "window.restoreWindows": "all",
     "window.restoreWindows": "preserve",
-    "workbench.startupEditor": "gettingStarted",
-    "workbench.welcomePage.walkthroughs.openOnInstall": true,
     "workbench.settings.openDefaultSettings": false,
     /*
 
@@ -239,8 +214,6 @@
     "search.searchEditor.defaultNumberOfContextLines": 1, // grep -C <n>
     "search.searchEditor.reusePriorSearchConfiguration": true,
     "search.mode": "newEditor",
-    "powershell.codeFormatting.whitespaceBetweenParameters": false,
-    "editor.snippetSuggestions": "none",
     "editor.links": true,
     // "editor.glyphMargin": true,
     // "editor.fontWeight": "normal",
@@ -377,21 +350,6 @@
         ],
         "editor.defaultFormatter": "vscode.html-language-features"
     },
-    // "powershell.powerShellDefaultVersion": "",
-    "[powershell]": {
-        "editor.formatOnSave": true,
-        // "editor.snippetSuggestions": "none",
-        "files.encoding": "utf8bom",
-        "editor.formatOnSaveMode": "file",
-        "editor.formatOnPaste": true,
-        "editor.formatOnType": false, // currently it's NYI in the extension
-        "files.autoGuessEncoding": false,
-        "editor.detectIndentation": false, // required for tabsize
-        "editor.tabSize": 4,
-        // if autoIndent is set to 'full' it breaks indentation on 'move line up/down'
-        "editor.autoIndent": "advanced",
-        "editor.semanticHighlighting.enabled": true,
-    },
     "[markdown]": {
         // "editor.defaultFormatter": "vscode.markdown-language-features",
         // "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
@@ -478,7 +436,7 @@
     */
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
-    "terminal.integrated.fontFamily": "cascadia code, fira code retina, cascadia code, consolas",
+    "terminal.integrated.fontFamily": "corbel, 'cascadia code', fira code retina, cascadia code, consolas",
     "gitlens.mode.active": "zen",
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
@@ -549,15 +507,77 @@
 
 
     */
+    // "powershell.powerShellDefaultVersion": "",
+    "[powershell]": {
+        "editor.formatOnSave": false,
+        // "editor.snippetSuggestions": "none",
+        "files.encoding": "utf8bom",
+        // "editor.formatOnSaveMode": "file",
+        "editor.formatOnSaveMode": "modifications",
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false, // currently it's NYI in the extension
+        "editor.formatOnType": true, // not implemented yet?
+        "files.trimTrailingWhitespace": true,
+        "editor.trimAutoWhitespace": true,
+        "editor.smartSelect.selectLeadingAndTrailingWhitespace": true,
+        "files.autoGuessEncoding": false,
+        "editor.detectIndentation": false, // required for tabsize
+        "editor.tabSize": 4,
+        // if autoIndent is set to 'full' it breaks indentation on 'move line up/down'
+        "editor.autoIndent": "advanced",
+        "editor.semanticHighlighting.enabled": true,
+        /*
+
+### Sect: Chris Dent Config
+
+               tags:
+
+        */
+        "diffEditor.ignoreTrimWhitespace": true,
+        "editor.trimAutoWhitespace": true,
+        "editor.renderFinalNewline": false,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+    },
+    // "powershell.buttons.showPanelMovementButtons": true,
+    // "powershell.buttons.showRunButtons": true,
+    // "powershell.codeFolding.enable": true,
+    // "powershell.codeFolding.showLastLine": true,
+    // "powershell.developer.bundledModulesPath": "",
+    // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
     // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
-    "powershell.notebooks.showToggleButton": true,
-    "powershell.notebooks.saveMarkdownCellsAs": "BlockComment",
+    // "powershell.codeFormatting.ignoreOneLineBlock": true,
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
-    "powershell.codeFormatting.useCorrectCasing": true,
-    "powershell.codeFormatting.whitespaceBetweenParameters": false,
-    "powershell.promptToUpdatePowerShell": false,
     "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.whitespaceAroundPipe": true,
+    "powershell.codeFormatting.whitespaceBetweenParameters": false,
     "powershell.integratedConsole.suppressStartupBanner": true,
+    "powershell.notebooks.saveMarkdownCellsAs": "BlockComment",
+    "powershell.notebooks.showToggleButton": true,
+    "powershell.powerShellDefaultVersion": "PowerShell (x64)",
+    "powershell.powerShellDefaultVersion": "pwsh",
+    "powershell.promptToUpdatePowerShell": false,
+    // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
+    "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.enable": true,
+    /*
+
+### Sect: Chris Dent Powershell Config
+
+           tags:
+
+    */
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+    "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+    "powershell.codeFormatting.whitespaceAfterSeparator": true,
+    "powershell.codeFormatting.whitespaceAroundOperator": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+    "powershell.codeFormatting.whitespaceInsideBrace": true,
+    "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1"
     /*
 
 ###### SubSect: Extension: ⇢ xml "redhat.vscode-xml"
@@ -759,7 +779,7 @@
     "editor.wrappingIndent": "deepIndent",
     "editor.detectIndentation": false,
     "editor.fontSize": 16,
-    "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
     // "editor.trimAutoWhitespace": true,
     // "diffEditor.ignoreTrimWhitespace": true,
     // "editor.suggest.maxVisibleSuggestions": 15, : this is obsolete as of 2020-11
@@ -784,24 +804,6 @@
     // "debug.console.historySuggestions": true,
     // makes left click instant
     "editor.cursorSmoothCaretAnimation": false,
-    // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
-    // "powershell.developer.bundledModulesPath": "",
-    "powershell.integratedConsole.suppressStartupBanner": false,
-    "powershell.codeFormatting.useCorrectCasing": true,
-    "powershell.codeFormatting.autoCorrectAliases": true,
-    //
-    "powershell.codeFormatting.whitespaceAroundPipe": true,
-    // "powershell.buttons.showPanelMovementButtons": true,
-    // "powershell.buttons.showRunButtons": true,
-    // "powershell.codeFolding.showLastLine": true,
-    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
-    // "powershell.codeFormatting.ignoreOneLineBlock": true,
-    // "powershell.codeFolding.enable": true,
-    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
-    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1", # relative workspace, else global:
-    "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
-    "powershell.scriptAnalysis.enable": true,
-    // "powershell.powerShellDefaultVersion": "",
     // "[toml]": {
     // "editor.snippetSuggestions": "inline",
     // "editor.suggest.snippetsPreventQuickSuggestions": true,
@@ -947,7 +949,7 @@ docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "terminal.integrated.fontSize": 14, //12, // for zoom 0
-    "debug.console.fontFamily": "'cascadia code', cascadia m0ono, Fira Code Retina, Consolas, Fira Code Bold",
+    "debug.console.fontFamily": "Fira Code Retina, 'cascadia code', cascadia mono, Fira Code Retina, Consolas, Fira Code Bold",
     "notebook.experimental.useMarkdownRenderer": true,
     "notebook.diff.enablePreview": true,
     "debug.inlineValues": "auto",
@@ -1046,6 +1048,6 @@ docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
     "powershell.codeFormatting.pipelineIndentationStyle": "None",
     // snippets
     "snippets.viewer.showBuiltInExtensionSnippets": false,
-    "jupyter.exportWithOutputEnabled": true,
-    "workbench.colorTheme": "Codesong",
+    "editor.snippetSuggestions": "none",
+    "editor.inlayHints.fontFamily": "corbel, 'cascadia code', Consolas, 'Courier New', monospace",
 }

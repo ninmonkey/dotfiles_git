@@ -17,29 +17,6 @@
 ### Sect: Config Settings to Experiment with
 
     */
-    // what's new: Auto close task terms: https://code.visualstudio.com/updates/v1_57#_automatically-close-task-terminals
-    // what's new: in terminal profile: https://code.visualstudio.com/updates/v1_57#_terminal-profile-improvements
-    //
-    // what's new: trust: https://code.visualstudio.com/updates/v1_57#_workspace-trust
-    "editor.suggest.preview": true,
-    "editor.suggest.showDeprecated": true,
-    "notebook.editorOptionsCustomizations": {},
-    "security.workspace.trust.emptyWindow": true,
-    "security.workspace.trust.enabled": true,
-    "security.workspace.trust.startupPrompt": "once",
-    "security.workspace.trust.untrustedFiles": "prompt",
-    // "extensions.supportUntrustedWorkspaces": { },
-    /*
-
-    allowing pre-trusted API extensions
-
-    "extensions.supportUntrustedWorkspaces": {
-        "esbenp.prettier-vscode": {
-            "supported": true,
-            "version": "6.4.0"
-        },
-    },
-    */
     // will this prevent prompt from synapse (venv) automatically changing your prompt
     "python.analysis.typeCheckingMode": "basic",
     "python.terminal.activateEnvInCurrentTerminal": false,
@@ -57,7 +34,7 @@
     //     "source.organizeImports": true
     // },
     "debug.console.wordWrap": true,
-    "debug.console.historySuggestions": false, // may huge impact on removing 'spam' in debug's intellisense
+    "debug.console.historySuggestions": false, // huge impact on removing 'spam' in debug's intellisense
     "debug.console.closeOnEnd": true,
     "debug.console.collapseIdenticalLines": true,
     "editor.copyWithSyntaxHighlighting": true,
@@ -118,6 +95,7 @@
         "comments": false,
         "strings": false
     },
+    "editor.quickSuggestionsDelay": 10,
     "diffEditor.ignoreTrimWhitespace": true,
     // more: "diffEditor.*"
     // "workbench.editor.limit.value": 10,
@@ -125,8 +103,23 @@
     // "workbench.editor.untitled.hint": "text",
     // "explorer.openEditors.sortOrder": "alphabetical",
     // "editor.stickyTabStops": false,
-    "diffEditor.wordWrap": "inherit",
     "editor.wrappingStrategy": "simple",
+    "editor.wordBasedSuggestions": true,
+    "editor.wordBasedSuggestionsMode": "allDocuments",
+    "editor.wordBasedSuggestionsMode": "matchingDocuments",
+    /*
+
+    editor: suggest
+        https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
+
+    */
+    "editor.suggest.showWords": false, // first test
+    "editor.suggest.showKeywords": true,
+    // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
+    "diffEditor.wordWrap": "inherit",
+    "editor.suggestSelection": "recentlyUsedByPrefix",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue"
     /*
     Can I make person JSON config rules?
 
@@ -159,12 +152,12 @@
     */
     "workbench.settings.useSplitJSON": true,
     "workbench.settings.useSplitJSON": false,
+    "editor.snippetSuggestions": "none",
+    "window.confirmBeforeClose": "keyboardOnly", // https://code.visualstudio.com/updates/v1_51#_prevent-accidental-close
     "window.newWindowDimensions": "offset",
     "window.confirmBeforeClose": "keyboardOnly", // https://code.visualstudio.com/updates/v1_51#_prevent-accidental-close
     "window.restoreWindows": "all",
     "window.restoreWindows": "preserve",
-    "workbench.startupEditor": "gettingStarted",
-    "workbench.welcomePage.walkthroughs.openOnInstall": true,
     "workbench.settings.openDefaultSettings": false,
     /*
 
@@ -255,27 +248,7 @@
 ### Sect: Suggestions, Intellisence, Autocomplete, Completers
 
     */
-    "editor.suggest.insertMode": "insert",
     "workbench.settings.openDefaultSettings": false,
-    "editor.quickSuggestionsDelay": 10,
-    "editor.wordBasedSuggestionsMode": "allDocuments",
-    "editor.wordBasedSuggestionsMode": "matchingDocuments", // "allDocuments" "currentDocuments", "matchingDocuments"
-    /*
-
-    editor: suggest
-        https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
-
-    */
-    "editor.wordBasedSuggestions": true,
-    "editor.suggest.showWords": false, // first test
-    "editor.suggest.showKeywords": true,
-    // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
-    // "editor.suggestSelection": "recentlyUsedByPrefix",
-    // "editor.suggestSelection": "first",
-    "editor.suggestSelection": "recentlyUsed",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "editor.suggest.showStatusBar": true, // https://code.visualstudio.com/updates/v1_51#_status-bar-for-suggestions
-    // "editor.suggest.insertMode":"insert", // https://code.visualstudio.com/updates/v1_51#_move-cursor-to-select-suggestions
     // "editor.colorDecorators": true,
     "editor.suggest.filterGraceful": true,
     "editor.suggest.localityBonus": true,
@@ -497,6 +470,9 @@
     "codepoint.statusbar": "description",
     "workbench.quickOpen.closeOnFocusLost": false,
     // "editor.suggest.statusBar.visible": true,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "editor.suggest.showStatusBar": true, // https://code.visualstudio.com/updates/v1_51#_status-bar-for-suggestions
+    // "editor.suggest.insertMode":"insert", // https://code.visualstudio.com/updates/v1_51#_move-cursor-to-select-suggestions
     // "editor.formatOnSave": true,
     // "editor.formatOnPaste": true,
     // "editor.formatOnType": true,
@@ -596,9 +572,12 @@
 
     applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
 */
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter.notebook.ipynb"
-    },
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
     /*
 
 ###### SubSect: Files ⇢ Files.Associations
@@ -753,6 +732,7 @@
     "search.useReplacePreview": true,
     // "explorer.sortOrder": "modified", // nice for log files
     "editor.renderLineHighlightOnlyWhenFocus": true,
+    "editor.snippetSuggestions": "none",
     "editor.renderControlCharacters": true,
     "breadcrumbs.symbolSortOrder": "type",
     "editor.wordWrapColumn": 160,
@@ -1046,6 +1026,4 @@ docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
     "powershell.codeFormatting.pipelineIndentationStyle": "None",
     // snippets
     "snippets.viewer.showBuiltInExtensionSnippets": false,
-    "jupyter.exportWithOutputEnabled": true,
-    "workbench.colorTheme": "Codesong",
 }

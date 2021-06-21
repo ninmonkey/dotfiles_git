@@ -1,0 +1,19 @@
+# missing:
+## Temp Excel/word files
+
+*.lnk
+*.exe
+*.log
+#*.xml
+*.zip
+*.min.css
+*.min.js
+*.py[co]
+
+# virtual environments
+/.venv
+/venv
+**/.mypy_cache/**
+#venv_discord-bot/**
+# default test-explorer path
+/TestExplorerResults.xml
