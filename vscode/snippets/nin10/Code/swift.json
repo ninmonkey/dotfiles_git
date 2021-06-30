@@ -102,11 +102,11 @@
     },
     "ex: conditional return statement": {
         "prefix": "ex: conditional return statement",
-        "description": "Description",
+        "description": "based on input it branches, I am not sure what though.",
         "body": [
             "test format of the popup",
-            "(${1:void})${2:methodName}",
-            "{${1/void$|(.+)/${1:+\n\treturn nil;}/}",
+            "   (${1:void})${2:methodName}",
+            "   {${1/void$|(.+)/${1:+\n\treturn nil;}/}",
             "}"
         ]
     },

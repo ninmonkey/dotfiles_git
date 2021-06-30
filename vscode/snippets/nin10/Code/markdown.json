@@ -1,5 +1,43 @@
 {
     /*
+    Markdown Snippets (nin) 2021-06-20
+    */
+    "HTML Comment section": {
+        "prefix": "Comment ⁞ HTML ⁞ nin",
+        "description": "nin🐒 ⁞ Enclose Selection in an HTML comment",
+        "body": [
+            /* extra, and missing, newlines were specifically chosen to:
+                - make embedded code-fences render correctly, and
+                - to make 'summary' start on the line with the arrow
+            */
+            "<!--",
+            "   ${1:${TM_SELECTED_TEXT}}",
+            "-->${0}",
+        ],
+        /*
+        example input:
+            ```ps1
+            🐒> ls .
+            | Sort LastWriteTime
+            | % FullName
+            ```
+
+        output:
+            <details><summary>Summary (Click to Expand)
+
+            </summary>
+
+            ```ps1
+            🐒> ls .
+            | Sort LastWriteTime
+            | % FullName
+            ```
+
+            </details>
+
+        */
+    },
+    /*
     Markdown Snippets (nin) 2021-04-15
     */
     "Github Issue: Collapsible Details": {

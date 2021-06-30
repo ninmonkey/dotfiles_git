@@ -1,0 +1,61 @@
+{
+    // Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+    // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+    // is left empty or omitted, the snippet gets applied to all languages.
+    /*
+    global snippets use
+        scope: ""
+
+    disabled snippets use any non existing lang:
+        scope: "disable" or "off"
+
+
+
+        description:
+            Examples of different input types
+            this isn't an actual snippet file to use
+            it's an example template
+
+        docs:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets
+
+        regex transform:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples
+
+        extension snippets tutorial:
+            https://code.visualstudio.com/api/language-extensions/snippet-guide
+
+        vscode variables:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables
+
+
+    ninmonkey. created: 2021-06-30
+    */
+
+    "regex: escape quotes": {
+        "scope": "json,jsonc",
+        "prefix": "[wip] escape quotes",
+        "description": "escape double quotes",
+        "body": [
+            "${TM_SELECTED_TEXT/[\"]/\\\"_/gi}"
+        ]
+    },
+    "rgex: strip extension": {
+        // "scope": "json,jsonc",
+        "scope": "",
+        "prefix": "[wip] regex: strip the final .text",
+        "description": "regex strip",
+        "body": [
+            "${TM_SELECTED_TEXT/(.*)\\..+?$/$1/}"
+        ]
+    },
+    "configPath": "c:\windows",
+    "regex: quote all lines, up to selection": {
+        "scope": "json,jsonc",
+        "prefix": "[wip] regex: quote all lines, up to selection",
+        "description": "regex: quote all lines, to selection. at this point it's better to use an extension",
+        "body": [
+            "${TM_SELECTED_TEXT/^(.*)$/\"$1\"/gim}"
+        ]
+    },
+}
