@@ -88,7 +88,13 @@ Write-Warning ' refactor profile from:
     "C:\Users\cppmo_000\Documents\2020\dotfiles_git\powershell"
 '
 
+Write-Warning @'
 
+    next: refactor basic copy->save one file using
+
+        Get-DotfilePath -ListAll
+
+'@
 
 if ($false) {
     throw 'double check before run'
