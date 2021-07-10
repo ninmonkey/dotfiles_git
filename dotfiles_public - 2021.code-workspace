@@ -1,8 +1,21 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
+    "folders": [
+        {
+            "name": "👍 dotfiles ⇦ nin 2021",
+            "path": "."
+        },
+        {
+            "name": "ref ⇦ Indented-Automation",
+            "path": "G:\\2021-github-downloads\\PowerShell\\Indented-Automation\\Indented.Profile\\Indented.Profile"
+        },
+        {
+            "name": "ref ⇦ SeeminglyScience",
+            "path": "G:\\2021-github-downloads\\dotfiles\\SeeminglyScience"
+        },
+        {
+            "name": "ref ⇦ Jaykul",
+            "path": "G:\\2021-github-downloads\\dotfiles\\Jaykul_Profile"
+        }
     ],
     "settings": {
         "terminal.integrated.shell.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",

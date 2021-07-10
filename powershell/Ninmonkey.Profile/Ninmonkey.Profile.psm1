@@ -4,6 +4,12 @@ using namespace PoshCode.Pansies
 start with, but remove most of:
     <C:\Users\cppmo_000\Documents\2020\dotfiles_git\powershell\NinSettings.ps1>
 
+
+    [section]: Env Vars
+
+#>
+
+
 <#
     [section]: default params
 
@@ -15,14 +21,10 @@ $PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'Fzf'
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
 
 
-<#
-    [section]: Env Vars
-#>
 
 <#
-    [section]: Imports
+    [section]: a
 #>
-
 
 <#
     [section]: a
