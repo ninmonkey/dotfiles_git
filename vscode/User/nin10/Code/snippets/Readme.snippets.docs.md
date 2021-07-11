@@ -1,8 +1,15 @@
 - [Scope: Global, Multi-language, or disabled](#scope-global-multi-language-or-disabled)
   - [Personal Scopes](#personal-scopes)
+- [Keybinding a specific snippet](#keybinding-a-specific-snippet)
+  - [Using an inline snippet](#using-an-inline-snippet)
+  - [Keybind to a snippet definition](#keybind-to-a-snippet-definition)
+- [Textmate Grammar](#textmate-grammar)
+  - [Chars Escaped by `\`](#chars-escaped-by-)
+  - [Grammar EBNF](#grammar-ebnf)
 - [Tutorials, Docs, Cheatsheets](#tutorials-docs-cheatsheets)
   - [Docs](#docs)
   - [Reference](#reference)
+- [Cheat Sheet: Dates](#cheat-sheet-dates)
 
 # Scope: Global, Multi-language, or disabled
 
@@ -105,3 +112,23 @@ extension snippets tutorial:
 
 vscode variables:
     https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables
+
+
+# Cheat Sheet: Dates
+
+For the date `2021-07-11`
+
+```sh
+$CURRENT_YEAR             = '2021'
+$CURRENT_YEAR_SHORT       = '21'
+$CURRENT_MONTH            = '07'
+$CURRENT_MONTH_NAME       = 'July'
+$CURRENT_MONTH_NAME_SHORT = 'Jul'
+$CURRENT_DATE             = '11'
+$CURRENT_DAY_NAME         = 'Sunday'
+$CURRENT_DAY_NAME_SHORT   = 'Sun'
+$CURRENT_HOUR             = '08'
+$CURRENT_MINUTE           = '06'
+$CURRENT_SECOND           = '14'
+$CURRENT_SECONDS_UNIX     = '1626008774'
+```

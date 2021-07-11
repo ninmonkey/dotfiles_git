@@ -15,22 +15,12 @@
     // 	],
     // 	"description": "Log output to console"
     // }
-    "code: settings.json | Section header ": {
-        "scope": "json,jsonc,code-snippets,code-workspace",
-        "description": "header | vscode settings.json section grouping",
-        "prefix": "header",
+    "Date-Iso": {
+        "scope": "ps1, json, jsonc, xml, py, md, js,code-workspace, code-snippets",
+        "prefix": "date ISO",
+        "description": "Using ISO format YYYY-MM-DD",
         "body": [
-            "",
-            "/*",
-            "",
-            // was: "### Sect: ${1:<no title>}",
-            "### Sect: ${1:${TM_SELECTED_TEXT:<Title>}}",
-            "",
-            "       tags: ${2:Tag1, Tag2}",
-            "",
-            "*/",
-            "",
-            "   ${0}" // maybe no space?
+            "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE"
         ]
-    }
+    },
 }

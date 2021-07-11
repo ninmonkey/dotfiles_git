@@ -27,28 +27,27 @@
 
     */
     "herestring variables": {
-        "prefix": "hs : 🐒",
+        "prefix": "hs",
         "body": [
             "@\"",
-            "${1:$TM_SELECTED_TEXT}",
+            "$1",
             "\"@",
-            "${0}"
+            ""
         ],
-        "description": "Interpolated Here-string"
+        "description": "Escape all text but evaluate variables"
     },
     "herestring literal": {
-        "prefix": "hsl : 🐒 ",
+        "prefix": "hsl",
         "body": [
             "@'",
-            "${1:$TM_SELECTED_TEXT}",
+            "$1",
             "'@",
-            "${0}"
+            ""
         ],
-        "description": "Literals Here-String"
+        "description": "Escape all text regardless"
     },
     "Parameter ⇢ Basic": {
-        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
-        "prefix": "Parameter : 🐒 default",
+        "prefix": "ninParameter [Parameter] : Basic",
         "body": [
             "# ${1:Docstring}",
             "[Parameter(${2:Mandatory, Position=0})]",

@@ -30,18 +30,18 @@
         "prefix": "dynamic",
         "description": "insert datetimes",
         "body": [
-            "\\$CURRENT_YEAR = '$CURRENT_YEAR'", // The current year
-            "\\$CURRENT_YEAR_SHORT = '$CURRENT_YEAR_SHORT'", // The current year's last two digits
-            "\\$CURRENT_MONTH = '$CURRENT_MONTH'", // The month as two digits (example '02')
-            "\\$CURRENT_MONTH_NAME = '$CURRENT_MONTH_NAME'", // The full name of the month (example 'July')
-            "\\$CURRENT_MONTH_NAME_SHORT = '$CURRENT_MONTH_NAME_SHORT'", // The short name of the month (example 'Jul')d
-            "\\$CURRENT_DATE = '$CURRENT_DATE'", // The day of the month
-            "\\$CURRENT_DAY_NAME = '$CURRENT_DAY_NAME'", // The name of day (example 'Monday')
-            "\\$CURRENT_DAY_NAME_SHORT = '$CURRENT_DAY_NAME_SHORT'", // The short name of the day (example 'Mon')
-            "\\$CURRENT_HOUR = '$CURRENT_HOUR'", // The current hour in 24-hour clock format
-            "\\$CURRENT_MINUTE = '$CURRENT_MINUTE'", // The current minute
-            "\\$CURRENT_SECOND = '$CURRENT_SECOND'", // The current second
-            "\\$CURRENT_SECONDS_UNIX = '$CURRENT_SECONDS_UNIX'", // The number of seconds since the Unix epoch
+            "\\$CURRENT_YEAR = '$CURRENT_YEAR'", // '2021' : The current year
+            "\\$CURRENT_YEAR_SHORT = '$CURRENT_YEAR_SHORT'", // '21': The current year's last two digits
+            "\\$CURRENT_MONTH = '$CURRENT_MONTH'", // '07' : The month as two digits (example '02')
+            "\\$CURRENT_MONTH_NAME = '$CURRENT_MONTH_NAME'", // 'July' : The full name of the month (example 'July')
+            "\\$CURRENT_MONTH_NAME_SHORT = '$CURRENT_MONTH_NAME_SHORT'", // 'Jul' : The short name of the month (example 'Jul')d
+            "\\$CURRENT_DATE = '$CURRENT_DATE'", // '11' The day of the month
+            "\\$CURRENT_DAY_NAME = '$CURRENT_DAY_NAME'", // 'Sunday' : The name of day (example 'Monday')
+            "\\$CURRENT_DAY_NAME_SHORT = '$CURRENT_DAY_NAME_SHORT'", // 'Sun' : The short name of the day (example 'Mon')
+            "\\$CURRENT_HOUR = '$CURRENT_HOUR'", // '08' : The current hour in 24-hour clock format
+            "\\$CURRENT_MINUTE = '$CURRENT_MINUTE'", // '06' : The current minute
+            "\\$CURRENT_SECOND = '$CURRENT_SECOND'", // '14' : The current second
+            "\\$CURRENT_SECONDS_UNIX = '$CURRENT_SECONDS_UNIX'", // '1626008774' : The number of seconds since the Unix epoch
         ]
     },
     "Date-Iso": {

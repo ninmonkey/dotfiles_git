@@ -37,7 +37,6 @@
         "description": "Transforms \\\\ ⇒ /",
         "body": [
             "${TM_SELECTED_TEXT/(\\\\\\\\)/\\//gi}", // out: /
-            // "${TM_SELECTED_TEXT/(\\\\)/\\//gi}", // out: //
         ]
     },
     "🐒regex: Escape Double Quotes": {

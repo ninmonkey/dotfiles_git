@@ -20,6 +20,13 @@
        tags:
 
 */
+    /*
+
+### Sect: Screencast Mode
+
+       tags: Screencast
+
+*/
     "screencastMode.fontSize": 30,
     // Controls how long (in milliseconds) the keyboard overlay is shown in screencast mode.
     "screencastMode.keyboardOverlayTimeout": 500, // 300, // 800
@@ -84,6 +91,13 @@
     // "editor.occurrencesHighlight": true,
     // "editor.overviewRulerBorder": true, // overview does what?
     // "editor.hideCursorInOverviewRuler": true, // does what?
+    /*
+
+    ### Sect: Minimap
+
+           tags:
+
+    */
     "editor.minimap.enabled": true,
     //
     // mode: small right
@@ -392,13 +406,14 @@
         // "editor.defaultFormatter": "vscode.markdown-language-features",
         // "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
         // "editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced",
-        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+        // "editor.defaultFormatter": "yzhang.markdown-all-in-one",
         "editor.wordWrap": "on",
         "editor.quickSuggestions": false,
         "editor.formatOnSave": true,
         // "editor.formatOnType": true,
         /* hard line breaks in MD are declared using two trailing spaces */
-        "files.trimTrailingWhitespace": false
+        "files.trimTrailingWhitespace": false,
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
     },
     "[csv]": {
         "editor.wordWrap": "off",
@@ -558,7 +573,11 @@
     // "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
     // "powershell.powerShellDefaultVersion": "",
     // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
+        "editor.suggest.snippetsPreventQ12uickSuggestions": false,
+        "editor.suggest.showSnippets": true,
+        "editor.suggest.preview": true,
         // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
@@ -578,8 +597,53 @@
         "editor.detectIndentation": false, // required for tabsize
         "editor.tabSize": 4,
         // if autoIndent is set to 'full' it breaks indentation on 'move line up/down'
+        /*
+
+
+
+        testing a bunch of props, most are set to default
+
+
+
+
+        */
         "editor.autoIndent": "advanced",
         "editor.semanticHighlighting.enabled": true,
+        "editor.snippetSuggestions": "inline",
+        "editor.suggest.showInlineDetails": true,
+        "editor.suggest.filterGraceful": true,
+        "editor.suggest.insertMode": "insert",
+        "editor.suggest.localityBonus": false,
+        "editor.suggest.showIcons": true,
+        "editor.suggest.shareSuggestSelections": false,
+        "editor.suggest.showStatusBar": true,
+        "editor.suggestFontSize": 0,
+        "editor.suggestOnTriggerCharacters": true,
+        "editor.suggestSelection": "recentlyUsedByPrefix",
+        "editor.acceptSuggestionOnCommitCharacter": true,
+        "editor.acceptSuggestionOnEnter": "smart",
+        "editor.autoClosingBrackets": "languageDefined",
+        "editor.autoClosingDelete": "auto",
+        "editor.autoClosingOvertype": "auto",
+        "editor.autoClosingQuotes": "languageDefined",
+        "editor.find.autoFindInSelection": "multiline",
+        "editor.suggest.showSnippets": true,
+        "editor.suggest.preview": true,
+        "editor.inlayHints.enabled": true,
+        "editor.inlineSuggest.enabled": true,
+        "editor.autoSurround": "languageDefined",
+        "editor.colorDecorators": true,
+        "editor.columnSelection": false,
+        "editor.copyWithSyntaxHighlighting": true,
+        // "editor.cursorSurroundingLines": 0,
+        "editor.quickSuggestionsDelay": 10,
+        "editor.wordBasedSuggestions": true,
+        "editor.wordBasedSuggestionsMode": "matchingDocuments",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": false
+        },
         /*
 
   ### Sect: Chris Dent Config
@@ -587,7 +651,7 @@
                  tags:
 
           */
-        "diffEditor.ignoreTrimWhitespace": true,
+        // "diffEditor.ignoreTrimWhitespace": true,
         "editor.trimAutoWhitespace": true,
         "editor.renderFinalNewline": false,
         "files.trimTrailingWhitespace": true,
@@ -799,13 +863,35 @@
     "terminal.integrated.env.windows": {},
     "terminal.integrated.unicodeVersion": "11",
     // "editor.autoIndent": false,
-    "python.formatting.provider": "black",
     // "editor.renderControlCharacters": true,
     // "editor.fontLigatures": true,
     "workbench.editor.labelFormat": "medium",
-    "vscode-json-editor.theme": "dark",
+    /*
+
+### Sect: Python (regular)
+
+       tags: Python, BaseExtension
+
+*/
+    "python.formatting.provider": "black",
     "python.pythonPath": "c:\\Users\\cppmo_000\\Documents\\2020\\python\\one_offs\\Heroes of the Storm stats\\venv\\Scripts\\python.exe",
     "python.languageServer": "Pylance",
+    "pylance.insidersChannel": "off",
+    "python.autoComplete.showAdvancedMembers": true,
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.completeFunctionParens": true,
+    /*
+
+    ### Sect: Pylance / Python extension
+
+           tags: Python, Pylance, Extension
+
+    */
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    "python.autoComplete.addBrackets": true,
+    "python.autoComplete.extraPaths": [],
+    "python.autoComplete.typeshedPaths": [],
     /* debug and verbose logging settings */
     // "powershell editor services.trace.server": "verbose",
     // "powershell editor services.trace.server": "diagnostic",
@@ -822,6 +908,7 @@
     // "debug.focusWindowOnBreak": true,
     "debug.allowBreakpointsEverywhere": true,
     "debug.console.closeOnEnd": true,
+    "vscode-json-editor.theme": "dark",
     // "breadcrumbs.enabled": true, // extra row on toolbar on tabs
     // "breadcrumbs.showArrays": true,
     "search.useReplacePreview": true,
@@ -1058,6 +1145,7 @@
     "editor.fontFamily": "'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
     "editor.fontSize": 16,
     "editor.fontFamily": "'fira code retina', 'cascadia code', Consolas, 'fira code', 'Courier New', monospace",
+    "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, //14, // for zoom -1
     "terminal.integrated.fontSize": 14, //12, // for zoom 0
     // "editor.fontWeight": "500",
@@ -1303,5 +1391,26 @@
             "source": "Git Bash"
         }
     },
-    "window.zoomLevel": -1
+    "editor.suggest.preview": true,
+    /* most of these are default */
+    "editor.rename.enablePreview": true,
+    "markdown.preview.doubleClickToSwitchToEditor": true,
+    "markdown.preview.markEditorSelection": true,
+    "markdown.preview.scrollEditorWithPreview": true,
+    "markdown.preview.linkify": true,
+    "workbench.editor.enablePreview": true,
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "workbench.editor.limit.enabled": false,
+    "workbench.editor.limit.perEditorGroup": false,
+    "workbench.editor.limit.value": 10,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.mouseBackForwardToNavigate": true,
+    // "workbench.editor.splitSizing": "split",
+    "editor.suggest.showSnippets": true,
+    "editor.acceptSuggestionOnCommitCharacter": true,
+    "editor.acceptSuggestionOnEnter": "smart",
+    "editor.suggest.snippetsPreventQuickSuggestions": true,
+    "editor.tabCompletion": "off",
+    "workbench.editor.closeOnFileDelete": false,
+    "python.analysis.extraPaths": [],
 }

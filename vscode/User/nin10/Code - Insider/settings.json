@@ -127,6 +127,24 @@
         "editor.autoIndent": "advanced",
         "editor.semanticHighlighting.enabled": true,
     },
+    "[powerquery]": {
+        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // previous default
+        "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // new default
+        "editor.formatOnSave": true,
+        "editor.snippetSuggestions": "inline",
+        "editor.suggest.showSnippets": true,
+        "editor.suggest.preview": false,
+        "files.encoding": "utf8bom",
+        "editor.formatOnSaveMode": "file",
+        "editor.formatOnPaste": true,
+        "editor.formatOnType": false, // currently it's NYI in the extension
+        "files.autoGuessEncoding": false,
+        "editor.detectIndentation": false, // required for tabsize
+        "editor.tabSize": 4,
+        // if autoIndent is set to 'full' it breaks indentation on 'move line up/down'
+        "editor.autoIndent": "advanced",
+        "editor.semanticHighlighting.enabled": true,
+    },
     /*
 
 # h1: semantic highlighting
@@ -183,6 +201,8 @@
     "[dotnet-interactive]": {},
     "powershell.codeFormatting.autoCorrectAliases": true,
     "powershell.codeFormatting.useCorrectCasing": true,
+    "errorLens.delay": 2000,
+    "errorLens.delay": 0,
     "[markdown]": {
         "editor.wordWrap": "on",
         "editor.quickSuggestions": false,
