@@ -1,0 +1,31 @@
+# Header -------
+
+🐒> ls_date
+
+total 395K
+4.0K -rw-r--r-- 1 cppmo_000 1.7K 2021/07/11 raw_ansi
+   0 -rw-r--r-- 1 cppmo_000    0 2021/07/11 bar.txt
+8.0K drwxr-xr-x 1 cppmo_000    0 2021/06/25 [0m[01;34mtools[0m
+4.0K drwxr-xr-x 1 cppmo_000    0 2021/06/25 [01;34mtest[0m
+8.0K drwxr-xr-x 1 cppmo_000    0 2021/06/25 [01;34msrc[0m
+4.0K -rw-r--r-- 1 cppmo_000 1.9K 2021/06/25 stylecop.json
+1.0K -rw-r--r-- 1 cppmo_000  379 2021/06/25 nuget.config
+1.0K -rw-r--r-- 1 cppmo_000   67 2021/06/25 global.json
+4.0K drwxr-xr-x 1 cppmo_000    0 2021/06/25 [01;34mdocs[0m
+   0 drwxr-xr-x 1 cppmo_000    0 2021/06/25 [01;34mdocker[0m
+4.0K drwxr-xr-x 1 cppmo_000    0 2021/06/25 [01;34mdemos[0m
+124K -rw-r--r-- 1 cppmo_000 122K 2021/06/25 build.psm1
+1.0K -rw-r--r-- 1 cppmo_000  159 2021/06/25 codecov.yml
+ 12K drwxr-xr-x 1 cppmo_000    0 2021/06/25 [01;34massets[0m
+136K -rw-r--r-- 1 cppmo_000 136K 2021/06/25 ThirdPartyNotices.txt
+ 16K -rw-r--r-- 1 cppmo_000  15K 2021/06/25 PowerShell.sln
+ 24K -rw-r--r-- 1 cppmo_000  21K 2021/06/25 README.md
+ 12K -rw-r--r-- 1 cppmo_000 8.1K 2021/06/25 Settings.StyleCop
+1.0K -rw-r--r-- 1 cppmo_000  448 2021/06/25 CODE_OF_CONDUCT.md
+1.0K -rw-r--r-- 1 cppmo_000  241 2021/06/25 DotnetRuntimeMetadata.json
+4.0K -rw-r--r-- 1 cppmo_000 1.1K 2021/06/25 LICENSE.txt
+ 12K -rw-r--r-- 1 cppmo_000  12K 2021/06/25 PowerShell.Common.props
+4.0K drwxr-xr-x 1 cppmo_000    0 2021/06/25 [01;34mCHANGELOG[0m
+8.0K -rw-r--r-- 1 cppmo_000 4.7K 2021/06/25 ADOPTERS.md
+1.0K -rw-r--r-- 1 cppmo_000  273 2021/06/25 Analyzers.props
+1.0K -rw-r--r-- 1 cppmo_000   98 2021/06/25 CHANGELOG.md
