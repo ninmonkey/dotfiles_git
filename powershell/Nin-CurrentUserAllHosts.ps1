@@ -86,14 +86,18 @@ $Env:FZF_CTRL_T_COMMAND = "$Env:FZF_DEFAULT_COMMAND"
 # local dev import path per-profile
 Write-Debug "Add module Path: $($Env:Nin_PSModulePath)"
 if (Test-Path $Env:Nin_PSModulePath) {
-    $env:PSModulePath = $Env:Nin_PSModulePath, $env:PSModulePath -join ';'
+    # don't duplicate, and don't use Sort -Distinct, because that alters priority
+
+    if ($Env:Nin_PSModulePath -notin @($Env:PSModulePath -split ';' )) {
+        $env:PSModulePath = $Env:Nin_PSModulePath, $env:PSModulePath -join ';'
+    }
 }
 Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 
 & {
     $p = (Get-Item -ea stop (Join-Path  $Env:Nin_Dotfiles 'powershell\Ninmonkey.Profile\Ninmonkey.Profile.psd1' ))
     Write-Debug "Import-Module: '$p'"
-    Import-Module -Name $p -ea stop
+    Import-Module -Name $p #-ea stop
 }
 
 <#
@@ -141,7 +145,7 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 #>
 
 New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text'
-New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan'
+New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString
 
 function Write-NinPrompt {
     <#
@@ -174,15 +178,40 @@ function Write-NinPrompt {
         New-Text 'git' -ForegroundColor (Get-GitBranchStatusColor).ForegroundColor
     }
     function _Path-ToBreadCrumbs {
-        $crumbs = (Get-Location | ForEach-Object Path) -split '\\'
-        $finalString = @(
-            $crumbs | Select-Object -First 1
 
-            ($crumbs | Select-Object -Skip 1)
-            | Select-Object -Last 3
+        param(
+            # FormatMode
+            [ValidateSet('Default')]
+            [Parameter(Position = 0)]
+            [string]$FormatMode = 'Default'
         )
 
-        $finalString | Join-String -sep '.'
+        $crumbs = (Get-Location | ForEach-Object Path) -split '\\'
+        switch ($FormatMode) {
+            'a' {
+                break
+            }
+            'b' {
+                break
+            }
+            default {
+                $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width 4
+                $finalList = @(
+                    $crumbs | Select-Object -First 1
+
+
+                    ($crumbs | Select-Object -Skip 1)
+                    | Select-Object -Last 3
+                )
+
+
+                $finalString = $finalList | ForEach-Object -Begin { $i = 0 ; } -Process {
+                    New-Text -Object $_ -fg $gradient[$i++]
+                }
+                $finalString | Join-String -sep ' '
+            }
+
+        }
     }
 
     $segments = @(
