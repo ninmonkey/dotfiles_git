@@ -26,28 +26,18 @@
         https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
-    "herestring variables": {
-        "prefix": "hs",
+    "ninPwsh Parameter": {
+        "prefix": "Parameter | 🐒",
+        "description": "ninParameter Template 🐒",
         "body": [
-            "@\"",
-            "$1",
-            "\"@",
-            ""
-        ],
-        "description": "Escape all text but evaluate variables"
-    },
-    "herestring literal": {
-        "prefix": "hsl",
-        "body": [
-            "@'",
-            "$1",
-            "'@",
-            ""
-        ],
-        "description": "Escape all text regardless"
+            "# ${1}",
+            "[Parameter(${2})]",
+            "[${3:String}]\\$${4:ParameterName}${0}"
+        ]
     },
     "Parameter ⇢ Basic": {
-        "prefix": "ninParameter [Parameter] : Basic",
+        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
+        "prefix": "Parameter 🐒 default",
         "body": [
             "# ${1:Docstring}",
             "[Parameter(${2:Mandatory, Position=0})]",
@@ -55,6 +45,50 @@
             "[${3:object}]$${4:ParameterName}$0",
         ],
         "description": "nin ⁞ A basic [Parameter()]"
+    },
+    "herestring variables": {
+        "prefix": "here : Variable 🐒",
+        "body": [
+            "@\"",
+            "${1:$TM_SELECTED_TEXT}",
+            "\"@",
+            "${0}"
+        ],
+        "description": "Interpolated Here-string"
+    },
+    "herestring literal": {
+        "prefix": "here : Literal 🐒 Literal Herestring",
+        "body": [
+            "@'",
+            "${1:$TM_SELECTED_TEXT}",
+            "'@",
+            "${0}"
+        ],
+        "description": "Literals Here-String"
+    },
+    "Help ⇢ Comment Based": {
+        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
+        "prefix": "DocString Help Docstring 🐒",
+        "description": "nin ⁞ The important docstring attributes. Selected Text Populates Synopis",
+        "body": [
+            "<#",
+            ".synopsis",
+            "    ${1:${TM_SELECTED_TEXT:Short Description}}",
+            ".description",
+            "    Long description",
+            ".example",
+            "    PS> .",
+            ".inputs",
+            "    Summary of Pipeline Inputs",
+            ".outputs",
+            "    None",
+            ".notes",
+            "    General notes",
+            ".link",
+            "    command",
+            "#>",
+            "${0}",
+        ],
     },
     "CmdletBinding()": {
         "prefix": "[CmdletBinding()]",
@@ -71,6 +105,53 @@
             // "        HelpMessage=\"doc\")]",
             "    [${1:TypeName}]$${2:ParameterName}$0",
             ")"
+        ]
+    },
+    "Function ⇢ Cmdlet": {
+        "prefix": "Function 🐒 ⇢ Commandlet",
+        "description": "Defaults for a  new function🐒",
+        "body": [
+            "function ${1:Get-Foo} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2:Stuff}",
+            "    .description",
+            "        ${3:Desc}",
+            "    .outputs",
+            "    ",
+            "    #>",
+            "    [CmdletBinding(PositionalBinding=\\$false)]",
+            "    param(",
+            "        ${4}",
+            "    )",
+            "    ",
+            "    begin {}",
+            "    process {",
+            "       ${0}",
+            "    # todo: CmdletExceptionWrapper: From Sci",
+            "    }",
+            "    end {}",
+            "}"
+        ]
+    },
+    "Function ⇢ Tiny Basic": {
+        "prefix": "Function 🐒 ⇢ Mini Basic",
+        "description": "nin ⁞ A basic function",
+        "body": [
+            "function ${1:Get-Foo} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2:Stuff}",
+            "    .description",
+            "        .",
+            "    ",
+            "    #>",
+            "    [CmdletBinding(PositionalBinding=\\$false)]",
+            "    param(",
+            "        ${4}",
+            "    )",
+            "    ${0}",
+            "}"
         ]
     },
     "CalculatedProperty": {
@@ -103,7 +184,7 @@
         ],
     },
     "Parameter ⇢ Switch": {
-        "prefix": "[Parameter] ⇢ Switch",
+        "prefix": "Switch ⇢ 🐒 Parameter",
         "description": "nin ⁞ adds a [switch] parameter",
         "body": [
             // "[Parameter(HelpMessage = \"$1\")][switch]\\$${0}"
@@ -111,29 +192,21 @@
             "[Parameter()][switch]\\$${0}"
         ]
     },
-    "Function ⇢ Basic": {
-        "prefix": "Function ⇢ Basic",
-        "description": "nin ⁞ A basic function",
+    "Switch ⇢ ParameterSetNameSwitch": {
+        "prefix": "Switch ⇢ 🐒 ParameterSetName",
+        "description": "nin ⁞ Template for a switch with ParameterSetNames",
         "body": [
-            "function ${1:Name} {",
-            "    <#",
-            "    .synopsis",
+            "switch (\\$PSCmdlet.ParameterSetName) {",
+            "    ${1:'x'} {",
             "        ${2}",
-            "    .description",
-            "        .",
-            "    .example",
-            "        PS>",
-            "    .notes",
-            "        .",
-            "    #>",
-            "    param (",
-            "        ${0}",
-            "    )",
-            "    begin {}",
-            "    process {}",
-            "    end {}",
+            "        break",
+            "    }",
+            "    ${0}",
+            "    default {",
+            "        throw \"Unhandled ParameterSet: $(\\$PSCmdlet.ParameterSetName)\"",
+            "    }",
             "}",
-        ],
+        ]
     },
     "Parameter: Completer ⇢ ValidateSet": {
         "prefix": "Completer ⇢ ValidateSet",
