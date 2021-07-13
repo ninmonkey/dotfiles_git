@@ -1,5 +1,8 @@
 using namespace PoshCode.Pansies
 
+$__ninConfig = @{
+    UseAggressiveAlias = $true
+}
 <#
 check old config for settings
     <C:\Users\cppmo_000\Documents\2020\dotfiles_git\powershell\NinSettings.ps1>
@@ -45,10 +48,26 @@ $Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
 
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 $Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
+$Env:Pager = 'less'
 
-
+if ($__ninConfig.UseAggressiveAlias) {
+    Set-Alias -Name 's' -Value Select-Object -Description 'aggressive: to override other modules' -ea SilentlyContinue
+    Set-Alias -Name 'cl' -Value Set-Clipboard -Description 'aggressive: set clip' -ea SilentlyContinue
+}
 & {
+    if ($__ninConfig.UseAggressiveAlias) {
+        # Usually not a great idea, but this is for a interactive command line profile
+        $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+        $Accel::Add('psco', [System.Management.Automation.PSObject])
+    }
     $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath
+
+    # expected values:
+    # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+    # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\Visual Studio Code Host_history.txt"
+    $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
+    $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists
+
 
     # Testing out differences
     # $Profile | Add-Member -NotePropertyName 'a1' -NotePropertyValue $MyInvocation.MyCommand.ModuleName
@@ -97,7 +116,7 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 & {
     $p = (Get-Item -ea stop (Join-Path  $Env:Nin_Dotfiles 'powershell\Ninmonkey.Profile\Ninmonkey.Profile.psd1' ))
     Write-Debug "Import-Module: '$p'"
-    Import-Module -Name $p #-ea stop
+    Import-Module -Name $p -Force #-ea stop
 }
 
 <#
@@ -147,84 +166,8 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text'
 New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString
 
-function Write-NinPrompt {
-    <#
-    .synopsis
-        A dynamic prompt, that function:\prompt can always point to
-    .description
-        Does this excessively use the pipeline, and Join-Ytring when it's not necessary?
-            Yes. To allow future experiments to be easier
-            Performance cost here doesn't matter.
-    .example
-        PS>
-    .notes
-        .
-    #>
-    param (
-    )
-
-    function _Write-GitStatus {
-        <#
-        .synopsis
-
-        #>
-        $dir_git = Get-GitDirectory
-        [bool]$isGetRepo = $null -ne $dir_git
-
-        if (! $isGetRepo) {
-            return
-        }
-
-        New-Text 'git' -ForegroundColor (Get-GitBranchStatusColor).ForegroundColor
-    }
-    function _Path-ToBreadCrumbs {
-
-        param(
-            # FormatMode
-            [ValidateSet('Default')]
-            [Parameter(Position = 0)]
-            [string]$FormatMode = 'Default'
-        )
-
-        $crumbs = (Get-Location | ForEach-Object Path) -split '\\'
-        switch ($FormatMode) {
-            'a' {
-                break
-            }
-            'b' {
-                break
-            }
-            default {
-                $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width 4
-                $finalList = @(
-                    $crumbs | Select-Object -First 1
-
-
-                    ($crumbs | Select-Object -Skip 1)
-                    | Select-Object -Last 3
-                )
-
-
-                $finalString = $finalList | ForEach-Object -Begin { $i = 0 ; } -Process {
-                    New-Text -Object $_ -fg $gradient[$i++]
-                }
-                $finalString | Join-String -sep ' '
-            }
-
-        }
-    }
-
-    $segments = @(
-        "`n"
-        _Path-ToBreadCrumbs
-        _Write-GitStatus
-        "`n"
-        '🐒> '
-    )
-    $segments | Join-String
-}
 function Prompt {
-    Write-NinPrompt
+    Write-NinProfilePrompt
 }
 
 
@@ -268,6 +211,13 @@ first:
     [2] colorize breadcrumbs using gradient
     [3] editfunction jump to line number
     [4] ripgreb bat env dotfiles load
+
+[1]
+    alt+enter/ctrl+enter hotkeys for newline
+
+[2]
+    dotfiles missing
+        [rg] bat? less?
 
 
 $seg = 4
