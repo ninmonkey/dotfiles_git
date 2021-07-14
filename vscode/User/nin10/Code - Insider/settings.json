@@ -109,6 +109,18 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode", // prettier
         "editor.defaultFormatter": "vscode.html-language-features", // built-in
     },
+    /*
+
+    Section: Lang: PowerShell
+
+
+*/
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.integratedConsole.suppressStartupBanner": true,
+    "powershell.promptToUpdatePowerShell": false,
     "[powershell]": {
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // previous default
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // new default
@@ -126,7 +138,60 @@
         // if autoIndent is set to 'full' it breaks indentation on 'move line up/down'
         "editor.autoIndent": "advanced",
         "editor.semanticHighlighting.enabled": true,
+        // chris
+        /*
+
+  ### Sect: Chris Dent Config
+
+                 tags:
+
+          */
+        // "diffEditor.ignoreTrimWhitespace": true,
+        "editor.trimAutoWhitespace": true,
+        "editor.renderFinalNewline": false,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true
     },
+    // "powershell.buttons.showPanelMovementButtons": true,
+    // "powershell.buttons.showRunButtons": true,
+    // "powershell.codeFolding.enable": true,
+    // "powershell.codeFolding.showLastLine": true,
+    // "powershell.developer.bundledModulesPath": "",
+    // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
+    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
+    // "powershell.codeFormatting.ignoreOneLineBlock": true,
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.whitespaceAroundPipe": true,
+    "powershell.codeFormatting.whitespaceBetweenParameters": false,
+    "powershell.integratedConsole.suppressStartupBanner": true,
+    "powershell.notebooks.saveMarkdownCellsAs": "BlockComment",
+    "powershell.notebooks.showToggleButton": true,
+    "powershell.powerShellDefaultVersion": "pwsh",
+    "powershell.powerShellDefaultVersion": "PowerShell (x64)",
+    "powershell.promptToUpdatePowerShell": false,
+    // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
+    // "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.enable": true,
+    /*
+
+  ### Sect: Chris Dent Powershell Config
+
+             tags:
+
+      */
+    "editor.renderLineHighlight": "all",
+    // "editor.renderLineHighlightOnlyWhenFocus": true,
+    "workbench.commandPalette.preserveInput": true,
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+    "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+    "powershell.codeFormatting.whitespaceAfterSeparator": true,
+    "powershell.codeFormatting.whitespaceAroundOperator": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+    "powershell.codeFormatting.whitespaceInsideBrace": true,
     "[powerquery]": {
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // previous default
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // new default
@@ -199,8 +264,6 @@
     // many more: "dotnet-interactive.*"
     "[dotnet-interactive.csharp]": {},
     "[dotnet-interactive]": {},
-    "powershell.codeFormatting.autoCorrectAliases": true,
-    "powershell.codeFormatting.useCorrectCasing": true,
     "[markdown]": {
         "editor.wordWrap": "on",
         "editor.quickSuggestions": false,
@@ -259,10 +322,6 @@
         "**/*.lnk": true,
         "**/*.log": true,
     },
-    "powershell.promptToUpdatePowerShell": false,
-    "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
-    "powershell.codeFormatting.useConstantStrings": true,
-    "powershell.integratedConsole.suppressStartupBanner": true,
     "editor.snippetSuggestions": "none",
     "editor.renderWhitespace": "none",
     "editor.renderControlCharacters": true,

@@ -26,15 +26,15 @@
         https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
-    "ninPwsh Parameter": {
-        "prefix": "Parameter | 🐒",
-        "description": "ninParameter Template 🐒",
-        "body": [
-            "# ${1}",
-            "[Parameter(${2})]",
-            "[${3:String}]\\$${4:ParameterName}${0}"
-        ]
-    },
+    // "ninPwsh Parameter": {
+    //     "prefix": "Parameter | 🐒",
+    //     "description": "ninParameter Template 🐒",
+    //     "body": [
+    //         "# ${1}",
+    //         "[Parameter(${2})]",
+    //         "[${3:String}]\\$${4:ParameterName}${0}"
+    //     ]
+    // },
     "Parameter ⇢ Basic": {
         //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
         "prefix": "Parameter 🐒 default",

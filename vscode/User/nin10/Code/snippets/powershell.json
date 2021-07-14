@@ -26,28 +26,8 @@
         https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
-    // "ninPwsh Parameter": {
-    //     "prefix": "Parameter | 🐒",
-    //     "description": "ninParameter Template 🐒",
-    //     "body": [
-    //         "# ${1}",
-    //         "[Parameter(${2})]",
-    //         "[${3:String}]\\$${4:ParameterName}${0}"
-    //     ]
-    // },
-    "Parameter ⇢ Basic": {
-        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
-        "prefix": "Parameter 🐒 default",
-        "body": [
-            "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
-            // "    HelpMessage='${2}')]",
-            "[${3:object}]$${4:ParameterName}$0",
-        ],
-        "description": "nin ⁞ A basic [Parameter()]"
-    },
     "herestring variables": {
-        "prefix": "here : Variable 🐒",
+        "prefix": "heres : 🐒",
         "body": [
             "@\"",
             "${1:$TM_SELECTED_TEXT}",
@@ -57,7 +37,7 @@
         "description": "Interpolated Here-string"
     },
     "herestring literal": {
-        "prefix": "here : Literal 🐒 Literal Herestring",
+        "prefix": "heresl : 🐒 ",
         "body": [
             "@'",
             "${1:$TM_SELECTED_TEXT}",
@@ -66,35 +46,24 @@
         ],
         "description": "Literals Here-String"
     },
-    "Help ⇢ Comment Based": {
+    "Parameter ⇢ Basic": {
         //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
-        "prefix": "DocString Help Docstring 🐒",
-        "description": "nin ⁞ The important docstring attributes. Selected Text Populates Synopis",
+        "prefix": "Parameter : 🐒 default",
         "body": [
-            "<#",
-            ".synopsis",
-            "    ${1:${TM_SELECTED_TEXT:Short Description}}",
-            ".description",
-            "    Long description",
-            ".example",
-            "    PS> .",
-            ".inputs",
-            "    Summary of Pipeline Inputs",
-            ".outputs",
-            "    None",
-            ".notes",
-            "    General notes",
-            ".link",
-            "    command",
-            "#>",
-            "${0}",
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position=0})]",
+            // "    HelpMessage='${2}')]",
+            "[${3:object}]$${4:ParameterName}$0",
         ],
+        "description": "nin ⁞ A basic [Parameter()]"
     },
     "CmdletBinding()": {
-        "prefix": "[CmdletBinding()]",
+        "prefix": "CmdletBinding() ⁞ 🐒 Defaults🐒",
         "description": "nin ⁞ CmdletBinding with initial params",
         "body": [
-            "[CmdletBinding()]",
+            "[CmdletBinding(",
+            "",
+            ")]",
             "param (",
             "    # ${3:docstring}",
             "    [Parameter(Mandatory, Position=0,",
@@ -107,62 +76,15 @@
             ")"
         ]
     },
-    "Function ⇢ Cmdlet": {
-        "prefix": "Function 🐒 ⇢ Commandlet",
-        "description": "Defaults for a  new function🐒",
-        "body": [
-            "function ${1:Get-Foo} {",
-            "    <#",
-            "    .synopsis",
-            "        ${2:Stuff}",
-            "    .description",
-            "        ${3:Desc}",
-            "    .outputs",
-            "    ",
-            "    #>",
-            "    [CmdletBinding(PositionalBinding=\\$false)]",
-            "    param(",
-            "        ${4}",
-            "    )",
-            "    ",
-            "    begin {}",
-            "    process {",
-            "       ${0}",
-            "    # todo: CmdletExceptionWrapper: From Sci",
-            "    }",
-            "    end {}",
-            "}"
-        ]
-    },
-    "Function ⇢ Tiny Basic": {
-        "prefix": "Function 🐒 ⇢ Mini Basic",
-        "description": "nin ⁞ A basic function",
-        "body": [
-            "function ${1:Get-Foo} {",
-            "    <#",
-            "    .synopsis",
-            "        ${2:Stuff}",
-            "    .description",
-            "        .",
-            "    ",
-            "    #>",
-            "    [CmdletBinding(PositionalBinding=\\$false)]",
-            "    param(",
-            "        ${4}",
-            "    )",
-            "    ${0}",
-            "}"
-        ]
-    },
     "CalculatedProperty": {
-        "prefix": "Calculated-Property ⇢ SingleLine",
+        "prefix": "Calculated-Property ⇢ 🐒 SingleLine",
         "body": [
             "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
         ],
         "description": "nin ⁞ a CalculatedProperty on a Single Line",
     },
     "CalculatedProperty: Multiline": {
-        "prefix": "Calculated-Property ⇢ MultiLine",
+        "prefix": "Calculated-Property ⇢ 🐒 MultiLine",
         "body": [
             "@{",
             "    Name = '${1:PropertyName}'",
@@ -184,7 +106,7 @@
         ],
     },
     "Parameter ⇢ Switch": {
-        "prefix": "Switch ⇢ 🐒 Parameter",
+        "prefix": "[Parameter] ⇢ Switch",
         "description": "nin ⁞ adds a [switch] parameter",
         "body": [
             // "[Parameter(HelpMessage = \"$1\")][switch]\\$${0}"
@@ -192,21 +114,29 @@
             "[Parameter()][switch]\\$${0}"
         ]
     },
-    "Switch ⇢ ParameterSetNameSwitch": {
-        "prefix": "Switch ⇢ 🐒 ParameterSetName",
-        "description": "nin ⁞ Template for a switch with ParameterSetNames",
+    "Function ⇢ Basic": {
+        "prefix": "Function ⇢ Basic",
+        "description": "nin ⁞ A basic function",
         "body": [
-            "switch (\\$PSCmdlet.ParameterSetName) {",
-            "    ${1:'x'} {",
+            "function ${1:Name} {",
+            "    <#",
+            "    .synopsis",
             "        ${2}",
-            "        break",
-            "    }",
-            "    ${0}",
-            "    default {",
-            "        throw \"Unhandled ParameterSet: $(\\$PSCmdlet.ParameterSetName)\"",
-            "    }",
+            "    .description",
+            "        .",
+            "    .example",
+            "        PS>",
+            "    .notes",
+            "        .",
+            "    #>",
+            "    param (",
+            "        ${0}",
+            "    )",
+            "    begin {}",
+            "    process {}",
+            "    end {}",
             "}",
-        ]
+        ],
     },
     "Parameter: Completer ⇢ ValidateSet": {
         "prefix": "Completer ⇢ ValidateSet",

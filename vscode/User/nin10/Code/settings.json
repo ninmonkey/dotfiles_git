@@ -591,7 +591,6 @@
         "editor.formatOnType": false, // currently it's NYI in the extension
         "editor.formatOnType": true, // not implemented yet?
         "files.trimTrailingWhitespace": true,
-        "editor.trimAutoWhitespace": true,
         "editor.smartSelect.selectLeadingAndTrailingWhitespace": true,
         "files.autoGuessEncoding": false,
         "editor.detectIndentation": false, // required for tabsize
@@ -637,6 +636,7 @@
         "editor.copyWithSyntaxHighlighting": true,
         // "editor.cursorSurroundingLines": 0,
         "editor.quickSuggestionsDelay": 10,
+        "editor.quickSuggestionsDelay": 300,
         "editor.wordBasedSuggestions": true,
         "editor.wordBasedSuggestionsMode": "matchingDocuments",
         "editor.quickSuggestions": {
@@ -654,7 +654,6 @@
         // "diffEditor.ignoreTrimWhitespace": true,
         "editor.trimAutoWhitespace": true,
         "editor.renderFinalNewline": false,
-        "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true,
         "files.trimFinalNewlines": true
     },
@@ -666,7 +665,6 @@
     // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
     // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
     // "powershell.codeFormatting.ignoreOneLineBlock": true,
-    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "powershell.codeFormatting.useConstantStrings": true,
     "powershell.codeFormatting.useCorrectCasing": true,
@@ -675,11 +673,12 @@
     "powershell.integratedConsole.suppressStartupBanner": true,
     "powershell.notebooks.saveMarkdownCellsAs": "BlockComment",
     "powershell.notebooks.showToggleButton": true,
-    "powershell.powerShellDefaultVersion": "PowerShell (x64)",
     "powershell.powerShellDefaultVersion": "pwsh",
+    "powershell.powerShellDefaultVersion": "PowerShell (x64)",
     "powershell.promptToUpdatePowerShell": false,
     // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
-    "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    // "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
     "powershell.scriptAnalysis.enable": true,
     /*
 
@@ -688,6 +687,9 @@
              tags:
 
       */
+    "editor.renderLineHighlight": "all",
+    // "editor.renderLineHighlightOnlyWhenFocus": true,
+    "workbench.commandPalette.preserveInput": true,
     "powershell.codeFormatting.addWhitespaceAroundPipe": true,
     "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
     "powershell.codeFormatting.whitespaceAfterSeparator": true,
@@ -695,7 +697,6 @@
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
     "powershell.codeFormatting.whitespaceInsideBrace": true,
-    "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
     /*
 
   ###### SubSect: Extension: ⇢ xml "redhat.vscode-xml"
@@ -721,14 +722,6 @@
     "csharpextensions.useThisForCtorAssignments": false,
     /*
 
-  ### Sect: Files ⇢ Associations, Overrides, Exclusions
-
-      */
-    "files.defaultLanguage": "${activeEditorLanguage}",
-    "files.trimTrailingWhitespace": true,
-    "editor.renderLineHighlight": "all",
-    /*
-
   ###### SubSect: EditorA ViewType Overrides / File Type Overrides
 
 
@@ -744,9 +737,6 @@
       */
     "files.defaultLanguage": "${activeEditorLanguage}",
     "files.trimTrailingWhitespace": true,
-    "editor.renderLineHighlight": "all",
-    // "editor.renderLineHighlightOnlyWhenFocus": true,
-    "workbench.commandPalette.preserveInput": true,
     "files.encoding": "utf8",
     "files.autoGuessEncoding": false,
     "files.associations": {
@@ -850,7 +840,7 @@
     // "editor.fontLigatures": true,
     "workbench.editor.labelFormat": "medium",
     "vscode-json-editor.theme": "dark",
-    "python.pythonPath": "C:\\Users\\cppmo_000\\AppData\\Local\\Microsoft\\WindowsApps\\python3.9.exe",
+    "python.pythonPath": "C:/Users/cppmo_000/AppData/Local/Microsoft/WindowsApps/python3.9.exe",
     "python.jediEnabled": false,
     /* debug and verbose logging settings */
     // "powershell editor services.trace.server": "verbose",
@@ -874,7 +864,7 @@
 
 */
     "python.formatting.provider": "black",
-    "python.pythonPath": "c:\\Users\\cppmo_000\\Documents\\2020\\python\\one_offs\\Heroes of the Storm stats\\venv\\Scripts\\python.exe",
+    "python.pythonPath": "c:/Users/cppmo_000/Documents/2020/python/one_offs/Heroes of the Storm stats/venv/Scripts/python.exe",
     "python.languageServer": "Pylance",
     "pylance.insidersChannel": "off",
     "python.autoComplete.showAdvancedMembers": true,
@@ -921,7 +911,6 @@
     "editor.detectIndentation": false,
     // "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
     // "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
-    // "editor.trimAutoWhitespace": true,
     // "diffEditor.ignoreTrimWhitespace": true,
     // "editor.suggest.maxVisibleSuggestions": 15, : this is obsolete as of 2020-11
     // "html.autoClosingTags": true,
@@ -973,49 +962,49 @@
   docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
       examples:
           // CMD, Win PS, GitBash, and WSL
-          "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe"
+          "terminal.integrated.shell.windows": "C:/Windows/System32/cmd.exe"
           // PowerShell
-          "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+          "terminal.integrated.shell.windows": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
           // Git Bash
-          "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\git-cmd.exe",
+          "terminal.integrated.shell.windows": "C:/Program Files/Git/git-cmd.exe",
           "terminal.integrated.shellArgs.windows": [ "--command=usr/bin/bash.exe", "-l", "-i" ]
           // Bash on Ubuntu (on Windows)
-          "terminal.integrated.shell.windows": "C:\\Windows\\System32\\bash.exe"
+          "terminal.integrated.shell.windows": "C:/Windows/System32/bash.exe"
       */
-    // "terminal.integrated.cwd": "c:\\data\\jake",
+    // "terminal.integrated.cwd": "c:/data/jake",
     "terminal.integrated.commandsToSkipShell": [
         "workbench.action.files.newUntitledFile",
         "workbench.action.toggleSidebarVisibility",
         "workbench.action.showAllSymbols"
     ],
-    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
-    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\git-bash.exe",
-    // "terminal.integrated.shell.linux": "C:\\Windows\\System32\\cmd.exe",
-    // // "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
-    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
+    // "terminal.integrated.shell.windows": "C:/Program Files/Git/git-bash.exe",
+    // "terminal.integrated.shell.linux": "C:/Windows/System32/cmd.exe",
+    // // "terminal.integrated.shell.windows": "C:/Windows/System32/cmd.exe",
+    // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
     // "terminal.external.windowsExec": "powershell",
     // "terminal.integrated.shellArgs.windows": [
     // "-nop"
-    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
     // ],
     "terminal.integrated.rendererType": "canvas",
     // "terminal.integrated.fontSize": 12,
     // "terminal.integrated.inheritEnv": false
-    // "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
-    // "terminal.integrated.shell.windows": "C:\\Windows\\System32\\bash.exe"
+    // "terminal.integrated.shell.windows": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+    // "terminal.integrated.shell.windows": "C:/Windows/System32/bash.exe"
     /*
 
       external term
-          was using: // "terminal.external.windowsExec": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          was using: // "terminal.external.windowsExec": "C:/Program Files/PowerShell/7/pwsh.exe",
 
       */
     "terminal.external.windowsExec": "wt",
     // "terminal.explorerKind": "external",
-    // "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    // "terminal.integrated.shell.windows": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe",
     /*
       This is deprecated, the new recommended way to configure your default shell is by creating a terminal profile in `#terminal.integrated.profiles.windows#` and setting its profile name as the default in `#terminal.integrated.defaultProfile.windows#`. This will currently take priority over the new profiles settings but that will change in the future.
       */
-    // "terminal.integrated.shell.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    // "terminal.integrated.shell.windows": "C:/Program Files/PowerShell/7/pwsh.exe",
     // "terminal.integrated.shellArgs.windows": [
     //     "-NoLogo"
     // ],
@@ -1142,10 +1131,11 @@
     "debug.console.fontFamily": "default",
     // "debug.console.fontFamily": "'Fira Code Bold', 'Cascadia code mono', 'Fira Code Retina', 'cascadia code', 'Fira Code Retina', Consolas",
     // "debug.console.$": "Fira Code, 'cascadia code', cascadia mono, Fira Code Retina, Consolas, Fira Code Bold",
-    "editor.fontFamily": "'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'arial', 'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
     "editor.fontSize": 16,
     "editor.fontFamily": "'fira code retina', 'cascadia code', Consolas, 'fira code', 'Courier New', monospace",
     "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
+    // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, //14, // for zoom -1
     "terminal.integrated.fontSize": 14, //12, // for zoom 0
     // "editor.fontWeight": "500",
@@ -1155,8 +1145,6 @@
     "debug.console.fontSize": 16,
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
-    "editor.fontSize": 18, // for zoom -0
-    "editor.fontSize": 16, // for zoom -0
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -1202,7 +1190,7 @@
     "terminal.integrated.localEchoStyle": "underlined", // ?
     "terminal.integrated.experimentalLinkProvider": true,
     "terminal.integrated.rightClickBehavior": "copyPaste",
-    "terminal.integrated.sendKeybindingsToShell": false,
+    "terminal.integrated.sendKseybindingsToShell": false,
     "terminal.integrated.tabs.enabled": true,
     "terminal.integrated.tabs.location": "left",
     "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default changes per-language
@@ -1413,4 +1401,5 @@
     "editor.tabCompletion": "off",
     "workbench.editor.closeOnFileDelete": false,
     "python.analysis.extraPaths": [],
+    "powershell.integratedConsole.showOnStartup": false,
 }
