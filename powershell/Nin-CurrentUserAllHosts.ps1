@@ -39,7 +39,7 @@ $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 $PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'FzfSelected'
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
-
+$PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
 <#
     [section]: Nin.* Environment Variables
 #>
@@ -48,34 +48,73 @@ $Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
 
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 $Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
-$Env:Pager = 'less'
+$Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 
-if ($__ninConfig.UseAggressiveAlias) {
-    Set-Alias -Name 's' -Value Select-Object -Description 'aggressive: to override other modules' -ea SilentlyContinue
-    Set-Alias -Name 'cl' -Value Set-Clipboard -Description 'aggressive: set clip' -ea SilentlyContinue
-}
-& {
-    if ($__ninConfig.UseAggressiveAlias) {
-        # Usually not a great idea, but this is for a interactive command line profile
-        $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
-        $Accel::Add('psco', [System.Management.Automation.PSObject])
+
+function Get-ProfileAggressiveItem {
+    <#
+    .synopsis
+        Which *super* aggressive aliases are being used?
+    .description
+        *super* aggressive aliases, these are not suggessted to be used
+    .example
+        PS> Get-ProfileAggressiveItem | Fw
+    #>
+    param ()
+    $meta = [ordered]@{}
+    $meta['Alias'] = Get-Alias -Name 's', 'cl', 'f', 'cd' -ea silentlycontinue -Scope global
+
+    $meta['Types'] = @(
+        'psco'
+    ) | ForEach-Object {
+        $typeInstance = $_ -as 'type'
+        [pscustomobject]@{
+            Name = $_
+            Type = $typeInstance ?? '$null'
+        }
     }
-    $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea SilentlyContinue
+    [PSCustomObject]$meta
+}
 
-    # expected values:
-    # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
-    # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\Visual Studio Code Host_history.txt"
+& {
+    $splatAlias = @{
+        Scope       = 'global'
+        ErrorAction = 'Ignore'
+    }
+
+    Remove-Alias -Name 'cd'
+    New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
+    Set-Alias @splatAlias -Name 's'  -Value Select-Object   -Description 'aggressive: to override other modules'
+    Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard   -Description 'aggressive: set clip'
+
+    if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
+        New-Alias -Name 'f ' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
+    }
+
+    Remove-Alias 'cd' -Scope global -Force
+    New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Scope global -Description 'Personal Profile for easier movement'
+    # For personal profile only. Maybe It's too dangerous,
+    # should just use 'go' instead? It's not in the actual module
+    # Usually not a great idea, but this is for a interactive command line profile
+
+    $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea SilentlyContinue
     $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
     $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction SilentlyContinue
 
+    $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+    $Accel::Add('psco', [System.Management.Automation.PSObject])
+    # expected values:
+    # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+    # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\Visual Studio Code Host_history.txt"
 
-    # Testing out differences
-    # $Profile | Add-Member -NotePropertyName 'a1' -NotePropertyValue $MyInvocation.MyCommand.ModuleName
-    # $Profile | Add-Member -NotePropertyName 'a2' -NotePropertyValue $MyInvocation.MyCommand.Name
-    # $Profile | Add-Member -NotePropertyName 'a3' -NotePropertyValue $MyInvocation.PSScriptRoot
-    # $Profile | Add-Member -NotePropertyName 'a4' -NotePropertyValue $MyInvocation.PSCommandPath
-    # $Profile | Add-Member -NotePropertyName 'a5' -NotePropertyValue $PSScriptRoot
-    # $Profile | Add-Member -NotePropertyName 'a6' -NotePropertyValue $PSCommandPath
+
+
+    # $MyInvocation.MyCommand.ModuleName
+    # $MyInvocation.MyCommand.Name
+    # $MyInvocation.PSScriptRoot
+    # $MyInvocation.PSCommandPath
+    # $PSScriptRoot
+    # $PSCommandPath
 
 }
 

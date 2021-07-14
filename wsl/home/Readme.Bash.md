@@ -12,7 +12,12 @@ Ancient settings in: %USERPROFILE%\2021\dotfiles_ancient
 # To create `Examples.raw_ansi`
 
 ```bash
+export $DEST="/c/Users/cppmo_000/Documents/2021/dotfiles_git/wsl/home/Examples.raw_ansi"
+alias sep="echo -e '\n\n# Header ------- \n\n'>>$DEST"
+
+# decent sample dir
 cd /g/2021-github-downloads/PowerShell/PowerShell/PowerShell
-$DEST="/c/Users/cppmo_000/Documents/2021/dotfiles_git/wsl/home/Examples.raw_ansi"
-ls_date>>$DEST
+
+# usage
+sep; ls_date>>$DEST
 ```
