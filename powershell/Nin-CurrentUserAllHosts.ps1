@@ -1,8 +1,67 @@
 using namespace PoshCode.Pansies
+#Requires -Version 7.0.0
 
 $__ninConfig = @{
-    UseAggressiveAlias = $true
+    UseAggressiveAlias         = $true
+    ImportGitBash              = $true
+    UsePSReadLinePredictPlugin = $false
+    UsePSReadLinePredict       = $true
+    Terminal                   = @{
+        <#
+        Terminal.CurrentTerminal = <code | 'Code - Insiders' | 'windowsterminal' | ... >
+        Terminal.IsVsCode = <bool> # true when code or code insiders
+        Terminal.IsVSCodeAddon_Terminal = <bool> # whether it's the addon debug term, or a regular one
+        Terminal.ColorMode = [PoshCode.Pansies.ColorMode]
+
+        others terminals:
+            pwsh7 from start -> comes up as 'explorer'
+            cmd /C Pwsh -> comes up as 'cmd'
+
+        #>
+        CurrentTerminal        = (Get-Process -Id $pid).Parent.Name # cleaned up name below
+        IsVSCode               = $false
+        IsVSCodeAddon_Terminal = $false
+
+    }
 }
+& {
+    $parent = (Get-Process -Id $pid).Parent.Name
+    if ($parent -eq 'code') {
+        $__ninConfig.Terminal.CurrentTerminal = 'code'
+        $__ninConfig.Terminal.IsVSCode = $true
+    }
+    elseif ($parent -eq 'Code - Insiders') {
+        $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
+        $__ninConfig.Terminal.IsVSCode = $true
+    }
+    elseif ($parent -eq 'windowsterminal') {
+        # preview still uses this name
+        $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
+    }
+    if ($pseditor) {
+        # previously was: if (Get-Module 'PowerShellEditorServices*' -ea ignore) {
+        # Test whether term is running, in order to run EditorServicesCommandSuite
+        $__ninConfig.Terminal.IsVSCodeAddon_Terminal = $true
+    }
+    if ($__ninConfig.VSCodePowershell_IsExtensionTerminal) {
+        Import-Module EditorServicesCommandSuite
+    }
+}
+
+<#
+# enable specific bugfix if you have 'PSUtil'
+if (Get-Module 'psutil' -ListAvailable -ea ignore) {
+    # extra case to make sure it runs until 'IsVSCode' is perfect
+    $StringModule_DontInjectJoinString = $true # to fix psutil, see: <https://discordapp.com/channels/180528040881815552/467577098924589067/750401458750488577>
+}
+#>
+if (Import-Module 'Pansies' -ea ignore) {
+    [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
+    $__ninConfig.Terminal.ColorMode = [PoshCode.Pansies.RgbColor]::ColorMode
+}
+
+
+'Config: ', $__ninConfig | Join-String | Write-Debug
 <#
 check old config for settings
     <C:\Users\cppmo_000\Documents\2020\dotfiles_git\powershell\NinSettings.ps1>
@@ -25,8 +84,6 @@ aka
 
 #>
 
-# $Profile in VS Code directly runs this
-$StringModule_DontInjectJoinString = $true # to fix psutil, see: https://discordapp.com/channels/180528040881815552/467577098924589067/750401458750488577
 
 <#
 
@@ -118,6 +175,56 @@ function Get-ProfileAggressiveItem {
 
 }
 
+if ($__ninConfig.UsePSReadLinePredict) {
+    try {
+        Set-PSReadLineOption -PredictionSource History
+        Set-PSReadLineOption -PredictionViewStyle ListView
+    }
+    catch {
+        Write-Error 'Failed: -PredictionSource History'
+    }
+}
+if ($__ninConfig.UsePSReadLinePredictPlugin) {
+    try {
+        Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+        Set-PSReadLineOption -PredictionViewStyle ListView
+    }
+    catch {
+        Write-Error 'Failed: -PredictionSource HistoryAndPlugin'
+    }
+}
+
+
+
+if ($false -and 'ask for command equiv') {
+    $setPSReadLineOptionSplat = @{
+        ContinuationPrompt            = '    '
+        HistoryNoDuplicates           = $true
+        AddToHistoryHandler           = 'Func<string,Object>'
+        CommandValidationHandler      = '<Action[CommandAST]>'
+        MaximumHistoryCount           = 9999999
+        HistorySearchCursorMovesToEnd = $true
+        MaximumKillRingCount          = 999999
+        ShowToolTips                  = $true
+        ExtraPromptLineCount          = 1
+        CompletionQueryItems          = 30
+        DingTone                      = 3
+        DingDuration                  = 2
+        BellStyle                     = 'Visual'
+        WordDelimiters                = ', '
+        HistorySearchCaseSensitive    = $true
+        HistorySaveStyle              = 'SaveIncrementally'
+        HistorySavePath               = 'path'
+        AnsiEscapeTimeout             = 4
+        PromptText                    = 'PS> '
+        PredictionSource              = 'History'
+        PredictionViewStyle           = 'ListView'
+        Colors                        = @{}
+    }
+    Set-PSReadLineOption @setPSReadLineOptionSplat
+}
+
+# Set-PSReadLineOption -ContinuationPrompt '    ' -HistoryNoDuplicates -AddToHistoryHandler 'Func<string,Object>' -CommandValidationHandler '<Action[CommandAST]>' -MaximumHistoryCount 9999999 -HistorySearchCursorMovesToEnd -MaximumKillRingCount 999999 -ShowToolTips -ExtraPromptLineCount 1 -CompletionQueryItems 30 -DingTone 3 -DingDuration 2 -BellStyle Visual -WordDelimiters ', ' -HistorySearchCaseSensitive -HistorySaveStyle SaveIncrementally -HistorySavePath 'path' -AnsiEscapeTimeout 4 -PromptText 'PS> ' -PredictionSource History -PredictionViewStyle ListView -Colors @{}
 <#
 
     [section]: Environment Variables
@@ -136,6 +243,8 @@ $Env:FZF_DEFAULT_COMMAND = 'fd --type file --hidden --exclude .git --color=alway
 $Env:FZF_DEFAULT_COMMAND = 'fd --type file --hidden --exclude .git --color=always'
 $Env:FZF_DEFAULT_OPTS = '--ansi --no-height'
 $Env:FZF_CTRL_T_COMMAND = "$Env:FZF_DEFAULT_COMMAND"
+
+$env:path = $env:Path, 'C:\Program Files\Git\usr\bin' -join ';'
 
 
 <#
@@ -182,8 +291,14 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
     }
 }
 
-[PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
-
+<#
+    [section]: Optional Paths
+#>
+& {
+    if ($__ninConfig.ImportGitBash) {
+        $env:path = $env:Path, 'C:\Program Files\Git\usr\bin' -join ';'
+    }
+}
 
 <#
     [section]: Chocolately
@@ -206,8 +321,30 @@ New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI
 New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString
 
 function Prompt {
+    #
     Write-NinProfilePrompt
 }
+
+function prompt_verbose_debug {
+    <#
+    .synopsis
+        verbose prompt to test term detection
+    #>
+    $chunk = @()
+    $chunk += "`n`n"
+    $chunk += (Get-Location).ToString()
+    $template = "TermName: {0}`nIsVsCode: {1}`nIsPSIT: {2}"
+    $chunk += $template -f @(
+        $__ninConfig.Terminal.CurrentTerminal
+        ($__ninConfig.Terminal.IsVSCode) ? 'Y' : 'N'
+        ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) ? 'Y' : 'N'
+    ) | Join-String
+    $chunk += '🐒> '
+    $chunk -join "`n"
+}
+
+# $prompt2 = function:prompt
+# $prompt2
 
 
 # Get-Module Microsoft.PowerShell.Utility | Where-Object {

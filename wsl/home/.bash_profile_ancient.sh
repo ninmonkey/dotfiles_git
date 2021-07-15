@@ -8,10 +8,13 @@ export PYTHONIOENCODING="utf-8:strict"
 export BROWSER='C:/Program Files/Mozilla Firefox/firefox.exe'
 
 # [1] Section: core default args
-alias grep="grep -iP"
+alias grep="grep -iP" # insensitive, PCRE2
 
 # [2] Section: custom variants
 
+# Files/ Dirs directories only
+alias lsd="fd --type d"
+alias lsf="fd --type f" # Show files only,
 alias ls_date="ls -l --sort=time --time-style=+%G/%m/%d --human-readable --color=always"
 # fancy visual branch rendering rendering
 alias gl='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
@@ -19,7 +22,10 @@ alias gl='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %
 alias ex_ls1="ls --size -C --human-readable --group-directories-first --color=always"
 alias ex_ls2="ls --size -C --human-readable --no-group --sort=time --color=always"
 
-alias
+
+# output: -rwxr-xr-x 1 cppmo_000 197609 1.1K 2021/07/08  cheatsheets
+
+
 #alias ls="ls -Ssh1"
 #alias ls2="ls --human-readable --group-directories-first --classify --color=always --show-control-chars"
 #alias ls_sort_ext="ls --sort=extension --human-readable --color=always"
@@ -28,7 +34,6 @@ alias
 
 #alias ll="ls --time-style=+%G/%m/%d"
 alias la="ls --almost-all --human-readable --classify --color=always"
-alias pig="pygmentize"
 alias pyg="pygmentize"
 
 ca="--color=always"
