@@ -3,14 +3,6 @@
 	name = Jake Bolton
 [gui]
 	fontdiff = -family Consolas -size 10 -weight normal -slant roman -underline 0 -overstrike 0
-	# recentrepo = C:/Users/cppmo_000/Documents/0x7df/python/srid - subreddit image downloader
-	# recentrepo = C:/Users/cppmo_000/Documents/2018/javascript/Asteroids
-	# recentrepo = C:/Users/cppmo_000/.config
-	# recentrepo = C:/Users/cppmo_000/Documents/2019/ninmonkeys.com
-	# recentrepo = C:/Users/cppmo_000/Documents/2019/writing
-	# recentrepo = C:/Users/cppmo_000/Documents/2019/research
-	# recentrepo = C:/Users/cppmo_000/Documents/2019/music/music notes DB
-	# recentrepo = C:/Users/cppmo_000/Documents/2019/programming ideas
 [alias]
 	st = status
 	slog = log --pretty=oneline --abbrev-commit --color=always

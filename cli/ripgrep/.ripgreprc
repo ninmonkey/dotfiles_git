@@ -1,6 +1,9 @@
 # see: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file
 
---smart-case
+# --case-sensitive  # -s
+--ignore-case       # -i
+# --smart-case      # -S
+
 # Don't let ripgrep vomit really long lines to my terminal, and show a preview.
 #--max-columns=150
 #--max-columns-preview
@@ -9,7 +12,6 @@
 # https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#automatic-filtering
 #
 
-#
 ## Add my 'web' type.
 #--type-add
 #web:*.{html,css,js}*

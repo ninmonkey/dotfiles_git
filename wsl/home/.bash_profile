@@ -10,7 +10,17 @@ export BROWSER='/c/Program Files/Mozilla Firefox/firefox.exe'
 # [1] Section: default args
 alias grep="grep --perl-regexp --ignore-case" # -iP # insensitive, PCRE2
 alias less='less --RAW-CONTROL-CHARS' # good for --color=always
-alias ls_date="ls -l --sort=time --time-style=+%G/%m/%d --human-readable --color=always"
+
+# force non-aliased version, incase git-bash injects
+# Output Columns:
+#   4.0K  bar         19M  foo.log
+#      0  foo        2.9M  history.txt
+alias ls="\ls --size -C --human-readable --group-directories-first --color=auto"
+
+# Output
+#   -rw-r--r-- 1 nin 197609  72K 2021/01/26  Untitled.png
+#   drwxr-xr-x 1 nin 197609    0 2021/01/25  Documents
+alias ls_date="\ls -l --sort=time --time-style=+%G/%m/%d --human-readable --color=auto"
 alias lsd="fd --type d"
 alias lsf="fd --type f"
 
