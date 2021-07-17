@@ -12,7 +12,7 @@
     RootModule        = 'Ninmonkey.Profile.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.0.1'
+    ModuleVersion     = '0.0.2'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -29,10 +29,8 @@
     # Copyright statement for this module
     Copyright         = '(c) Jake Bolton 2021'
 
-    Description       = 'Personal Profile'
-
     # Description of the functionality provided by this module
-    # Description = ''
+    Description       = 'Personal Profile'
 
     # Minimum version of the PowerShell engine required by this module
     # PowerShellVersion = ''

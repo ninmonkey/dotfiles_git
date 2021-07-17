@@ -3,10 +3,13 @@ created:
     Jake
     2021-05-11
 refs:
-    - https://github.com/PowerShell/PSScriptAnalyzer#suppressing-rules
+    - [Docs: PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/RuleDocumentation)
+    - [Creating Custom Rules](https://github.com/PowerShell/PSScriptAnalyzer#custom-rules)
+    - [Suppress rule Attributes](https://github.com/PowerShell/PSScriptAnalyzer#suppressing-rules)
+        - Chris Dent's example defines new tests
 
 examples:
-    - https://github.com/indented-automation/Indented.ScriptAnalyzerRules
+    - [Chris Dent's Settings](https://github.com/indented-automation/Indented.ScriptAnalyzerRules)
 
 #>
 
@@ -26,6 +29,11 @@ examples:
         PSAvoidUsingCmdletAliases  = @{
             Enable      = $True
             'Whitelist' = @('process')
+        }
+
+        PSAvoidTrailingWhitespace  = @{
+            # Enable = $false
+            Enable = $true
         }
         'AvoidGlobalAliases'       = @{
             Enable = $True

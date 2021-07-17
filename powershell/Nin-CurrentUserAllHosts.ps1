@@ -46,7 +46,7 @@ $__ninConfig = @{
         # Test whether term is running, in order to run EditorServicesCommandSuite
         $__ninConfig.Terminal.IsVSCodeAddon_Terminal = $true
     }
-    if ($__ninConfig.VSCodePowershell_IsExtensionTerminal) {
+    if ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) {
         Import-Module EditorServicesCommandSuite
     }
 }
