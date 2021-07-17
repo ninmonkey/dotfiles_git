@@ -26,45 +26,25 @@
         https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
-    // "ninPwsh Parameter": {
-    //     "prefix": "Parameter | 🐒",
-    //     "description": "ninParameter Template 🐒",
-    //     "body": [
-    //         "# ${1}",
-    //         "[Parameter(${2})]",
-    //         "[${3:String}]\\$${4:ParameterName}${0}"
-    //     ]
-    // },
-    "Parameter ⇢ Basic": {
-        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
-        "prefix": "Parameter 🐒 default",
-        "body": [
-            "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
-            // "    HelpMessage='${2}')]",
-            "[${3:object}]$${4:ParameterName}$0",
-        ],
-        "description": "nin ⁞ A basic [Parameter()]"
-    },
     "herestring variables": {
-        "prefix": "here : Variable 🐒",
+        "prefix": "hereStr : Variable 🐒",
         "body": [
             "@\"",
             "${1:$TM_SELECTED_TEXT}",
             "\"@",
             "${0}"
         ],
-        "description": "Interpolated Here-string"
+        "description": "Interpolated Here-string. Intended  to be hotkey only, when there's a selection to wrap "
     },
     "herestring literal": {
-        "prefix": "here : Literal 🐒 Literal Herestring",
+        "prefix": "hereStr : Literal 🐒 Literal Herestring",
         "body": [
             "@'",
             "${1:$TM_SELECTED_TEXT}",
             "'@",
             "${0}"
         ],
-        "description": "Literals Here-String"
+        "description": "Literals Here-String. Intended  to be hotkey only, when there's a selection to wrap"
     },
     "Help ⇢ Comment Based": {
         //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
@@ -91,7 +71,7 @@
         ],
     },
     "CmdletBinding()": {
-        "prefix": "[CmdletBinding()]",
+        "prefix": "WIP -- [CmdletBinding()]",
         "description": "nin ⁞ CmdletBinding with initial params",
         "body": [
             "[CmdletBinding()]",
@@ -108,7 +88,7 @@
         ]
     },
     "Function ⇢ Cmdlet": {
-        "prefix": "Function 🐒 ⇢ Commandlet",
+        "prefix": "Function ⇢ [CmdletBinding] 🐒",
         "description": "Defaults for a  new function🐒",
         "body": [
             "function ${1:Get-Foo} {",
@@ -127,16 +107,16 @@
             "    ",
             "    begin {}",
             "    process {",
-            "       ${0}",
+            "       ${0}", // to use selected text, see: "Function ⇢ Tiny"
             "    # todo: CmdletExceptionWrapper: From Sci",
             "    }",
             "    end {}",
             "}"
         ]
     },
-    "Function ⇢ Tiny Basic": {
-        "prefix": "Function 🐒 ⇢ Mini Basic",
-        "description": "nin ⁞ A basic function",
+    "Func ⇢ Tiny | Function 🐒": {
+        "prefix": "Function ⇢ Tiny | Function 🐒",
+        "description": "Minimal defaults | Supports selected text.",
         "body": [
             "function ${1:Get-Foo} {",
             "    <#",
@@ -148,21 +128,21 @@
             "    #>",
             "    [CmdletBinding(PositionalBinding=\\$false)]",
             "    param(",
-            "        ${4}",
+            "        ${0}",
             "    )",
-            "    ${0}",
+            "    ${4:${TM_SELECTED_TEXT}}", // works.. not sure whether I want to use selection
             "}"
         ]
     },
     "CalculatedProperty": {
-        "prefix": "Calculated-Property ⇢ SingleLine",
+        "prefix": "Calculated-Property ⇢ SingleLine 🐒",
         "body": [
             "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
         ],
         "description": "nin ⁞ a CalculatedProperty on a Single Line",
     },
     "CalculatedProperty: Multiline": {
-        "prefix": "Calculated-Property ⇢ MultiLine",
+        "prefix": "Calculated-Property ⇢ MultiLine 🐒",
         "body": [
             "@{",
             "    Name = '${1:PropertyName}'",
@@ -175,7 +155,7 @@
         "description": "nin ⁞ a CalculatedProperty using multiple lines",
     },
     "IfShouldProcess": {
-        "prefix": "IfShouldProcess",
+        "prefix": "IfShouldProcess : <Selection> 🐒",
         "description": "nin ⁞ Creates ShouldProcess block from your Selection",
         "body": [
             "if (\\$PSCmdlet.ShouldProcess(\"${1:Target}\", \"${2:Operation}\")) {",
@@ -184,16 +164,35 @@
         ],
     },
     "Parameter ⇢ Switch": {
-        "prefix": "Switch ⇢ 🐒 Parameter",
+        "prefix": "Param ⇢ [Switch] 🐒",
         "description": "nin ⁞ adds a [switch] parameter",
         "body": [
-            // "[Parameter(HelpMessage = \"$1\")][switch]\\$${0}"
             "# ${1:Docstring}",
             "[Parameter()][switch]\\$${0}"
         ]
     },
+    "Parameter ⇢ Basic": {
+        "description": "nin ⁞ A basic [Parameter()]",
+        "prefix": "Parameter 🐒 default",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position=0})]",
+            "[${3:object}]$${4:ParameterName}${0}",
+        ],
+    },
+    "Parameter: Completer ⇢ ValidateSet": {
+        "prefix": "Param ⇢ Completer | [ValidateSet] 🐒",
+        "description": "nin ⁞ Autocompleter parameter from a static list using ValidateSet()",
+        "body": [
+            "# ${1:Docstring}",
+            "[ValidateSet(${2:'a', 'b'})]",
+            "[Parameter(${3:Mandatory, Position=0})]",
+            "[string[]]$${4:ParameterName}",
+            "${0}"
+        ],
+    },
     "Switch ⇢ ParameterSetNameSwitch": {
-        "prefix": "Switch ⇢ 🐒 ParameterSetName",
+        "prefix": "Switch ⇢ $PSCmdlet.ParameterSetName { .. } : 🐒",
         "description": "nin ⁞ Template for a switch with ParameterSetNames",
         "body": [
             "switch (\\$PSCmdlet.ParameterSetName) {",
@@ -208,21 +207,8 @@
             "}",
         ]
     },
-    "Parameter: Completer ⇢ ValidateSet": {
-        "prefix": "Completer ⇢ ValidateSet",
-        "description": "nin ⁞ Autocompleter parameter from a static list using ValidateSet()",
-        "body": [
-            "# ${1:Docstring}",
-            "[Parameter(",
-            "    ${2:Mandatory}, ${3:Position=0},",
-            // "    HelpMessage='${3}')]",
-            "    [ValidateSet(${4})]",
-            "    [string[]]$${5:ParameterName})",
-            "$0",
-        ],
-    },
     "Web ⇢ Invoke-RestMethod": {
-        "prefix": "Web ⇢ Invoke-RestMethod",
+        "prefix": "Web ⇢ Invoke-RestMethod 🐒",
         "description": "nin ⁞ Invoke-RestMethod | template saves response data",
         "body": [
             "\\$splat_irm = @{",
