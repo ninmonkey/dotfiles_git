@@ -6,6 +6,9 @@ $__ninConfig = @{
     ImportGitBash              = $true
     UsePSReadLinePredictPlugin = $false
     UsePSReadLinePredict       = $true
+    OnLoad                     = @{
+        IgnoreImportWarning = $true
+    }
     Terminal                   = @{
         <#
         Terminal.CurrentTerminal = <code | 'Code - Insiders' | 'windowsterminal' | ... >
@@ -21,7 +24,7 @@ $__ninConfig = @{
         CurrentTerminal        = (Get-Process -Id $pid).Parent.Name # cleaned up name below
         IsVSCode               = $false
         IsVSCodeAddon_Terminal = $false
-
+        # IsAdmin = Test-UserIsAdmin # set later to delay load. very naive test. just for styling
     }
 }
 & {
@@ -47,6 +50,7 @@ $__ninConfig = @{
         Import-Module EditorServicesCommandSuite
     }
 }
+
 
 <#
 # enable specific bugfix if you have 'PSUtil'
@@ -271,6 +275,10 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
     [section]: Optional imports
 #>
 & {
+    $splatMaybeWarn = @{}
+    if ($__ninConfig.Module.IgnoreImportWarning) {
+        $splatMaybeWarn['Warning-Action'] = 'Ignore'
+    }
     # Soft/Optional Requirements
     $OptionalImports = @(
         'ClassExplorer'
@@ -287,12 +295,25 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 
     $OptionalImports | ForEach-Object {
         Write-Debug "Import-Module: $_"
-        Import-Module $_
+        Import-Module $_ @splatMaybeWarn
     }
 }
 
+& {
+    <#
+    .synopsis
+        AfterModuleLoadEvent:
+    #>
+
+    if (!(Test-UserIsAdmin)) {
+        Import-NinPSReadLineKeyHandler
+        # Maybe also remove modules 'Dev.Nin', 'PSFzf', or PSReadLineBeta ?
+    }
+}
 <#
     [section]: Optional Paths
+
+        add git-bash on windows
 #>
 & {
     if ($__ninConfig.ImportGitBash) {
@@ -303,8 +324,6 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 <#
     [section]: Chocolately
 #>
-
-# Chocolatey profile
 & {
     $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
     if (Test-Path($ChocolateyProfile)) {
@@ -316,13 +335,16 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 <#
     [section]: Aliases
 #>
-
 New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text'
-New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString
 
 function Prompt {
-    #
+    <#
+    .synopsis
+        directly redirect to real prompt. not profiled for performance at all
+    .description
+    #>
     Write-NinProfilePrompt
+    # IsAdmin = Test-UserIsAdmin
 }
 
 function prompt_verbose_debug {
@@ -343,24 +365,8 @@ function prompt_verbose_debug {
     $chunk -join "`n"
 }
 
-# $prompt2 = function:prompt
+# $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
 # $prompt2
-
-
-# Get-Module Microsoft.PowerShell.Utility | Where-Object {
-#     $isActive = $false
-
-#     $_ | Where-Object {
-
-#         $isActive = $false;
-#         $_.ExportedCommands.GetEnumerator()
-#         | ForEach-Object {
-#             if ('join-string' -in $_.Key) { $isActive = $true; return; }   #{ getenumerator | % Key | rg -i 'join-string'
-#         }
-#     }
-#     return $isActive
-
-# }
 
 New-Text -fg gray70 -bg gray30 'next
     - if vscode:
@@ -401,3 +407,5 @@ Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
 
 '
 | Join-String
+
+New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString
