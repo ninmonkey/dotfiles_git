@@ -101,6 +101,7 @@ $PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'FzfSelected'
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
+$PSDefaultParameterValues['Install-Module:Verbose'] = $true
 <#
     [section]: Nin.* Environment Variables
 #>
@@ -300,6 +301,10 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 }
 
 & {
+
+    # currently, all profiles use utf8
+    Set-ConsoleEncoding Utf8 | Out-Null
+
     <#
     .synopsis
         AfterModuleLoadEvent:
