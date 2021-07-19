@@ -3,13 +3,21 @@ using namespace PoshCode.Pansies
 
 $__ninConfig = @{
     UseAggressiveAlias         = $true
-    ImportGitBash              = $true
-    UsePSReadLinePredictPlugin = $false
-    UsePSReadLinePredict       = $true
+    ImportGitBash              = $true  # __doc__: Include gitbash binaries in path+gcm
+    UsePSReadLinePredict       = $true  # __doc__: uses beta PSReadLine [+Predictor]
+    UsePSReadLinePredictPlugin = $false # __doc__: uses beta PSReadLine [+Plugin]
     OnLoad                     = @{
-        IgnoreImportWarning = $true
+        IgnoreImportWarning = $true # __doc__: Ignore warnings from any modules imported on profile first load
+    }
+    Prompt                     = @{
+        # __doc__: Controls the look of your prompt
+        # __uri__: Terminal
+        Profile          = 'default'    # __doc__: default | debugPrompt | Spartan
+        IncludeGitStatus = $false # show git branch, files changed, etc?
     }
     Terminal                   = @{
+        # __doc__: Detects or affects the environment
+        # __uri__: Prompt
         <#
         Terminal.CurrentTerminal = <code | 'Code - Insiders' | 'windowsterminal' | ... >
         Terminal.IsVsCode = <bool> # true when code or code insiders
@@ -22,9 +30,9 @@ $__ninConfig = @{
 
         #>
         CurrentTerminal        = (Get-Process -Id $pid).Parent.Name # cleaned up name below
-        IsVSCode               = $false
-        IsVSCodeAddon_Terminal = $false
-        # IsAdmin = Test-UserIsAdmin # set later to delay load. very naive test. just for styling
+        IsVSCode               = $false # __doc__: this is a VS Code terminal
+        IsVSCodeAddon_Terminal = $false # __doc__: this is a [vscode-powershell] extension debug terminal
+        #IsAdmin = Test-UserIsAdmin # __doc__: set later to delay load. very naive test. just for styling
     }
 }
 & {
@@ -104,9 +112,31 @@ $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
 <#
     [section]: Nin.* Environment Variables
+
+
+## Rationale for '$Env:2021' or '$Env:Now'
+
+    verses using a profile-wide '$Nin2021'
+
+    When using filepath parames like
+        $x | copy-item -Destination '$NinNow\something
+
+    Tab completion does not complete. but environment variables will.
+    This means you have to  remember exact filepaths.
+
+    Using Env vars allows typing:
+
+        -dest $env:Nin2021\*bug'
+
+        which resolves to
+            'C:\Users\cppmo_000\Documents\2021\reporting_bugs\
+
+
 #>
 $Env:Nin_Home ??= "$Env:UserProfile\Documents\2021" # what is essentially my base/root directory
 $Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
+$env:NinNow = Get-Item $Env:Nin_Home
+
 
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 $Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
@@ -144,10 +174,12 @@ function Get-ProfileAggressiveItem {
         ErrorAction = 'Ignore'
     }
 
+    # todo:  # can I move this logic to profile? at first I thought there was scope issues, but that doesn't matter
     Remove-Alias -Name 'cd'
     New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
     Set-Alias @splatAlias -Name 's'  -Value Select-Object   -Description 'aggressive: to override other modules'
     Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard   -Description 'aggressive: set clip'
+    New-Alias 'codei' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
 
     if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
         New-Alias -Name 'f ' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
@@ -352,23 +384,6 @@ function Prompt {
     # IsAdmin = Test-UserIsAdmin
 }
 
-function prompt_verbose_debug {
-    <#
-    .synopsis
-        verbose prompt to test term detection
-    #>
-    $chunk = @()
-    $chunk += "`n`n"
-    $chunk += (Get-Location).ToString()
-    $template = "TermName: {0}`nIsVsCode: {1}`nIsPSIT: {2}"
-    $chunk += $template -f @(
-        $__ninConfig.Terminal.CurrentTerminal
-        ($__ninConfig.Terminal.IsVSCode) ? 'Y' : 'N'
-        ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) ? 'Y' : 'N'
-    ) | Join-String
-    $chunk += '🐒> '
-    $chunk -join "`n"
-}
 
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
 # $prompt2

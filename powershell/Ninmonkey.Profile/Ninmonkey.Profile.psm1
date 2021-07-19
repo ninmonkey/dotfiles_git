@@ -43,6 +43,8 @@ function _Write-PromptGitStatus {
     <#
     .synopsis
         temp placement for posh-git
+    .outputs
+        either $null, or a string based on git status
     #>
     $dir_git = Get-GitDirectory
     [bool]$isGetRepo = $null -ne $dir_git
@@ -113,6 +115,36 @@ function _Write-PathToBreadCrumbs {
     }
 }
 
+function _Write-VerboseDebugPrompt {
+    <#
+    .synopsis
+        verbose prompt to test term detection
+    #>
+    $chunk = @()
+    $template = "TermName: {0}`nIsVsCode: {1}`nIsPSIT: {2}"
+    $chunk += $template -f @(
+        $__ninConfig.Terminal.CurrentTerminal
+        ($__ninConfig.Terminal.IsVSCode) ? 'Y' : 'N'
+        ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) ? 'Y' : 'N'
+    ) | Join-String
+    $chunk | Join-String -sep "`n"
+}
+
+function _Write-Predent {
+    param(
+        # Number of newlines
+        [Parameter(Position = 0)]
+        [int]$NewlineCount = 2,
+        # Include extra Horizontal line
+        [Parameter()][switch]$IncludeHorizontalLine
+    )
+    @(
+        "`n" * $NewlineCount -join ''
+        if ($IncludeHorizontalLine) {
+            New-Text -fg 'gray30' '___________' # extra pre-dent
+        }
+    ) | Join-String
+}
 
 function Write-NinProfilePrompt {
     <#
@@ -131,19 +163,33 @@ function Write-NinProfilePrompt {
     #>
     param (
     )
+    # do not use extra newlines on missing segments
+    switch ($__ninConfig.Prompt.Profile) {
+        'debugPrompt' {
+            _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+            _Write-VerboseDebugPrompt
+            break
+        }
 
+        'spartan' {
+            _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+            "`n🐒> "
+            break
+        }
 
-
-    $segments = @(
-        "`n"
-        _Write-PromptIsAdminStatus
-        _Write-PathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
-        "`n"
-        _Write-PromptGitStatus # todo: better git status line
-        "`n"
-        '🐒> '
-    )
-    $segments | Join-String
+        default {
+            $segments = @(
+                _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
+                _Write-PromptIsAdminStatus
+                _Write-PathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                if ($__ninConfig.Prompt.IncludeGitStatus) {
+                    _Write-PromptGitStatus # todo: better git status line
+                }
+                "`n🐒> "
+            )
+            $segments | Join-String
+        }
+    }
 }
 
 Export-ModuleMember -Function Write-NinProfilePrompt
@@ -153,5 +199,6 @@ if ($true) {
         '_Write-PromptIsAdminStatus'
         '_Write-PathToBreadCrumbs'
         '_Write-PromptGitStatus'
+        '_Write-VerboseDebugPrompt'
     )
 }
