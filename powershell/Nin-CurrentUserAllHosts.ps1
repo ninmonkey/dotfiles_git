@@ -2,6 +2,7 @@ using namespace PoshCode.Pansies
 #Requires -Version 7.0.0
 
 $__ninConfig = @{
+    EnableGreetingOnLoad       = $true
     UseAggressiveAlias         = $true
     ImportGitBash              = $true  # __doc__: Include gitbash binaries in path+gcm
     UsePSReadLinePredict       = $true  # __doc__: uses beta PSReadLine [+Predictor]
@@ -34,6 +35,11 @@ $__ninConfig = @{
         IsVSCodeAddon_Terminal = $false # __doc__: this is a [vscode-powershell] extension debug terminal
         #IsAdmin = Test-UserIsAdmin # __doc__: set later to delay load. very naive test. just for styling
     }
+}
+
+function rebash {
+    # quickly reload my modules for dev
+    Import-Module -Name 'Ninmonkey.Console', 'Dev.nin' -Force 3>$1 | Out-Null
 }
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
@@ -86,8 +92,9 @@ aka
 #>
 
 # explicit color because it's before imports
-"`e[96mBegin: -->`e[0m'$PSScriptRoot'"
-| Write-Host
+if ($false) {
+    "`e[96mBegin: -->`e[0m'$PSScriptRoot'" | Write-Host
+}
 
 <#
 
@@ -110,6 +117,8 @@ $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
+$PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
+
 <#
     [section]: Nin.* Environment Variables
 
@@ -141,12 +150,66 @@ $env:NinNow = Get-Item $Env:Nin_Home
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 $Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
 $Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
+$Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
+
+
+function _profileEventOnFinalLoad {
+    function _writeTodoGreeting {
+
+        New-Text -fg gray70 -bg gray30 'next
+    - if vscode:
+        - [ ] prompt name: "VS Code Pwsh>"
+
+    - if vscode as PSIT
+        - [ ] prompt name: "VS Code Integrated Terminal>"
+        - [ ] editor services import
+        - [ ] and that string import
+
+    - if wt
+        - [ ] auto-import: Import-NinKeys
+
+    - if admin:
+        - [ ] skip import-keys
+        - [ ] red prompt
+
+
+------------------
+
+    first:
+        [5] dotfile backup
+        [1] move: Write-NinPrompt to module: profile
+        [2] colorize breadcrumbs using gradient
+        [3] editfunction jump to line number
+        [4] ripgreb bat env dotfiles load
+
+    [1]
+        alt+enter/ctrl+enter hotkeys for newline
+
+    [2]
+        dotfiles missing
+            [rg] bat? less?
+
+
+$seg = 4
+Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
+
+'
+        | Join-String
+        hr
+        # h1 'Todo' | New-Text -fg yellow -bg magenta
+        '🐵'
+    }
+
+    if ($__ninConfig.EnableGreetingOnLoad) {
+        _writeTodoGreeting
+    }
+}
 
 
 function Get-ProfileAggressiveItem {
     <#
     .synopsis
-        Which *super* aggressive aliases are being used?
+        todo: refactor into profile. Which *super* aggressive aliases are being used?
     .description
         *super* aggressive aliases, these are not suggessted to be used
     .example
@@ -388,44 +451,5 @@ function Prompt {
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
 # $prompt2
 
-New-Text -fg gray70 -bg gray30 'next
-    - if vscode:
-        - [ ] prompt name: "VS Code Pwsh>"
-
-    - if vscode as PSIT
-        - [ ] prompt name: "VS Code Integrated Terminal>"
-        - [ ] editor services import
-        - [ ] and that string import
-
-    - if wt
-        - [ ] auto-import: Import-NinKeys
-
-    - if admin:
-        - [ ] skip import-keys
-        - [ ] red prompt
-
-
-------------------
-
-first:
-    [5] dotfile backup
-    [1] move: Write-NinPrompt to module: profile
-    [2] colorize breadcrumbs using gradient
-    [3] editfunction jump to line number
-    [4] ripgreb bat env dotfiles load
-
-[1]
-    alt+enter/ctrl+enter hotkeys for newline
-
-[2]
-    dotfiles missing
-        [rg] bat? less?
-
-
-$seg = 4
-Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
-
-'
-| Join-String
-
-New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString
+_profileEventOnFinalLoad
+New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
