@@ -329,7 +329,7 @@
     "editor.wordWrapColumn": 160,
     "editor.wrappingIndent": "deepIndent",
     "editor.detectIndentation": false,
-    "editor.fontSize": 16,
+    "editor.fontSize": 18,
     "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FiraCode Nerd Font', Consolas, 'Courier New', monospace",
     "notebook.cellToolbarLocation": {
