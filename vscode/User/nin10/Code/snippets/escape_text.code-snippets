@@ -32,11 +32,13 @@
 
     */
     "🐒regex: Fix Backslash escaped filepaths": {
-        "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        // this could be editor command
+        // safety, should probably require '['"]' on both ends of matches
+        "scope": "ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
         "prefix": "re: Fix Backslash filepaths",
         "description": "Transforms \\\\ ⇒ /",
         "body": [
-            "${TM_SELECTED_TEXT/(\\\\\\\\)/\\//gi}", // out: /
+            "${TM_SELECTED_TEXT/(\\\\{2})/\\//gi}", // out: /
         ]
     },
     "🐒regex: Escape Double Quotes": {
@@ -47,7 +49,39 @@
             "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
         ]
     },
-    "rgex: strip extension": {
+    "🐒snippet: Insert New Snippet definition": {
+        "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        "prefix": "Snippet: New 🏃‍♂️",
+        "description": "Transforms \" ⇒ \\\"",
+        "body": [
+            "\"$Name\": {",
+            "    \"prefix\": \"$Prefix ⁞ nin\",",
+            "    \"description\": \"nin🐒 ⁞ $Description\",",
+            "    \"body\": [        /*",
+            "        input:",
+            "            using ⋯",
+            "",
+            "        output:",
+            "            ⋯",
+            "",
+            "        */",
+            "    ],",
+            "},"
+        ]
+    },
+    "CmdletBinding": {
+        "prefix": "zznin CmdletBinding()",
+        "body": [
+            "[CmdletBinding()]",
+            "param (",
+            "    [Parameter(Mandatory, Position=0,",
+            "        HelpMessage=\"doc\")]",
+            "    [${1:TypeName}]$${2:ParameterName}$0",
+            ")"
+        ],
+        "description": "adds cmdlet attributes."
+    },
+    "regex: strip extension": {
         // "description": "c:\\windows\\bar",
         // "scope": "json,jsonc",
         "scope": "example",

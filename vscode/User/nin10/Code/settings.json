@@ -66,9 +66,6 @@
     "debug.console.collapseIdenticalLines": true,
     "editor.copyWithSyntaxHighlighting": true,
     "editor.codeLens": true,
-    // "editor.cursorSurroundingLines": 10,
-    // "editor.cursorSurroundingLinesStyle": "all",
-    "editor.columnSelection": false,
     "editor.find.seedSearchStringFromSelection": true,
     "editor.find.cursorMoveOnType": true,
     "editor.fontLigatures": true,
@@ -133,7 +130,7 @@
         "comments": false,
         "strings": false
     },
-    "diffEditor.ignoreTrimWhitespace": true,
+    "diffEditor.ignoreTrimWhitespace": false,
     // more: "diffEditor.*"
     // "workbench.editor.limit.value": 10,
     // 20 more: "workbench.editor.*"
@@ -489,7 +486,7 @@
       */
     "editor.inlineHints.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
     "editor.codeLensFontFamily": "consolas, 'cascadia code', arial, 'cascadia code'", // this changes "run tests" inside .ps1 pester blocks
-    "editor.codeLensFontSize": 12,
+    "editor.codeLensFontSize": 14,
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
     // "terminal.integrated.fontFamily": "corbel, 'cascadia code', fira code retina, cascadia code, consolas",
@@ -499,11 +496,11 @@
     "zenMode.hideLineNumbers": true,
     "zenMode.silentNotifications": true,
     "zenMode.hideStatusBar": true,
-    "zenMode.fullScreen": true,
+    "zenMode.fullScreen": false,
     "zenMode.restore": true,
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
-    // "terminal.integrated.fontFamily": "cascadia code, fira code retina, cascadia code, consolas",
+    "terminal.integrated.fontFamily": "'cascadia mono', fira code retina, cascadia code, consolas, monospace",
     "gitlens.mode.active": "zen",
     "terminal.integrated.rendererType": "auto",
     // "workbench.editor.focusRecentEditorAfterClose": true,
@@ -1128,23 +1125,39 @@
     "gitlens.views.compare.files.layout": "tree",
     // "jupyter.interactiveWindowMode": "perFile",
     // "editor.suggestLineHeight": 18, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
-    "debug.console.fontFamily": "default",
+    "debug.console.fontFamily": "consolas",
     // "debug.console.fontFamily": "'Fira Code Bold', 'Cascadia code mono', 'Fira Code Retina', 'cascadia code', 'Fira Code Retina', Consolas",
     // "debug.console.$": "Fira Code, 'cascadia code', cascadia mono, Fira Code Retina, Consolas, Fira Code Bold",
     "editor.fontFamily": "'arial', 'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
-    "editor.fontSize": 16,
     "editor.fontFamily": "'fira code retina', 'cascadia code', Consolas, 'fira code', 'Courier New', monospace",
     "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
+    "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'FiraCode Nerd Font', 'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'FiraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
+    "editor.fontFamily": "'fira code', consolas, monospace",
+    "editor.fontFamily": "'cascadia mono', consolas, monospace",
+    "editor.fontFamily": "'cascadia code', consolas, monospace",
+    // "editor.fontWeight": "350", // for cascadia code
+    "editor.fontFamily": "'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, //14, // for zoom -1
-    "terminal.integrated.fontSize": 14, //12, // for zoom 0
     // "editor.fontWeight": "500",
     // "editor.suggestLineHeight": 17, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
     // for zoom = 0
     "debug.console.fontSize": 14,
+    "terminal.integrated.fontSize": 16, //12, // for zoom 0
     "debug.console.fontSize": 16,
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
+    "editor.fontSize": 18, //18 16, // for zoom -1
+    "editor.fontSize": 16,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,

@@ -332,6 +332,9 @@
     "editor.fontSize": 18,
     "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FiraCode Nerd Font', Consolas, 'Courier New', monospace",
+    "editor.fontSize": 16,
+    "editor.fontFamily": "'FiraCode Nerd Font'",
+    // "editor.fontFamily": "'Fira code retina', monospace",
     "notebook.cellToolbarLocation": {
         "default": "right",
         "jupyter-notebook": "left"
@@ -376,6 +379,9 @@
     "errorLens.infoGutterIconColor": "#00b7e4",
     "errorLens.statusBarColorsEnabled": true,
     "errorLens.onSave": false,
+    "window.title": "${rootName}$separator}${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
+    "terminal.integrated.cwd": "${fileDirname}",
+    "powershell.cwd": "${fileDirname}",
     /*
 
     ## Section: Dotnet, interactive, notebooks
@@ -386,7 +392,7 @@
     //     "editor.fontSize": 18,
     //     // "editor.fontFamily": "arial, 'cascadia mono', Consolas, 'Courier New', monospace"
     //     "editor.codeLensFontFamily": "'comic sans'",
-    //     // "editor.codeLensFontSize": 0.2,
+    //     // "editor.codeLensFontSize": 0.2,pwd
     //     // "editor.lineHeight": 0,
     //     "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
     // },

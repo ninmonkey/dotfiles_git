@@ -70,23 +70,9 @@
             "${0}",
         ],
     },
-    "CmdletBinding()": {
-        "prefix": "WIP -- [CmdletBinding()]",
-        "description": "nin ⁞ CmdletBinding with initial params",
-        "body": [
-            "[CmdletBinding()]",
-            "param (",
-            "    # ${3:docstring}",
-            "    [Parameter(Mandatory, Position=0,",
-            "wip -- do the always CmdletWriteError",
-            "in the try catch",
-            "in the try here",
-            // Best practice is to use doc strings, not the attribute
-            // "        HelpMessage=\"doc\")]",
-            "    [${1:TypeName}]$${2:ParameterName}$0",
-            ")"
-        ]
-    },
+    // "CmdletBinding()": {
+    //     "prefix": "WIP -- [CmdletBinding()]",
+    //     "description": "nin ⁞ CmdletBinding with initial params",
     "Function ⇢ Cmdlet": {
         "prefix": "Function ⇢ [CmdletBinding] 🐒",
         "description": "Defaults for a  new function🐒",
@@ -108,14 +94,14 @@
             "    begin {}",
             "    process {",
             "       ${0}", // to use selected text, see: "Function ⇢ Tiny"
-            "    # todo: CmdletExceptionWrapper: From Sci",
+            "    # todo: always wrap CmdletExceptionWrapper: From Sci",
             "    }",
             "    end {}",
             "}"
         ]
     },
     "Func ⇢ Tiny | Function 🐒": {
-        "prefix": "Function ⇢ Tiny | Function 🐒",
+        "prefix": "Function ⇢ Tiny | Function { .. } 🐒",
         "description": "Minimal defaults | Supports selected text.",
         "body": [
             "function ${1:Get-Foo} {",

@@ -106,9 +106,41 @@
     },
     "nin: Links To Markdown": {
         "prefix": "Url ⇢ Markdown",
-        "description": "nin🐒 ⁞ Wraps selected url in markdown syntax",
+        "description": "Links 🐒 ⁞ Wraps selected url in markdown syntax",
+        /*
+        input:
+            using selection: https://code.visualstudio.com/docs/editor/userdefinedsnippets
+            then typed 'tutorial'
+
+        output:
+            [tutorial](https://code.visualstudio.com/docs/editor/userdefinedsnippets)
+
+        */
         "body": [
-            "[${$2$TM_SELECTED_TEXT]($TM_SELECTED_TEXT)" //default value
+            "[${1:Label}](${2:$TM_SELECTED_TEXT})"
+            // "[${$2$TM_SELECTED_TEXT]($TM_SELECTED_TEXT)" //default value
+            // "[${1:PropertyName}]($TM_SELECTED_TEXT)" # default value
+            // "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
+        ],
+    },
+    "nin: Links To Markdown": {
+        "prefix": "Advanced Url ⇢ Markdown",
+        "description": "Links with Suggested names based on url. nin🐒 ⁞ Works better using  multipole cursors verses the basic one. Wraps selected url in markdown syntax  ; supports: multi",
+        /*
+        input:
+'
+
+        output:
+
+
+        */
+        "body": [
+            // "${TM_SELECTED_TEXT/(.*s\\\\/)(.*)/$1 = $2/}" // # example workign regex
+            // "${TM_SELECTED_TEXT/(.*s\\\\\\\\/)(.*)/$0 = $1 = $2 = $4/}" // # example workign regex
+            "${TM_SELECTED_TEXT/.*s(.*)/\n0 = $0\n1 = $1\n2 = $2\n3 = $3/}" // # example workign regex
+            // "${TM_SELECTED_TEXT/(.*s)(.*)/$1 = $2/}" // # example workign regex
+            // "[${1:Label}](${2:$TM_SELECTED_TEXT})"
+            // "[${$2$TM_SELECTED_TEXT]($TM_SELECTED_TEXT)" //default value
             // "[${1:PropertyName}]($TM_SELECTED_TEXT)" # default value
             // "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
         ],

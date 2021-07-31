@@ -23,6 +23,14 @@
             "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE"
         ]
     },
+    "File.CurrentFilename": {
+        "scope": "ps1,json,jsonc,xml,py,md,js,cs,csx,code-workspace,code-snippets",
+        "prefix": "Current Filename [meta]",
+        "description": "Current $File.Name",
+        "body": [
+            "$TM_FILENAME"
+        ]
+    },
     /*
 
     Next:

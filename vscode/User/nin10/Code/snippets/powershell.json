@@ -47,8 +47,24 @@
         "description": "Literals Here-String"
     },
     "Parameter ⇢ Basic": {
-        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
-        "prefix": "Parameter : 🐒 default",
+        /*
+            This doesn't have a fancy template choice
+            this gives you a cleaner experience than the choice-box
+            */
+        "prefix": "Param nin",
+        "prefix": "Parameter nin : 🐒",
+        "body": [
+            "# ${3} ",
+            "[Parameter(${1:Mandatory, Position=0})]",
+            // "    HelpMessage='${2}')]",
+            "${2:[string]$$Name},"
+            // "[${3:object}]$${4:ParameterName}$0",
+        ],
+        "description": "a quick Parameter()"
+    },
+    "Parameter ⇢ Choice": {
+        // a little more complicated
+        "prefix": "Parameter nin : 🐒 Choice",
         "body": [
             "# ${1:Docstring}",
             "[Parameter(${2:Mandatory, Position=0})]",
