@@ -14,8 +14,8 @@ $script:_state = @{}
         Bat                    = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\bat\.batrc"
         RipGrep                = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\ripgrep\.ripgreprc"
         BashProfile            = Get-Item @s_optionalItem "$env:Nin_Dotfiles\wsl\home\.bash_profile"
-        WindowsTerminalPreview = Get-Item @s_optionalItem "$env:LocalAppData\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
-        WindowsTerminal        = Get-Item @s_optionalItem "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+        WindowsTerminalPreview = Get-Item @s_optionalItem "$env:LocalAppData\Packreges\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+        WindowsTerminal        = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
         vscode                 = @{
             ExtensionDir = Get-Item "$env:UserProfile\.vscode\extensions"
             User         = Get-Item "$env:appdata\Code\User\settings.json"
@@ -35,9 +35,18 @@ $script:_state = @{}
         }
     }
 }
-
-
 Export-ModuleMember -Variable 'NinProfile_Dotfiles'
+
+& {
+    New-Alias 'codei' -Value 'code-insiders' -Description 'VS Code insiders version' -PassThru
+    New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text' -PassThru
+
+    Export-ModuleMember -Alias @(
+        'codei'
+        'CtrlChar'
+    )
+}
+
 
 function _Write-PromptGitStatus {
     <#

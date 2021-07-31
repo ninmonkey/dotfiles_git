@@ -434,8 +434,9 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 
 <#
     [section]: Aliases
+
+        see Ninmonkey.Profile.psm1
 #>
-New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text'
 
 function Prompt {
     <#
