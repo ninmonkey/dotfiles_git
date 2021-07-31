@@ -56,7 +56,6 @@
         "body": [
             "# ${3} ",
             "[Parameter(${1:Mandatory, Position=0})]",
-            // "    HelpMessage='${2}')]",
             "${2:[string]$$Name},"
             // "[${3:object}]$${4:ParameterName}$0",
         ],
@@ -68,13 +67,12 @@
         "body": [
             "# ${1:Docstring}",
             "[Parameter(${2:Mandatory, Position=0})]",
-            // "    HelpMessage='${2}')]",
             "[${3:object}]$${4:ParameterName}$0",
         ],
         "description": "nin ⁞ A basic [Parameter()]"
     },
     "CmdletBinding()": {
-        "prefix": "CmdletBinding() ⁞ 🐒 Defaults🐒",
+        "prefix": "WIP TODO CmdletBinding() ⁞ 🐒 Defaults🐒",
         "description": "nin ⁞ CmdletBinding with initial params",
         "body": [
             "[CmdletBinding(",
@@ -87,7 +85,7 @@
             "in the try catch",
             "in the try here",
             // Best practice is to use doc strings, not the attribute
-            // "        HelpMessage=\"doc\")]",
+            // "        ",
             "    [${1:TypeName}]$${2:ParameterName}$0",
             ")"
         ]
@@ -125,7 +123,6 @@
         "prefix": "[Parameter] ⇢ Switch",
         "description": "nin ⁞ adds a [switch] parameter",
         "body": [
-            // "[Parameter(HelpMessage = \"$1\")][switch]\\$${0}"
             "# ${1:Docstring}",
             "[Parameter()][switch]\\$${0}"
         ]
@@ -161,7 +158,6 @@
             "# ${1:Docstring}",
             "[Parameter(",
             "    ${2:Mandatory}, ${3:Position=0},",
-            // "    HelpMessage='${3}')]",
             "    [ValidateSet(${4})]",
             "    [string[]]$${5:ParameterName})",
             "$0",

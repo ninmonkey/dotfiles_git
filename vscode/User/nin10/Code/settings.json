@@ -572,15 +572,18 @@
     // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
     "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
-        "editor.suggest.snippetsPreventQ12uickSuggestions": false,
-        "editor.suggest.showSnippets": true,
-        "editor.suggest.preview": true,
+        // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
+        "editor.suggest.showWords": false,
+        "editor.suggest.showIssues": true,
+        "editor.suggest.showColors": true,
+        "editor.suggest.showFunctions": true,
+        "editor.suggestLineHeight": 0,
         // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.formatOnSave": true,
-        // "editor.snippetSuggestions": "none",
+        "editor.snippetSuggestions": "bottom",
         "files.encoding": "utf8bom",
         // "editor.formatOnSaveMode": "file",
         "editor.formatOnSaveMode": "modifications",
@@ -603,12 +606,13 @@
 
 
         */
-        "editor.autoIndent": "advanced",
-        "editor.semanticHighlighting.enabled": true,
-        "editor.snippetSuggestions": "inline",
-        "editor.suggest.showInlineDetails": true,
-        "editor.suggest.filterGraceful": true,
-        "editor.suggest.insertMode": "insert",
+        /*
+
+### Sect: other
+
+       tags: Tag1, Tag2
+
+*/
         "editor.suggest.localityBonus": false,
         "editor.suggest.showIcons": true,
         "editor.suggest.shareSuggestSelections": false,
@@ -670,7 +674,7 @@
     "powershell.integratedConsole.suppressStartupBanner": true,
     "powershell.notebooks.saveMarkdownCellsAs": "BlockComment",
     "powershell.notebooks.showToggleButton": true,
-    "powershell.powerShellDefaultVersion": "pwsh",
+    // "powershell.powerShellDefaultVersion": "pwsh",
     "powershell.powerShellDefaultVersion": "PowerShell (x64)",
     "powershell.promptToUpdatePowerShell": false,
     // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
@@ -932,23 +936,10 @@
     // makes left click instant
     "editor.cursorSmoothCaretAnimation": false,
     // "[toml]": {
-    // "editor.snippetSuggestions": "inline",
-    // "editor.suggest.snippetsPreventQuickSuggestions": true,
-    // "editor.suggest.showSnippets": true,
     // },
     // "editor.autoClosingBrackets": "beforeWhitespace",
     /*
 
-  ### Sect: addon: 'snippets.viewer'
-
-             tags:
-
-      */
-    "snippets.viewer.focusOnActiveEditorSnippets": true, // will merge extension and your custom snippets
-    "editor.snippetSuggestions": "none",
-    // "python.autoComplete.addBrackets": false,
-    // "terminal.integrated.automationShell.linux": null,
-    "workbench.list.automaticKeyboardNavigation": true, // false means only show your snippets
     /*
 
   ### Sect: Terminal Config
@@ -1166,7 +1157,7 @@
     "terminal.integrated.allowChords": true,
     "terminal.integrated.automationShell.windows": null,
     "terminal.integrated.allowWorkspaceConfiguration": false,
-    "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
+    "terminal.integrated.defaultProfile.windows": "Windows PowerShell",
     "terminal.integrated.enableFileLinks": true,
     "terminal.integrated.environmentChangesIndicator": "warnonly",
     /*
@@ -1334,9 +1325,6 @@
     // "editor.rulers": [
     //     120,
     // ],
-    "snippets.viewer.showOnlyActiveEditorLanguageSnippets": true,
-    "snippets.viewer.expandSnippetFiles": true,
-    "snippets.viewer.showBuiltInExtensionSnippets": false,
     // "window.titleBarStyle": "native",
     // "window.dialogStyle": "native",
     "editor.formatOnSave": true,
@@ -1350,51 +1338,66 @@
           https://code.visualstudio.com/docs/editor/variables-reference
       */
     "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        },
         "PowerShellfsds": {
             "source": "PowerShell",
             "icon": "terminal-powershell"
         },
         "Pwsh -NoProfile": {
-            // "env": {},
-            // "overrideName": false,
             "path": [
                 "pwsh.exe",
                 "C:/Program Files/PowerShell/7/pwsh.exe"
-                // "wt.exe",
-                // "C:/Users/cppmo_000/AppData/Local/Microsoft/WindowsApps/wt.exe"
-                // "${env:windir}\\Sysnative\\cmd.exe",
-                // "${env:windir}\\System32\\cmd.exe"
             ],
             "args": [
                 "-NoProfile",
                 "-NoLogo"
             ],
-            "icon": "terminal-powershell" //"terminal-cmd"
+            "icon": "terminal-powershell"
         },
         "PowerShell🐒": {
-            // "env": {},
-            // "overrideName": false,
             "path": [
                 "pwsh.exe",
                 "C:/Program Files/PowerShell/7/pwsh.exe"
-                // "wt.exe",
-                // "C:/Users/cppmo_000/AppData/Local/Microsoft/WindowsApps/wt.exe"
-                // "${env:windir}\\Sysnative\\cmd.exe",
-                // "${env:windir}\\System32\\cmd.exe"
             ],
             "args": [
-                // "-NoProfile",
                 "-NoLogo"
             ],
-            "icon": "terminal-powershell" //"terminal-cmd"
+            "icon": "terminal-powershell"
         },
-        "Git Bash": {
-            "source": "Git Bash"
+        "Windows PowerShell": {
+            "path": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [
+                "-NoLogo",
+                "-NoProfile"
+            ]
         }
     },
-    "editor.suggest.preview": true,
-    /* most of these are default */
-    "editor.rename.enablePreview": true,
+    //   "sortJSON.contextMenu": {
+    //       "sortJSON": true,
+    //       "sortJSONReverse": true,
+    //       "sortJSONKeyLength": true,
+    //       "sortJSONKeyLengthReverse": true,
+    //       "sortJSONAlphaNum": true,
+    //       "sortJSONAlphaNumReverse": true,
+    //       "sortJSONValues": true,
+    //       "sortJSONValuesReverse": true,
+    //       "sortJSONType": true,
+    //       "sortJSONTypeReverse": true
+    //   },
     "markdown.preview.doubleClickToSwitchToEditor": true,
     "markdown.preview.markEditorSelection": true,
     "markdown.preview.scrollEditorWithPreview": true,
@@ -1407,12 +1410,111 @@
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.mouseBackForwardToNavigate": true,
     // "workbench.editor.splitSizing": "split",
-    "editor.suggest.showSnippets": true,
-    "editor.acceptSuggestionOnCommitCharacter": true,
-    "editor.acceptSuggestionOnEnter": "smart",
-    "editor.suggest.snippetsPreventQuickSuggestions": true,
-    "editor.tabCompletion": "off",
     "workbench.editor.closeOnFileDelete": false,
     "python.analysis.extraPaths": [],
     "powershell.integratedConsole.showOnStartup": false,
+    /*
+
+        ### Sect: New inline suggestions
+
+
+               tags: experiment, snippet, test, suggest
+
+    */
+    /* most of these are default */
+    // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
+    // "editor.snippetSuggestions": "inline",
+    // "editor.suggest.snippetsPreventQuickSuggestions": true,
+    // "editor.suggest.showSnippets": true,
+    "editor.acceptSuggestionOnCommitCharacter": true,
+    "editor.acceptSuggestionOnEnter": "smart",
+    "editor.autoIndent": "advanced",
+    "editorshow"
+    "editor.rename.enablePreview": true,
+    "editor.semanticHighlighting.enabled": true,
+    "editor.snippetSuggestions": "bottom",
+    "editor.snippetSuggestions": "none",
+    "editor.suggest.filterGraceful": true,
+    "editor.suggest.insertMode": "insert",
+    "editor.suggest.preview": true,
+    "editor.suggest.preview": true,
+    "editor.suggest.previewMode": true,
+    "editor.suggest.showInlineDetails": true,
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": true,
+    "editor.tabCompletion": "off",
+    "snippets.viewer.combineLanguageSnippets": false,
+    // "snippets.viewer.skipLanguageSnippets": "",
+    "snippets.viewer.expandSnippetFiles": true,
+    "snippets.viewer.focusOnActiveEditorSnippets": true, // will merge extension and your custom snippets
+    "snippets.viewer.showBuiltInExtensionSnippets": true,
+    "snippets.viewer.showOnlyActiveEditorLanguageSnippets": true,
+    "workbench.list.automaticKeyboardNavigation": true, // false means only show your snippets
+    // "python.autoComplete.addBrackets": false,
+    // "terminal.integrated.automationShell.linux": null,
+    // Controls which mode to use for rendering the suggest preview.
+    //  - prefix: Only render a preview if the replace text is a prefix of the insert text.
+    //  - subwordDiff: Only render a preview if the replace text is a subword of the insert text.
+    "editor.suggest.previewMode": "prefix",
+    // When enabled IntelliSense shows `snippet`-suggestions.
+    "editor.suggest.showSnippets": true,
+    // Controls the visibility of the status bar at the bottom of the suggest widget.
+    "editor.suggest.showStatusBar": true,
+    // Controls whether an active snippet prevents quick suggestions.
+    "editor.suggest.snippetsPreventQuickSuggestions": true,
+    // Font size for the suggest widget. When set to `0`, the value of `editor.fontSize` is used.
+    "editor.suggestFontSize": 0,
+    // Line height for the suggest widget. When set to `0`, the value of `editor.lineHeight` is used. The minimum value is 8.
+    "editor.suggestLineHeight": 0,
+    // Controls whether suggestions should automatically show up when typing trigger characters.
+    "editor.suggestOnTriggerCharacters": true,
+    // Controls how suggestions are pre-selected when showing the suggest list.
+    //  - first: Always select the first suggestion.
+    //  - recentlyUsed: Select recent suggestions unless further typing selects one, e.g. `console.| -> console.log` because `log` has been completed recently.
+    //  - recentlyUsedByPrefix: Select suggestions based on previous prefixes that have completed those suggestions, e.g. `co -> console` and `con -> const`.
+    "editor.suggestSelection": "recentlyUsed",
+    // Enables tab completions.
+    //  - on: Tab complete will insert the best matching suggestion when pressing tab.
+    //  - off: Disable tab completions.
+    //  - onlySnippets: Tab complete snippets when their prefix match. Works best when 'quickSuggestions' aren't enabled.
+    "editor.tabCompletion": "off",
+    /*
+
+    ### Sect: Preview/limited buffer count config
+
+           tags: Tag1, Tag2
+
+    */
+    // Controls whether the last typed input to the command palette should be restored when opening it the next time.
+    "workbench.commandPalette.preserveInput": true,
+    // Controls whether opened editors show as preview. Preview editors do not keep open and are reused until explicitly set to be kept open (e.g. via double click or editing) and show up with an italic font style.
+    "workbench.editor.enablePreview": true,
+    "prevensug"
+    // Controls whether editors remain in preview when a code navigation is started from them. Preview editors do not keep open and are reused until explicitly set to be kept open (e.g. via double click or editing). This value is ignored when `workbench.editor.enablePreview` is disabled.
+    "workbench.editor.enablePreviewFromCodeNavigation": false,
+    // Controls whether editors opened from Quick Open show as preview. Preview editors do not keep open and are reused until explicitly set to be kept open (e.g. via double click or editing). This value is ignored when `workbench.editor.enablePreview` is disabled.
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    // Controls whether tabs are closed in most recently used order or from left to right.
+    "workbench.editor.focusRecentEditorAfterClose": true,
+    // Controls whether a top border is drawn on modified (dirty) editor tabs or not. This value is ignored when `workbench.editor.showTabs` is disabled.
+    "workbench.editor.highlightModifiedTabs": true,
+    // Controls the format of the label for an editor.
+    //  - default: Show the name of the file. When tabs are enabled and two files have the same name in one group the distinguishing sections of each file's path are added. When tabs are disabled, the path relative to the workspace folder is shown if the editor is active.
+    //  - short: Show the name of the file followed by its directory name.
+    //  - medium: Show the name of the file followed by its path relative to the workspace folder.
+    //  - long: Show the name of the file followed by its absolute path.
+    "workbench.editor.labelFormat": "default",
+    // Controls if the number of opened editors should be limited or not. When enabled, less recently used editors that are not dirty will close to make space for newly opening editors.
+    // "workbench.editor.limit.enabled": false,
+    // Controls if the limit of maximum opened editors should apply per editor group or across all editor groups.
+    // "workbench.editor.limit.perEditorGroup": false,
+    // Controls the maximum number of opened editors. Use the `workbench.editor.limit.perEditorGroup` setting to control this limit per editor group or across all groups.
+    // "workbench.editor.limit.value": 10,
+    // Navigate between open files using mouse buttons four and five if provided.
+    // Controls the sizing of pinned editor tabs. Pinned tabs are sorted to the beginning of all opened tabs and typically do not close until unpinned. This value is ignored when `workbench.editor.showTabs` is disabled.
+    //  - normal: A pinned tab inherits the look of non pinned tabs.
+    //  - compact: A pinned tab will show in a compact form with only icon or first letter of the editor name.
+    //  - shrink: A pinned tab shrinks to a compact fixed size showing parts of the editor name.
+    // "workbench.editor.pinnedTabSizing": "normal",
 }

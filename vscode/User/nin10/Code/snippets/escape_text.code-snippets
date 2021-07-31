@@ -69,18 +69,6 @@
             "},"
         ]
     },
-    "CmdletBinding": {
-        "prefix": "zznin CmdletBinding()",
-        "body": [
-            "[CmdletBinding()]",
-            "param (",
-            "    [Parameter(Mandatory, Position=0,",
-            "        HelpMessage=\"doc\")]",
-            "    [${1:TypeName}]$${2:ParameterName}$0",
-            ")"
-        ],
-        "description": "adds cmdlet attributes."
-    },
     "regex: strip extension": {
         // "description": "c:\\windows\\bar",
         // "scope": "json,jsonc",

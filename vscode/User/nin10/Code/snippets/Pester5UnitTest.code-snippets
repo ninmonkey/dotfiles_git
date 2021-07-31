@@ -2,7 +2,7 @@
     "Pester Function Test": {
         // source: JustinGrote : https://gist.github.com/JustinGrote/eaade376c3da5baf4455b7a51fa17444
         "scope": "ps1",
-        "prefix": "pt5",
+        "prefix": "PesterTest: NewFile",
         "body": [
             "#requires -modules @{ModuleName='Pester';RequiredVersion='5.0.0'}",
             "\\$SCRIPT:__PesterFunctionName = \\$myinvocation.MyCommand.Name.split('.')[0]",

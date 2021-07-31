@@ -123,7 +123,7 @@
             // "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
         ],
     },
-    "nin: Links To Markdown": {
+    "nin: Advanced Links To Markdown": {
         "prefix": "Advanced Url ⇢ Markdown",
         "description": "Links with Suggested names based on url. nin🐒 ⁞ Works better using  multipole cursors verses the basic one. Wraps selected url in markdown syntax  ; supports: multi",
         /*

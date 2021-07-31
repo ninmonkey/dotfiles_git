@@ -15,10 +15,10 @@
     // 	],
     // 	"description": "Log output to console"
     // }
-    "DOM.common.queryById | Unique Element": {
+    "dom.common | Get DOM Element by Id": {
         "scope": "javascript,typescript",
         "description": "document.QueryById | $(\"#element_id\")",
-        "prefix": "getElementById",
+        "prefix": "GetElemId",
         "body": [
             /*
             pattern:
@@ -31,8 +31,108 @@
 
                 const $name = document.getElementById("#name");
             */
-            "const $${1:name} = document.getElementById('#${2:${1:selector}}');",
+            // "const $${1:name} = document.getElementById('#${2:${1:selector}}');",
+            "const $${1:element_id} = document.getElementById('#${2:${1:selector}}');",
         ]
+    },
+    "Arrow Function =>": {
+        "scope": "javascript,typescript",
+        "prefix": "Arrow Function ⁞ nin",
+        "description": "nin🐒 ⁞ foo => { expr }",
+        "body": [ /*
+            input:
+                using ⋯
+
+            output:
+                ⋯
+
+            */
+            "const = () => {",
+            "   ${0}",
+            "}"
+        ],
+    },
+    "Fetch": {
+        "scope": "javascript,typescript",
+        "prefix": "fetch ⁞ nin",
+        "description": "nin🐒 ⁞ Fetch() request",
+        "body": [
+            /*
+            input:
+                using ⋯
+
+            output:
+                ⋯
+
+            */
+            "try {",
+            "   const res = await fetch('$1');",
+            "   const data = await res.json();",
+            "   $0",
+            "} catch (err) {",
+            "   console.error(err);",
+            "}"
+        ],
+    },
+    "Load Data Func": {
+        "scope": "javascript,typescript",
+        "prefix": "LoadDataFunc ⁞ nin",
+        "description": "nin🐒 ⁞ merged",
+        "body": [
+            /*
+            input:
+                using ⋯
+
+            output:
+                ⋯
+
+            */
+            "const $1 = async () => {",
+            "   try {",
+            "      const res = await fetch('$2');",
+            "      const data = await res.json();",
+            "      $0",
+            "   } catch (err) {",
+            "      console.error(err);",
+            "   }",
+            "}"
+        ],
+    },
+    "Add Event Listener": {
+        "scope": "javascript,typescript",
+        "prefix": "addEvent ⁞ nin",
+        "description": "nin🐒 ⁞ register Event",
+        "body": [
+            "$1.addEventListener('$2', (e) => {",
+            "   $0",
+            "});"
+            /*
+            input:
+                using ⋯
+
+            output:
+                ⋯
+
+            */
+        ],
+    },
+    "for loops": {
+        "scope": "javascript,typescript",
+        "prefix": "for Loop ⁞ nin",
+        "description": "nin🐒 ⁞ Basic enumeration",
+        "body": [ /*
+            input:
+                using ⋯
+
+            output:
+                ⋯
+
+            */
+            "for(let $index=0; $index < $array.length; $index++) {",
+            "   const element = $array[$index];",
+            "   ",
+            "}"
+        ],
     },
     // "DOM.common.queryById | Unique Element2": {
     //     "scope": "javascript,typescript",
