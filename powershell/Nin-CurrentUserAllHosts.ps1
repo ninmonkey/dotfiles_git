@@ -1,5 +1,8 @@
-using namespace PoshCode.Pansies
 #Requires -Version 7.0.0
+using namespace PoshCode.Pansies
+# $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
+# $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
+# $ErrorActionPreference = 'continue'
 
 $__ninConfig = @{
     EnableGreetingOnLoad       = $true
@@ -149,9 +152,12 @@ $env:NinNow = Get-Item $Env:Nin_Home
 
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 $Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
+
 $Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 $Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
 
+
+# Import-Module Ninmonkey.Console
 
 function _profileEventOnFinalLoad {
     function _writeTodoGreeting {
@@ -359,13 +365,8 @@ if (Test-Path $Env:Nin_PSModulePath) {
         $env:PSModulePath = $Env:Nin_PSModulePath, $env:PSModulePath -join ';'
     }
 }
+$Env:PSModulePath = $Env:PSModulePath, 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell' -join ';'
 Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
-
-& {
-    $p = (Get-Item -ea stop (Join-Path  $Env:Nin_Dotfiles 'powershell\Ninmonkey.Profile\Ninmonkey.Profile.psd1' ))
-    Write-Debug "Import-Module: '$p'"
-    Import-Module -Name $p -Force #-ea stop
-}
 
 <#
     [section]: Optional imports
@@ -374,6 +375,7 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
     $splatMaybeWarn = @{}
     if ($__ninConfig.Module.IgnoreImportWarning) {
         $splatMaybeWarn['Warning-Action'] = 'Ignore'
+        # $splatMaybeWarn['WarningAction'] = 'continue'
     }
     # Soft/Optional Requirements
     $OptionalImports = @(
@@ -395,6 +397,9 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
     }
 }
 
+
+# finally "profile"
+Import-Module Ninmonkey.Profile
 & {
 
     # currently, all profiles use utf8
@@ -449,6 +454,7 @@ function Prompt {
 }
 
 
+# ie: Lets you set aw breakpoint that fires only once on prompt
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
 # $prompt2
 
