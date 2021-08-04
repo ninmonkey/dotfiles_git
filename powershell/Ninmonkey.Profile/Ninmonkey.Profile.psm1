@@ -1,51 +1,54 @@
 $script:_state = @{}
 
-& {
-    $s_optionalItem = @{
-        'ErrorAction' = 'SilentlyContinue'
-    }
-    <#
+# & {
+$s_optionalItem = @{
+    'ErrorAction' = 'SilentlyContinue'
+    # 'ErrorAction' = 'ignore'
+}
+<#
     Handling $NinProfile_Dotfiles as a script variable that's exported has the benifit that
         - it acts like a 'global' for the user
         - dies if you call 'remove-module' in the current session
     #>
-    $script:NinProfile_Dotfiles = @{
-        # todo: should be a commandlet response ?
-        Bat                    = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\bat\.batrc"
-        RipGrep                = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\ripgrep\.ripgreprc"
-        BashProfile            = Get-Item @s_optionalItem "$env:Nin_Dotfiles\wsl\home\.bash_profile"
-        WindowsTerminalPreview = Get-Item @s_optionalItem "$env:LocalAppData\Packreges\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
-        WindowsTerminal        = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-        vscode                 = @{
-            ExtensionDir = Get-Item "$env:UserProfile\.vscode\extensions"
-            User         = Get-Item "$env:appdata\Code\User\settings.json"
-        }
-        Git                    = @{
-            GlobalIgnore = Get-Item @s_optionalItem "$env:Nin_Dotfiles\git\global_ignore.gitignore"
-            Config       = @(
-                Get-Item @s_optionalItem '~\.gitconfig' # symlink or to dotfile?
-                Get-Item @s_optionalItem "$env:Nin_Dotfiles\git\homedir\.gitconfig"
-            ) | Sort-Object -Unique FullName
+$script:NinProfile_Dotfiles = @{
+    # todo: should be a commandlet response ?
+    Bat                    = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\bat\.batrc"
+    RipGrep                = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\ripgrep\.ripgreprc"
+    BashProfile            = Get-Item @s_optionalItem "$env:Nin_Dotfiles\wsl\home\.bash_profile"
+    WindowsTerminalPreview = Get-Item @s_optionalItem "$env:LocalAppData\Packreges\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+    WindowsTerminal        = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+    vscode                 = @{
+        ExtensionDir = Get-Item "$env:UserProfile\.vscode\extensions"
+        User         = Get-Item "$env:appdata\Code\User\settings.json"
+    }
+    Git                    = @{
+        GlobalIgnore = Get-Item @s_optionalItem "$env:Nin_Dotfiles\git\global_ignore.gitignore"
+        Config       = @(
+            Get-Item @s_optionalItem '~\.gitconfig' # symlink or to dotfile?
+            Get-Item @s_optionalItem "$env:Nin_Dotfiles\git\homedir\.gitconfig"
+        ) | Sort-Object -Unique FullName
 
-            PowerBI      = @{
-                # See my PowerBI module for tons of PBI paths
-                'ExternalToolsConfig' = Get-Item 'C:\Program Files (x86)\Common Files\Microsoft Shared\Power BI Desktop\External Tools'
-            }
-
+        PowerBI      = @{
+            # See my PowerBI module for tons of PBI paths
+            'ExternalToolsConfig' = Get-Item 'C:\Program Files (x86)\Common Files\Microsoft Shared\Power BI Desktop\External Tools'
         }
+
     }
 }
+# }
 Export-ModuleMember -Variable 'NinProfile_Dotfiles'
 
-& {
-    New-Alias 'codei' -Value 'code-insiders' -Description 'VS Code insiders version' -PassThru
-    New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text' -PassThru
+# & {
+New-Alias 'codei' -Value 'code-insiders' -Description 'VS Code insiders version' -PassThru
+New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text' -PassThru
+New-Alias -Name 'wi' -Value 'Write-Information'
 
-    Export-ModuleMember -Alias @(
-        'codei'
-        'CtrlChar'
-    )
-}
+Export-ModuleMember -Alias @(
+    'codei'
+    'CtrlChar'
+    'wi'
+)
+# }
 
 
 function _Write-PromptGitStatus {

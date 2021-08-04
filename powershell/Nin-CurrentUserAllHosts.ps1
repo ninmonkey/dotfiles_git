@@ -5,6 +5,7 @@ using namespace PoshCode.Pansies
 # $ErrorActionPreference = 'continue'
 
 $__ninConfig = @{
+    # HackSkipLoadCompleters     = $true
     EnableGreetingOnLoad       = $true
     UseAggressiveAlias         = $true
     ImportGitBash              = $true  # __doc__: Include gitbash binaries in path+gcm
