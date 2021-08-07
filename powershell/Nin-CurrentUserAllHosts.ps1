@@ -374,9 +374,9 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 #>
 & {
     $splatMaybeWarn = @{}
+
     if ($__ninConfig.Module.IgnoreImportWarning) {
         $splatMaybeWarn['Warning-Action'] = 'Ignore'
-        # $splatMaybeWarn['WarningAction'] = 'continue'
     }
     # Soft/Optional Requirements
     $OptionalImports = @(
@@ -389,33 +389,26 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
         # 'ZLocation'
     )
     $OptionalImports
-    | Join-String -sep ', ' -SingleQuote -op 'Loading Modules:'
-    | Write-Verbose
+    | Join-String -sep ', ' -SingleQuote -op '[v] Loading Modules:' | Write-Verbose
 
     $OptionalImports | ForEach-Object {
-        Write-Debug "Import-Module: $_"
-        Import-Module $_ @splatMaybeWarn
+        Write-Debug "[v] Import-Module: $_"
+        Import-Module $_ @splatMaybeWarn -DisableNameChecking
     }
 }
 
 
 # finally "profile"
-Import-Module Ninmonkey.Profile
-& {
+Import-Module Ninmonkey.Profile -DisableNameChecking
+# & {
 
-    # currently, all profiles use utf8
-    Set-ConsoleEncoding Utf8 | Out-Null
-
-    <#
-    .synopsis
-        AfterModuleLoadEvent:
-    #>
-
-    if (!(Test-UserIsAdmin)) {
-        Import-NinPSReadLineKeyHandler
-        # Maybe also remove modules 'Dev.Nin', 'PSFzf', or PSReadLineBeta ?
-    }
+# currently, all profiles use utf8
+Set-ConsoleEncoding Utf8 | Out-Null
+if (!(Test-UserIsAdmin)) {
+    Import-NinPSReadLineKeyHandler
+    # Maybe also remove modules 'Dev.Nin', 'PSFzf', or PSReadLineBeta ?
 }
+# }
 <#
     [section]: Optional Paths
 

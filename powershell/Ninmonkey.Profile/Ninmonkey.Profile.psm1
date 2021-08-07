@@ -2,7 +2,7 @@ $script:_state = @{}
 
 # & {
 $s_optionalItem = @{
-    'ErrorAction' = 'SilentlyContinue'
+    'ErrorAction' = 'silentlycontinue'
     # 'ErrorAction' = 'ignore'
 }
 <#
@@ -15,7 +15,7 @@ $script:NinProfile_Dotfiles = @{
     Bat                    = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\bat\.batrc"
     RipGrep                = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\ripgrep\.ripgreprc"
     BashProfile            = Get-Item @s_optionalItem "$env:Nin_Dotfiles\wsl\home\.bash_profile"
-    WindowsTerminalPreview = Get-Item @s_optionalItem "$env:LocalAppData\Packreges\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+    WindowsTerminalPreview = "$env:LocalAppData\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
     WindowsTerminal        = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
     vscode                 = @{
         ExtensionDir = Get-Item "$env:UserProfile\.vscode\extensions"

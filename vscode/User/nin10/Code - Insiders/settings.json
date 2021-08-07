@@ -382,6 +382,28 @@
     "window.title": "${rootName}$separator}${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
     "terminal.integrated.cwd": "${fileDirname}",
     "powershell.cwd": "${fileDirname}",
+    "insert-unicode.favorites": {
+        "directories": {
+            "filepath": {
+                "directories": {},
+                "items": [
+                    [
+                        10143,
+                        9488
+                    ]
+                ]
+            }
+        },
+        "items": [
+            [
+                9488
+            ],
+            [
+                10143
+            ]
+        ]
+    },
+    "vsicons.dontShowNewVersionMessage": true,
     /*
 
     ## Section: Dotnet, interactive, notebooks
