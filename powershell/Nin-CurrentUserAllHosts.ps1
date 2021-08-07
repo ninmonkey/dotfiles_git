@@ -50,12 +50,10 @@ function rebash {
     if ($parent -eq 'code') {
         $__ninConfig.Terminal.CurrentTerminal = 'code'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'Code - Insiders') {
+    } elseif ($parent -eq 'Code - Insiders') {
         $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'windowsterminal') {
+    } elseif ($parent -eq 'windowsterminal') {
         # preview still uses this name
         $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
     }
@@ -286,8 +284,7 @@ if ($__ninConfig.UsePSReadLinePredict) {
     try {
         Set-PSReadLineOption -PredictionSource History
         Set-PSReadLineOption -PredictionViewStyle ListView
-    }
-    catch {
+    } catch {
         Write-Error 'Failed: -PredictionSource History'
     }
 }
@@ -295,12 +292,22 @@ if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
         Set-PSReadLineOption -PredictionViewStyle ListView
-    }
-    catch {
+    } catch {
         Write-Error 'Failed: -PredictionSource HistoryAndPlugin'
     }
 }
 
+& {
+    <#
+    AddLine
+        moves to next line, bringing any remaining text with it
+    AddLineBelow
+        Adds and moves to next line, leaving text where it was.
+    #>
+    Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
+    Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
+    Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
+}
 
 
 if ($false -and 'ask for command equiv') {

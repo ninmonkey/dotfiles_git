@@ -17,6 +17,7 @@
 # h1: Experimenting
 
     */
+    "terminal.integrated.sendKeybindingsToShell": true,
     "powerquery.trace.server": "verbose",
     "editor.suggest.preview": true,
     "terminal.integrated.automationShell.windows": null, // what does it do?
@@ -25,7 +26,7 @@
     "powershell.pester.debugOutputVerbosity": "Diagnostic",
     "powershell.pester.outputVerbosity": "FromPreference",
     "terminal.integrated.allowWorkspaceConfiguration": false,
-    "terminal.integrated.sendKeybindingsToShell": false,
+    "terminal.integrated.sendKeybindingsToShell": true,
     "editor.mouseWheelScrollSensitivity": 2,
     "terminal.integrated.mouseWheelScrollSensitivity": 2,
     // "terminal.integrated.cwd": "",
@@ -70,6 +71,9 @@
     "debug.terminal.clearBeforeReusing": false,
     // "terminal.explorerKind": "external",
     "terminal.integrated.altClickMovesCursor": true, // interesting
+    "terminal.integrated.allowMnemonics": false, //  Note that this will cause all alt keystrokes to skip the shell when true.
+    // Whether or not to allow chord keybindings in the terminal. Note that when this is true and the keystroke results in a chord it will bypass `terminal.integrated.commandsToSkipShell`, setting this to false is particularly useful when you want ctrl+k to go to your shell (not VS Code).
+    "terminal.integrated.allowChords": true,
     /*
 # h1: Language Config
 

@@ -8,3 +8,4 @@
 # **/*.log ?
 desktop.ini
 everythingSearch/debug.log
+*.dll
