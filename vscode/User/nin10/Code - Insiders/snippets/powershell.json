@@ -26,6 +26,35 @@
         https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
+    /*
+    Add one like
+        $_.psobject.properties | %{ $_.Name, $_.value -join ' = ' }
+
+    */
+    "Snippet ⇢ PSObject Properties": {
+        /*
+
+        input:
+
+            $x
+
+        output:
+
+            $x.psobject.properties | ForEach-Object {
+               $_.TypeNameOfValue, $_.Name, $_.value -join ' = '
+            }
+
+        */
+        "prefix": "listProps : PSObject.properties : 🐒",
+        "body": [
+            // $_.TypeNameOfValue, $_.Name, $_.value -join ' = '
+            "${TM_SELECTED_TEXT}.psobject.properties | ForEach-Object {",
+            // "   $$_.${2:$$_.$$_.Name, $$_.value -join ' = '}",
+            "   ${2:$$_.TypeNameOfValue, $$_.Name, $$_.value -join ' = '}",
+            "}"
+        ],
+        "description": "inline definition to enumrate over '$_.PSObject.Properties' "
+    },
     "herestring variables": {
         "prefix": "hereStr : Variable 🐒",
         "body": [
