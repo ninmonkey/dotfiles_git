@@ -17,10 +17,9 @@
 # h1: Experimenting
 
     */
+    "powerquery.trace.server": "verbose",
     "editor.suggest.preview": true,
-    "terminal.integrated.automationShell.windows": null,
-    // "powershell.developer.featureFlags": null,
-    "powershell.helpCompletion": "LineComment", // what does it do?
+    "terminal.integrated.automationShell.windows": null, // what does it do?
     "powershell.integratedConsole.showOnStartup": true,
     // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
     "powershell.pester.debugOutputVerbosity": "Diagnostic",
@@ -192,6 +191,7 @@
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
     "powershell.codeFormatting.whitespaceInsideBrace": true,
+    "powershell.codeFormatting.newLineAfterCloseBrace": false, // on will fails test: PSScriptAnalyzer(PSPlaceCloseBrace)
     "[powerquery]": {
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // previous default
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // new default
@@ -404,6 +404,10 @@
         ]
     },
     "vsicons.dontShowNewVersionMessage": true,
+    "powershell.buttons.showPanelMovementButtons": true,
+    "powershell.helpCompletion": "LineComment",
+    "powershell.sideBar.CommandExplorerVisibility": false,
+    "errorLens.enabled": false,
     /*
 
     ## Section: Dotnet, interactive, notebooks
