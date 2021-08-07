@@ -41,6 +41,10 @@ $__ninConfig = @{
     }
 }
 
+<#
+env vars to check
+'ChocolateyInstall', 'ChocolateyToolsLocation', 'FZF_CTRL_T_COMMAND', 'FZF_DEFAULT_COMMAND', 'FZF_DEFAULT_OPTS', 'HOMEPATH', 'Nin_Dotfiles', 'Nin_Home', 'Nin_PSModulePath', 'NinNow', 'Pager', 'PSModulePath', 'WSLENV', 'BAT_CONFIG_PATH', 'RIPGREP_CONFIG_PATH', 'Pager', 'PSMODULEPATH'
+#>
 function rebash {
     # quickly reload my modules for dev
     Import-Module -Name 'Ninmonkey.Console', 'Dev.nin' -Force 3>$1 | Out-Null
@@ -64,6 +68,7 @@ function rebash {
     }
     if ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) {
         Import-Module EditorServicesCommandSuite
+        Set-PSReadLineKeyHandler -Chord "$([char]0x2665)" -Function AddLine # work around for shift+enter pasting a newline
     }
 }
 

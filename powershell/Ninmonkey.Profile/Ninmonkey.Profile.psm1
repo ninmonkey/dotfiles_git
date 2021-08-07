@@ -214,3 +214,14 @@ if ($true) {
         '_Write-VerboseDebugPrompt'
     )
 }
+
+& {
+    $src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
+    if (Test-Path $src) {
+        . $src
+        Export-ModuleMember -Function 'Backup-VSCode'
+    }
+}
+
+Get-ChildItem fg: | Where-Object { $_.X11ColorName -match 'alm|moun' } | Sort-Object Rgb | ForEach-Object { New-Text $_.x11ColorName -fg $_ } | Join-String -sep ' . '
+| Write-Host
