@@ -434,9 +434,83 @@
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false
     },
+    /*
+    ### Sect: Prettier
+
+           tags: Formatting, Addon
+
+    */
+    // Include parentheses around a sole arrow function parameter
+    "prettier.arrowParens": "always",
+    // Controls the printing of spaces inside object literals
+    "prettier.bracketSpacing": true,
+    // Path to the prettier configuration file
+    "prettier.configPath": "",
+    // This feature is no longer supported. Instead, configure VS Code [default formatters](https://github.com/prettier/prettier-vscode#default-formatter) or use .prettierignore.
+    // A list of languages IDs to disable this extension on
+    "prettier.disableLanguages": [],
+    // A list of [glob patterns](https://code.visualstudio.com/api/references/vscode-api#GlobPattern) to register Prettier formatter
+    "prettier.documentSelectors": [],
+    // Control whether Prettier formats quoted code embedded in the file.
+    "prettier.embeddedLanguageFormatting": "auto",
+    // Controls whether prettier is enabled or not.
+    "prettier.enable": true,
+    // Enable debug logs for troubleshooting.
+    "prettier.enableDebugLogs": false,
+    // Specify the end of line used by prettier
+    "prettier.endOfLine": "lf",
+    // Specify the global whitespace sensitivity for HTML files.
+    //  Valid options:
+    // - `css` - Respect the default value of CSS display property.
+    // - `strict` - Whitespaces are considered sensitive.
+    // - `ignore` - Whitespaces are considered insensitive.
+    "prettier.htmlWhitespaceSensitivity": "css",
+    // Path to a .prettierignore file
+    "prettier.ignorePath": ".prettierignore",
+    // Prettier can insert a special @format marker at the top of files specifying that the file has been formatted with prettier. This works well when used in tandem with the `--require-pragma` option. If there is already a docblock at the top of the file then this option will add a newline to it with the @format marker.
+    "prettier.insertPragma": false,
+    // If true, puts the `>` of a multi-line jsx element at the end of the last line instead of being alone on the next line
+    "prettier.jsxBracketSameLine": false,
+    // Use single quotes instead of double quotes in JSX
+    "prettier.jsxSingleQuote": false,
+    // Package manager is now automatically detected by VS Code. This setting is no longer used.
+    // The package manager you use to install node modules.
+    // "prettier.packageManager": "npm",
+    // Path to the prettier module
+    "prettier.prettierPath": "",
+    // Fit code within this line limit
+    // (Markdown) wrap prose over multiple lines
+    "prettier.proseWrap": "preserve",
+    // Change when properties in objects are quoted
+    "prettier.quoteProps": "as-needed",
+    // Require a prettier configuration file to format. See [documentation for valid configuration files](https://prettier.io/docs/en/configuration.html).
+    //
+    // > _Note, untitled files will still be formatted using the VS Code prettier settings even when this setting is set._
+    "prettier.requireConfig": false,
+    // Prettier can restrict itself to only format files that contain a special comment, called a pragma, at the top of the file. This is very useful when gradually transitioning large, unformatted codebases to prettier.
+    "prettier.requirePragma": false,
+    // When enabled, this extension will attempt to use global npm or yarn modules if local modules cannot be resolved.
+    // > _This setting can have a negative performance impact, particularly on Windows when you have attached network drives. Only enable this if you must use global modules._
+    "prettier.resolveGlobalModules": false,
+    // Whether to add a semicolon at the end of every line
+    "prettier.semi": true,
+    // If true, will use single instead of double quotes
+    "prettier.singleQuote": false,
+    // Controls the printing of trailing commas wherever possible. Valid options:
+    // - `none` - No trailing commas
+    // - `es5` - Trailing commas where valid in ES5 (objects, arrays, etc)
+    // - `all` - Trailing commas wherever possible (function arguments)
+    "prettier.trailingComma": "es5",
+    // Whether or not to take `.editorconfig` into account when parsing configuration. See the [prettier.resolveConfig](https://prettier.io/docs/en/api.html) docs for details.
+    "prettier.useEditorConfig": true,
+    // Indent lines with tabs
+    "prettier.useTabs": false,
+    // Whether or not to indent the code inside `<script>` and `<style>` tags in Vue files. Some people (like the creator of Vue) don’t indent to save an indentation level, but this might break code folding in your editor.
+    "prettier.vueIndentScriptAndStyle": false,
+    // If true, this extension will process files in node_modules
+    "prettier.withNodeModules": false,
     "prettier.printWidth": 140,
-    "prettier.tabWidth": 4,
-    "git.showPushSuccessNotification": true,
+    "prettier.tabWidth": 4, // 2
     "terminal.integrated.drawBoldTextInBrightColors": true,
     // "editor.quickSuggestions": {
     //     "other": true,
@@ -1513,11 +1587,72 @@
         "default": "right",
         "jupyter-notebook": "left"
     },
+    /*
+
+    ### Sect: Insert-Unicode
+
+           tags: Addon, Text, Unicode
+
+    */
+    // Determines whether user and workspace favorite directory trees are separated into their own folders or merged when using the insert favorite command.
+    "insert-unicode.favoritesScopeBehavior": "merge",
+    // The maximal number of characters identified in the 'Identify' panel. Lower this limit if you experience performance issues.
+    "insert-unicode.identifyViewCharacterLimit": 100,
+    // The number of milliseconds to wait before updating the 'Identify' panel after the selection has changed. Increase this delay if you experience performance issues.
+    "insert-unicode.identifyViewUpdateDelay": 100,
+    // Include entries made up of a sequence of Unicode code points; some Emoji are defined this way.
+    "insert-unicode.include-sequences": true,
+    // Include skin tone variations of Emoji in the search. This adds five entries for every Emoji that supports skin tone modifiers. (Only has an impact if sequences are enabled; See: include-sequences)
+    "insert-unicode.include-skin-tone-variants": false,
+    // The maximal number of items shown on one search page.
+    "insert-unicode.page-size": 500,
+    // The maximal number of recently used characters to show at the top of the list.
+    "insert-unicode.recentlyUsedLimit": 20,
+    // Relevant for the 'Identify Unicode Characters' command. If set to 'true', the results of the 'Identify Unicode Characters' command will always be displayed in a new file. When 'false', an info notification is shown which also offers the option to open the contents as file.
+    "insert-unicode.show-identified-characters-in-file": false,
+    // Always use a normal space character instead of higher width spaces when using the 'insertFont' command. Some of the fonts use a different space character to account for larger character widths.
+    "insert-unicode.unicode-font-use-regular-space": false,
+    // Disable the paged search and perform live filtering on the entire Unicode set. Can have performance issues.
+    "insert-unicode.disable-pre-filtering": true,
+    // Enables showing and searching Unicode character aliases.
+    "insert-unicode.enableAliases": true,
+    // Shows recently inserted characters at the top of the list.
+    "insert-unicode.enableRecentlyUsed": true,
+    // Directory tree of favorite unicode characters which can be accessed via the 'Insert from Favorites' commands.
+    // Use the 'Manage Favorites' command to edit this setting.
+    // (Every tree node can have a 'directories' and 'items' property. 'directories' is a dictionary where the keys are the directory names and the values are tree nodes. 'items' is an array of arrays, because some emoji are constructed from sequences of code points. Any sequence of code points can be used.
+    // JSON does not support hex notation, but it can be passed wrapped in a string, e.g.: "0x1f525".)
     "insert-unicode.favorites": {
-        "directories": {},
+        "directories": {
+            "block: Spacing": {
+                "directories": {},
+                "items": [
+                    [
+                        8
+                    ]
+                ]
+            },
+            "delims": {
+                "directories": {},
+                "items": [
+                    [
+                        8211
+                    ],
+                    [
+                        8212
+                    ],
+                    [
+                        8213
+                    ]
+                ]
+            }
+        },
         "items": [
             [
                 2
+            ],
+            [
+                544
             ]
         ]
     },
@@ -1537,9 +1672,26 @@
 
     ### Sect: Diff (native)
 
-           tags: Diff, Style
+           tags: Diff, Style, <experiment>
 
     */
+    // Controls whether the diff editor should be opened when clicking a change. Otherwise the regular editor will be opened.
+    "git.openDiffOnClick": true,
+    // Controls whether the editor shows CodeLens.
+    "diffEditor.codeLens": true, // <experiment>
+    // When enabled, the diff editor ignores changes in leading or trailing whitespace.
+    "diffEditor.ignoreTrimWhitespace": true,
+    // Timeout in milliseconds after which diff computation is cancelled. Use 0 for no timeout.
+    "diffEditor.maxComputationTime": 5000,
+    // Controls whether the diff editor shows +/- indicators for added/removed changes.
+    "diffEditor.renderIndicators": false, // false since colors are enabled
+    // Controls whether the diff editor shows the diff side by side or inline.
+    "diffEditor.renderSideBySide": true,
+    //
+    //  - off: Lines will never wrap.
+    //  - on: Lines will wrap at the viewport width.
+    //  - inherit: Lines will wrap according to the `editor.wordWrap` setting.
+    "diffEditor.wordWrap": "inherit",
     /*
 
     ### Sect: Diff (gitlens)
@@ -1547,4 +1699,92 @@
            tags: Addon, Diff, Style
 
     */
+    /*
+
+    ### Sect: Diff (notebook)
+
+           tags: Diff, Addon?
+
+    */
+    // Whether to use the enhanced text diff editor for notebook.
+    "notebook.diff.enablePreview": true,
+    // Hide Metadata Differences
+    "notebook.diff.ignoreMetadata": false,
+    // Hide Outputs Differences
+    "notebook.diff.ignoreOutputs": false,
+    /*
+
+    ### Sect: diff (more git)
+
+           tags: Native?, Addon?, Diff, Git
+
+    */
+    // Controls whether Git should check for unsaved files before committing.
+    //  - always: Check for any unsaved files.
+    //  - staged: Check only for unsaved staged files.
+    //  - never: Disable this check.
+    "git.promptToSaveFilesBeforeCommit": "always",
+    // Controls whether Git should check for unsaved files before stashing changes.
+    //  - always: Check for any unsaved files.
+    //  - staged: Check only for unsaved staged files.
+    //  - never: Disable this check.
+    "git.promptToSaveFilesBeforeStash": "always",
+    // Prune when fetching.
+    "git.pruneOnFetch": false,
+    // Fetch all tags when pulling.
+    "git.pullTags": true,
+    // Force git to use rebase when running the sync command.
+    "git.rebaseWhenSync": false,
+    // Controls whether to require explicit Git user configuration or allow Git to guess if missing.
+    "git.requireGitUserConfig": true,
+    // List of paths to search for git repositories in.
+    "git.scanRepositories": [],
+    // Controls whether to show the commit input in the Git source control panel.
+    "git.showCommitInput": true,
+    // Controls whether to show an inline Open File action in the Git changes view.
+    "git.showInlineOpenFileAction": true,
+    // Controls whether git actions should show progress.
+    "git.showProgress": true,
+    // Controls whether to show a notification when a push is successful.
+    "git.showPushSuccessNotification": false,
+    // Control which changes are automatically staged by Smart Commit.
+    //  - all: Automatically stage all changes.
+    //  - tracked: Automatically stage tracked changes only.
+    "git.smartCommitChanges": "all",
+    // Suggests to enable smart commit (commit all changes when there are no staged changes).
+    "git.suggestSmartCommit": true,
+    // Controls whether a notification comes up when running the Sync action, which allows the user to cancel the operation.
+    "git.supportCancellation": false,
+    // Controls whether to enable VS Code to be the authentication handler for git processes spawned in the integrated terminal. Note: terminals need to be restarted to pick up a change in this setting.
+    "git.terminalAuthentication": true,
+    // Controls which date to use for items in the Timeline view.
+    //  - committed: Use the committed date
+    //  - authored: Use the authored date
+    "git.timeline.date": "committed",
+    // Controls whether to show the commit author in the Timeline view.
+    "git.timeline.showAuthor": true,
+    // Controls how untracked changes behave.
+    //  - mixed: All changes, tracked and untracked, appear together and behave equally.
+    //  - separate: Untracked changes appear separately in the Source Control view. They are also excluded from several actions.
+    //  - hidden: Untracked changes are hidden and excluded from several actions.
+    "git.untrackedChanges": "mixed",
+    // Controls whether to use the message from the commit input box as the default stash message.
+    "git.useCommitInputAsStashMessage": false,
+    // Controls whether force pushing uses the safer force-with-lease variant.
+    "git.useForcePushWithLease": true,
+    // Controls whether to enable automatic GitHub authentication for git commands within VS Code.
+    "github.gitAuthentication": true,
+    // URI of your GitHub Enterprise Instance
+    "github-enterprise.uri": "",
+    // Whether to automatically navigate to the next merge conflict after resolving a merge conflict.
+    "merge-conflict.autoNavigateNextConflict.enabled": false,
+    // Create a CodeLens for merge conflict blocks within editor.
+    "merge-conflict.codeLens.enabled": true,
+    // Create decorators for merge conflict blocks within editor.
+    "merge-conflict.decorators.enabled": true,
+    // Controls where the diff view should be opened when comparing changes in merge conflicts.
+    //  - Current: Open the diff view in the current editor group.
+    //  - Beside: Open the diff view next to the current editor group.
+    //  - Below: Open the diff view below the current editor group.
+    "merge-conflict.diffViewPosition": "Current",
 }
