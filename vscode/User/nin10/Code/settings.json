@@ -573,7 +573,7 @@
     "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
-        "editor.suggest.showWords": false,
+        "editor.suggest.showWords": true,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
         "editor.suggest.showFunctions": true,
@@ -613,7 +613,8 @@
        tags: Tag1, Tag2
 
 */
-        "editor.suggest.localityBonus": false,
+        // "editor.suggest.localityBonus": false,
+        "editor.suggest.localityBonus": true,
         "editor.suggest.showIcons": true,
         "editor.suggest.shareSuggestSelections": false,
         "editor.suggest.showStatusBar": true,
@@ -629,8 +630,8 @@
         "editor.find.autoFindInSelection": "multiline",
         "editor.suggest.showSnippets": true,
         "editor.suggest.preview": true,
-        "editor.inlayHints.enabled": true,
         "editor.inlineSuggest.enabled": true,
+        "editor.inlayHints.enabled": true,
         "editor.autoSurround": "languageDefined",
         "editor.colorDecorators": true,
         "editor.columnSelection": false,
@@ -638,6 +639,8 @@
         // "editor.cursorSurroundingLines": 0,
         "editor.quickSuggestionsDelay": 10,
         "editor.quickSuggestionsDelay": 300,
+        "editor.quickSuggestionsDelay": 800,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
         "editor.wordBasedSuggestions": true,
         "editor.wordBasedSuggestionsMode": "matchingDocuments",
         "editor.quickSuggestions": {
@@ -676,6 +679,8 @@
     "powershell.notebooks.showToggleButton": true,
     // "powershell.powerShellDefaultVersion": "pwsh",
     "powershell.powerShellDefaultVersion": "PowerShell (x64)",
+    "powershell.codeFormatting.alignPropertyValuePairs": true,
+    "powershell.codeFormatting.newLineAfterOpenBrace": false,
     "powershell.promptToUpdatePowerShell": false,
     // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
     // "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
@@ -729,7 +734,7 @@
       applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
   */
     "workbench.editorAssociations": {
-        "*.ipynb": "jupyter.notebook.ipynb"
+        "*.ipynb": "jupyter-notebook"
     },
     /*
 
@@ -1429,7 +1434,7 @@
     "editor.acceptSuggestionOnCommitCharacter": true,
     "editor.acceptSuggestionOnEnter": "smart",
     "editor.autoIndent": "advanced",
-    "editorshow"
+    "editor.suggest.showClasses": true,
     "editor.rename.enablePreview": true,
     "editor.semanticHighlighting.enabled": true,
     "editor.snippetSuggestions": "bottom",
@@ -1490,7 +1495,6 @@
     "workbench.commandPalette.preserveInput": true,
     // Controls whether opened editors show as preview. Preview editors do not keep open and are reused until explicitly set to be kept open (e.g. via double click or editing) and show up with an italic font style.
     "workbench.editor.enablePreview": true,
-    "prevensug"
     // Controls whether editors remain in preview when a code navigation is started from them. Preview editors do not keep open and are reused until explicitly set to be kept open (e.g. via double click or editing). This value is ignored when `workbench.editor.enablePreview` is disabled.
     "workbench.editor.enablePreviewFromCodeNavigation": false,
     // Controls whether editors opened from Quick Open show as preview. Preview editors do not keep open and are reused until explicitly set to be kept open (e.g. via double click or editing). This value is ignored when `workbench.editor.enablePreview` is disabled.
@@ -1505,6 +1509,18 @@
     //  - medium: Show the name of the file followed by its path relative to the workspace folder.
     //  - long: Show the name of the file followed by its absolute path.
     "workbench.editor.labelFormat": "default",
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "insert-unicode.favorites": {
+        "directories": {},
+        "items": [
+            [
+                2
+            ]
+        ]
+    },
     // Controls if the number of opened editors should be limited or not. When enabled, less recently used editors that are not dirty will close to make space for newly opening editors.
     // "workbench.editor.limit.enabled": false,
     // Controls if the limit of maximum opened editors should apply per editor group or across all editor groups.
@@ -1517,4 +1533,18 @@
     //  - compact: A pinned tab will show in a compact form with only icon or first letter of the editor name.
     //  - shrink: A pinned tab shrinks to a compact fixed size showing parts of the editor name.
     // "workbench.editor.pinnedTabSizing": "normal",
+    /*
+
+    ### Sect: Diff (native)
+
+           tags: Diff, Style
+
+    */
+    /*
+
+    ### Sect: Diff (gitlens)
+
+           tags: Addon, Diff, Style
+
+    */
 }
