@@ -8,8 +8,7 @@ function Backup-VSCode {
     [CmdletBinding(PositionalBinding = $false)]
     param(
         # WhatIf
-        [Parameter()]
-        [switch]$WhatIf
+        [Parameter()][switch]$WhatIf
     )
     process {
         <#
@@ -34,7 +33,7 @@ function Backup-VSCode {
             # WhatIf      = $true
             Path        = $src
             Destination = $dest
-            Verbose     = $true
+            # Verbose     = $true
             Recurse     = $true
             Force       = $true # for hidden files
         }
@@ -44,7 +43,7 @@ function Backup-VSCode {
 
         # attempt to get -Recurse to filter patterns, but it seems to ignore it.
         # instead, just hardcode subdirs
-        $copied = Copy-Item @copyItemSplat -Verbose -Exclude '*storage*' -PassThru
+        $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
 
 
         $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
@@ -68,7 +67,7 @@ function Backup-VSCode {
             # WhatIf      = $true
             Path        = $src
             Destination = $dest
-            Verbose     = $true
+            # Verbose     = $true
             Recurse     = $true
             Force       = $true # for hidden files
         }
@@ -78,7 +77,7 @@ function Backup-VSCode {
 
         # attempt to get -Recurse to filter patterns, but it seems to ignore it.
         # instead, just hardcode subdirs
-        $copied = Copy-Item @copyItemSplat -Verbose -Exclude '*storage*' -PassThru
+        $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
 
 
         $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "

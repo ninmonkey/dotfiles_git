@@ -35,6 +35,10 @@ $script:NinProfile_Dotfiles = @{
 
     }
 }
+
+# https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file
+$Env:RIPGREP_CONFIG_PATH = $script:NinProfile_Dotfiles.RipGrep.FullName
+
 # }
 Export-ModuleMember -Variable 'NinProfile_Dotfiles'
 

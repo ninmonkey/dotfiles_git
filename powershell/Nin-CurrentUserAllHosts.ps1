@@ -45,19 +45,29 @@ $__ninConfig = @{
 env vars to check
 'ChocolateyInstall', 'ChocolateyToolsLocation', 'FZF_CTRL_T_COMMAND', 'FZF_DEFAULT_COMMAND', 'FZF_DEFAULT_OPTS', 'HOMEPATH', 'Nin_Dotfiles', 'Nin_Home', 'Nin_PSModulePath', 'NinNow', 'Pager', 'PSModulePath', 'WSLENV', 'BAT_CONFIG_PATH', 'RIPGREP_CONFIG_PATH', 'Pager', 'PSMODULEPATH'
 #>
-function rebash {
+function _reloadModule {
     # quickly reload my modules for dev
-    Import-Module -Name 'Ninmonkey.Console', 'Dev.nin' -Force 3>$1 | Out-Null
+    $importModuleSplat = @{
+        # Name = 'Ninmonkey.Console', 'Dev.nin'
+        Name  = 'Dev.Nin', 'Ninmonkey.Console', 'Ninmonkey.Powershell', 'Ninmonkey.Profile'
+        Force = $true
+    }
+
+    # Ignore warnings, allow errors
+    Import-Module @importModuleSplat 3>$null
 }
+New-Alias 'rel' -Value '_reloadModule' -ea ignore
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
     if ($parent -eq 'code') {
         $__ninConfig.Terminal.CurrentTerminal = 'code'
         $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'Code - Insiders') {
+    }
+    elseif ($parent -eq 'Code - Insiders') {
         $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
         $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'windowsterminal') {
+    }
+    elseif ($parent -eq 'windowsterminal') {
         # preview still uses this name
         $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
     }
@@ -205,7 +215,7 @@ Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
 
 '
         | Join-String
-        hr
+        Hr
         # h1 'Todo' | New-Text -fg yellow -bg magenta
         '🐵'
     }
@@ -286,10 +296,12 @@ function Get-ProfileAggressiveItem {
 }
 
 if ($__ninConfig.UsePSReadLinePredict) {
+
     try {
         Set-PSReadLineOption -PredictionSource History
         Set-PSReadLineOption -PredictionViewStyle ListView
-    } catch {
+    }
+    catch {
         Write-Error 'Failed: -PredictionSource History'
     }
 }
@@ -297,12 +309,13 @@ if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
         Set-PSReadLineOption -PredictionViewStyle ListView
-    } catch {
+    }
+    catch {
         Write-Error 'Failed: -PredictionSource HistoryAndPlugin'
     }
 }
 
-& {
+if ($true) {
     <#
     AddLine
         moves to next line, bringing any remaining text with it
@@ -312,6 +325,7 @@ if ($__ninConfig.UsePSReadLinePredictPlugin) {
     Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
     Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
     Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
+    Set-PSReadLineOption -ContinuationPrompt (' ' * 4 | New-Text -fg gray80 -bg gray30 | ForEach-Object tostring )
 }
 
 
@@ -363,8 +377,20 @@ $Env:FZF_DEFAULT_COMMAND = 'fd --type file --hidden --exclude .git --color=alway
 $Env:FZF_DEFAULT_OPTS = '--ansi --no-height'
 $Env:FZF_CTRL_T_COMMAND = "$Env:FZF_DEFAULT_COMMAND"
 
-$env:path = $env:Path, 'C:\Program Files\Git\usr\bin' -join ';'
+$env:path += @(
+    'C:\bin_nin\SysinternalsSuite\'
+    <#
+    [section]: Optional Paths
 
+        add git-bash on windows
+    #>
+
+    if ($__ninConfig.ImportGitBash) {
+        'C:\Program Files\Git\usr\bin'
+    }
+
+
+) | Join-String -Separator ';' -op ';'
 
 <#
     [section]: Explicit Import Module
@@ -421,16 +447,6 @@ if (!(Test-UserIsAdmin)) {
     # Maybe also remove modules 'Dev.Nin', 'PSFzf', or PSReadLineBeta ?
 }
 # }
-<#
-    [section]: Optional Paths
-
-        add git-bash on windows
-#>
-& {
-    if ($__ninConfig.ImportGitBash) {
-        $env:path = $env:Path, 'C:\Program Files\Git\usr\bin' -join ';'
-    }
-}
 
 <#
     [section]: Chocolately

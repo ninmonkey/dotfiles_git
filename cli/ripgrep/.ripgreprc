@@ -1,12 +1,19 @@
 # see: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file
 
-# --case-sensitive  # -s
---ignore-case       # -i
-# --smart-case      # -S
+# Case: -s, -i, -S
+# --case-sensitive
+--ignore-case
+# --smart-case
+--color=always
 
+--type-add
+powerbi:*.{csv,json,sql,jsonc,pq}*
 # Don't let ripgrep vomit really long lines to my terminal, and show a preview.
-#--max-columns=150
-#--max-columns-preview
+# --max-columns=150
+#
+--max-columns=200
+# what does previou do? I think it's [x more items]
+--max-columns-preview
 
 # to over-write .gitignore, use .ignore     : !log
 # https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#automatic-filtering

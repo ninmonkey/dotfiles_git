@@ -136,6 +136,7 @@
         "files.encoding": "utf8bom",
         "editor.formatOnSaveMode": "file",
         "editor.formatOnPaste": true,
+        "editor.formatOnPaste": false,
         "editor.formatOnType": false, // currently it's NYI in the extension
         "files.autoGuessEncoding": false,
         "editor.detectIndentation": false, // required for tabsize
@@ -406,6 +407,14 @@
             ],
             [
                 10143
+            ],
+            [
+                8662,
+                8814,
+                172
+            ],
+            [
+                0
             ]
         ]
     },
