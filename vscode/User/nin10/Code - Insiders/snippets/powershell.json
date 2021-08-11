@@ -2,6 +2,7 @@
     /*
 
     Snippets: Powershell
+        [ code ]
 
     Description:
 
@@ -75,29 +76,59 @@
         ],
         "description": "Literals Here-String. Intended  to be hotkey only, when there's a selection to wrap"
     },
-    "Help ⇢ Comment Based": {
-        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
-        "prefix": "DocString Help Docstring 🐒",
-        "description": "nin ⁞ The important docstring attributes. Selected Text Populates Synopis",
+    "Parameter ⇢ Basic": {
+        /*
+            This doesn't have a fancy template choice
+            this gives you a cleaner experience than the choice-box
+            */
+        "prefix": "Param nin",
+        "prefix": "Parameter nin : 🐒",
         "body": [
-            "<#",
-            ".synopsis",
-            "    ${1:${TM_SELECTED_TEXT:Short Description}}",
-            ".description",
-            "    Long description",
-            ".example",
-            "    PS> .",
-            ".inputs",
-            "    Summary of Pipeline Inputs",
-            ".outputs",
-            "    None",
-            ".notes",
-            "    General notes",
-            ".link",
-            "    command",
-            "#>",
-            "${0}",
+            "# ${3} ",
+            "[Parameter(${1:Mandatory, Position=0})]",
+            "${2:[string]$$Name},"
+            // "[${3:object}]$${4:ParameterName}$0",
         ],
+        "description": "a quick Parameter()"
+    },
+    "Parameter 2⇢ Basic": {
+        "description": "nin 2⁞ A basic [Parameter()]",
+        "prefix": "Parameter 🐒 default",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position=0})]",
+            "[${3:object}]$${4:ParameterName}${0}",
+        ],
+    },
+    "Parameter ⇢ ChoiceBox Complicated": {
+        // a little more complicated
+        // "prefix": "Parameter nin : 🐒 ChoiceBox",
+        "prefix": "Function ⇢ [CmdletBinding] 🐒",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position=0})]",
+            "[${3:object}]$${4:ParameterName}$0",
+        ],
+        "description": "nin ⁞ A basic [Parameter()]"
+    },
+    "Function 2⇢ Cmdlet": {
+        "prefix": "Function 2⇢ [CmdletBinding] 🐒",
+        "description": "nin 2⁞ CmdletBinding with initial params",
+        "body": [
+            "[CmdletBinding(",
+            "",
+            ")]",
+            "param (",
+            "    # ${3:docstring}",
+            "    [Parameter(Mandatory, Position=0,",
+            "wip -- do the always CmdletWriteError",
+            "in the try catch",
+            "in the try here",
+            // Best practice is to use doc strings, not the attribute
+            // "        ",
+            "    [${1:TypeName}]$${2:ParameterName}$0",
+            ")"
+        ]
     },
     // "CmdletBinding()": {
     //     "prefix": "WIP -- [CmdletBinding()]",
@@ -186,18 +217,47 @@
             "[Parameter()][switch]\\$${0}"
         ]
     },
-    "Parameter ⇢ Basic": {
-        "description": "nin ⁞ A basic [Parameter()]",
-        "prefix": "Parameter 🐒 default",
+    "Function ⇢ Basic": {
+        "prefix": "Function ⇢ Basic",
+        "description": "nin ⁞ A basic function",
         "body": [
-            "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
-            "[${3:object}]$${4:ParameterName}${0}",
+            "function ${1:Name} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2}",
+            "    .description",
+            "        .",
+            "    .example",
+            "        PS>",
+            "    .notes",
+            "        .",
+            "    #>",
+            "    param (",
+            "        ${0}",
+            "    )",
+            "    begin {}",
+            "    process {}",
+            "    end {}",
+            "}",
         ],
     },
     "Parameter: Completer ⇢ ValidateSet": {
         "prefix": "Param ⇢ Completer | [ValidateSet] 🐒",
+        // "prefix": "Completer ⇢ ValidateSet",
         "description": "nin ⁞ Autocompleter parameter from a static list using ValidateSet()",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(",
+            "    ${2:Mandatory}, ${3:Position=0},",
+            "    [ValidateSet(${4})]",
+            "    [string[]]$${5:ParameterName})",
+            "$0",
+        ],
+    },
+    "Parameter: Completer ⇢ ValidateSet": {
+        "prefix": "Param 2⇢ Completer | [ValidateSet] 🐒",
+        // "prefix": "Completer ⇢ ValidateSet",
+        "description": "nin 2⁞ Autocompleter parameter from a static list using ValidateSet()",
         "body": [
             "# ${1:Docstring}",
             "[ValidateSet(${2:'a', 'b'})]",
@@ -244,6 +304,30 @@
             "}",
             "",
             "\\$Response ??= Invoke-RestMethod @splat_irm${0}",
+        ],
+    },
+    "Help ⇢ Comment Based": {
+        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
+        "prefix": "DocString Help Docstring 🐒",
+        "description": "nin ⁞ The important docstring attributes. Selected Text Populates Synopis",
+        "body": [
+            "<#",
+            ".synopsis",
+            "    ${1:${TM_SELECTED_TEXT:Short Description}}",
+            ".description",
+            "    Long description",
+            ".example",
+            "    PS> .",
+            ".inputs",
+            "    Summary of Pipeline Inputs",
+            ".outputs",
+            "    None",
+            ".notes",
+            "    General notes",
+            ".link",
+            "    command",
+            "#>",
+            "${0}",
         ],
     },
 }
