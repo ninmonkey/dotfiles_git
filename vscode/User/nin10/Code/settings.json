@@ -1,4 +1,5 @@
 {
+    "errorLens.fontFamily": "arial bold",
     /*
 
   ### Sect: About
@@ -574,7 +575,6 @@
     "zenMode.restore": true,
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
-    "terminal.integrated.fontFamily": "'cascadia mono', fira code retina, cascadia code, consolas, monospace",
     "gitlens.mode.active": "zen",
     "terminal.integrated.rendererType": "auto",
     // "workbench.editor.focusRecentEditorAfterClose": true,
@@ -584,7 +584,8 @@
     // "editor.formatOnSave": true,
     // "editor.formatOnPaste": true,
     // "editor.formatOnType": true,
-    // "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'consolas', 'cascadia mono', fira code retina, cascadia code, consolas, monospace",
     // "terminal.integrated.inheritEnv": false,
     "codepoint.statusbar": "description",
     "workbench.quickOpen.closeOnFocusLost": false,
@@ -1195,7 +1196,7 @@
     "gitlens.views.compare.files.layout": "tree",
     // "jupyter.interactiveWindowMode": "perFile",
     // "editor.suggestLineHeight": 18, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
-    "debug.console.fontFamily": "consolas",
+    "debug.console.fontFamily": "'fira cold bold', consolas",
     // "debug.console.fontFamily": "'Fira Code Bold', 'Cascadia code mono', 'Fira Code Retina', 'cascadia code', 'Fira Code Retina', Consolas",
     // "debug.console.$": "Fira Code, 'cascadia code', cascadia mono, Fira Code Retina, Consolas, Fira Code Bold",
     "editor.fontFamily": "'arial', 'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
@@ -1214,16 +1215,19 @@
     "editor.fontFamily": "'cascadia mono', consolas, monospace",
     "editor.fontFamily": "'cascadia code', consolas, monospace",
     // "editor.fontWeight": "350", // for cascadia code
-    "editor.fontFamily": "'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    // fira: retina is more bold (on nin8)
+    // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, //14, // for zoom -1
-    // "editor.fontWeight": "500",
+    // "editor.fontWeight": "400",
     // "editor.suggestLineHeight": 17, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
     // for zoom = 0
     "debug.console.fontSize": 14,
-    "terminal.integrated.fontSize": 16, //12, // for zoom 0
     "debug.console.fontSize": 16,
+    "terminal.integrated.fontSize": 16, //12, // for zoom 0
+    "terminal.integrated.fontSize": 14, //12, // for zoom 0
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
     "editor.fontSize": 18, //18 16, // for zoom -1
