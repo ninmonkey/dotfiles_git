@@ -1,5 +1,5 @@
 {
-    "errorLens.fontFamily": "arial bold",
+    "errorLens.fontFamily": "calibri", //"arial bold",
     // Update the search query to the editor's selected text when focusing the search view. This happens either on click or when triggering the `workbench.views.search.focus` command.
     /*
 
@@ -8,7 +8,7 @@
       Profile:            Jake, Desktop.
       Original Rewrite:   2021-05-07
       This is the *very* verbose version of the config file
-
+\
       Generate Table Of Contents using:
           rg '\s*###*\s*(SubSect|Sect):\s*(?P<Title>.*$)' -- "$src"
       or
@@ -41,6 +41,7 @@
     // Controls the vertical offset of the screencast mode overlay from the bottom as a percentage of the workbench height.
     "screencastMode.verticalOffset": 80, // def: 20
     "screencastMode.verticalOffset": 90, // def: 20
+    // "terminal.integrated.minimumContrastRatio": 1,
     /*
 
 
@@ -587,6 +588,7 @@
     // "editor.formatOnType": true,
     "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'consolas', 'cascadia mono', fira code retina, cascadia code, consolas, monospace",
+    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
     // "terminal.integrated.inheritEnv": false,
     "codepoint.statusbar": "description",
     "workbench.quickOpen.closeOnFocusLost": false,
@@ -1011,6 +1013,19 @@
     // "editor.cursorSurrounding"underline"s": 50,
     // "terminal.integrated.cursorWidth": 1,
     // "terminal.integrated.cursorWidth": 1,
+    "terminal.integrated.scrollback": 2000,
+    // "terminal.integrated.allowMnemonics": false, ?
+    "terminal.integrated.fontWeight": "normal",
+    "terminal.integrated.fontWeightBold": "bold",
+    "terminal.integrated.letterSpacing": 0,
+    "terminal.integrated.lineHeight": 1,
+    // "terminal.integrated.windowsEnableConpty": true,
+    "terminal.integrated.showLinkHover": true,
+    "terminal.integrated.sendKeybindingsToShell": false,
+    "terminal.integrated.splitCwd": "workspaceRoot",
+    "terminal.integrated.titleMode": "sequence",
+    "terminal.integrated.tabs.enabled": true,
+    "editor.letterSpacing": 0,
     // "editor.hideCursorInOverviewRuler": false,
     "docsView.documentationView.updateMode": "live",
     // "debug.console.historySuggestions": true,
@@ -1198,6 +1213,7 @@
     // "jupyter.interactiveWindowMode": "perFile",
     // "editor.suggestLineHeight": 18, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
     "debug.console.fontFamily": "'fira cold bold', consolas",
+    // "debug.console.fontFamily": "calibri",
     // "debug.console.fontFamily": "'Fira Code Bold', 'Cascadia code mono', 'Fira Code Retina', 'cascadia code', 'Fira Code Retina', Consolas",
     // "debug.console.$": "Fira Code, 'cascadia code', cascadia mono, Fira Code Retina, Consolas, Fira Code Bold",
     "editor.fontFamily": "'arial', 'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
@@ -1215,9 +1231,11 @@
     "editor.fontFamily": "'fira code', consolas, monospace",
     "editor.fontFamily": "'cascadia mono', consolas, monospace",
     "editor.fontFamily": "'cascadia code', consolas, monospace",
+    "editor.fontFamily": "'cascadia code retina', consolas, monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // fira: retina is more bold (on nin8)
     // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
@@ -1227,12 +1245,13 @@
     // for zoom = 0
     "debug.console.fontSize": 14,
     "debug.console.fontSize": 16,
-    "terminal.integrated.fontSize": 16, //12, // for zoom 0
     "terminal.integrated.fontSize": 14, //12, // for zoom 0
+    "terminal.integrated.fontSize": 16, //12, // for zoom 0
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
-    "editor.fontSize": 18, //18 16, // for zoom -1
     "editor.fontSize": 16,
+    "editor.fontSize": 18, //18 16, // for zoom -1
+    "editor.fontSize": 20, //18 16, // for zoom -1
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -1279,7 +1298,6 @@
     "terminal.integrated.experimentalLinkProvider": true,
     "terminal.integrated.rightClickBehavior": "copyPaste",
     "terminal.integrated.sendKseybindingsToShell": false,
-    "terminal.integrated.tabs.enabled": true,
     "terminal.integrated.tabs.location": "left",
     "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default changes per-language
     "terminal.integrated.tabs.focusMode": "doubleClick",
@@ -1465,10 +1483,6 @@
             ],
             "icon": "terminal-powershell"
         },
-        "PowerShell": {
-            "source": "PowerShell",
-            "icon": "terminal-powershell"
-        },
         "Command Prompt": {
             "path": [
                 "${env:windir}\\Sysnative\\cmd.exe",
@@ -1481,7 +1495,7 @@
             "source": "Git Bash",
             "icon": "terminal-bash",
         },
-        "WinPosh ?": {
+        "WinPosh? (auto?)": {
             "overrideName": true,
             "source": "PowerShell",
             "icon": "terminal-powershell"
@@ -1897,4 +1911,5 @@
     "search.useGlobalIgnoreFiles": false,
     // Controls whether to use `.gitignore` and `.ignore` files when searching for files.
     "search.useIgnoreFiles": true,
+    "window.zoomLevel": -1,
 }
