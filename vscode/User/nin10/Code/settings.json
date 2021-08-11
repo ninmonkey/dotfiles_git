@@ -1,5 +1,6 @@
 {
     "errorLens.fontFamily": "arial bold",
+    // Update the search query to the editor's selected text when focusing the search view. This happens either on click or when triggering the `workbench.views.search.focus` command.
     /*
 
   ### Sect: About
@@ -1291,6 +1292,37 @@
     "terminal.integrated.tabs.showActiveTerminal": "singleTerminalOrNarrow",
     "terminal.integrated.localEchoLatencyThreshold": 30,
     "terminal.integrated.cursorWidth": 2,
+    // An explicit start path where the terminal will be launched, this is used as the current working directory (cwd) for the shell process. This may be particularly useful in workspace settings if the root directory is not a convenient cwd.
+    "terminal.integrated.cwd": "",
+    // Controls where newly created terminals will appear.
+    //  - editor: Create terminals in the editor
+    //  - view: Create terminals in the terminal view
+    "terminal.integrated.defaultLocation": "view",
+    // The default profile used on Linux. This setting will currently be ignored if either `terminal.integrated.shell.linux` or `terminal.integrated.shellArgs.linux` are set.
+    "terminal.integrated.defaultProfile.linux": null,
+    // The default profile used on macOS. This setting will currently be ignored if either `terminal.integrated.shell.osx` or `terminal.integrated.shellArgs.osx` are set.
+    "terminal.integrated.defaultProfile.osx": null,
+    // The default profile used on Windows. This setting will currently be ignored if either `terminal.integrated.shell.windows` or `terminal.integrated.shellArgs.windows` are set.
+    //  - PowerShell: $(terminal-powershell) PowerShell
+    // - path: C:\Program Files\PowerShell\7\pwsh.exe
+    //  - Command Prompt: $(terminal-cmd) Command Prompt
+    // - path: C:\WINDOWS\System32\cmd.exe
+    // - args: []
+    //  - Git Bash: $(terminal) Git Bash
+    // - path: C:\Program Files\Git\bin\bash.exe
+    // - args: [--login]
+    //  - PowerShellfsds: $(terminal-powershell) PowerShellfsds
+    // - path: C:\Program Files\PowerShell\7\pwsh.exe
+    //  - Pwsh -NoProfile: $(terminal-powershell) Pwsh -NoProfile
+    // - path: pwsh.exe
+    // - args: [-NoProfile','-NoLogo]
+    //  - Pwsh: $(terminal-powershell) Pwsh
+    // - path: pwsh.exe
+    // - args: [-NoLogo]
+    //  - Windows PowerShell: $(terminal) Windows PowerShell
+    // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+    // - args: [-NoLogo','-NoProfile]
+    "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",
@@ -1421,6 +1453,18 @@
           https://code.visualstudio.com/docs/editor/variables-reference
       */
     "terminal.integrated.profiles.windows": {
+        "Pwsh🐒": {
+            "color": "terminal.ansiMagenta",
+            "overrideName": true,
+            "path": [
+                "pwsh.exe",
+                "C:/Program Files/PowerShell/7/pwsh.exe"
+            ],
+            "args": [
+                "-NoLogo"
+            ],
+            "icon": "terminal-powershell"
+        },
         "PowerShell": {
             "source": "PowerShell",
             "icon": "terminal-powershell"
@@ -1434,13 +1478,16 @@
             "icon": "terminal-cmd"
         },
         "Git Bash": {
-            "source": "Git Bash"
+            "source": "Git Bash",
+            "icon": "terminal-bash",
         },
-        "PowerShellfsds": {
+        "WinPosh ?": {
+            "overrideName": true,
             "source": "PowerShell",
             "icon": "terminal-powershell"
         },
         "Pwsh -NoProfile": {
+            "overrideName": true,
             "path": [
                 "pwsh.exe",
                 "C:/Program Files/PowerShell/7/pwsh.exe"
@@ -1451,17 +1498,9 @@
             ],
             "icon": "terminal-powershell"
         },
-        "PowerShell🐒": {
-            "path": [
-                "pwsh.exe",
-                "C:/Program Files/PowerShell/7/pwsh.exe"
-            ],
-            "args": [
-                "-NoLogo"
-            ],
-            "icon": "terminal-powershell"
-        },
-        "Windows PowerShell": {
+        "Windows PowerShell -NoP": {
+            "overrideName": true,
+            "icon": "arrow-both",
             "path": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
             "args": [
                 "-NoLogo",
@@ -1791,4 +1830,71 @@
     //  - Beside: Open the diff view next to the current editor group.
     //  - Below: Open the diff view below the current editor group.
     "merge-conflict.diffViewPosition": "Current",
+    // Controls the positioning of the actionbar on rows in the search view.
+    //  - auto: Position the actionbar to the right when the search view is narrow, and immediately after the content when the search view is wide.
+    //  - right: Always position the actionbar to the right.
+    "search.actionsPosition": "right",
+    // Controls whether the search results will be collapsed or expanded.
+    //  - auto: Files with less than 10 results are expanded. Others are collapsed.
+    //  - alwaysCollapse
+    //  - alwaysExpand
+    "search.collapseResults": "alwaysExpand",
+    // Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `files.exclude` setting. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options).
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true
+    },
+    // Controls whether to follow symlinks while searching.
+    "search.followSymlinks": true,
+    // When enabled, the searchService process will be kept alive instead of being shut down after an hour of inactivity. This will keep the file search cache in memory.
+    "search.maintainFileSearchCache": false,
+    // Controls the maximum number of search results, this can be set to `null` (empty) to return unlimited results.
+    "search.maxResults": 20000,
+    // Controls where new `Search: Find in Files` and `Find in Folder` operations occur: either in the sidebar's search view, or in a search editor
+    //  - view: Search in the search view, either in the panel or sidebar.
+    //  - reuseEditor: Search in an existing search editor if present, otherwise in a new search editor.
+    //  - newEditor: Search in a new search editor.
+    "search.mode": "view",
+    // Controls sorting order of editor history in quick open when filtering.
+    //  - default: History entries are sorted by relevance based on the filter value used. More relevant entries appear first.
+    //  - recency: History entries are sorted by recency. More recently opened entries appear first.
+    "search.quickOpen.history.filterSortOrder": "default",
+    // Whether to include results from recently opened files in the file results for Quick Open.
+    "search.quickOpen.includeHistory": true,
+    // Whether to include results from a global symbol search in the file results for Quick Open.
+    "search.quickOpen.includeSymbols": false,
+    // The default number of surrounding context lines to use when creating new Search Editors. If using `search.searchEditor.reusePriorSearchConfiguration`, this can be set to `null` (empty) to use the prior Search Editor's configuration.
+    "search.searchEditor.defaultNumberOfContextLines": 1,
+    // Configure effect of double clicking a result in a search editor.
+    //  - selectWord: Double clicking selects the word under the cursor.
+    //  - goToLocation: Double clicking opens the result in the active editor group.
+    //  - openLocationToSide: Double clicking opens the result in the editor group to the side, creating one if it does not yet exist.
+    "search.searchEditor.doubleClickBehaviour": "goToLocation",
+    // When enabled, new Search Editors will reuse the includes, excludes, and flags of the previously opened Search Editor.
+    "search.searchEditor.reusePriorSearchConfiguration": true,
+    // Search all files as you type.
+    "search.searchOnType": true,
+    // When `search.searchOnType` is enabled, controls the timeout in milliseconds between a character being typed and the search starting. Has no effect when `search.searchOnType` is disabled.
+    "search.searchOnTypeDebouncePeriod": 300,
+    // Update the search query to the editor's selected text when focusing the search view. This happens either on click or when triggering the `workbench.views.search.focus` command.
+    "search.seedOnFocus": false,
+    // Enable seeding search from the word nearest the cursor when the active editor has no selection.
+    "search.seedWithNearestWord": false,
+    // Controls whether to show line numbers for search results.
+    "search.showLineNumbers": false,
+    // Search case-insensitively if the pattern is all lowercase, otherwise, search case-sensitively.
+    "search.smartCase": false,
+    // Controls sorting order of search results.
+    //  - default: Results are sorted by folder and file names, in alphabetical order.
+    //  - fileNames: Results are sorted by file names ignoring folder order, in alphabetical order.
+    //  - type: Results are sorted by file extensions, in alphabetical order.
+    //  - modified: Results are sorted by file last modified date, in descending order.
+    //  - countDescending: Results are sorted by count per file, in descending order.
+    //  - countAscending: Results are sorted by count per file, in ascending order.
+    "search.sortOrder": "default",
+    // Controls whether to use global `.gitignore` and `.ignore` files when searching for files.
+    "search.useGlobalIgnoreFiles": false,
+    // Controls whether to use `.gitignore` and `.ignore` files when searching for files.
+    "search.useIgnoreFiles": true,
 }
