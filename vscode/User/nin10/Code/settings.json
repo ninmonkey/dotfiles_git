@@ -697,7 +697,9 @@
         "editor.suggest.showIcons": true,
         "editor.suggest.shareSuggestSelections": false,
         "editor.suggest.showStatusBar": true,
-        "editor.suggestFontSize": 0,
+        "editor.suggestFontSize": 14,
+        "editor.codeLensFontSize": 12,
+        "editor.inlayHints.fontSize": 12,
         "editor.suggestOnTriggerCharacters": true,
         "editor.suggestSelection": "recentlyUsedByPrefix",
         "editor.acceptSuggestionOnCommitCharacter": true,
@@ -740,6 +742,9 @@
         "files.insertFinalNewline": true,
         "files.trimFinalNewlines": true
     },
+    "editor.suggestFontSize": 14,
+    "editor.codeLensFontSize": 12,
+    "editor.inlayHints.fontSize": 12,
     // "powershell.buttons.showPanelMovementButtons": true,
     // "powershell.buttons.showRunButtons": true,
     // "powershell.codeFolding.enable": true,
@@ -1601,7 +1606,7 @@
     // Controls whether an active snippet prevents quick suggestions.
     "editor.suggest.snippetsPreventQuickSuggestions": true,
     // Font size for the suggest widget. When set to `0`, the value of `editor.fontSize` is used.
-    "editor.suggestFontSize": 0,
+    "editor.suggestFontSize": 14,
     // Line height for the suggest widget. When set to `0`, the value of `editor.lineHeight` is used. The minimum value is 8.
     "editor.suggestLineHeight": 0,
     // Controls whether suggestions should automatically show up when typing trigger characters.

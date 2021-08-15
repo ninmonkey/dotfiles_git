@@ -62,12 +62,10 @@ New-Alias 'rel' -Value '_reloadModule' -ea ignore
     if ($parent -eq 'code') {
         $__ninConfig.Terminal.CurrentTerminal = 'code'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'Code - Insiders') {
+    } elseif ($parent -eq 'Code - Insiders') {
         $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'windowsterminal') {
+    } elseif ($parent -eq 'windowsterminal') {
         # preview still uses this name
         $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
     }
@@ -302,18 +300,16 @@ if ($__ninConfig.UsePSReadLinePredict) {
     try {
         Set-PSReadLineOption -PredictionSource History
         Set-PSReadLineOption -PredictionViewStyle ListView
-    }
-    catch {
-        Write-Error 'Failed: -PredictionSource History'
+    } catch {
+        Write-Warning 'Failed: -PredictionSource History'
     }
 }
 if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
         Set-PSReadLineOption -PredictionViewStyle ListView
-    }
-    catch {
-        Write-Error 'Failed: -PredictionSource HistoryAndPlugin'
+    } catch {
+        Write-Warning 'Failed: -PredictionSource HistoryAndPlugin'
     }
 }
 

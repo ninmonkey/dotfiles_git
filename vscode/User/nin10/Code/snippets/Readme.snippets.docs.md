@@ -1,3 +1,4 @@
+- [Snippets UI](#snippets-ui)
 - [Scope: Global, Multi-language, or disabled](#scope-global-multi-language-or-disabled)
   - [Personal Scopes](#personal-scopes)
 - [Keybinding a specific snippet](#keybinding-a-specific-snippet)
@@ -11,6 +12,10 @@
   - [Reference](#reference)
 - [Cheat Sheet: Dates](#cheat-sheet-dates)
 
+# Snippets UI
+
+![UI-screenshot](data/snippets-ui-visual-cheatsheet.png)
+
 # Scope: Global, Multi-language, or disabled
 
  | Scope           | .                                             |
@@ -21,10 +26,10 @@
 
  ## Personal Scopes
 
- | Scope                   | .                                             |
- | ----------------------- | --------------------------------------------- |
+ | Scope                   | .                                                                 |
+ | ----------------------- | ----------------------------------------------------------------- |
  | `template` or `example` | These are not used themselves, but are examples for new snippets. |
- | `wip`                   | May not be finished                           |
+ | `wip`                   | May not be finished                                               |
 
 
 # Keybinding a specific snippet
