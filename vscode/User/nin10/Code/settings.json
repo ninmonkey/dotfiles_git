@@ -142,9 +142,9 @@
     // "editor.stickyTabStops": false,
     "diffEditor.wordWrap": "inherit",
     "editor.wrappingStrategy": "simple",
-    "pesterExplorer.testResultsFilePath": "TestExplorerResults.xml",
+    // "pesterExplorer.testResultsFilePath": "TestExplorerResults.xml",
     "pesterExplorer.logpanel": true,
-    "pesterExplorer.logfile": "pesterExplorer.log",
+    // "pesterExplorer.logfile": "pesterExplorer.log",
     // "pesterExplorer.testRootDirectory": "/public",
     // "pesterExplorer.testRootDirectory": "./public",
     // "pesterExplorer.testRootDirectory": ".",
@@ -812,7 +812,7 @@
     "csharpextensions.useThisForCtorAssignments": false,
     /*
 
-  ###### SubSect: EditorA ViewType Overrides / File Type Overrides
+  ###### SubSect: editorAssociations ViewType Overrides / File Type Overrides
 
 
       applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
@@ -1255,9 +1255,9 @@
     "terminal.integrated.fontSize": 16, //12, // for zoom 0
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
-    "editor.fontSize": 16,
     "editor.fontSize": 18, //18 16, // for zoom -1
     "editor.fontSize": 20, //18 16, // for zoom -1
+    "editor.fontSize": 16,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,

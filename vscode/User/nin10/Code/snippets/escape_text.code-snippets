@@ -34,7 +34,7 @@
     "🐒regex: Fix Backslash escaped filepaths": {
         // this could be editor command
         // safety, should probably require '['"]' on both ends of matches
-        "scope": "ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
         "prefix": "re: Fix Backslash filepaths",
         "description": "Transforms \\\\ ⇒ /",
         "body": [

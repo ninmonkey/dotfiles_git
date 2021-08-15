@@ -16,7 +16,7 @@
     // 	"description": "Log output to console"
     // }
     "Date-Iso": {
-        "scope": "ps1,json,jsonc,xml,py,md,js,cs,csx,code-workspace,code-snippets",
+        "scope": "powerquery,powershell,ps1,json,jsonc,xml,py,md,js,cs,csx,code-workspace,code-snippets",
         "prefix": "date ISO",
         "description": "Using ISO format YYYY-MM-DD",
         "body": [
@@ -24,7 +24,7 @@
         ]
     },
     "File.CurrentFilename": {
-        "scope": "ps1,json,jsonc,xml,py,md,js,cs,csx,code-workspace,code-snippets",
+        "scope": "powerquery,powershell,ps1,json,jsonc,xml,py,md,js,cs,csx,code-workspace,code-snippets",
         "prefix": "Current Filename [meta]",
         "description": "Current $File.Name",
         "body": [

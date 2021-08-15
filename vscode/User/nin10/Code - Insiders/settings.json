@@ -423,6 +423,7 @@
     "powershell.helpCompletion": "LineComment",
     "powershell.sideBar.CommandExplorerVisibility": false,
     "errorLens.enabled": false,
+    "redhat.telemetry.enabled": false,
     /*
 
     ## Section: Dotnet, interactive, notebooks

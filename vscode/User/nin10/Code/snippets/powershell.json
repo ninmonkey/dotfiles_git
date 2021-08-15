@@ -85,7 +85,7 @@
         "prefix": "Parameter nin : 🐒",
         "body": [
             "# ${3} ",
-            "[Parameter(${1:Mandatory, Position=0})]",
+            "[Parameter(${1:Mandatory, Position = 0})]",
             "${2:[string]$$Name},"
             // "[${3:object}]$${4:ParameterName}$0",
         ],
@@ -96,7 +96,7 @@
         "prefix": "Parameter 🐒 default",
         "body": [
             "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
+            "[Parameter(${2:Mandatory, Position = 0})]",
             "[${3:object}]$${4:ParameterName}${0}",
         ],
     },
@@ -106,12 +106,12 @@
         "prefix": "Parameter ⇢ Simple (extra tabstop choices) 🐒",
         "body": [
             "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
+            "[Parameter(${2:Mandatory, Position = 0})]",
             "[${3:object}]$${4:ParameterName}$0",
         ],
         // "body": [
         //     "# ${1:Docstring}",
-        //     "[Parameter(${2:Mandatory, Position=0})]",
+        //     "[Parameter(${2:Mandatory, Position = 0})]",
         //     "[${3:object}]$${4:ParameterName}$0",
         // ],
         "description": "nin ⁞ A basic [Parameter()]"
@@ -125,7 +125,7 @@
     //         ")]",
     //         "param (",
     //         "    # ${3:docstring}",
-    //         "    [Parameter(Mandatory, Position=0,",
+    //         "    [Parameter(Mandatory, Position = 0,",
     //         "wip -- do the always CmdletWriteError",
     //         "in the try catch",
     //         "in the try here",
@@ -155,9 +155,9 @@
             "          [string | None]",
             "    ",
             "    #>",
-            "    [CmdletBinding(PositionalBinding=\\$false)]",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
             "    param(",
-            "       [Parameter(Mandatory, Position=0)]",
+            "       [Parameter(Mandatory, Position = 0)]",
             "       [string]\\$Name",
             // "        ${4}",
             "    )",
@@ -171,7 +171,46 @@
             "}"
         ]
     },
-    "Func ⇢ Basic 🐒📌": {
+    "Func ⇢ Pipeline ⇢ Collect All🐒": {
+        "prefix": "Function ⇢ Collect All Pipeline 🐒",
+        "description": "Collects all objects from the pipeline 🐒",
+        "body": [
+            "function ${1:Get-Foo} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2:Stuff}",
+            "    .description",
+            "       .",
+            "    .example",
+            "          .",
+            "    .outputs",
+            "          [string | None]",
+            "    ",
+            "    #>",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
+            "    param(",
+            "        [Parameter(Mandatory, Position = 0)]",
+            "        [string]\\$Name",
+            // "        ${4}",
+            "    )",
+            "    ",
+            "    begin {",
+            "        \\$NameList = [list[string]]::new()",
+            "    }",
+            "    process {",
+            "        \\$Name | ForEach-Object {",
+            "            \\$NameList.Add( \\$_ )",
+            "        }",
+            "    }",
+            // "       ${0:${TM_SELECTED_TEXT}}", // to use selected text, see: "Function ⇢ Tiny"
+            // "    # todo: always wrap CmdletExceptionWrapper: From Sci",
+            "    end {",
+            "        \\$NameList",
+            "    }",
+            "}"
+        ]
+    },
+    "Func ⇢ Basic 🐒": {
         "prefix": "Function ⇢ Basic 🐒",
         "description": "Minimal defaults | Supports selected text.",
         "body": [
@@ -183,7 +222,7 @@
             "        .",
             "    ",
             "    #>",
-            "    [CmdletBinding(PositionalBinding=\\$false)]",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
             "    param(",
             "        ${0}",
             "    )",
@@ -266,7 +305,7 @@
         "body": [
             "# ${1:Docstring}",
             "[Parameter(",
-            "    ${2:Mandatory}, ${3:Position=0},",
+            "    ${2:Mandatory}, ${3:Position = 0},",
             "    [ValidateSet(${4})]",
             "    [string[]]$${5:ParameterName})",
             "$0",
@@ -279,7 +318,7 @@
         "body": [
             "# ${1:Docstring}",
             "[ValidateSet(${2:'a', 'b'})]",
-            "[Parameter(${3:Mandatory, Position=0})]",
+            "[Parameter(${3:Mandatory, Position = 0})]",
             "[string[]]$${4:ParameterName}",
             "${0}"
         ],
