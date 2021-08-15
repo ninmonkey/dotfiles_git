@@ -262,7 +262,9 @@ function Get-ProfileAggressiveItem {
     New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
     Set-Alias @splatAlias -Name 's'  -Value Select-Object   -Description 'aggressive: to override other modules'
     Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard   -Description 'aggressive: set clip'
-    New-Alias 'codei' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias 'CodeI' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
+    # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
+    New-Alias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
 
     if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
         New-Alias -Name 'f ' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'

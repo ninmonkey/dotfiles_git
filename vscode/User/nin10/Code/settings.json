@@ -113,7 +113,7 @@
     "editor.minimap.showSlider": "mouseover",
     //
     // mode: small left
-    "editor.minimap.side": "left",
+    "editor.minimap.side": "right",
     "editor.minimap.maxColumn": 60,
     "editor.linkedEditing": true,
     // "editor.minimap.size": ,
@@ -173,6 +173,7 @@
           */
     "html.format.wrapAttributes": "auto",
     "editor.definitionLinkOpensInPeek": true,
+    "editor.definitionLinkOpensInPeek": false,
     /*
       this mode is a bit crazy, adds a dynamic pane
       showing your 'calculated defaults' relative the selected file on
@@ -1911,5 +1912,6 @@
     "search.useGlobalIgnoreFiles": false,
     // Controls whether to use `.gitignore` and `.ignore` files when searching for files.
     "search.useIgnoreFiles": true,
+    "editor.mouseWheelScrollSensitivity": 1.2,
     "window.zoomLevel": -1,
 }
