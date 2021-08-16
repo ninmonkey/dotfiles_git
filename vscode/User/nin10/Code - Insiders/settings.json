@@ -477,4 +477,57 @@
     /*
     "terminal.integrated.cwd": "c:\\data\\jake",
     */
+    /*
+
+# h1: Pester Tests
+        addon: 'pspester.pester-test'
+
+    */
+    // Add menu items to the editor context menu for running and debugging the tests in the current file
+    "testExplorer.addToEditorContextMenu": false,
+    // Show a CodeLens above each test or suite for running or debugging the tests
+    "testExplorer.codeLens": true,
+    // Show error messages from test failures as decorations in the editor
+    "testExplorer.errorDecoration": true,
+    // Provide hover messages for the error decorations in the editor
+    "testExplorer.errorDecorationHover": true,
+    // Show the state of each test in the editor using Gutter Decorations
+    "testExplorer.gutterDecoration": true,
+    // Hide the output channel used to show a test's log when the user clicks on a test whose log is empty
+    "testExplorer.hideEmptyLog": true,
+    // Hide the Test Explorer when no test adapters have been registered or when no tests have been found
+    "testExplorer.hideWhen": "never",
+    // Merge suites with the same label and parent
+    "testExplorer.mergeSuites": false,
+    // Retire or reset all test states whenever the test tree is reloaded
+    //  - retire: Retire all test states whenever the test tree is reloaded
+    //  - reset: Reset all test states whenever the test tree is reloaded
+    //  - null: Don't change the test states when the test tree is reloaded
+    "testExplorer.onReload": null,
+    // Retire or reset all test states whenever a test run is started
+    //  - retire: Retire all test states whenever a test run is started
+    //  - reset: Reset all test states whenever a test run is started
+    //  - null: Don't change the test states when a test run is started
+    "testExplorer.onStart": null,
+    // Show a button for collapsing the nodes of the test tree
+    "testExplorer.showCollapseButton": true,
+    // Show a button for expanding the top nodes of the test tree, recursively for the given number of levels
+    "testExplorer.showExpandButton": 3,
+    // Switch to the Test Explorer view whenever a test run is started
+    "testExplorer.showOnRun": false,
+    // Sort the tests and suites by label or location. If this is not set (or set to null), they will be shown in the order that they were received from the adapter
+    //  - byLabel: sort by label
+    //  - byLocation: sort by location (filename and line), if multiple tests or suites appear at the same location, they are sorted by label
+    //  - byLabelWithSuitesFirst: sort by label, but always put the suites on top
+    //  - byLocationWithSuitesFirst: sort by location, but always put the suites on top
+    //  - null: don't sort, the tests and suites will be shown in the order that they were received from the adapter
+    "testExplorer.sort": null,
+    // Disable the Test Explorer UI and use VSCode's native Testing UI instead
+    "testExplorer.useNativeTesting": false,
+    /*
+
+    # h1: Pester Test Explorer
+        addon: 'tylerleonhardt.vscode-pester-test-adapter'
+
+    */
 }

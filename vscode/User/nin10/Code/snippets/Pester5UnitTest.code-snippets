@@ -1,8 +1,8 @@
 {
-    "Pester Function Test": {
+    "Pester ⇢ CommandTemplate": {
         // source: JustinGrote : https://gist.github.com/JustinGrote/eaade376c3da5baf4455b7a51fa17444
-        "scope": "ps1",
-        "prefix": "PesterTest: NewFile",
+        "scope": "ps1,powershell",
+        "prefix": "Pester Template 🐒", //PesterTest: NewFile",
         "body": [
             "#requires -modules @{ModuleName='Pester';RequiredVersion='5.0.0'}",
             "\\$SCRIPT:__PesterFunctionName = \\$myinvocation.MyCommand.Name.split('.')[0]",
@@ -14,10 +14,23 @@
             "        \\$ErrorActionPreference = 'Stop'",
             "    }",
             "    It 'Runs without error' {",
-            "        . \\$__PesterFunctionName $0",
+            "        . \\$__PesterFunctionName ${0}",
             "    }",
             "}"
         ],
         "description": "Pester Function Test"
-    }
+    },
+    "Pester ⇢ ForEach Data 🐒": {
+        // see also: "Pester ⇢ CommandTemplate"
+        "scope": "ps1,powershell",
+        "prefix": "ForEach 🐒 Pester Data",
+        "body": [
+            "It '\"<${1:Name}>\" Returns \"<expected>\"' -ForEach @(",
+            "    @{ ${1:Name} = ${2:x} ; Expected = ${3:y} }${0}",
+            ") {",
+            "    . \\$__PesterFunctionName \\$${1:Name} | Should -Be \\$Expected",
+            "}",
+        ],
+        "description": "template for data-driven test"
+    },
 }
