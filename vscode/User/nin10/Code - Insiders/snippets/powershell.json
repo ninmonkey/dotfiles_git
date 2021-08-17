@@ -85,7 +85,7 @@
         "prefix": "Parameter nin : 🐒",
         "body": [
             "# ${3} ",
-            "[Parameter(${1:Mandatory, Position=0})]",
+            "[Parameter(${1:Mandatory, Position = 0})]",
             "${2:[string]$$Name},"
             // "[${3:object}]$${4:ParameterName}$0",
         ],
@@ -96,45 +96,50 @@
         "prefix": "Parameter 🐒 default",
         "body": [
             "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
+            "[Parameter(${2:Mandatory, Position = 0})]",
             "[${3:object}]$${4:ParameterName}${0}",
         ],
     },
-    "Parameter ⇢ ChoiceBox Complicated": {
+    "Parameter ⇢ Simple (extra tabstop choices)": {
         // a little more complicated
         // "prefix": "Parameter nin : 🐒 ChoiceBox",
-        "prefix": "Function ⇢ [CmdletBinding] 🐒",
+        "prefix": "Parameter ⇢ Simple (extra tabstop choices) 🐒",
         "body": [
             "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position=0})]",
+            "[Parameter(${2:Mandatory, Position = 0})]",
             "[${3:object}]$${4:ParameterName}$0",
         ],
+        // "body": [
+        //     "# ${1:Docstring}",
+        //     "[Parameter(${2:Mandatory, Position = 0})]",
+        //     "[${3:object}]$${4:ParameterName}$0",
+        // ],
         "description": "nin ⁞ A basic [Parameter()]"
     },
-    "Function 2⇢ Cmdlet": {
-        "prefix": "Function 2⇢ [CmdletBinding] 🐒",
-        "description": "nin 2⁞ CmdletBinding with initial params",
-        "body": [
-            "[CmdletBinding(",
-            "",
-            ")]",
-            "param (",
-            "    # ${3:docstring}",
-            "    [Parameter(Mandatory, Position=0,",
-            "wip -- do the always CmdletWriteError",
-            "in the try catch",
-            "in the try here",
-            // Best practice is to use doc strings, not the attribute
-            // "        ",
-            "    [${1:TypeName}]$${2:ParameterName}$0",
-            ")"
-        ]
-    },
+    // "Function 2⇢ Cmdlet": {
+    //     "prefix": "ToAsk: Function⇢ [CmdletBinding] 🐒",
+    //     "description": "nin 2⁞ CmdletBinding with initial params",
+    //     "body": [
+    //         "[CmdletBinding(",
+    //         "",
+    //         ")]",
+    //         "param (",
+    //         "    # ${3:docstring}",
+    //         "    [Parameter(Mandatory, Position = 0,",
+    //         "wip -- do the always CmdletWriteError",
+    //         "in the try catch",
+    //         "in the try here",
+    //         // Best practice is to use doc strings, not the attribute
+    //         // "        ",
+    //         "    [${1:TypeName}]$${2:ParameterName}$0",
+    //         ")"
+    //     ]
+    // },
     // "CmdletBinding()": {
     //     "prefix": "WIP -- [CmdletBinding()]",
     //     "description": "nin ⁞ CmdletBinding with initial params",
-    "Function ⇢ Cmdlet": {
-        "prefix": "Function ⇢ [CmdletBinding] 🐒",
+    "Func ⇢ Pipeline 🐒": {
+        "prefix": "Function ⇢ Pipeline 🐒",
         "description": "Defaults for a  new function🐒",
         "body": [
             "function ${1:Get-Foo} {",
@@ -142,26 +147,71 @@
             "    .synopsis",
             "        ${2:Stuff}",
             "    .description",
-            "        ${3:Desc}",
+            "       .",
+            // "        ${3:Desc}",
+            "    .example",
+            "          .",
             "    .outputs",
+            "          [string | None]",
             "    ",
             "    #>",
-            "    [CmdletBinding(PositionalBinding=\\$false)]",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
             "    param(",
-            "        ${4}",
+            "       [Parameter(Mandatory, Position = 0)]",
+            "       [string]\\$Name",
+            // "        ${4}",
             "    )",
             "    ",
             "    begin {}",
             "    process {",
-            "       ${0}", // to use selected text, see: "Function ⇢ Tiny"
-            "    # todo: always wrap CmdletExceptionWrapper: From Sci",
+            "       ${0:${TM_SELECTED_TEXT}}", // to use selected text, see: "Function ⇢ Tiny"
+            // "    # todo: always wrap CmdletExceptionWrapper: From Sci",
             "    }",
             "    end {}",
             "}"
         ]
     },
-    "Func ⇢ Tiny | Function 🐒": {
-        "prefix": "Function ⇢ Tiny | Function { .. } 🐒",
+    "Func ⇢ Pipeline ⇢ Collect All🐒": {
+        "prefix": "Function ⇢ Collect All Pipeline 🐒",
+        "description": "Collects all objects from the pipeline 🐒",
+        "body": [
+            "function ${1:Get-Foo} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2:Stuff}",
+            "    .description",
+            "       .",
+            "    .example",
+            "          .",
+            "    .outputs",
+            "          [string | None]",
+            "    ",
+            "    #>",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
+            "    param(",
+            "        [Parameter(Mandatory, Position = 0)]",
+            "        [string]\\$Name",
+            // "        ${4}",
+            "    )",
+            "    ",
+            "    begin {",
+            "        \\$NameList = [list[string]]::new()",
+            "    }",
+            "    process {",
+            "        \\$Name | ForEach-Object {",
+            "            \\$NameList.Add( \\$_ )",
+            "        }",
+            "    }",
+            // "       ${0:${TM_SELECTED_TEXT}}", // to use selected text, see: "Function ⇢ Tiny"
+            // "    # todo: always wrap CmdletExceptionWrapper: From Sci",
+            "    end {",
+            "        \\$NameList",
+            "    }",
+            "}"
+        ]
+    },
+    "Func ⇢ Basic 🐒": {
+        "prefix": "Function ⇢ Basic 🐒",
         "description": "Minimal defaults | Supports selected text.",
         "body": [
             "function ${1:Get-Foo} {",
@@ -172,7 +222,7 @@
             "        .",
             "    ",
             "    #>",
-            "    [CmdletBinding(PositionalBinding=\\$false)]",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
             "    param(",
             "        ${0}",
             "    )",
@@ -180,6 +230,13 @@
             "}"
         ]
     },
+    // "Label🐈": {
+    //     "prefix": "prefix🐶",
+    //     "description": "description🦆",
+    //     "body": [
+    //         "body🦇"
+    //     ]
+    // },
     "CalculatedProperty": {
         "prefix": "Calculated-Property ⇢ SingleLine 🐒",
         "body": [
@@ -217,30 +274,30 @@
             "[Parameter()][switch]\\$${0}"
         ]
     },
-    "Function ⇢ Basic": {
-        "prefix": "Function ⇢ Basic",
-        "description": "nin ⁞ A basic function",
-        "body": [
-            "function ${1:Name} {",
-            "    <#",
-            "    .synopsis",
-            "        ${2}",
-            "    .description",
-            "        .",
-            "    .example",
-            "        PS>",
-            "    .notes",
-            "        .",
-            "    #>",
-            "    param (",
-            "        ${0}",
-            "    )",
-            "    begin {}",
-            "    process {}",
-            "    end {}",
-            "}",
-        ],
-    },
+    // "Function ⇢ Basic": {
+    //     "prefix": "Function ⇢ Basic",
+    //     "description": "nin ⁞ A basic function",
+    //     "body": [
+    //         "function ${1:Name} {",
+    //         "    <#",
+    //         "    .synopsis",
+    //         "        ${2}",
+    //         "    .description",
+    //         "        .",
+    //         "    .example",
+    //         "        PS>",
+    //         "    .notes",
+    //         "        .",
+    //         "    #>",
+    //         "    param (",
+    //         "        ${0}",
+    //         "    )",
+    //         "    begin {}",
+    //         "    process {}",
+    //         "    end {}",
+    //         "}",
+    //     ],
+    // },
     "Parameter: Completer ⇢ ValidateSet": {
         "prefix": "Param ⇢ Completer | [ValidateSet] 🐒",
         // "prefix": "Completer ⇢ ValidateSet",
@@ -248,7 +305,7 @@
         "body": [
             "# ${1:Docstring}",
             "[Parameter(",
-            "    ${2:Mandatory}, ${3:Position=0},",
+            "    ${2:Mandatory}, ${3:Position = 0},",
             "    [ValidateSet(${4})]",
             "    [string[]]$${5:ParameterName})",
             "$0",
@@ -261,7 +318,7 @@
         "body": [
             "# ${1:Docstring}",
             "[ValidateSet(${2:'a', 'b'})]",
-            "[Parameter(${3:Mandatory, Position=0})]",
+            "[Parameter(${3:Mandatory, Position = 0})]",
             "[string[]]$${4:ParameterName}",
             "${0}"
         ],

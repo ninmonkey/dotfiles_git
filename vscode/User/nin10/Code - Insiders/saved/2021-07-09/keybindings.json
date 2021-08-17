@@ -1,28 +1,17 @@
-/*
-Profile: Jake 2021-04 | Keybindings
-Config: VS Code **Insiders**
-
-Description:
-Table of Contents, search for sections named:
-
-"# h1: <header label>"
-
-Docs:
-
-- [complex `in` conditions](https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator)
-- [Keybinding Documentation](https://code.visualstudio.com/docs/getstarted/keybindings)
-- [Available `when` Contexts](https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts)
-- [New Commands: October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
-
-Cheat Sheet:
-    [List of Panel and View Names / ids](https://code.visualstudio.com/api/references/when-clause-contexts#activefocused-view-or-panel-when-clause-context)
-    See also:
-        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
-
-    */
+// Place your key bindings in this file to override the defaults
 [
     /*
+    See also:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+    New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
     */
+    {
+        // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
+        "key": "ctrl+w",
+        "command": "workbench.action.closeWindow",
+        "when": "!editorIsOpen && !multipleEditorGroups"
+    },
     {
         "key": "ctrl+shift+c",
         "command": "PowerShell.ShowAdditionalCommands",
@@ -30,26 +19,12 @@ Cheat Sheet:
         "when": "editorTextFocus && editorLangId == 'powershell'"
     },
     {
-        "key": "ctrl+alt+j",
-        "command": "editor.action.insertSnippet",
-        "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'powershell'"
-        // "when": "editorTextFocus && editorLangId == 'powershell'"
-        // "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'swift'"
-    },
-    {
-        "key": "ctrl+v",
-        "command": "-filesExplorer.paste",
-        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
-    },
-    {
-        "key": "ctrl+shift+v",
-        "command": "workbench.action.terminal.sendSequence",
-        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
-    },
-    {
-        "key": "ctrl+v",
-        "command": "-workbench.action.terminal.sendSequence",
-        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+        "key": "ctrl+.",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "Invoke-DocumentRefactor"
+        },
+        "when": "editorLangId == 'powershell'",
     },
     /*
 
@@ -57,63 +32,69 @@ Cheat Sheet:
 
     */
     {
-        /* manually opt in to languages  */
-        "key": "ctrl+alt+j",
-        "command": "editor.action.insertSnippet",
-    },
-    {
         "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
         "command": "-workbench.action.terminal.paste",
         "when": "terminalFocus && terminalProcessSupported"
     },
     {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        /* manually opt in to languages  */
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        // "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'swift'"
+        "when": "editorTextFocus"
+    },
+    {
+        //jump to breakpoints (only in the text editor)
+        "key": "ctrl+alt+numpad2",
+        "command": "editor.debug.action.goToNextBreakpoint",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+numpad1",
+        "command": "editor.debug.action.goToPreviousBreakpoint",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+alt+j",
+        "command": "code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-markdown.extension.editing.toggleBold",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == 'markdown'"
+    },
+    {
         "key": "ctrl+alt+l",
-        "command": "editor.action.joinLines",
-        "when": "editorTextFocus && !editorReadonly"
-    },
-    {
-        "key": "ctrl+alt+enter",
-        "command": "notebook.cell.execute",
-        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
-    },
-    {
-        "key": "ctrl+enter",
-        "command": "-notebook.cell.execute",
-        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
-    },
-    {
-        "key": "ctrl+alt+enter",
-        "command": "jupyter.runcurrentcell",
-        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
-    },
-    {
-        "key": "ctrl+enter",
-        "command": "-jupyter.runcurrentcell",
-        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
-    },
-    {
-        "key": "alt+enter",
-        "command": "notebook.cell.executeAndSelectBelow",
-        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
-    },
-    {
-        "key": "shift+enter",
-        "command": "-notebook.cell.executeAndSelectBelow",
-        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
+        "command": "editor.action.joinLines"
     },
     /*
-    section:
-        Toggle disabling ctrl+v for vscode-powershell
-        pasting bug
+
+    Powershell: Pester
+    */
+    /*
+
+    h1: Toggle Ctrl+V keybinds on and off,
+        from ctrl+v to ctrl+shift+v
+
+        for debugging
     {
-        "key": "ctrl+shift+v",
-        "command": "workbench.action.terminal.paste",
-        "when": "terminalFocus && terminalProcessSupported"
+        "key": "ctrl+numpad1",
+        "command": "PowerShell.DebugPesterTestsFromFile",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
     },
     {
-        "key": "ctrl+v",
-        "command": "-workbench.action.terminal.paste",
-        "when": "terminalFocus && terminalProcessSupported"
+        "key": "ctrl+numpad2",
+        "command": "PowerShell.RunPesterTestsFromFile",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
     },
     {
         "key": "ctrl+shift+v",
@@ -128,10 +109,54 @@ Cheat Sheet:
         "command": "filesExplorer.paste",
         "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
     },
+    {
+        "key": "ctrl+v",
+        "command": "-filesExplorer.paste",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
     */
+    // { //broke?
+    //     "key": "ctrl+numpad3",
+    //     "command": "PowerShell.RunPesterTests",
+    //     "when": "editorTextFocus && editorLangId == 'powershell'"
+    // },
     /*
+    examples
 
-            section: unbind defaults
+    [ex] Quick fix uses a regex
+    {
+        "key": "shift+alt+.",
+        "command": "editor.action.autoFix",
+        "when": "editorTextFocus && !editorReadonly && supportedCodeAction =~ /(\\s|^)quickfix\\b/"
+    },
 
-            */
+    [ex] conditional replacement
+        (?<pattern>:<insertion>)
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>:<otherwise>)
+
+
+        (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
+    */
 ]
