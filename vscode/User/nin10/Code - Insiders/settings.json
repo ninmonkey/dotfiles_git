@@ -484,7 +484,7 @@
 
     */
     // Add menu items to the editor context menu for running and debugging the tests in the current file
-    "testExplorer.addToEditorContextMenu": false,
+    "testExplorer.addToEditorContextMenu": true,
     // Show a CodeLens above each test or suite for running or debugging the tests
     "testExplorer.codeLens": true,
     // Show error messages from test failures as decorations in the editor

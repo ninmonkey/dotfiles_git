@@ -15,13 +15,15 @@ $__ninConfig = @{
         IgnoreImportWarning = $true # __doc__: Ignore warnings from any modules imported on profile first load
     }
     Prompt                     = @{
-        # __doc__: Controls the look of your prompt
+        # __doc__: Controls the look of your prompt, not 'Terminal'
         # __uri__: Terminal
-        Profile          = 'default'    # __doc__: default | debugPrompt | Spartan
-        IncludeGitStatus = $false # show git branch, files changed, etc?
+        Profile                      = 'default'    # __doc__: default | debugPrompt | Spartan
+        IncludeGitStatus             = $false # show git branch, files changed, etc?
+        PredentLineCount             = 1
+        IncludePredentHorizontalLine = $false
     }
     Terminal                   = @{
-        # __doc__: Detects or affects the environment
+        # __doc__: Detects or affects the environment, not 'Prompt'
         # __uri__: Prompt
         <#
         Terminal.CurrentTerminal = <code | 'Code - Insiders' | 'windowsterminal' | ... >
@@ -34,11 +36,13 @@ $__ninConfig = @{
             cmd /C Pwsh -> comes up as 'cmd'
 
         #>
+        ColorBackground        = '#2E3440' # defer typing until later?
         CurrentTerminal        = (Get-Process -Id $pid).Parent.Name # cleaned up name below
         IsVSCode               = $false # __doc__: this is a VS Code terminal
         IsVSCodeAddon_Terminal = $false # __doc__: this is a [vscode-powershell] extension debug terminal
         #IsAdmin = Test-UserIsAdmin # __doc__: set later to delay load. very naive test. just for styling
     }
+
 }
 
 <#
@@ -46,15 +50,25 @@ env vars to check
 'ChocolateyInstall', 'ChocolateyToolsLocation', 'FZF_CTRL_T_COMMAND', 'FZF_DEFAULT_COMMAND', 'FZF_DEFAULT_OPTS', 'HOMEPATH', 'Nin_Dotfiles', 'Nin_Home', 'Nin_PSModulePath', 'NinNow', 'Pager', 'PSModulePath', 'WSLENV', 'BAT_CONFIG_PATH', 'RIPGREP_CONFIG_PATH', 'Pager', 'PSMODULEPATH'
 #>
 function _reloadModule {
+    # reload all dev modules in my profile's scope
+    param(
+        # Temporarily enable warnings
+        [parameter()][switch]$AllowWarn
+    )
     # quickly reload my modules for dev
     $importModuleSplat = @{
         # Name = 'Ninmonkey.Console', 'Dev.nin'
-        Name  = 'Dev.Nin', 'Ninmonkey.Console', 'Ninmonkey.Powershell', 'Ninmonkey.Profile'
+        Name  = _enumerateMyModule # 'Dev.Nin', 'Ninmonkey.Console', 'Ninmonkey.Powershell', 'Ninmonkey.Profile'
         Force = $true
     }
 
     # Ignore warnings, allow errors
-    Import-Module @importModuleSplat 3>$null
+    if (!$AllowWarn) {
+        Import-Module @importModuleSplat 3>$null
+    }
+    else {
+        Import-Module @importModuleSplat
+    }
 }
 New-Alias 'rel' -Value '_reloadModule' -ea ignore
 & {
@@ -62,10 +76,12 @@ New-Alias 'rel' -Value '_reloadModule' -ea ignore
     if ($parent -eq 'code') {
         $__ninConfig.Terminal.CurrentTerminal = 'code'
         $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'Code - Insiders') {
+    }
+    elseif ($parent -eq 'Code - Insiders') {
         $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
         $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'windowsterminal') {
+    }
+    elseif ($parent -eq 'windowsterminal') {
         # preview still uses this name
         $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
     }
@@ -300,7 +316,8 @@ if ($__ninConfig.UsePSReadLinePredict) {
     try {
         Set-PSReadLineOption -PredictionSource History
         Set-PSReadLineOption -PredictionViewStyle ListView
-    } catch {
+    }
+    catch {
         Write-Warning 'Failed: -PredictionSource History'
     }
 }
@@ -308,7 +325,8 @@ if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
         Set-PSReadLineOption -PredictionViewStyle ListView
-    } catch {
+    }
+    catch {
         Write-Warning 'Failed: -PredictionSource HistoryAndPlugin'
     }
 }

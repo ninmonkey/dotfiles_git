@@ -194,8 +194,16 @@ function Write-NinProfilePrompt {
         }
 
         default {
+
+
             $segments = @(
-                _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
+                $splatPredent = @{
+                    NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
+                    IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
+                }
+
+                _Write-Predent @splatPredent
+                # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
                 _Write-PromptIsAdminStatus
                 _Write-PathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
                 if ($__ninConfig.Prompt.IncludeGitStatus) {
