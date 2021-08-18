@@ -276,7 +276,6 @@
 
       */
     "editor.suggest.insertMode": "insert",
-    "editor.quickSuggestionsDelay": 10,
     "editor.wordBasedSuggestionsMode": "allDocuments",
     "editor.wordBasedSuggestionsMode": "matchingDocuments", // "allDocuments" "currentDocuments", "matchingDocuments"
     /*
@@ -650,6 +649,8 @@
     // "powershell.powerShellDefaultVersion": "",
     // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
     "editor.find.autoFindInSelection": "multiline",
+    "editor.quickSuggestionsDelay": 800,
+    "errorLens.delay": 700,
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
         "editor.suggest.showWords": true,
@@ -1243,6 +1244,7 @@
     // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira Code Retina'",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, //14, // for zoom -1
@@ -1255,9 +1257,9 @@
     "terminal.integrated.fontSize": 16, //12, // for zoom 0
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
-    "editor.fontSize": 18, //18 16, // for zoom -1
-    "editor.fontSize": 20, //18 16, // for zoom -1
     "editor.fontSize": 16,
+    "editor.fontSize": 20, //18 16, // for zoom -1
+    "editor.fontSize": 18, //18 16, // for zoom -1
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -1573,19 +1575,6 @@
     "editor.autoIndent": "advanced",
     "editor.suggest.showClasses": true,
     "editor.rename.enablePreview": true,
-    "editor.semanticHighlighting.enabled": true,
-    "editor.snippetSuggestions": "bottom",
-    "editor.snippetSuggestions": "none",
-    "editor.suggest.filterGraceful": true,
-    "editor.suggest.insertMode": "insert",
-    "editor.suggest.preview": true,
-    "editor.suggest.preview": true,
-    "editor.suggest.previewMode": true,
-    "editor.suggest.showInlineDetails": true,
-    "editor.suggest.showSnippets": true,
-    "editor.suggest.showSnippets": true,
-    "editor.suggest.snippetsPreventQuickSuggestions": true,
-    "editor.tabCompletion": "off",
     "snippets.viewer.combineLanguageSnippets": false,
     // "snippets.viewer.skipLanguageSnippets": "",
     "snippets.viewer.expandSnippetFiles": true,
@@ -1599,6 +1588,7 @@
     //  - prefix: Only render a preview if the replace text is a prefix of the insert text.
     //  - subwordDiff: Only render a preview if the replace text is a subword of the insert text.
     "editor.suggest.previewMode": "prefix",
+    "editor.suggest.previewMode": "subwordSmart",
     // When enabled IntelliSense shows `snippet`-suggestions.
     "editor.suggest.showSnippets": true,
     // Controls the visibility of the status bar at the bottom of the suggest widget.
@@ -1673,7 +1663,7 @@
     "insert-unicode.recentlyUsedLimit": 20,
     // Relevant for the 'Identify Unicode Characters' command. If set to 'true', the results of the 'Identify Unicode Characters' command will always be displayed in a new file. When 'false', an info notification is shown which also offers the option to open the contents as file.
     "insert-unicode.show-identified-characters-in-file": false,
-    // Always use a normal space character instead of higher width spaces when using the 'insertFont' command. Some of the fonts use a different space character to account for larger character widths.
+    // Always use a normal space character instead of higher width spaces when using the 'inserFont' command. Some of the fonts use a different space character to account for largert character widths.
     "insert-unicode.unicode-font-use-regular-space": false,
     // Disable the paged search and perform live filtering on the entire Unicode set. Can have performance issues.
     "insert-unicode.disable-pre-filtering": true,
@@ -1918,4 +1908,64 @@
     // Controls whether to use `.gitignore` and `.ignore` files when searching for files.
     "search.useIgnoreFiles": true,
     "editor.mouseWheelScrollSensitivity": 1.2,
+    /*
+
+
+
+
+
+
+
+
+
+    ### Sect: All Testing section, merged all groups that are WIP to the bottom to be in one place
+
+           tags: Tag1, Tag2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    */
+    "editor.wordBasedSuggestions": true,
+    "editor.suggest.showWords": false, // first test
+    "editor.suggest.showKeywords": true,
+    // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
+    // "editor.suggestSelection": "recentlyUsedByPrefix",
+    // "editor.suggestSelection": "first",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "choseToUpdateConfiguration",
+    "editor.suggest.showStatusBar": true, // https://code.visualstudio.com/updates/v1_51#_status-bar-for-suggestions
+    // "editor.suggest.insertMode":"insert", // https://code.visualstudio.com/updates/v1_51#_move-cursor-to-select-suggestions
+    // "editor.colorDecorators": true,
+    "editor.suggest.filterGraceful": true,
+    "editor.suggest.localityBonus": true,
+    // "editor.acceptSuggestionOnEnter": "smart",
+    "editor.suggest.showFields": true,
+    // "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.semanticHighlighting.enabled": true,
+    "editor.snippetSuggestions": "bottom",
+    "editor.snippetSuggestions": "none",
+    "editor.suggest.filterGraceful": true,
+    "editor.suggest.insertMode": "insert",
+    "editor.suggest.preview": true,
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.preview": true,
+    "editor.suggest.previewMode": true,
+    "editor.suggest.showInlineDetails": true,
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": true,
+    "editor.tabCompletion": "off",
+    "editor.quickSuggestionsDelay": 10,
+    "editor.quickSuggestionsDelay": 800,
 }
