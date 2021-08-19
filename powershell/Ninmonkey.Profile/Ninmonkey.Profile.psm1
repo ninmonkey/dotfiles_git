@@ -130,7 +130,42 @@ function _Write-PathToBreadCrumbs {
 
     }
 }
+$script:__temp ??= @{} #??= @{}
+$script:__temp.IncludeDebugPrompt ??= $true
 
+function _Write-ErrorSummaryPrompt {
+    <#
+    .synopsis
+        summarize errors briefly, for screenshots / interactive animation
+    #>
+    param(
+        #
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Name
+    )
+
+    if ( $script:__temp.IncludeDebugPrompt ) {
+        _Write-VerboseDebugPrompt
+    }
+
+    $script:__temp.LastErrorCount ??= $error.count
+    $newErrorCount = $error.count - $script:__temp.LastErrorCount
+    $script:__temp.LastErrorCount = $error.count
+
+
+    @(
+        "New Error Count: $NewErrorCount."
+    ) | Join-String -sep "`n"
+
+    # $template
+    # $lastCount = $error.count
+    #1 / 0
+    # ($error.count) - $lastCount
+
+
+    # $error[0].Message
+    # $error[1].Exception.Message
+}
 function _Write-VerboseDebugPrompt {
     <#
     .synopsis
@@ -181,6 +216,10 @@ function Write-NinProfilePrompt {
     )
     # do not use extra newlines on missing segments
     switch ($__ninConfig.Prompt.Profile) {
+        'errorSummary' {
+            _Write-ErrorSummaryPrompt
+            break
+        }
         'debugPrompt' {
             _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
             _Write-VerboseDebugPrompt
@@ -224,6 +263,7 @@ if ($true) {
         '_Write-PathToBreadCrumbs'
         '_Write-PromptGitStatus'
         '_Write-VerboseDebugPrompt'
+        '_Write-ErrorSummaryPrompt'
     )
 }
 
