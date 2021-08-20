@@ -140,7 +140,7 @@ function _Write-ErrorSummaryPrompt {
     #>
     param(
         #
-        [Parameter(Mandatory, Position = 0)]
+        [Parameter(Position = 0)]
         [string]$Name
     )
 
@@ -217,18 +217,30 @@ function Write-NinProfilePrompt {
     # do not use extra newlines on missing segments
     switch ($__ninConfig.Prompt.Profile) {
         'errorSummary' {
-            _Write-ErrorSummaryPrompt
+            @(
+                _Write-ErrorSummaryPrompt
+            ) | Join-String
             break
         }
         'debugPrompt' {
-            _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-            _Write-VerboseDebugPrompt
+            @(
+                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                _Write-VerboseDebugPrompt
+            ) | Join-String
             break
         }
 
+        'oneLine' {
+            @(
+                '🐒> '
+            ) | Join-String
+            break
+        }
         'spartan' {
-            _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-            "`n🐒> "
+            @(
+                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                "`n🐒> "
+            ) | Join-String
             break
         }
 
@@ -267,13 +279,13 @@ if ($true) {
     )
 }
 
-& {
-    $src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
-    if (Test-Path $src) {
-        . $src
-        Export-ModuleMember -Function 'Backup-VSCode'
-    }
+# & {
+$src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
+if (Test-Path $src) {
+    . $src
+    Export-ModuleMember -Function 'Backup-VSCode'
 }
+# }
 
 Get-ChildItem fg: | Where-Object { $_.X11ColorName -match 'alm|moun' } | Sort-Object Rgb | ForEach-Object { New-Text $_.x11ColorName -fg $_ } | Join-String -sep ' . '
 | Write-Host
