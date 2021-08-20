@@ -291,7 +291,8 @@ function Get-ProfileAggressiveItem {
     # Usually not a great idea, but this is for a interactive command line profile
 
     $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea SilentlyContinue
-    $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
+    # $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
+    $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
     $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction SilentlyContinue
 
     $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
@@ -341,7 +342,8 @@ if ($true) {
     Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
     Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
     Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
-    Set-PSReadLineOption -ContinuationPrompt (' ' * 4 | New-Text -fg gray80 -bg gray30 | ForEach-Object tostring )
+    Set-PSReadLineOption -ContinuationPrompt ((' ' * 4) -join '')
+    # Set-PSReadLineOption -ContinuationPrompt (' ' * 4 | New-Text -fg gray80 -bg gray30 | ForEach-Object tostring )
 }
 
 
