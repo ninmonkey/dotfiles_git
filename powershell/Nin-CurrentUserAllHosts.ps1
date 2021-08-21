@@ -4,7 +4,7 @@ using namespace PoshCode.Pansies
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'
 
-$__ninConfig = @{
+$__ninConfig ??= @{
     # HackSkipLoadCompleters     = $true
     EnableGreetingOnLoad       = $true
     UseAggressiveAlias         = $true
@@ -42,6 +42,7 @@ $__ninConfig = @{
         IsVSCodeAddon_Terminal = $false # __doc__: this is a [vscode-powershell] extension debug terminal
         #IsAdmin = Test-UserIsAdmin # __doc__: set later to delay load. very naive test. just for styling
     }
+    IsFirstLoad                = $true
 
 }
 
@@ -233,10 +234,25 @@ Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
         # h1 'Todo' | New-Text -fg yellow -bg magenta
         '🐵'
     }
+    Backup-VSCode -infa Continue
 
     if ($__ninConfig.EnableGreetingOnLoad) {
         _writeTodoGreeting
     }
+
+    if (
+        ((Get-Location).Path -eq (Get-Item "$Env:Userprofile" )) -and
+        $__ninConfig.Terminal.IsVSCode -and
+        $__ninConfig.IsFirstLoad
+    ) {
+        # if Vs Code didn't set a directory, fallback to pwsh
+        Set-Location "$Env:UserProfile/Documents/2021/Powershell"
+
+    }
+    "FirstLoad? $($__ninConfig.IsFirstLoad)" | Write-Host -fore green
+
+    $__ninConfig.IsFirstLoad = $false
+
 }
 
 

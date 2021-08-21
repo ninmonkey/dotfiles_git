@@ -96,5 +96,3 @@ function Backup-VSCode {
         )
     }
 }
-
-Backup-VSCode -infa Continue
