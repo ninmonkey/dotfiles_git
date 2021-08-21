@@ -1269,8 +1269,7 @@
     "terminal.integrated.allowChords": true,
     "terminal.integrated.automationShell.windows": null,
     "terminal.integrated.allowWorkspaceConfiguration": false,
-    "terminal.integrated.defaultProfile.windows": "Windows PowerShell",
-    "terminal.integrated.enableFileLinks": true,
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒",
     "terminal.integrated.environmentChangesIndicator": "warnonly",
     /*
       none:       none
@@ -1294,6 +1293,8 @@
     // "powershell.pester.outputVerbosity": "Minimal", //"Diagnostic",
     "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
     "powershell.pester.debugOutputVerbosity": "Detailed", // "Detailed", //Diagnostic",
+    "terminal.integrated.enableFileLinks": true,
+    "terminal.integrated.environmentChangesIndicator": "warnonly", // "Detailed", //Diagnostic",
     "terminal.integrated.environmentChangesRelaunch": true,
     // "terminal.integrated.fontWeight": "500",
     "terminal.integrated.experimentalUseTitleEvent": false, // An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals
@@ -1969,4 +1970,8 @@
     "editor.tabCompletion": "off",
     "editor.quickSuggestionsDelay": 10,
     "editor.quickSuggestionsDelay": 800,
+    "window.zoomLevel": 1,
+    // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
+    // "powershell.pester.outputVerbosity": "Diagnostic",
+    // "powershell.pester.outputVerbosity": "FromPreference",
 }
