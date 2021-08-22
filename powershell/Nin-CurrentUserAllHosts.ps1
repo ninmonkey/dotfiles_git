@@ -444,30 +444,31 @@ Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 <#
     [section]: Optional imports
 #>
-& {
-    $splatMaybeWarn = @{}
+# & {
+$splatMaybeWarn = @{}
 
-    if ($__ninConfig.Module.IgnoreImportWarning) {
-        $splatMaybeWarn['Warning-Action'] = 'Ignore'
-    }
-    # Soft/Optional Requirements
-    $OptionalImports = @(
-        'ClassExplorer'
-        'Pansies'
-        'Dev.Nin'
-        'Ninmonkey.Console'
-        'Ninmonkey.Powershell'
-        'PSFzf'
-        # 'ZLocation'
-    )
-    $OptionalImports
-    | Join-String -sep ', ' -SingleQuote -op '[v] Loading Modules:' | Write-Verbose
-
-    $OptionalImports | ForEach-Object {
-        Write-Debug "[v] Import-Module: $_"
-        Import-Module $_ @splatMaybeWarn -DisableNameChecking
-    }
+if ($__ninConfig.Module.IgnoreImportWarning) {
+    $splatMaybeWarn['Warning-Action'] = 'Ignore'
 }
+# Soft/Optional Requirements
+$OptionalImports = @(
+    'ClassExplorer'
+    'Pansies'
+    'Dev.Nin'
+    'Ninmonkey.Console'
+    'Ninmonkey.Powershell'
+    'PSFzf'
+    'Posh-Git'
+    # 'ZLocation'
+)
+$OptionalImports
+| Join-String -sep ', ' -SingleQuote -op '[v] Loading Modules:' | Write-Verbose
+
+$OptionalImports | ForEach-Object {
+    Write-Debug "[v] Import-Module: $_"
+    Import-Module $_ @splatMaybeWarn -DisableNameChecking
+}
+# }
 
 
 # finally "profile"

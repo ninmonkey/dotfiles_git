@@ -1970,7 +1970,7 @@
     "editor.tabCompletion": "off",
     "editor.quickSuggestionsDelay": 10,
     "editor.quickSuggestionsDelay": 800,
-    "window.zoomLevel": 1,
+    "window.zoomLevel": -1,
     // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
     // "powershell.pester.outputVerbosity": "Diagnostic",
     // "powershell.pester.outputVerbosity": "FromPreference",
