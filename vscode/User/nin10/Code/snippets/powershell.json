@@ -76,6 +76,22 @@
         ],
         "description": "Literals Here-String. Intended  to be hotkey only, when there's a selection to wrap"
     },
+    "$PSCommandlet ⇢ ThrowTerminatingError": {
+        /*
+            This doesn't have a fancy template choice
+            this gives you a cleaner experience than the choice-box
+            */
+        "prefix": "ThrowTerminatingError() : 🐒",
+        "body": [
+            "\\$PSCmdlet.ThrowTerminatingError(",
+            "    [ErrorRecord]::new(",
+            "        [InvalidOperationException]::new('${1:My message}', \\$_.Exception),",
+            "        '${2:MyId}',",
+            "        '${3:MyCategory}',",
+            "        \\$${4:myTarget}))${0}",
+        ],
+        "description": "a quick Parameter()"
+    },
     "Parameter ⇢ Basic": {
         /*
             This doesn't have a fancy template choice
