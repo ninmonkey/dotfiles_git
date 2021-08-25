@@ -104,6 +104,18 @@
             "),",
         ],
     },
+    "Has Error Expression": {
+        "prefix": "HasError",
+        "description": "try: =>  HasError expression",
+        "body": [
+            "",
+            "   let",
+            "      maybeVal = try ${1:$TM_SELECTED_TEXT}",
+            "   in",
+            "      if maybeVal[HasError] then maybeVal[Error] else maybeVal[Value]${0:,}",
+            "",
+        ],
+    },
     "Custom Function": {
         "prefix": "Function",
         "description": "Function ⁞ add a new function",
