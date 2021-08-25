@@ -1,5 +1,7 @@
 #Requires -Version 7.0.0
 using namespace PoshCode.Pansies
+using namespace System.Collections.Generic #
+using namespace Management.Automation # [ErrorRecord]
 # $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'

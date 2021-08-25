@@ -46,6 +46,13 @@
     {
         // "key": "ctrl+cmd+=",
         "key": "ctrl+numpad1",
+        "command": "editor.action.duplicateSelection",
+        "when": "editorTextFocus && !editorReadonly",
+        // "args": []
+    },
+    {
+        // "key": "ctrl+cmd+=",
+        "key": "ctrl+numpad2",
         "command": "wwm.aligncode",
         "when": "editorTextFocus && !editorReadonly"
         // "args": ""
