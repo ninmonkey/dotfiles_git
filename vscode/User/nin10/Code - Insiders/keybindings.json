@@ -6,6 +6,12 @@
     New Commands
         - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
     */
+    // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.createTerminalEditorSided",
+        "when": "editorTextFocus"
+    },
     {
         // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
         "key": "ctrl+w",

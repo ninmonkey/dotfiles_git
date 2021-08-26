@@ -115,6 +115,12 @@
         "command": "editor.debug.action.goToNextBreakpoint",
         "when": "editorTextFocus"
     },
+    // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.createTerminalEditorSided",
+        "when": "editorTextFocus"
+    },
     {
         "key": "ctrl+alt+numpad1",
         "command": "editor.debug.action.goToPreviousBreakpoint",
