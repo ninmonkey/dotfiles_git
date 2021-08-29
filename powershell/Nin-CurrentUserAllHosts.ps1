@@ -23,6 +23,9 @@ $__ninConfig ??= @{
         IncludeGitStatus             = $false # show git branch, files changed, etc?
         PredentLineCount             = 1
         IncludePredentHorizontalLine = $false
+        BreadCrumb                   = @{
+            MaxCrumbCount = -1 # __doc__: default is 3. Negative means no limit
+        }
     }
     Terminal                   = @{
         # __doc__: Detects or affects the environment, not 'Prompt'
@@ -291,7 +294,7 @@ if ($true) {
     }
 
     # todo:  # can I move this logic to profile? at first I thought there was scope issues, but that doesn't matter
-    Remove-Alias -Name 'cd'
+    Remove-Alias -Name 'cd' -ea ignore
     New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
     Set-Alias @splatAlias -Name 's'  -Value Select-Object   -Description 'aggressive: to override other modules'
     Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard   -Description 'aggressive: set clip'

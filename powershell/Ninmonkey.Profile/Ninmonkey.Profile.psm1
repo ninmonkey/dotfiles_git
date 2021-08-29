@@ -1,5 +1,7 @@
 $script:_state = @{}
 
+$PROFILE | Add-Member -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSSCriptRoot)
+# adds full filepath this file's directory
 # & {
 $s_optionalItem = @{
     'ErrorAction' = 'silentlycontinue'
@@ -43,16 +45,42 @@ $Env:RIPGREP_CONFIG_PATH = $script:NinProfile_Dotfiles.RipGrep.FullName
 Export-ModuleMember -Variable 'NinProfile_Dotfiles'
 
 # & {
-New-Alias 'codei' -Value 'code-insiders' -Description 'VS Code insiders version' -PassThru
-New-Alias -Name 'CtrlChar' -Value Format-ControlChar -Description 'Converts ANSI escapes to safe-to-print text' -PassThru
-New-Alias -Name 'wi' -Value 'Write-Information'
-
-Export-ModuleMember -Alias @(
-    'codei'
-    'CtrlChar'
-    'wi'
+$splatIgnorePass = @{
+    ErrorAction = 'Ignore'
+    'PassThru'  = $true
+    # scope = script? global because it's export module?
+}
+$splatIgnoreGlobal = $splatIgnorePass += @{
+    Scope = 'Global'
+}
+Remove-Alias -Name 'cd' -ea ignore
+Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
+[object[]]$newAliasList = @(
+    New-Alias @splatIgnorePass   -Name 'codei'     -Value 'code-insiders'      -Description 'VS Code insiders version'
+    New-Alias @splatIgnorePass   -Name 'codei'     -Value 'code-insiders'      -Description 'VS Code insiders version'
+    New-Alias @splatIgnorePass   -Name 'CtrlChar'  -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
+    New-Alias @splatIgnorePass   -Name 'Wi'        -Value 'Write-Information'  -Description 'Write Information'
+    New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'ls'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
+    New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'ls'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
+    New-Alias @splatIgnoreGlobal -Name 'cd'        -Value 'Set-NinLocation'    -Description 'A modern "cd"'
+    Set-Alias @splatIgnorePass   -Name 's'         -Value 'Select-Object'      -Description 'aggressive: to override other modules'
+    Set-Alias @splatIgnorePass   -Name 'cl'        -Value 'Set-Clipboard'      -Description 'aggressive: set clip'
+    New-Alias @splatIgnorePass   -Name 'CodeI'     -Value 'code-insiders'      -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass   -Name 'f'         -Value 'PSScriptTools\Select-First' -Description 'quicker cli toggling whether to use insiders or not'
+    # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
+    # New-Alias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
+    # guard did not catch this correctly anyway, maybe -ea disables loading? i don not want to use an -all
+    #   on a profile load, for performance.
+    #   the 'nicest' way could be to delay binding using a profile 'async'? or just allow it to bind without existing.
+    # if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
+    #     New-Alias -Name 'f ' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
+    # }
 )
-# }
+
+Export-ModuleMember -Alias $newAliasList
+$newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '
+| New-Text -fg 'pink' | Join-String -op 'Ninmonkey.Profile: '
+| Write-Debug
 
 
 function _Write-PromptGitStatus {
@@ -107,13 +135,14 @@ function _Write-PathToBreadCrumbs {
             break
         }
         'LimitSegmentCount' {
+            # print endpoints, with 'maxSize' number of crumbs between
+
             # todo: like 'default' but reverse, so brightest path is left
-            $maxSize = 3
-            $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width 4
+            # refactor: next line (access + default) should be built-in func for Set-NinConfig | Get-NinConfig
+            $maxSize = ($__ninConfig.Prompt.BreadCrumb)?.MaxCrumbCount ?? 3 # __doc__: default is 3. Negative means no limit
+            $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width ($maxSize + 2)#4
             $finalList = @(
                 $crumbs | Select-Object -First 1
-
-
                 ($crumbs | Select-Object -Skip 1)
                 | Select-Object -Last $maxSize
             )
