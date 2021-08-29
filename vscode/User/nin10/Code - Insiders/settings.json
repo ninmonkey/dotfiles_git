@@ -364,6 +364,7 @@
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false
     },
+    // "json.maxItemsComputed": 10000,
     "[json]": {
         "editor.quickSuggestions": {
             "strings": true

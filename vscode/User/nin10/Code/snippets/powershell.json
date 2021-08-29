@@ -97,7 +97,6 @@
             This doesn't have a fancy template choice
             this gives you a cleaner experience than the choice-box
             */
-        "prefix": "Param nin",
         "prefix": "Parameter nin : 🐒",
         "body": [
             "# ${3} ",
@@ -327,7 +326,7 @@
             "$0",
         ],
     },
-    "Parameter: Completer ⇢ ValidateSet": {
+    "Parameter: Completer 2 ⇢ ValidateSet": {
         "prefix": "Param 2⇢ Completer | [ValidateSet] 🐒",
         // "prefix": "Completer ⇢ ValidateSet",
         "description": "nin 2⁞ Autocompleter parameter from a static list using ValidateSet()",

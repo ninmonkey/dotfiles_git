@@ -1279,8 +1279,11 @@
     // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'Fira Code Retina'",
+    "editor.fontFamily": "'Fira Code retina'",
     "editor.fontFamily": "'cascadia code'",
+    "editor.fontFamily": "'cascadia code'",
+    "editor.fontFamily": "'Fira Code'",
+    // "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, //14, // for zoom -1
@@ -2112,7 +2115,10 @@
     "editor.tabCompletion": "off",
     "editor.quickSuggestionsDelay": 10,
     "editor.quickSuggestionsDelay": 800,
+    "editor.quickSuggestionsDelay": 500,
     // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
     // "powershell.pester.outputVerbosity": "Diagnostic",
     // "powershell.pester.outputVerbosity": "FromPreference",
+    // new:https://code.visualstudio.com/updates/v1_59#_configure-the-path-separator-for-copy-relative-path
+    "explorer.copyRelativePathSeparator": "/",
 }

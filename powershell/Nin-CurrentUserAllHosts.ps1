@@ -283,7 +283,8 @@ function Get-ProfileAggressiveItem {
     [PSCustomObject]$meta
 }
 
-& {
+if ($true) {
+    # $__innerStartAliases = Get-Alias # -Scope local
     $splatAlias = @{
         Scope       = 'global'
         ErrorAction = 'Ignore'
@@ -327,6 +328,16 @@ function Get-ProfileAggressiveItem {
     # $MyInvocation.PSCommandPath
     # $PSScriptRoot
     # $PSCommandPath
+    if ($false) {
+        # Neither way was dynamically capturing mine, I had hoped local scope  would be good enough.
+        $deltaAliasList = Get-Alias #-Scope local
+        | Where-Object { $_.Name -notin $__innerStartAliases.Name }
+
+        $deltaAliasList | Sort-Object | Join-String -sep "`n" {
+            "Alias: $($_.Name)" | New-Text -fg pink
+        }
+    }
+
 
 }
 
