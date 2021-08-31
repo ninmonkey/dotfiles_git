@@ -1,7 +1,7 @@
 #Requires -Version 7.0.0
 using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
-using namespace Management.Automation # [ErrorRecord]
+using namespace System.Management.Automation # [ErrorRecord]
 # $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'
@@ -24,7 +24,12 @@ $__ninConfig ??= @{
         PredentLineCount             = 1
         IncludePredentHorizontalLine = $false
         BreadCrumb                   = @{
-            MaxCrumbCount = -1 # __doc__: default is 3. Negative means no limit
+            MaxCrumbCount    = -1 # __doc__: default is 3. Negative means no limit
+            CrumbJoinText    = ' '
+            CrumbJoinReverse = $true
+            ColorStart       = '#CD919E' # __doc__: default is random. the most significant bit of breadcrumb
+            ColorEnd         = '#454545' # __doc__: default is random. the least significant bit of breadcrumb
+
         }
     }
     Terminal                   = @{
@@ -49,6 +54,22 @@ $__ninConfig ??= @{
     }
     IsFirstLoad                = $true
 
+}
+
+& {
+
+    $colorA = '#CD919E'
+    $colorB = '#454545'
+    ($__ninConfig.Prompt.BreadCrumb).ColorStart = $colorB
+    ($__ninConfig.Prompt.BreadCrumb).ColorEnd = $colorA
+    ($__ninConfig.Prompt.BreadCrumb).CrumbJoinReverse = $false
+    $__ninConfig.Prompt.BreadCrumb.CrumbJoinText = ' ▸ ' | New-Text -fg 'gray35'
+}
+function _reRollPrompt {
+    # reset vars used when random fallbacks
+    ($__ninConfig.Prompt.BreadCrumb).ColorStart = $null
+    ($__ninConfig.Prompt.BreadCrumb).ColorEnd = $null
+    Reset-RandomPerSession -Name 'prompt.crumb.colorBreadEnd', 'prompt.crumb.colorBreadStart'
 }
 
 <#
@@ -76,6 +97,7 @@ function _reloadModule {
         Import-Module @importModuleSplat
     }
 }
+
 New-Alias 'rel' -Value '_reloadModule' -ea ignore
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
@@ -155,6 +177,18 @@ $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly
 $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
 $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
+
+
+<#
+
+    [section]: $PSDefaultParameterValues
+
+        But settings for dev.nin / meaning any of these could be obsolete
+        because it's experimental
+#>
+$PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true
+$PSDefaultParameterValues['Get-RandomPerSession:Verbose'] = $true
+$PSDefaultParameterValues['Reset-RandomPerSession:Verbose'] = $true
 
 <#
     [section]: Nin.* Environment Variables

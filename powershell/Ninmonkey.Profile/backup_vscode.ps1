@@ -4,6 +4,8 @@ function Backup-VSCode {
         backup dotfiles to git
     .description
         .
+    .example
+        PS> Backup-VSCode
     #>
     [CmdletBinding(PositionalBinding = $false)]
     param(
@@ -23,11 +25,11 @@ function Backup-VSCode {
         New-Text -fg yellow  "`n`nBacking up VS Code ---------------------------`n" | Write-Host
 
         # $dest = Get-Item -ea stop 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\vscode\User\nin10\Code'
-        $dotfileRoot = Get-Item 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\vscode\User\nin10'
+        $dotfileRoot = Get-Item -ea stop "$Env:UserProfile\Documents\2021\dotfiles_git\vscode\User\nin10"
 
         ## =========== code
         # $src = Get-Item "$Env:AppData\Code\User\*"
-        $src = "$Env:AppData\Code\User\*"
+        $src = "$Env:AppData\Code\User\*" # star is important based on how command works
         $dest = "$dotfileRoot\code"
         $copyItemSplat = @{
             # WhatIf      = $true

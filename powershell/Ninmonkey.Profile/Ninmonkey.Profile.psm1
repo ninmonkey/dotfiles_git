@@ -1,6 +1,6 @@
 $script:_state = @{}
 
-$PROFILE | Add-Member -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSSCriptRoot)
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSScriptRoot)
 # adds full filepath this file's directory
 # & {
 $s_optionalItem = @{
@@ -57,11 +57,11 @@ Remove-Alias -Name 'cd' -ea ignore
 Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(
     New-Alias @splatIgnorePass   -Name 'codei'     -Value 'code-insiders'      -Description 'VS Code insiders version'
-    New-Alias @splatIgnorePass   -Name 'codei'     -Value 'code-insiders'      -Description 'VS Code insiders version'
     New-Alias @splatIgnorePass   -Name 'CtrlChar'  -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
     New-Alias @splatIgnorePass   -Name 'Wi'        -Value 'Write-Information'  -Description 'Write Information'
-    New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'ls'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
-    New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'ls'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
+    Set-Alias @splatIgnorePass   -Name 'gpi'       -Value 'ClassExplorer\Get-Parameter'  -Description 'Write Information'
+    # New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
+    # New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
     New-Alias @splatIgnoreGlobal -Name 'cd'        -Value 'Set-NinLocation'    -Description 'A modern "cd"'
     Set-Alias @splatIgnorePass   -Name 's'         -Value 'Select-Object'      -Description 'aggressive: to override other modules'
     Set-Alias @splatIgnorePass   -Name 'cl'        -Value 'Set-Clipboard'      -Description 'aggressive: set clip'
@@ -82,6 +82,10 @@ $newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New A
 | New-Text -fg 'pink' | Join-String -op 'Ninmonkey.Profile: '
 | Write-Debug
 
+function _reRollPrompt {
+    # Re-randomizes the breadcrumb key names
+    Reset-RandomPerSession -Name 'prompt.crumb.colorBreadEnd', 'prompt.crumb.colorBreadStart'
+}
 
 function _Write-PromptGitStatus {
     <#
@@ -116,8 +120,27 @@ function _Write-PromptIsAdminStatus {
     New-Text -bg red -fg white 'Admin      '
     "`n"
 }
-function _Write-PathToBreadCrumbs {
+function _Write-PromptPathToBreadCrumbs {
+    <#
+    .synopsis
+        write current directory as crumbs
+    .notes
+        future:
 
+        -[ ] abbrevate mode
+
+            in:
+                C:\\Users\\cppmo_000\\Documents\\2021\\Powershell\\My_Gist\\FinalDirectory
+            out:
+                # A
+                $EnvUserProfile⋯Docs⋯2021⋯Powe⋯My_Gist⋯FinalDirectory
+
+                # B
+                U⋯c⋯D⋯2⋯P⋯My_Gi⋯FinalDirectory
+
+
+    #>
+    [cmdletbinding(PositionalBinding = $false)]
     param(
         # FormatMode
         [ValidateSet('Default', 'LimitSegmentCount')]
@@ -125,38 +148,104 @@ function _Write-PathToBreadCrumbs {
         [string]$FormatMode = 'LimitSegmentCount'
     )
 
-    $crumbs = (Get-Location | ForEach-Object Path) -split '\\'
-    switch ($FormatMode) {
-        'a' {
-            break
-        }
-        'Reverse' {
-            # todo: like 'default' but reverse, so brightest path is left
-            break
-        }
-        'LimitSegmentCount' {
-            # print endpoints, with 'maxSize' number of crumbs between
-
-            # todo: like 'default' but reverse, so brightest path is left
-            # refactor: next line (access + default) should be built-in func for Set-NinConfig | Get-NinConfig
-            $maxSize = ($__ninConfig.Prompt.BreadCrumb)?.MaxCrumbCount ?? 3 # __doc__: default is 3. Negative means no limit
-            $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width ($maxSize + 2)#4
-            $finalList = @(
-                $crumbs | Select-Object -First 1
-                ($crumbs | Select-Object -Skip 1)
-                | Select-Object -Last $maxSize
-            )
-
-
-            $finalString = $finalList | ForEach-Object -Begin { $i = 0 ; } -Process {
-                New-Text -Object $_ -fg $gradient[$i++]
+    try {
+        $FinalOutputString = switch ($FormatMode) {
+            'a' {
+                'Ps> '
+                break
             }
-            $finalString | Join-String -sep ' '
-            break
-        }
-        default {
+            'Reverse' {
+                'Todo> '
+                # todo: like 'default' but reverse, so brightest path is left
+                break
+            }
+            'LimitSegmentCount' {
+                # size is currently disabled being used
+                $maxSize = ($__ninConfig.Prompt.BreadCrumb)?.MaxCrumbCount ?? 3 # __doc__: default is 3. Negative means no limit
+                $crumbJoinText = ($__ninConfig.Prompt.BreadCrumb)?.CrumbJoinText ?? ' ' # __doc__: default is ' ' . Join String.
+                $crumbJoinReverse = ($__ninConfig.Prompt.BreadCrumb)?.CrumbJoinReverse ?? $true # __doc__: default is $false ' right to left
+                # todo: config: after config wrapper, also setup these:
+                # 'gray40'
+
+                $gradientStart = ($__ninConfig.Prompt.BreadCrumb)?.ColorStart
+                $gradientStart ??= Get-RandomPerSession -Name 'prompt.crumb.colorBreadStart' { Get-ChildItem fg: }
+                $gradientEnd = ($__ninConfig.Prompt.BreadCrumb)?.ColorEnd
+                $gradientEnd ??= Get-RandomPerSession -Name 'prompt.crumb.colorBreadEnd' { Get-ChildItem fg: }
+
+                $crumbs = (Get-Location | ForEach-Object Path) -split '\\'
+                $numCrumbs = $crumbs.count
+                $getGradientSplat = @{
+                    StartColor = $gradientStart
+                    EndColor   = $gradientEnd
+                    Width      = [math]::Clamp( $numCrumbs, 3, [int]::MaxValue )
+                }
+                # if ($true) {
+                #     $colorsFg = Get-ChildItem fg:
+                #     $getGradientSplat.StartColor = $colorsFg | Get-Random -Count 1
+                #     $getGradientSplat.EndColor = $colorsFg | Get-Random -Count 1
+                # }
+
+                $gradient = Get-Gradient @getGradientSplat
+                $finalSegments = $crumbs | ForEach-Object -Begin { $i = 0 } {
+                    $curLine = $_
+                    if ($i -ge $numCrumbs) {
+                        Write-Error "OutofBoundException:`$i '$i' >= `$numCrumbs!"
+                    }
+                    New-Text -Object $curLine -ForegroundColor $gradient[$i]
+                    $i++
+                }
+                if ($crumbJoinReverse) {
+                    # $finalSegments.reverse() | Out-null
+                    $FinalSegments | Out-ReversePipeline
+                    | Join-String -sep $crumbJoinText
+                }
+                else {
+                    $finalSegments
+                    | Join-String -sep $crumbJoinText
+                }
+
+                # no removal for now, just show all segments
+                break
+            }
+
+            '__old_LimitSegmentCount' {
+                # print endpoints, with 'maxSize' number of crumbs between
+
+                # todo: like 'default' but reverse, so brightest path is left
+
+                # refactor: next line (access + default) should be built-in func for Set-NinConfig | Get-NinConfig
+                if ($false -and 'this is bugged') {
+                    $maxSize = ($__ninConfig.Prompt.BreadCrumb)?.MaxCrumbCount ?? 3 # __doc__: default is 3. Negative means no limit
+                    $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width ($maxSize + 2)#4
+                    $maxSize = 99 # __doc__: default is 3. Negative means no limit
+                    $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width ($maxSize + 4)#4
+                    $finalList = @(
+                        $crumbs | Select-Object -First 1
+                        ($crumbs | Select-Object -Skip 1)
+                        | Select-Object -Last $maxSize
+                    )
+
+                    # maybe pop
+                    @{
+                        maxSize   = $maxSize
+                        finalList = $finalList
+                    } | Format-Table | Out-String | Write-Debug
+                    $finalString = $finalList | ForEach-Object -Begin { $i = 0 ; } -Process {
+                        New-Text -Object $_ -fg $gradient[$i++]
+                    }
+                    $finalString | Join-String -sep ' '
+                    break
+                }
+            }
+            default {
+            }
+
         }
 
+        $FinalOutputString | Join-String -sep ''
+    }
+    catch {
+        $PSCmdlet.WriteError( $_ )
     }
 }
 $script:__temp ??= @{} #??= @{}
@@ -207,7 +296,7 @@ function _Write-VerboseDebugPrompt {
         ($__ninConfig.Terminal.IsVSCode) ? 'Y' : 'N'
         ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) ? 'Y' : 'N'
     ) | Join-String
-    $chunk | Join-String -sep "`n"
+    $chunk | Join-String -os "`n"
 }
 
 function _Write-Predent {
@@ -241,58 +330,64 @@ function Write-NinProfilePrompt {
     .notes
         .
     #>
+    [cmdletbinding(PositionalBinding = $false)]
     param (
     )
-    # do not use extra newlines on missing segments
-    switch ($__ninConfig.Prompt.Profile) {
-        'errorSummary' {
-            @(
-                _Write-ErrorSummaryPrompt
-            ) | Join-String
-            break
-        }
-        'debugPrompt' {
-            @(
-                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-                _Write-VerboseDebugPrompt
-            ) | Join-String
-            break
-        }
+    try {
+        # do not use extra newlines on missing segments
+        switch ($__ninConfig.Prompt.Profile) {
+            'errorSummary' {
+                @(
+                    _Write-ErrorSummaryPrompt
+                ) | Join-String
+                break
+            }
+            'debugPrompt' {
+                @(
+                    _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                    _Write-VerboseDebugPrompt
+                ) | Join-String
+                break
+            }
 
-        'oneLine' {
-            @(
-                '🐒> '
-            ) | Join-String
-            break
+            'oneLine' {
+                @(
+                    '🐒> '
+                ) | Join-String
+                break
+            }
+            'spartan' {
+                @(
+                    _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                    "`n🐒> "
+                ) | Join-String
+                break
+            }
+
+            default {
+
+
+                $segments = @(
+                    $splatPredent = @{
+                        NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
+                        IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
+                    }
+
+                    _Write-Predent @splatPredent
+                    # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
+                    _Write-PromptIsAdminStatus
+                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                    if ($__ninConfig.Prompt.IncludeGitStatus) {
+                        _Write-PromptGitStatus # todo: better git status line
+                    }
+                    "`n🐒> "
+                )
+                $segments | Join-String
+            }
         }
-        'spartan' {
-            @(
-                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-                "`n🐒> "
-            ) | Join-String
-            break
-        }
-
-        default {
-
-
-            $segments = @(
-                $splatPredent = @{
-                    NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
-                    IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
-                }
-
-                _Write-Predent @splatPredent
-                # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
-                _Write-PromptIsAdminStatus
-                _Write-PathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
-                if ($__ninConfig.Prompt.IncludeGitStatus) {
-                    _Write-PromptGitStatus # todo: better git status line
-                }
-                "`n🐒> "
-            )
-            $segments | Join-String
-        }
+    }
+    catch {
+        $PSCmdlet.WriteError( $_ )
     }
 }
 
@@ -301,7 +396,7 @@ Export-ModuleMember -Function Write-NinProfilePrompt
 if ($true) {
     Export-ModuleMember -Function @(
         '_Write-PromptIsAdminStatus'
-        '_Write-PathToBreadCrumbs'
+        '_Write-PromptPathToBreadCrumbs'
         '_Write-PromptGitStatus'
         '_Write-VerboseDebugPrompt'
         '_Write-ErrorSummaryPrompt'
@@ -316,5 +411,5 @@ if (Test-Path $src) {
 }
 # }
 
-Get-ChildItem fg: | Where-Object { $_.X11ColorName -match 'alm|moun' } | Sort-Object Rgb | ForEach-Object { New-Text $_.x11ColorName -fg $_ } | Join-String -sep ' . '
-| Write-Host
+# Get-ChildItem fg: | Where-Object { $_.X11ColorName -match 'alm|moun' } | Sort-Object Rgb | ForEach-Object { New-Text $_.x11ColorName -fg $_ } | Join-String -sep ' . '
+# | Write-Host
