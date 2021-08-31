@@ -589,6 +589,7 @@
     "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'consolas', 'cascadia mono', fira code retina, cascadia code, consolas, monospace",
     "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia mono', consolas, monospace",
     // "terminal.integrated.inheritEnv": false,
     "codepoint.statusbar": "description",
     "workbench.quickOpen.closeOnFocusLost": false,
@@ -1269,7 +1270,6 @@
     "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FiraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
     "editor.fontFamily": "'fira code', consolas, monospace",
     "editor.fontFamily": "'cascadia mono', consolas, monospace",
     "editor.fontFamily": "'cascadia code', consolas, monospace",
@@ -1279,10 +1279,11 @@
     // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira Code'",
     "editor.fontFamily": "'Fira Code retina'",
     "editor.fontFamily": "'cascadia code'",
-    "editor.fontFamily": "'cascadia code'",
-    "editor.fontFamily": "'Fira Code'",
+    "editor.fontFamily": "'cascadia code', consolas",
+    "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
     // "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
@@ -2139,6 +2140,7 @@
     // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
     "terminal.integrated.confirmOnExit": "hasChildProcesses",
     "terminal.integrated.confirmOnKill": "editor",
+    "terminal.integrated.defaultLocation": "editor",
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
 }

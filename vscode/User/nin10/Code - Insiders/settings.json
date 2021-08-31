@@ -1244,6 +1244,7 @@
     // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code', Consolas, monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, //14, // for zoom -1
@@ -1252,13 +1253,14 @@
     // for zoom = 0
     "debug.console.fontSize": 14,
     "debug.console.fontSize": 16,
+    "debug.console.fontSize": 18,
     "terminal.integrated.fontSize": 14, //12, // for zoom 0
-    "terminal.integrated.fontSize": 16, //12, // for zoom 0
+    "terminal.integrated.fontSize": 18, //12, // for zoom 0
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
     "editor.fontSize": 18, //18 16, // for zoom -1
     "editor.fontSize": 20, //18 16, // for zoom -1
-    "editor.fontSize": 16,
+    "editor.fontSize": 18,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -1992,6 +1994,8 @@
     // new: confirm on kill terminal and editor based terms
     // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
     "terminal.integrated.confirmOnExit": "hasChildProcesses",
+    "editor.fontWeight": "normal",
+    "editor.FontFamily": "consolas",
     "terminal.integrated.confirmOnKill": "editor",
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
