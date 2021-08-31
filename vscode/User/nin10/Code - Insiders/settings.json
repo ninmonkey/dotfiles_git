@@ -209,6 +209,9 @@
 
           */
     "notebook.breadcrumbs.showCodeCells": true,
+    "workbench.panel.defaultLocation": "right",
+    "terminal.integrated.tabs.showActions": "singleTerminalOrNarrow",
+    "terminal.integrated.showExitAlert": true,
     "notebook.outline.showCodeCells": true,
     // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
     /*
@@ -1995,7 +1998,7 @@
     // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
     "terminal.integrated.confirmOnExit": "hasChildProcesses",
     "editor.fontWeight": "normal",
-    "editor.FontFamily": "consolas",
+    "editor.FontFamily": "'cascadia code', consolas, monospace",
     "terminal.integrated.confirmOnKill": "editor",
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":

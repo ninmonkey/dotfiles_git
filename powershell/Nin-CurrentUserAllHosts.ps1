@@ -65,6 +65,15 @@ $__ninConfig ??= @{
     ($__ninConfig.Prompt.BreadCrumb).CrumbJoinReverse = $false
     $__ninConfig.Prompt.BreadCrumb.CrumbJoinText = ' ▸ ' | New-Text -fg 'gray35'
 }
+
+<#
+npm /w node.js
+    https://docs.npmjs.com/try-the-latest-stable-version-of-npm#upgrading-on-windows
+$toadd = Get-Item -ea Continue "$Env:AppData\Npm"
+$Env:path = $toAdd, $Env:path -join ';'
+#>
+
+
 function _reRollPrompt {
     # reset vars used when random fallbacks
     ($__ninConfig.Prompt.BreadCrumb).ColorStart = $null
