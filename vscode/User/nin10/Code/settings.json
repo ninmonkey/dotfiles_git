@@ -2121,4 +2121,24 @@
     // "powershell.pester.outputVerbosity": "FromPreference",
     // new:https://code.visualstudio.com/updates/v1_59#_configure-the-path-separator-for-copy-relative-path
     "explorer.copyRelativePathSeparator": "/",
+    // new: semantic coloring config
+    // https://code.visualstudio.com/updates/v1_59#_extended-theme-customization-syntax
+    // new: jupyter layout and sytels
+    // https://code.visualstudio.com/updates/v1_59#_notebook-layout-improvements
+    // new: automatic language detection
+    "workbench.editor.untitled.experimentalLanguageDetection": true,
+    // then filter specific languages to not use
+    // "[markdown]": { "workbench.editor.untitled.experimentalLanguageDetection": false }
+    //new: native testing: https://code.visualstudio.com/updates/v1_59#_testing-apis
+    // tuts: https://code.visualstudio.com/api/extension-guides/testing
+    "testExplorer.useNativeTesting": true,
+    // new: default path sep:
+    "explorer.copyRelativePathSeparator": "/",
+    "editor.find.seedSearchStringFromSelection": "selection",
+    // new: confirm on kill terminal and editor based terms
+    // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
+    "terminal.integrated.confirmOnExit": "hasChildProcesses",
+    "terminal.integrated.confirmOnKill": "editor",
+    // new action (for keybind)
+    // "workbench.action.createTerminalEditorSide":
 }

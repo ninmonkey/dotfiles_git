@@ -728,7 +728,7 @@
         "editor.quickSuggestions": {
             "other": true,
             "comments": false,
-            "strings": false
+            "strings": true
         },
         /*
 
@@ -1688,11 +1688,56 @@
     // JSON does not support hex notation, but it can be passed wrapped in a string, e.g.: "0x1f525".)
     "insert-unicode.favorites": {
         "directories": {
+            "arrows": {
+                "directories": {},
+                "items": [
+                    [
+                        11139,
+                        11190,
+                        767,
+                        8426,
+                        8598,
+                        8601,
+                        8624,
+                        8626,
+                        8624,
+                        8656,
+                        9194,
+                        9194,
+                        9198,
+                        10154
+                    ]
+                ]
+            },
             "block: Spacing": {
                 "directories": {},
                 "items": [
                     [
                         8
+                    ],
+                    [
+                        8645,
+                        8645,
+                        8645,
+                        8656,
+                        8676,
+                        8678,
+                        8867,
+                        9198,
+                        9204,
+                        9488,
+                        9511,
+                        9518,
+                        9563,
+                        9559,
+                        9570,
+                        9569,
+                        9609,
+                        9612,
+                        9627,
+                        9664,
+                        9665,
+                        9639
                     ]
                 ]
             },
@@ -1871,6 +1916,7 @@
     // When enabled, the searchService process will be kept alive instead of being shut down after an hour of inactivity. This will keep the file search cache in memory.
     "search.maintainFileSearchCache": false,
     // Controls the maximum number of search results, this can be set to `null` (empty) to return unlimited results.
+    // new <https://code.visualstudio.com/updates/v1_58#_search-max-results-setting>
     "search.maxResults": 20000,
     // Controls where new `Search: Find in Files` and `Find in Folder` operations occur: either in the sidebar's search view, or in a search editor
     //  - view: Search in the search view, either in the panel or sidebar.
@@ -1929,4 +1975,24 @@
         "[x]"
     ],
     "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
+    // new: semantic coloring config
+    // https://code.visualstudio.com/updates/v1_59#_extended-theme-customization-syntax
+    // new: jupyter layout and sytels
+    // https://code.visualstudio.com/updates/v1_59#_notebook-layout-improvements
+    // new: automatic language detection
+    "workbench.editor.untitled.experimentalLanguageDetection": true,
+    // then filter specific languages to not use
+    // "[markdown]": { "workbench.editor.untitled.experimentalLanguageDetection": false }
+    //new: native testing: https://code.visualstudio.com/updates/v1_59#_testing-apis
+    // tuts: https://code.visualstudio.com/api/extension-guides/testing
+    "testExplorer.useNativeTesting": true,
+    // new: default path sep:
+    "explorer.copyRelativePathSeparator": "/",
+    "editor.find.seedSearchStringFromSelection": "selection",
+    // new: confirm on kill terminal and editor based terms
+    // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
+    "terminal.integrated.confirmOnExit": "hasChildProcesses",
+    "terminal.integrated.confirmOnKill": "editor",
+    // new action (for keybind)
+    // "workbench.action.createTerminalEditorSide":
 }
