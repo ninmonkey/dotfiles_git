@@ -56,17 +56,18 @@ $splatIgnoreGlobal = $splatIgnorePass += @{
 Remove-Alias -Name 'cd' -ea ignore
 Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(
-    New-Alias @splatIgnorePass   -Name 'codei'     -Value 'code-insiders'      -Description 'VS Code insiders version'
+    New-Alias @splatIgnorePass   -Name 'CodeI'     -Value 'code-insiders'      -Description 'VS Code insiders version'
     New-Alias @splatIgnorePass   -Name 'CtrlChar'  -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
     New-Alias @splatIgnorePass   -Name 'Wi'        -Value 'Write-Information'  -Description 'Write Information'
-    Set-Alias @splatIgnorePass   -Name 'gpi'       -Value 'ClassExplorer\Get-Parameter'  -Description 'Write Information'
+    Set-Alias @splatIgnorePass   -Name 'Gpi'       -Value 'ClassExplorer\Get-Parameter'  -Description 'Write Information'
     # New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
     # New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
-    New-Alias @splatIgnoreGlobal -Name 'cd'        -Value 'Set-NinLocation'    -Description 'A modern "cd"'
-    Set-Alias @splatIgnorePass   -Name 's'         -Value 'Select-Object'      -Description 'aggressive: to override other modules'
-    Set-Alias @splatIgnorePass   -Name 'cl'        -Value 'Set-Clipboard'      -Description 'aggressive: set clip'
+    New-Alias @splatIgnoreGlobal -Name 'Cd'        -Value 'Set-NinLocation'    -Description 'A modern "cd"'
+    Set-Alias @splatIgnorePass   -Name 'S'         -Value 'Select-Object'      -Description 'aggressive: to override other modules'
+    Set-Alias @splatIgnorePass   -Name 'Cl'        -Value 'Set-Clipboard'      -Description 'aggressive: set clip'
     New-Alias @splatIgnorePass   -Name 'CodeI'     -Value 'code-insiders'      -Description 'quicker cli toggling whether to use insiders or not'
-    New-Alias @splatIgnorePass   -Name 'f'         -Value 'PSScriptTools\Select-First' -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass   -Name 'F'         -Value 'PSScriptTools\Select-First' -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass   -Name 'Len'         -Value 'Ninmonkey.Console\Measure-ObjectCount' -Description 'A quick count of objects in the pipeline'
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
     # New-Alias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
     # guard did not catch this correctly anyway, maybe -ea disables loading? i don not want to use an -all
@@ -208,35 +209,6 @@ function _Write-PromptPathToBreadCrumbs {
                 break
             }
 
-            '__old_LimitSegmentCount' {
-                # print endpoints, with 'maxSize' number of crumbs between
-
-                # todo: like 'default' but reverse, so brightest path is left
-
-                # refactor: next line (access + default) should be built-in func for Set-NinConfig | Get-NinConfig
-                if ($false -and 'this is bugged') {
-                    $maxSize = ($__ninConfig.Prompt.BreadCrumb)?.MaxCrumbCount ?? 3 # __doc__: default is 3. Negative means no limit
-                    $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width ($maxSize + 2)#4
-                    $maxSize = 99 # __doc__: default is 3. Negative means no limit
-                    $gradient = Get-Gradient -StartColor gray40 -EndColor gray90 -Width ($maxSize + 4)#4
-                    $finalList = @(
-                        $crumbs | Select-Object -First 1
-                        ($crumbs | Select-Object -Skip 1)
-                        | Select-Object -Last $maxSize
-                    )
-
-                    # maybe pop
-                    @{
-                        maxSize   = $maxSize
-                        finalList = $finalList
-                    } | Format-Table | Out-String | Write-Debug
-                    $finalString = $finalList | ForEach-Object -Begin { $i = 0 ; } -Process {
-                        New-Text -Object $_ -fg $gradient[$i++]
-                    }
-                    $finalString | Join-String -sep ' '
-                    break
-                }
-            }
             default {
             }
 
