@@ -683,7 +683,7 @@
 
 */
         "editor.inlineSuggest.enabled": false,
-        "editor.inlayHints.enabled": false, // error lens, debugger, etc
+        // "editor.inlayHints.enabled": false, // error lens, debugger, etc
         // "editor.suggest.localityBonus": false,
         "editor.suggest.localityBonus": true,
         "editor.suggest.showIcons": true,
@@ -730,7 +730,13 @@
         "editor.trimAutoWhitespace": true,
         "editor.renderFinalNewline": false,
         "files.insertFinalNewline": true,
-        "files.trimFinalNewlines": true
+        "files.trimFinalNewlines": true,
+        // final
+        "editor.inlayHints.enabled": true,
+        "editor.inlineSuggest.mode": "subwordSmart",
+        "editor.inlayHints.fontFamily": "cascadia code",
+        "editor.codeLensFontFamily": "'cascadia code'",
+        "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
     },
     "editor.suggestFontSize": 14,
     "editor.codeLensFontSize": 12,
@@ -2002,4 +2008,234 @@
     "workbench.settings.openDefaultSettings": false,
     "workbench.settings.openDefaultKeybindings": true,
     "workbench.settings.openDefaultKeybindings": false,
+    "editor.inlayHints.enabled": true,
+    "javascript.inlayHints.parameterNames.suppressWhenArgumentMatchesName": true,
+    "javascript.inlayHints.enumMemberValues.enabled": true,
+    // more new tests
+    // Controls whether the editor should render the vertical glyph margin. Glyph margin is mostly used for debugging.
+    "editor.glyphMargin": true,
+    // Alternative command id that is being executed when the result of 'Go to Declaration' is the current location.
+    "editor.gotoLocation.alternativeDeclarationCommand": "editor.action.goToReferences",
+    // Alternative command id that is being executed when the result of 'Go to Definition' is the current location.
+    "editor.gotoLocation.alternativeDefinitionCommand": "editor.action.goToReferences",
+    // Alternative command id that is being executed when the result of 'Go to Implementation' is the current location.
+    "editor.gotoLocation.alternativeImplementationCommand": "",
+    // Alternative command id that is being executed when the result of 'Go to Reference' is the current location.
+    "editor.gotoLocation.alternativeReferenceCommand": "",
+    // Alternative command id that is being executed when the result of 'Go to Type Definition' is the current location.
+    "editor.gotoLocation.alternativeTypeDefinitionCommand": "editor.action.goToReferences",
+    // This setting is deprecated, please use separate settings like 'editor.editor.gotoLocation.multipleDefinitions' or 'editor.editor.gotoLocation.multipleImplementations' instead.
+    //
+    "editor.gotoLocation.multiple": null,
+    // Controls the behavior the 'Go to Declaration'-command when multiple target locations exist.
+    //  - peek: Show peek view of the results (default)
+    //  - gotoAndPeek: Go to the primary result and show a peek view
+    //  - goto: Go to the primary result and enable peek-less navigation to others
+    "editor.gotoLocation.multipleDeclarations": "peek",
+    // Controls the behavior the 'Go to Definition'-command when multiple target locations exist.
+    //  - peek: Show peek view of the results (default)
+    //  - gotoAndPeek: Go to the primary result and show a peek view
+    //  - goto: Go to the primary result and enable peek-less navigation to others
+    "editor.gotoLocation.multipleDefinitions": "peek",
+    // Controls the behavior the 'Go to Implementations'-command when multiple target locations exist.
+    //  - peek: Show peek view of the results (default)
+    //  - gotoAndPeek: Go to the primary result and show a peek view
+    //  - goto: Go to the primary result and enable peek-less navigation to others
+    "editor.gotoLocation.multipleImplementations": "peek",
+    // Controls the behavior the 'Go to References'-command when multiple target locations exist.
+    //  - peek: Show peek view of the results (default)
+    //  - gotoAndPeek: Go to the primary result and show a peek view
+    //  - goto: Go to the primary result and enable peek-less navigation to others
+    "editor.gotoLocation.multipleReferences": "peek",
+    // Controls the behavior the 'Go to Type Definition'-command when multiple target locations exist.
+    //  - peek: Show peek view of the results (default)
+    //  - gotoAndPeek: Go to the primary result and show a peek view
+    //  - goto: Go to the primary result and enable peek-less navigation to others
+    "editor.gotoLocation.multipleTypeDefinitions": "peek",
+    // Controls whether the cursor should be hidden in the overview ruler.
+    "editor.hideCursorInOverviewRuler": false,
+    // Controls whether the editor should highlight the active indent guide.
+    "editor.highlightActiveIndentGuide": true,
+    // Controls the delay in milliseconds after which the hover is shown.
+    "editor.hover.delay": 300,
+    // Controls whether the hover is shown.
+    "editor.hover.enabled": true,
+    // Controls whether the hover should remain visible when mouse is moved over it.
+    "editor.hover.sticky": true,
+    // Enables the inlay hints in the editor.
+    "editor.inlayHints.enabled": true,
+    // Controls font family of inlay hints in the editor. When set to empty, the `editor.fontFamily` is used.
+    "editor.inlayHints.fontFamily": "",
+    // Controls font size of inlay hints in the editor. When set to `0`, the 90% of `editor.fontSize` is used.
+    "editor.inlayHints.fontSize": 0,
+    // Controls whether to automatically show inline suggestions in the editor.
+    "editor.inlineSuggest.enabled": true,
+    // Controls which mode to use for rendering inline suggestions.
+    //  - prefix: Only render an inline suggestion if the replace text is a prefix of the insert text.
+    //  - subword: Only render an inline suggestion if the replace text is a subword of the insert text.
+    //  - subwordSmart: Only render an inline suggestion if the replace text is a subword of the insert text, but the subword must start after the cursor.
+    "editor.inlineSuggest.mode": "subwordSmart",
+    // Insert spaces when pressing `Tab`. This setting is overridden based on the file contents when `editor.detectIndentation` is on.
+    "editor.insertSpaces": true,
+    // more experiment
+    // Defines handling of optional semicolons. Requires using TypeScript 3.7 or newer in the workspace.
+    //  - ignore: Don't insert or remove any semicolons.
+    //  - insert: Insert semicolons at statement ends.
+    //  - remove: Remove unnecessary semicolons.
+    "typescript.format.semicolons": "ignore",
+    // Enable/disable implementations CodeLens. This CodeLens shows the implementers of an interface.
+    "typescript.implementationsCodeLens.enabled": false,
+    // Enable/disable inlay hints for member values in enum declarations:
+    // ```typescript
+    //
+    // enum MyValue {
+    // 	A /* = 0 */;
+    // 	B /* = 1 */;
+    // }
+    //
+    // ```
+    // Requires using TypeScript 4.4+ in the workspace.
+    "typescript.inlayHints.enumMemberValues.enabled": false,
+    // Enable/disable inlay hints for implicit return types on function signatures:
+    // ```typescript
+    //
+    // function foo() /* :number */ {
+    // 	return Date.now();
+    // }
+    //
+    // ```
+    // Requires using TypeScript 4.4+ in the workspace.
+    "typescript.inlayHints.functionLikeReturnTypes.enabled": false,
+    // Enable/disable inlay hints for parameter names:
+    // ```typescript
+    //
+    // parseInt(/* str: */ '123', /* radix: */ 8)
+    //
+    // ```
+    // Requires using TypeScript 4.4+ in the workspace.
+    //  - none: Disable parameter name hints.
+    //  - literals: Enable parameter name hints only for literal arguments.
+    //  - all: Enable parameter name hints for literal and non-literal arguments.
+    "typescript.inlayHints.parameterNames.enabled": "none",
+    // Suppress parameter name hints on arguments whose text is identical to the parameter name.
+    "typescript.inlayHints.parameterNames.suppressWhenArgumentMatchesName": true,
+    // Enable/disable inlay hints for implicit parameter types:
+    // ```typescript
+    //
+    // el.addEventListener('click', e /* :MouseEvent */ => ...)
+    //
+    // ```
+    // Requires using TypeScript 4.4+ in the workspace.
+    "typescript.inlayHints.parameterTypes.enabled": false,
+    // Enable/disable inlay hints for implicit types on property declarations:
+    // ```typescript
+    //
+    // class Foo {
+    // 	prop /* :number */ = Date.now;
+    // }
+    //
+    // ```
+    // Requires using TypeScript 4.4+ in the workspace.
+    "typescript.inlayHints.propertyDeclarationTypes.enabled": false,
+    // Enable/disable inlay hints for implicit variable types:
+    // ```typescript
+    //
+    // const foo /* :number */ = Date.now();
+    //
+    // ```
+    // Requires using TypeScript 4.4+ in the workspace.
+    "typescript.inlayHints.variableTypes.enabled": false,
+    // more experiment
+    // Sets the locale used to report JavaScript and TypeScript errors. Defaults to use VS Code's locale.
+    "typescript.locale": "",
+    // Specifies the path to the npm executable used for [Automatic Type Acquisition](https://code.visualstudio.com/docs/nodejs/working-with-javascript#_typings-and-automatic-type-acquisition).
+    "typescript.npm": "",
+    // Preferred path style for auto imports.
+    //  - shortest: Prefers a non-relative import only if one is available that has fewer path segments than a relative import.
+    //  - relative: Prefers a relative path to the imported file location.
+    //  - non-relative: Prefers a non-relative import based on the `baseUrl` or `paths` configured in your `jsconfig.json` / `tsconfig.json`.
+    //  - project-relative: Prefers a non-relative import only if the relative import path would leave the package or project directory. Requires using TypeScript 4.2+ in the workspace.
+    "typescript.preferences.importModuleSpecifier": "shortest",
+    // Preferred path ending for auto imports.
+    //  - auto: Use project settings to select a default.
+    //  - minimal: Shorten `./component/index.js` to `./component`.
+    //  - index: Shorten `./component/index.js` to `./component/index`.
+    //  - js: Do not shorten path endings; include the `.js` extension.
+    "typescript.preferences.importModuleSpecifierEnding": "auto",
+    // Enable/disable searching `package.json` dependencies for available auto imports.
+    //  - auto: Search dependencies based on estimated performance impact.
+    //  - on: Always search dependencies.
+    //  - off: Never search dependencies.
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    // Preferred quote style to use for quick fixes: `single` quotes, `double` quotes, or `auto` infer quote type from existing imports.
+    "typescript.preferences.quoteStyle": "auto",
+    // The setting 'typescript.preferences.renameShorthandProperties' has been deprecated in favor of 'typescript.preferences.useAliasesForRenames'
+    // Enable/disable introducing aliases for object shorthand properties during renames. Requires using TypeScript 3.4 or newer in the workspace.
+    "typescript.preferences.renameShorthandProperties": true,
+    // Enable/disable introducing aliases for object shorthand properties during renames. Requires using TypeScript 3.4 or newer in the workspace.
+    "typescript.preferences.useAliasesForRenames": true,
+    // Enable/disable references CodeLens in TypeScript files.
+    "typescript.referencesCodeLens.enabled": false,
+    // Enable/disable references CodeLens on all functions in TypeScript files.
+    "typescript.referencesCodeLens.showOnAllFunctions": false,
+    // Report style checks as warnings.
+    "typescript.reportStyleChecksAsWarnings": true,
+    // Enable/disable auto import suggestions.
+    "typescript.suggest.autoImports": true,
+    // Complete functions with their parameter signature.
+    "typescript.suggest.completeFunctionCalls": false,
+    // Enable/disable suggestion to complete JSDoc comments.
+    "typescript.suggest.completeJSDocs": true,
+    // Enabled/disable autocomplete suggestions.
+    "typescript.suggest.enabled": true,
+    // Enable/disable showing completions on potentially undefined values that insert an optional chain call. Requires TS 3.7+ and strict null checks to be enabled.
+    "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
+    // Enable/disable auto-import-style completions on partially-typed import statements. Requires using TypeScript 4.3+ in the workspace.
+    "typescript.suggest.includeCompletionsForImportStatements": true,
+    // Enable/disable snippet completions from TS Server. Requires using TypeScript 4.3+ in the workspace.
+    "typescript.suggest.includeCompletionsWithSnippetText": true,
+    // Enable/disable generating `@return` annotations for JSDoc templates. Requires using TypeScript 4.2+ in the workspace.
+    "typescript.suggest.jsdoc.generateReturns": true,
+    // Enable/disable suggestions for paths in import statements and require calls.
+    "typescript.suggest.paths": true,
+    // Enable/disable suggestion diagnostics for TypeScript files in the editor.
+    "typescript.suggestionActions.enabled": true,
+    // Enabled/disable occasional surveys that help us improve VS Code's JavaScript and TypeScript support.
+    "typescript.surveys.enabled": true,
+    // Controls auto detection of tsc tasks.
+    //  - on: Create both build and watch tasks.
+    //  - off: Disable this feature.
+    //  - build: Only create single run compile tasks.
+    //  - watch: Only create compile and watch tasks.
+    "typescript.tsc.autoDetect": "on",
+    // experiment
+    /*
+
+    ### Sect: Native.testing.*
+
+           tags: Tag1, Tag2
+
+    */
+    // Configures when the error peek view is automatically opened.
+    //  - failureAnywhere: Open automatically no matter where the failure is.
+    //  - failureInVisibleDocument: Open automatically when a test fails in a visible document.
+    //  - never: Never automatically open.
+    "testing.automaticallyOpenPeekView": "failureInVisibleDocument",
+    // Controls whether to automatically open the peek view during auto-run mode.
+    "testing.automaticallyOpenPeekViewDuringAutoRun": false,
+    // How long to wait, in milliseconds, after a test is marked as outdated and starting a new run.
+    "testing.autoRun.delay": 1000,
+    // Controls which tests are automatically run.
+    //  - all: Automatically runs all discovered test when auto-run is toggled. Reruns individual tests when they are changed.
+    //  - rerun: Reruns individual tests when they are changed. Will not automatically run any tests that have not been already executed.
+    "testing.autoRun.mode": "all",
+    // Controls the action to take when left-clicking on a test decoration in the gutter.
+    //  - run: Run the test.
+    //  - debug: Debug the test.
+    //  - contextMenu: Open the context menu for more options.
+    "testing.defaultGutterClickAction": "run",
+    // Controls whether the running test should be followed in the test explorer view
+    "testing.followRunningTest": true,
+    // Controls whether test decorations are shown in the editor gutter.
+    "testing.gutterEnabled": true,
 }
