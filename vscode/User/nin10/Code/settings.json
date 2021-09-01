@@ -2141,6 +2141,7 @@
     "terminal.integrated.confirmOnExit": "hasChildProcesses",
     "terminal.integrated.confirmOnKill": "editor",
     "terminal.integrated.defaultLocation": "editor",
+    "powershell.startAutomatically": false,
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
 }

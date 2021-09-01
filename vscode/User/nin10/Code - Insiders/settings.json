@@ -175,20 +175,6 @@
     "editor.definitionLinkOpensInPeek": true,
     "editor.definitionLinkOpensInPeek": false,
     /*
-      this mode is a bit crazy, adds a dynamic pane
-      showing your 'calculated defaults' relative the selected file on
-      the right (user/workspace/folder)
-      */
-    "window.newWindowDimensions": "offset",
-    "window.confirmBeforeClose": "keyboardOnly", // https://code.visualstudio.com/updates/v1_51#_prevent-accidental-close
-    "window.restoreWindows": "all",
-    "window.restoreWindows": "preserve",
-    // "workbench.settings.useSplitJSON": true,
-    "workbench.settings.useSplitJSON": false,
-    // "workbench.settings.openDefaultSettings": false,
-    "workbench.settings.openDefaultSettings": true,
-    "workbench.settings.openDefaultKeybindings": true,
-    /*
 
   ###### SubSect: Truly Experimental
 
@@ -696,6 +682,8 @@
        tags: Tag1, Tag2
 
 */
+        "editor.inlineSuggest.enabled": false,
+        "editor.inlayHints.enabled": false, // error lens, debugger, etc
         // "editor.suggest.localityBonus": false,
         "editor.suggest.localityBonus": true,
         "editor.suggest.showIcons": true,
@@ -715,8 +703,6 @@
         "editor.find.autoFindInSelection": "multiline",
         "editor.suggest.showSnippets": true,
         "editor.suggest.preview": true,
-        "editor.inlineSuggest.enabled": true,
-        "editor.inlayHints.enabled": true,
         "editor.autoSurround": "languageDefined",
         "editor.colorDecorators": true,
         "editor.columnSelection": false,
@@ -1996,10 +1982,24 @@
     "editor.find.seedSearchStringFromSelection": "selection",
     // new: confirm on kill terminal and editor based terms
     // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
-    "terminal.integrated.confirmOnExit": "hasChildProcesses",
+    "terminal.integrated.confirmOnExit": "always",
     "editor.fontWeight": "normal",
     "editor.FontFamily": "'cascadia code', consolas, monospace",
     "terminal.integrated.confirmOnKill": "editor",
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
+    /*
+      this mode is a bit crazy, adds a dynamic pane
+      showing your 'calculated defaults' relative the selected file on
+      the right (user/workspace/folder)
+      */
+    "window.newWindowDimensions": "offset",
+    "window.confirmBeforeClose": "keyboardOnly", // https://code.visualstudio.com/updates/v1_51#_prevent-accidental-close
+    "window.restoreWindows": "preserve",
+    // "workbench.settings.useSplitJSON": true,
+    "workbench.settings.useSplitJSON": false,
+    "workbench.settings.openDefaultSettings": true,
+    "workbench.settings.openDefaultSettings": false,
+    "workbench.settings.openDefaultKeybindings": true,
+    "workbench.settings.openDefaultKeybindings": false,
 }

@@ -76,6 +76,14 @@
         ],
         "description": "Literals Here-String. Intended  to be hotkey only, when there's a selection to wrap"
     },
+    // "🐒regex: ($␀)?.NullConditional": {
+    //     "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+    //     "prefix": "?.NullConditional : selection",
+    //     "description": "($␀) Transforms \" ⇒ \\\"",
+    //     "body": [
+    //         "(${1:$TM_SELECTED_TEXT})?{0}"
+    //     ]
+    // },
     "$PSCommandlet ⇢ ThrowTerminatingError": {
         /*
             This doesn't have a fancy template choice
