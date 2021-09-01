@@ -29,17 +29,18 @@
        tags: Screencast
 
 */
-    "screencastMode.fontSize": 30,
+    // "screencastMode.fontSize": 16,
+    "screencastMode.fontSize": 20,
     // Controls how long (in milliseconds) the keyboard overlay is shown in screencast mode.
     "screencastMode.keyboardOverlayTimeout": 500, // 300, // 800
     "screencastMode.mouseIndicatorColor": "#8dc4a0",
     "screencastMode.mouseIndicatorColor": "#c7e169",
     "screencastMode.mouseIndicatorColor": "#c7e180",
     "screencastMode.mouseIndicatorColor": "#e0ff1a80",
-    "screencastMode.mouseIndicatorSize": 30, // def: 20
+    "screencastMode.mouseIndicatorSize": 30, // fdef: 20
     "screencastMode.onlyKeyboardShortcuts": true, // def: true
     // Controls the vertical offset of the screencast mode overlay from the bottom as a percentage of the workbench height.
-    "screencastMode.verticalOffset": 80, // def: 20
+    "screencastMode.verticalOffset": 80, // ddef: 20
     "screencastMode.verticalOffset": 90, // def: 20
     // "terminal.integrated.minimumContrastRatio": 1,
     /*
@@ -320,8 +321,8 @@
 
       */
     "powershell.developer.editorServicesLogLevel": "Diagnostic",
-    "powerquery.trace.server": "off",
     "powerquery.trace.server": "verbose",
+    "powerquery.trace.server": "messages",
     "python.analysis.logLevel": "Warning", // error/warnining/info/trace
     // "powershell editor services.trace.server": "verbose",
     // "powershell editor services.trace.server": "diagnostic",
@@ -573,11 +574,6 @@
     // "workbench.editor.focusRecentEditorAfterClose": true,
     "workbench.quickOpen.closeOnFocusLost": false,
     "gitlens.views.repositories.files.layout": "list",
-    // "editor.suggest.statusBar.visible": true,
-    // "editor.formatOnSave": true,
-    // "editor.formatOnPaste": true,
-    // "editor.formatOnType": true,
-    "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'consolas', 'cascadia mono', fira code retina, cascadia code, consolas, monospace",
     "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
     // "terminal.integrated.inheritEnv": false,
@@ -708,7 +704,6 @@
         "editor.columnSelection": false,
         "editor.copyWithSyntaxHighlighting": true,
         // "editor.cursorSurroundingLines": 0,
-        "editor.quickSuggestionsDelay": 10,
         "editor.quickSuggestionsDelay": 300,
         "editor.quickSuggestionsDelay": 800,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
@@ -1242,20 +1237,7 @@
     "editor.fontFamily": "'cascadia code', Consolas, monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
-    "editor.suggestFontSize": 14, //14, // for zoom -1
-    // "editor.fontWeight": "400",
-    // "editor.suggestLineHeight": 17, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
-    // for zoom = 0
-    "debug.console.fontSize": 14,
-    "debug.console.fontSize": 16,
-    "debug.console.fontSize": 18,
-    "terminal.integrated.fontSize": 14, //12, // for zoom 0
-    "terminal.integrated.fontSize": 18, //12, // for zoom 0
-    // "editor.fontSize": 14, // for zoom -0
-    "editor.fontSize": 17, //18 16, // for zoom -1
-    "editor.fontSize": 18, //18 16, // for zoom -1
-    "editor.fontSize": 20, //18 16, // for zoom -1
-    "editor.fontSize": 18,
+    "editor.suggestFontSize": 14,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -2238,4 +2220,5 @@
     "testing.followRunningTest": true,
     // Controls whether test decorations are shown in the editor gutter.
     "testing.gutterEnabled": true,
+    // "powershell.integratedConsole.focusConsoleOnExecute": true
 }
