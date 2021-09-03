@@ -88,6 +88,12 @@ function _reRollPrompt {
     Reset-RandomPerSession -Name 'prompt.crumb.colorBreadEnd', 'prompt.crumb.colorBreadStart'
 }
 
+function toggleErrors {
+    # todo: cleanup: move to a better location
+    $__ninConfig.Prompt.NumberOfPromptErrors = if($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) { 3 } else { 0 }
+}
+
+
 function _Write-PromptGitStatus {
     <#
     .synopsis
@@ -223,7 +229,7 @@ function _Write-PromptPathToBreadCrumbs {
 $script:__temp ??= @{} #??= @{}
 $script:__temp.IncludeDebugPrompt ??= $true
 
-function _broke_Write-ErrorSummaryPrompt {
+function _Write-ErrorSummaryPrompt {
     <#
     .synopsis
         can't access global scope?
@@ -235,18 +241,16 @@ function _broke_Write-ErrorSummaryPrompt {
         [string]$Name
     )
 
-    if ( $script:__temp.IncludeDebugPrompt ) {
-        _Write-VerboseDebugPrompt
-    }
+    Dev.Nin\Test-DidErrorOccur -Limit 3
 
-    $script:__temp.LastErrorCount ??= $error.count
-    $newErrorCount = $error.count - $script:__temp.LastErrorCount
-    $script:__temp.LastErrorCount = $error.count
+    # $script:__temp.LastErrorCount ??= $error.count
+    # $newErrorCount = $error.count - $script:__temp.LastErrorCount
+    # $script:__temp.LastErrorCount = $error.count
 
 
-    @(
-        "New Error Count: $NewErrorCount."
-    ) | Join-String -sep "`n"
+    # @(
+    #     "New Error Count: $NewErrorCount."
+    # ) | Join-String -sep "`n"
 
     # $template
     # $lastCount = $error.count
@@ -257,7 +261,7 @@ function _broke_Write-ErrorSummaryPrompt {
     # $error[0].Message
     # $error[1].Exception.Message
 }
-function _Write-VerboseDebugPrompt {
+function _Write-PromptDetectParent {
     <#
     .synopsis
         verbose prompt to test term detection
@@ -307,28 +311,41 @@ function Write-NinProfilePrompt {
     param (
     )
     try {
+        $__ninConfig.Prompt.NumberOfPromptErrors ??= 2
+        $configErrorLinesLimit = $__ninConfig.Prompt.NumberOfPromptErrors ?? 2
+
         # do not use extra newlines on missing segments
         switch ($__ninConfig.Prompt.Profile) {
             'errorSummary' {
                 @(
                     "`n"
-                    err?
-                    # _Write-ErrorSummaryPrompt
-                    "`n"
+                    # err?
+                    # hr
+                    _Write-ErrorSummaryPrompt
+                    "`n🐒> "
                 ) | Join-String
                 break
             }
             'debugPrompt' {
+                # __doc__: Clearly shows whether you're in the PSIT or not
                 @(
                     _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-                    _Write-VerboseDebugPrompt
-                    "`n"
+                    _Write-PromptDetectParent
+                    # "`n"
+                    "🐛> "
                 ) | Join-String
                 break
             }
 
             'oneLine' {
                 @(
+                    '🐒> '
+                ) | Join-String
+                break
+            }
+            'twoLine' {
+                @(
+                    "`n"
                     '🐒> '
                 ) | Join-String
                 break
@@ -343,6 +360,8 @@ function Write-NinProfilePrompt {
 
             default {
 
+                # __doc__: 'main' prompt with breadcrumbs
+
 
                 $segments = @(
                     $splatPredent = @{
@@ -350,9 +369,17 @@ function Write-NinProfilePrompt {
                         IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
                     }
 
+
+                    function _Write-PromptDetectError {
+                        if($global:Error.count -gt 0 -and $configErrorLinesLimit -gt 0) {
+                            Dev.Nin\Test-DidErrorOccur -Limit $configErrorLinesLimit
+                            "`n"
+                        }
+                    }
                     _Write-Predent @splatPredent
                     # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
                     _Write-PromptIsAdminStatus
+                    _Write-PromptDetectError
                     _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
                     if ($__ninConfig.Prompt.IncludeGitStatus) {
                         _Write-PromptGitStatus # todo: better git status line
@@ -372,10 +399,11 @@ Export-ModuleMember -Function Write-NinProfilePrompt
 # if debug mode
 if ($true) {
     Export-ModuleMember -Function @(
+        'toggleErrors'
         '_Write-PromptIsAdminStatus'
         '_Write-PromptPathToBreadCrumbs'
         '_Write-PromptGitStatus'
-        '_Write-VerboseDebugPrompt'
+        '_Write-PromptDetectParent'
         '_Write-ErrorSummaryPrompt'
     )
 }

@@ -53,7 +53,7 @@
     "python.analysis.typeCheckingMode": "basic",
     "python.terminal.activateEnvInCurrentTerminal": false,
     "python.terminal.activateEnvironment": false,
-    "debug.openExplorerOnEnd": true,
+    "debug.openExplorerOnEnd": true, // with auto tester, you want this to false
     "debug.focusWindowOnBreak": true,
     "editor.selectionHighlight": true,
     "editor.autoSurround": "languageDefined",
@@ -2207,7 +2207,7 @@
     //  - never: Never automatically open.
     "testing.automaticallyOpenPeekView": "failureInVisibleDocument",
     // Controls whether to automatically open the peek view during auto-run mode.
-    "testing.automaticallyOpenPeekViewDuringAutoRun": false,
+    "testing.automaticallyOpenPeekViewDuringAutoRun": true,
     // How long to wait, in milliseconds, after a test is marked as outdated and starting a new run.
     "testing.autoRun.delay": 1000,
     // Controls which tests are automatically run.
@@ -2300,4 +2300,7 @@
     // Starts PowerShell extension features automatically when a PowerShell file opens. If false, to start the extension, use the 'PowerShell: Restart Current Session' command. IntelliSense, code navigation, integrated console, code formatting, and other features are not enabled until the extension starts.
     "powershell.startAutomatically": false,
     "powershell.startAutomatically": true,
+    "testExplorer.addToEditorContextMenu": true,
+    "testExplorer.showOnRun": true,
+    "editor.bracketPairColorization.enabled": true,
 }
