@@ -197,6 +197,7 @@
           */
     "notebook.breadcrumbs.showCodeCells": true,
     "workbench.panel.defaultLocation": "right",
+    "workbench.panel.defaultLocation": "bottom",
     "terminal.integrated.tabs.showActions": "singleTerminalOrNarrow",
     "terminal.integrated.showExitAlert": true,
     "notebook.outline.showCodeCells": true,
@@ -647,14 +648,15 @@
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": false,
         "editor.snippetSuggestions": "bottom",
         "files.encoding": "utf8bom",
         // "editor.formatOnSaveMode": "file",
         "editor.formatOnSaveMode": "modifications",
+        "editor.formatOnSaveMode": "modificationsIfAvailable",
         "editor.formatOnPaste": false,
-        "editor.formatOnType": false, // currently it's NYI in the extension
         "editor.formatOnType": true, // not implemented yet?
+        "editor.formatOnType": false, // currently it's NYI in the extension
         "files.trimTrailingWhitespace": true,
         "editor.smartSelect.selectLeadingAndTrailingWhitespace": true,
         "files.autoGuessEncoding": false,
@@ -732,7 +734,8 @@
         "editor.inlayHints.fontFamily": "cascadia code",
         "editor.codeLensFontFamily": "'cascadia code'",
         "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
-    },
+        "breadcrumbs.showVariables": false,
+    }, // end of [powershell]
     "editor.suggestFontSize": 14,
     "editor.codeLensFontSize": 12,
     "editor.inlayHints.fontSize": 12,
@@ -2218,7 +2221,33 @@
     "testing.defaultGutterClickAction": "run",
     // Controls whether the running test should be followed in the test explorer view
     "testing.followRunningTest": true,
+    // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
+    "terminal.integrated.confirmOnExit": "hasChildProcesses",
+    "terminal.integrated.confirmOnKill": "editor",
+    "terminal.integrated.defaultLocation": "",
+    "powershell.startAutomatically": false,
+    // new action (for keybind)
     // Controls whether test decorations are shown in the editor gutter.
     "testing.gutterEnabled": true,
-    // "powershell.integratedConsole.focusConsoleOnExecute": true
+    "editor.fontSize": 18,
+    "debug.console.fontSize": 16,
+    "terminal.integrated.fontSize": 16,
+    "search.mode": "reuseEditor",
+    "errorLens.fontSize": "12px",
+    "powershell.buttons.showPanelMovementButtons": true,
+    // "powershell.integratedConsole.focusConsoleOnExecute": true,
+    // new config: <https://code.visualstudio.com/updates/v1_60#_new-settings>
+    "debug.confirmOnExit": "never",
+    "debug.internalConsoleOptions": "openOnFirstSessionStart",
+    "debug.console.acceptSuggestionOnEnter": "on",
+    // Along with the web extension guide, the yo code extension generator now has an option to scaffold a Web Extension
+    // new config: <https://code.visualstudio.com/updates/v1_60#_custom-rendering-of-box-drawing-and-block-element-characters>
+    "terminal.integrated.customGlyphs": true,
+    // "terminal.integrated.persistentSessionScrollback": 100,
+    // f you want to avoid accidentally closing the window during a debug session, you can enable the new setting debug.confirmOnExit. With this set to always, you will be prompted to confirm that you want to stop the debug session when closing the window.
+    "debug.confirmOnExit": "never",
+    // new config: <https://code.visualstudio.com/updates/v1_60#_inlay-hints-for-javascript-and-typescript>
+    // "typescript.inlayHints.parameterNames":
+    "javascript.inlayHints.parameterNames.enabled": "literals",
+    "javascript.inlayHints.parameterNames.enabled": "all",
 }
