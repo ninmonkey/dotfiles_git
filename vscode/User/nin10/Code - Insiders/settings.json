@@ -2250,4 +2250,53 @@
     // "typescript.inlayHints.parameterNames":
     "javascript.inlayHints.parameterNames.enabled": "literals",
     "javascript.inlayHints.parameterNames.enabled": "all",
+    // not new, just hadn't used
+    "csharp.semanticHighlighting.enabled": true,
+    /*
+
+    ### Sect: Log levels
+
+           tags: Tag1, Tag2
+
+    */
+    // Specifies the level of logging output from the OmniSharp server.
+    "omnisharp.loggingLevel": "information",
+    // Defines type of log messages language server writes into the output window.
+    "python.analysis.logLevel": "Error",
+    // The logging level the extension logs at, defaults to 'error'
+    "python.logging.level": "error",
+    // The logging level the extension logs at.
+    "jupyter.logging.level": "debug",
+    // Sets the logging verbosity level for the PowerShell Editor Services host executable.  Valid values are 'Diagnostic', 'Verbose', 'Normal', 'Warning', and 'Error'
+    "powershell.developer.editorServicesLogLevel": "Normal",
+    // Launches the language service with the /waitForDebugger flag to force it to wait for a .NET debugger to attach before proceeding.
+    "powershell.developer.editorServicesWaitForDebugger": false,
+    // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
+    "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
+    // Loads user and system-wide PowerShell profiles (profile.ps1 and Microsoft.VSCode_profile.ps1) into the PowerShell session. This affects IntelliSense and interactive script execution, but it does not affect the debugger.
+    "powershell.enableProfileLoading": true,
+    // Controls the comment-based help completion behavior triggered by typing '##'. Set the generated help style with 'BlockComment' or 'LineComment'. Disable the feature with 'Disabled'.
+    "powershell.helpCompletion": "BlockComment",
+    // Switches focus to the console when a script selection is run or a script file is debugged. This is an accessibility feature. To disable it, set to false.
+    "powershell.integratedConsole.focusConsoleOnExecute": true,
+    // Use the vscode API to clear the terminal since that's the only reliable way to clear the scrollback buffer. Turn this on if you're use to 'Clear-Host' clearing scroll history as wellclear-terminal-via-lsp.
+    "powershell.integratedConsole.forceClearScrollbackBuffer": false,
+    // Shows the integrated console when the PowerShell extension is initialized.
+    "powershell.integratedConsole.showOnStartup": true,
+    // Do not show the Powershell Integrated Console banner on launch
+    "powershell.integratedConsole.suppressStartupBanner": false,
+    // Falls back to the legacy (lightweight) ReadLine experience. This will disable the use of PSReadLine in the PowerShell Integrated Console.
+    "powershell.integratedConsole.useLegacyReadLine": false,
+    // Defines the verbosity of output to be used when debugging a test or a block. For Pester 5 and newer the default value Diagnostic will print additional information about discovery, skipped and filtered tests, mocking and more.
+    "powershell.pester.debugOutputVerbosity": "Diagnostic",
+    // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
+    "powershell.pester.outputVerbosity": "FromPreference",
+    // Use code lens that is compatible with Pester 4. Disabling this will show 'Run Tests' on all It, Describe and Context blocks, and will correctly work only with Pester 5 and newer.
+    // "powershell.pester.useLegacyCodeLens": true,
+    // Specifies whether you should be prompted to update your version of PackageManagement if it's under 1.4.6.
+    "powershell.promptToUpdatePackageManagement": false,
+    // Specifies whether you should be prompted to update your version of PowerShell.
+    "powershell.promptToUpdatePowerShell": false,
+    // Starts PowerShell extension features automatically when a PowerShell file opens. If false, to start the extension, use the 'PowerShell: Restart Current Session' command. IntelliSense, code navigation, integrated console, code formatting, and other features are not enabled until the extension starts.
+    "powershell.startAutomatically": false,
 }
