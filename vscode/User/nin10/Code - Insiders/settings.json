@@ -2299,4 +2299,5 @@
     "powershell.promptToUpdatePowerShell": false,
     // Starts PowerShell extension features automatically when a PowerShell file opens. If false, to start the extension, use the 'PowerShell: Restart Current Session' command. IntelliSense, code navigation, integrated console, code formatting, and other features are not enabled until the extension starts.
     "powershell.startAutomatically": false,
+    "powershell.startAutomatically": true,
 }

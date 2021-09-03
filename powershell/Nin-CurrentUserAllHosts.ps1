@@ -56,7 +56,85 @@ $__ninConfig ??= @{
 
 }
 
+
+function TestError {
+    <#
+    .synopsis
+        shortcut for the cli: list error counts, first error, and autoclear
+    .description
+        .
+
+    #>
+    [Alias('Err?')]
+    [CmdletBinding(PositionalBinding = $false)]
+    param(
+        # DoNotClear error variable
+        [Parameter()][switch]$AlwaysClear,
+        # first X
+        [Parameter(Position = 0)][int]$Limit = 1
+
+    )
+    end {
+        $script:__moduleMetaData_DidError_PrevCount ??= 0 # Gross, but module itself is
+        $Template = @'
+
+
+{2}
+errors: {0}, new {1}
+'@
+        # forced to be in user scope to access $error, I think.
+        $curCount = $error.count
+        $delta = $curCount - $script:__moduleMetaData_DidError_PrevCount
+        $script:__moduleMetaData_DidError_PrevCount = $curCount
+
+        $i++
+        $c = @{
+            errorFg     = '#E7B3B3'
+            errorBg     = '#802D2D'
+            normalFg    = '#B88591'
+            normalFgDim = '#534C55'
+            # errorBg = 80
+            #E75252
+            #E75252
+            # errorBg = '#BED5BD'
+        }
+
+        $PSBoundParameters | Format-Table | Out-String | Write-Debug
+
+        $exceptionText = $error
+        # | Select-Object -First $Limit
+        | ForEach-Object {
+            $curErr = $_
+            Write-Debug "Handling: $curError"
+            $curErr.ToString() | ShortenString 90 | ForEach-Object {
+                if ($_ -eq 0) {
+                    $_ | New-Text -fg $c.normalFgDim
+                }
+                else {
+                    $_ | New-Text -fg $c.normalFg
+                }
+            }
+            | New-Text -fg $c.errorFg -bg $c.errorBg | ForEach-Object tostring
+        } | Select-Object -First $Limit
+
+
+        $Template -f @(
+            $curCount
+            $delta
+            $exceptionText
+        )
+        # "Did $i"
+        # $global:err = $global:error
+
+        if ( $AlwaysClear) {
+            $error.clear()
+        }
+    }
+}
+
+
 & {
+
 
     $colorA = '#CD919E'
     $colorB = '#454545'

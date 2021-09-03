@@ -223,9 +223,10 @@ function _Write-PromptPathToBreadCrumbs {
 $script:__temp ??= @{} #??= @{}
 $script:__temp.IncludeDebugPrompt ??= $true
 
-function _Write-ErrorSummaryPrompt {
+function _broke_Write-ErrorSummaryPrompt {
     <#
     .synopsis
+        can't access global scope?
         summarize errors briefly, for screenshots / interactive animation
     #>
     param(
@@ -310,7 +311,10 @@ function Write-NinProfilePrompt {
         switch ($__ninConfig.Prompt.Profile) {
             'errorSummary' {
                 @(
-                    _Write-ErrorSummaryPrompt
+                    "`n"
+                    err?
+                    # _Write-ErrorSummaryPrompt
+                    "`n"
                 ) | Join-String
                 break
             }
@@ -318,6 +322,7 @@ function Write-NinProfilePrompt {
                 @(
                     _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
                     _Write-VerboseDebugPrompt
+                    "`n"
                 ) | Join-String
                 break
             }
