@@ -53,7 +53,7 @@
     "python.analysis.typeCheckingMode": "basic",
     "python.terminal.activateEnvInCurrentTerminal": false,
     "python.terminal.activateEnvironment": false,
-    "debug.openExplorerOnEnd": true, // with auto tester, you want this to false
+    "debug.openExplorerOnEnd": false, // with auto tester, you want this to false
     "debug.focusWindowOnBreak": true,
     "editor.selectionHighlight": true,
     "editor.autoSurround": "languageDefined",
@@ -648,15 +648,15 @@
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
-        "editor.formatOnSave": false,
+        "editor.formatOnSave": true,
         "editor.snippetSuggestions": "bottom",
         "files.encoding": "utf8bom",
         // "editor.formatOnSaveMode": "file",
         "editor.formatOnSaveMode": "modifications",
         "editor.formatOnSaveMode": "modificationsIfAvailable",
         "editor.formatOnPaste": false,
-        "editor.formatOnType": true, // not implemented yet?
         "editor.formatOnType": false, // currently it's NYI in the extension
+        "editor.formatOnType": true, // not implemented yet?
         "files.trimTrailingWhitespace": true,
         "editor.smartSelect.selectLeadingAndTrailingWhitespace": true,
         "files.autoGuessEncoding": false,
@@ -1137,6 +1137,9 @@
 
           docs: <https://code.visualstudio.com/api/references/theme-color>
       */
+    "editor.rulers": [
+        120
+    ],
     "workbench.colorCustomizations": {
         // custom for addons:
         "errorLens.errorBackground": "#e4545400",
@@ -1150,7 +1153,9 @@
         "window.activeBorder": "#a857ff85", // pretty bright
         // "window.inactiveBorder": "#a7b67080",
         // "statusBar.border": "magenta",
-        "window.inactiveBorder": "#a7b67000"
+        "window.inactiveBorder": "#a7b67000",
+        "editorRuler.foreground": "#ff4081",
+        "editorRuler.foreground": "#774958",
         // "tree.indentGuidesStroke": "#ff0000"
         // "debugView.valueChangedHighlight": "#ff0000"
         // "diffEditor.insertedTextBackground": "#ff0000",
@@ -2207,7 +2212,7 @@
     //  - never: Never automatically open.
     "testing.automaticallyOpenPeekView": "failureInVisibleDocument",
     // Controls whether to automatically open the peek view during auto-run mode.
-    "testing.automaticallyOpenPeekViewDuringAutoRun": true,
+    "testing.automaticallyOpenPeekViewDuringAutoRun": false,
     // How long to wait, in milliseconds, after a test is marked as outdated and starting a new run.
     "testing.autoRun.delay": 1000,
     // Controls which tests are automatically run.
@@ -2250,6 +2255,7 @@
     // "typescript.inlayHints.parameterNames":
     "javascript.inlayHints.parameterNames.enabled": "literals",
     "javascript.inlayHints.parameterNames.enabled": "all",
+    "javascript.inlayHints.functionLikeReturnTypes.enabled":
     // not new, just hadn't used
     "csharp.semanticHighlighting.enabled": true,
     /*
@@ -2303,4 +2309,58 @@
     "testExplorer.addToEditorContextMenu": true,
     "testExplorer.showOnRun": true,
     "editor.bracketPairColorization.enabled": true,
+} false,
+// not new, just hadn't used
+"csharp.semanticHighlighting.enabled": true,
+/*
+
+    ### Sect: Log levels
+
+           tags: Tag1, Tag2
+
+    */
+// Specifies the level of logging output from the OmniSharp server.
+"omnisharp.loggingLevel": "information",
+// Defines type of log messages language server writes into the output window.
+"python.analysis.logLevel": "Error",
+// The logging level the extension logs at, defaults to 'error'
+"python.logging.level": "error",
+// The logging level the extension logs at.
+"jupyter.logging.level": "debug",
+// Sets the logging verbosity level for the PowerShell Editor Services host executable.  Valid values are 'Diagnostic', 'Verbose', 'Normal', 'Warning', and 'Error'
+"powershell.developer.editorServicesLogLevel": "Normal",
+// Launches the language service with the /waitForDebugger flag to force it to wait for a .NET debugger to attach before proceeding.
+"powershell.developer.editorServicesWaitForDebugger": false,
+// When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
+"powershell.developer.waitForSessionFileTimeoutSeconds": 240,
+// Loads user and system-wide PowerShell profiles (profile.ps1 and Microsoft.VSCode_profile.ps1) into the PowerShell session. This affects IntelliSense and interactive script execution, but it does not affect the debugger.
+"powershell.enableProfileLoading": true,
+// Controls the comment-based help completion behavior triggered by typing '##'. Set the generated help style with 'BlockComment' or 'LineComment'. Disable the feature with 'Disabled'.
+"powershell.helpCompletion": "BlockComment",
+// Switches focus to the console when a script selection is run or a script file is debugged. This is an accessibility feature. To disable it, set to false.
+"powershell.integratedConsole.focusConsoleOnExecute": true,
+// Use the vscode API to clear the terminal since that's the only reliable way to clear the scrollback buffer. Turn this on if you're use to 'Clear-Host' clearing scroll history as wellclear-terminal-via-lsp.
+"powershell.integratedConsole.forceClearScrollbackBuffer": false,
+// Shows the integrated console when the PowerShell extension is initialized.
+"powershell.integratedConsole.showOnStartup": true,
+// Do not show the Powershell Integrated Console banner on launch
+"powershell.integratedConsole.suppressStartupBanner": false,
+// Falls back to the legacy (lightweight) ReadLine experience. This will disable the use of PSReadLine in the PowerShell Integrated Console.
+"powershell.integratedConsole.useLegacyReadLine": false,
+// Defines the verbosity of output to be used when debugging a test or a block. For Pester 5 and newer the default value Diagnostic will print additional information about discovery, skipped and filtered tests, mocking and more.
+"powershell.pester.debugOutputVerbosity": "Diagnostic",
+// Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
+"powershell.pester.outputVerbosity": "FromPreference",
+// Use code lens that is compatible with Pester 4. Disabling this will show 'Run Tests' on all It, Describe and Context blocks, and will correctly work only with Pester 5 and newer.
+// "powershell.pester.useLegacyCodeLens": true,
+// Specifies whether you should be prompted to update your version of PackageManagement if it's under 1.4.6.
+"powershell.promptToUpdatePackageManagement": false,
+// Specifies whether you should be prompted to update your version of PowerShell.
+"powershell.promptToUpdatePowerShell": false,
+// Starts PowerShell extension features automatically when a PowerShell file opens. If false, to start the extension, use the 'PowerShell: Restart Current Session' command. IntelliSense, code navigation, integrated console, code formatting, and other features are not enabled until the extension starts.
+"powershell.startAutomatically": false,
+"powershell.startAutomatically": true,
+"testExplorer.addToEditorContextMenu": true,
+"testExplorer.showOnRun": true,
+"editor.bracketPairColorization.enabled": true,
 }

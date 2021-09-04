@@ -1,4 +1,5 @@
 $script:_state = @{}
+Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 
 $PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSScriptRoot)
 # adds full filepath this file's directory
