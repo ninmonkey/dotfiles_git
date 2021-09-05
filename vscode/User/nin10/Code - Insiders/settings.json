@@ -14,6 +14,9 @@
       or
           rg '\s*###*\s*(S\w+):\s*(?P<Title>.*$)' -- "$src"
 
+
+
+    - [Disable Extensions using Task Args](https://code.visualstudio.com/api/working-with-extensions/testing-extension#disabling-other-extensions-while-debugging)
       */
     /*
 
@@ -355,6 +358,7 @@
         "editor.formatOnSave": true,
         "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+        "editor.fontSize": 16,
         "editor.formatOnPaste": false,
         // "editor.fontWeight": "500",
         // "editor.fontWeight": "400",
@@ -710,8 +714,8 @@
         "editor.columnSelection": false,
         "editor.copyWithSyntaxHighlighting": true,
         // "editor.cursorSurroundingLines": 0,
-        "editor.quickSuggestionsDelay": 300,
         "editor.quickSuggestionsDelay": 800,
+        "editor.quickSuggestionsDelay": 400,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
         "editor.wordBasedSuggestions": true,
         "editor.wordBasedSuggestionsMode": "matchingDocuments",
@@ -1146,6 +1150,8 @@
         120
     ],
     "workbench.colorCustomizations": {
+        // new built-in bracket colors
+        // "editorBracketMatch.background": "#29b0c2",
         // custom for addons:
         "errorLens.errorBackground": "#e4545400",
         "errorLens.errorMessageBackground": "#e4545400",
@@ -2246,7 +2252,7 @@
     // new action (for keybind)
     // Controls whether test decorations are shown in the editor gutter.
     "testing.gutterEnabled": true,
-    "editor.fontSize": 18,
+    "editor.fontSize": 16,
     "debug.console.fontSize": 16,
     "terminal.integrated.fontSize": 16,
     "search.mode": "reuseEditor",
@@ -2267,7 +2273,7 @@
     // "typescript.inlayHints.parameterNames":
     "javascript.inlayHints.parameterNames.enabled": "literals",
     "javascript.inlayHints.parameterNames.enabled": "all",
-    "javascript.inlayHints.functionLikeReturnTypes.enabled":
+    "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
     // not new, just hadn't used
     "csharp.semanticHighlighting.enabled": true,
     /*
