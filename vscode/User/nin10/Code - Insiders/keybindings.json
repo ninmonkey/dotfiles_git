@@ -19,7 +19,7 @@
     {
         // opens a new term in the editor area, but in a side
         "key": "ctrl+numpad5",
-        "command": "workbench.action.createTerminalEditorSide",
+        "command": "workbench.view.extensions",
         "when": "editorTextFocus",
         // "args": "",
     },
@@ -46,6 +46,25 @@
         "command": "workbench.action.closeWindow",
         "when": "!editorIsOpen && !multipleEditorGroups"
     },
+    // Temp override: disable it
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.closeActiveEditor",
+        "when": "resourceScheme == 'vscode-terminal'"
+    },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "workbench.action.closeActiveEditor",
+    //     "when": "resourceScheme == 'vscode-terminal'"
+    //     // "when": "activeEditor ==  'terminalEditor'"
+    // },
+    // "when": "!editorIsOpen && !multipleEditorGroups"
+    // {
+    //     // Temp override: disable it
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeWindow",
+    //     // "when": "!editorIsOpen && !multipleEditorGroups"
+    // },
     {
         "key": "ctrl+shift+c",
         "command": "PowerShell.ShowAdditionalCommands",

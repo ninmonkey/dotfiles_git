@@ -356,8 +356,8 @@
         },
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
-        "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+        "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         "editor.fontSize": 16,
         "editor.formatOnPaste": false,
         // "editor.fontWeight": "500",
@@ -578,7 +578,6 @@
     "zenMode.restore": true,
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
-    "gitlens.mode.active": "zen",
     "terminal.integrated.rendererType": "auto",
     // "workbench.editor.focusRecentEditorAfterClose": true,
     "workbench.quickOpen.closeOnFocusLost": false,
@@ -666,6 +665,21 @@
         "editor.formatOnType": false, // currently it's NYI in the extension
         "editor.formatOnType": true, // not implemented yet?
         "files.trimTrailingWhitespace": true,
+        "editor.suggest.previewMode": "subwordSmart",
+        "editor.suggest.filterGraceful": true,
+        "editor.suggest.insertMode": "insert",
+        "editor.suggest.showFolders": true,
+        "editor.suggest.showFields": true,
+        "editor.suggest.showFiles": true,
+        "editor.suggest.showInterfaces": true,
+        "editor.suggest.showVariables": true,
+        "editor.suggest.showProperties": true,
+        "editor.rename.enablePreview": true,
+        "editor.suggest.showOperators": true,
+        "editor.suggest.showTypeParameters": true,
+        "editor.foldingHighlight": true,
+        "outline.showFields": true,
+        "editor.definitionLinkOpensInPeek": false,
         "editor.smartSelect.selectLeadingAndTrailingWhitespace": true,
         "files.autoGuessEncoding": false,
         "editor.detectIndentation": false, // required for tabsize
@@ -744,6 +758,8 @@
         "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
         "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
         "breadcrumbs.showVariables": false,
+        // suggest
+        // suggest
     }, // end of [powershell]
     "editor.suggestFontSize": 14,
     "editor.codeLensFontSize": 12,
@@ -1254,9 +1270,12 @@
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', Consolas, monospace",
+    "editor.fontFamily": "'fira code', Consolas, monospace",
+    "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
-    "editor.suggestFontSize": 14,
+    "editor.suggestFontSize": 12,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -1543,7 +1562,7 @@
     "markdown.preview.markEditorSelection": true,
     "markdown.preview.scrollEditorWithPreview": true,
     "markdown.preview.linkify": true,
-    "workbench.editor.enablePreview": true,
+    "workbench.editor.enablePreview": false,
     "workbench.editor.enablePreviewFromQuickOpen": true,
     "workbench.editor.limit.enabled": false,
     "workbench.editor.limit.perEditorGroup": false,
@@ -1573,8 +1592,9 @@
     "editor.suggest.showClasses": true,
     "editor.rename.enablePreview": true,
     "editor.semanticHighlighting.enabled": true,
-    "editor.snippetSuggestions": "bottom",
     "editor.snippetSuggestions": "none",
+    "editor.snippetSuggestions": "bottom",
+    "editor.snippetSuggestions": "top",
     "editor.suggest.filterGraceful": true,
     "editor.suggest.insertMode": "insert",
     "editor.suggest.preview": true,
@@ -2260,7 +2280,7 @@
     "powershell.buttons.showPanelMovementButtons": true,
     // "powershell.integratedConsole.focusConsoleOnExecute": true,
     // new config: <https://code.visualstudio.com/updates/v1_60#_new-settings>
-    "debug.confirmOnExit": "never",
+    "debug.confirmOnExit": "always",
     "debug.internalConsoleOptions": "openOnFirstSessionStart",
     "debug.console.acceptSuggestionOnEnter": "on",
     // Along with the web extension guide, the yo code extension generator now has an option to scaffold a Web Extension
@@ -2380,4 +2400,8 @@
     "testExplorer.addToEditorContextMenu": true,
     "testExplorer.showOnRun": true,
     "editor.bracketPairColorization.enabled": true,
+    "gitlens.mode.active": "zen",
+    // new feature debug mode in
+    // "jupyter.experimental.debugging": true, <https://code.visualstudio.com/updates/v1_60#_jupyter> ve ipykernel v6+ inst
+    "terminal.integrated.customGlyphs": true,
 }
