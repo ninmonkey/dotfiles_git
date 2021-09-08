@@ -1,5 +1,4 @@
 {
-    "errorLens.fontFamily": "calibri", //"arial bold",
     // Update the search query to the editor's selected text when focusing the search view. This happens either on click or when triggering the `workbench.views.search.focus` command.
     /*
 
@@ -356,9 +355,10 @@
         },
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
-        "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+        // "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+        "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
-        "editor.fontSize": 16,
+        "editor.fontSize": 15,
         "editor.formatOnPaste": false,
         // "editor.fontWeight": "500",
         // "editor.fontWeight": "400",
@@ -753,10 +753,10 @@
         // final
         "editor.inlayHints.enabled": true,
         "editor.inlineSuggest.mode": "subwordSmart",
-        "editor.inlayHints.fontFamily": "cascadia code",
-        "editor.codeLensFontFamily": "'cascadia code'",
-        "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
-        "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+        // "editor.inlayHints.fontFamily": "cascadia code",
+        // "editor.codeLensFontFamily": "'cascadia code'",
+        // "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+        // "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
         "breadcrumbs.showVariables": false,
         // suggest
         // suggest
@@ -1018,8 +1018,6 @@
     "editor.wordWrapColumn": 160,
     "editor.wrappingIndent": "deepIndent",
     "editor.detectIndentation": false,
-    // "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
-    // "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
     // "diffEditor.ignoreTrimWhitespace": true,
     // "editor.suggest.maxVisibleSuggestions": 15, : this is obsolete as of 2020-11
     // "html.autoClosingTags": true,
@@ -1040,10 +1038,6 @@
     // "terminal.integrated.cursorWidth": 1,
     "terminal.integrated.scrollback": 2000,
     // "terminal.integrated.allowMnemonics": false, ?
-    "terminal.integrated.fontWeight": "normal",
-    "terminal.integrated.fontWeightBold": "bold",
-    "terminal.integrated.letterSpacing": 0,
-    "terminal.integrated.lineHeight": 1,
     // "terminal.integrated.windowsEnableConpty": true,
     "terminal.integrated.showLinkHover": true,
     "terminal.integrated.sendKeybindingsToShell": false,
@@ -1210,74 +1204,6 @@
           "editorOverviewRuler.modifiedForeground": "#ff0000",
           */
     },
-    // Controls the letter spacing of the terminal, this is an integer value which represents the amount of additional pixels to add between characters.
-    // "terminal.integrated.letterSpacing": 1,
-    // // Controls the line height of the terminal, this number is multiplied by the terminal font size to get the actual line-height in pixels.
-    // "terminal.integrated.lineHeight": 0.3,
-    /*
-
-
-
-  ###### Sect: font-sizes and font properties
-
-
-
-      */
-    // "editor.fontFamily": "'consolas', 'verdana', 'fira code', consolas,  'cascadia code', 'cascadia mono', verdana, 'consolas', arial, cascadia mono, Fira Code Retina, Fira Code, FIra Code Bold, Fira Code L1ht, Fira Code Retina, Consolas, 'Courier New', monospace",
-    /*
-          run command: 'Switch Font'
-      */
-    // "editor.fontFamily": "Cascadia Code Light, JetBrains Mono NL Sem1, JetBrains Mono NL, JetBrains Mono, Fira Code Retina, Fira Code, Cascadia Mono, Cascadia Code, DejaVu Sans Code, Consolas, monospace",
-    // "editor.fontFamily": "Consolas, DejaVu Sans Code, JetBrains Mono NL Sem1, JetBrains Mono NL, JetBrains Mono, Fira Code Retina, Fira Code, Cascadia Mono, Cascadia Code, DejaVu Sans Code, monospace",
-    // "editor.fontFamily": "Consolas, cascadia code, Fira Code Retina', 'fira code'",
-    // "editor.fontFamily": "'DejaVu Sans Code', 'fira code retina',JetBrains Mono', 'Fira Code Retina', consolas,  'cascadia code', JetBrains Mono, Consolas, 'Courier New', monospace",
-    // "editor.fontWeight": "bold",
-    // "editor.fontFamily": "Fira Code, Fira Code Retina, Consolas, JetBrains Mono, Cascadia Mono, Cascadia Code, DejaVu Sans Code, monospace",
-    // NL = no ligature, Mono = no ligature
-    // "editor.fontFamily": "Cascadia Code ExtraLight, Cascadia Code Light, Cascadia Code, Cascadia Code Regular, Cascadia Code Bold, Cascadia Code SemiBold, Cascadia Code SemiLight, Cascadia Mono ExtraLight, Cascadia Mono Light, Cascadia Mono Regular, Cascadia Mono, Cascadia Mono Bold, Cascadia Mono SemiBold, Cascadia Mono SemiLight",
-    "font-switcher.enableLivePreview": true,
-    // "font-switcher.fontFamily": "Arial, Cascadia Code, Cascadia Code PL, Cascadia Mono, Cascadia Mono PL, Consolas, Courier New, Fira Code, Fira Code Bold, Fira Code Retina, Fira Code Retina, Fira Code, Monospace, Verdana",
-    "font-switcher.fontFamily": "'Arial', 'Cascadia Code', 'Cascadia Code PL', 'Cascadia Mono', 'Cascadia Mono PL', 'Consolas', 'Courier New', 'Fira Code', 'Fira Code Bold', 'Fira Code Retina', 'Fira Code Retina', 'Fira Code', 'Monospace', 'Verdana'",
-    // "font-switcher.fontFamily": "Fira Code Retina, Consolas, DejaVu Sans Mono, monospace",
-    // "editor.inlayHints.fontFamily": "calibri, Consolas, corbel, 'cascadia code', Consolas, 'Courier New', monospace",
-    "editor.inlayHints.fontFamily": "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
-    "gitlens.views.compare.files.layout": "tree",
-    // "jupyter.interactiveWindowMode": "perFile",
-    // "editor.suggestLineHeight": 18, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
-    "debug.console.fontFamily": "'fira cold bold', consolas",
-    // "debug.console.fontFamily": "calibri",
-    // "debug.console.fontFamily": "'Fira Code Bold', 'Cascadia code mono', 'Fira Code Retina', 'cascadia code', 'Fira Code Retina', Consolas",
-    // "debug.console.$": "Fira Code, 'cascadia code', cascadia mono, Fira Code Retina, Consolas, Fira Code Bold",
-    "editor.fontFamily": "'arial', 'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'fira code retina', 'cascadia code', Consolas, 'fira code', 'Courier New', monospace",
-    "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
-    "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'FiraCode Nerd Font', 'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'FiraCode Nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
-    "editor.fontFamily": "'fira code', consolas, monospace",
-    "editor.fontFamily": "'cascadia mono', consolas, monospace",
-    "editor.fontFamily": "'cascadia code', consolas, monospace",
-    "editor.fontFamily": "'cascadia code retina', consolas, monospace",
-    // "editor.fontWeight": "350", // for cascadia code
-    // fira: retina is more bold (on nin8)
-    // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'cascadia code', Consolas, monospace",
-    "editor.fontFamily": "'fira code', Consolas, monospace",
-    "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
-    "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
-    // "editor.fontWeight": "350", // for cascadia code
-    // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
-    "editor.suggestFontSize": 12,
-    // "editor.suggestFontSize": 12, // for zoom 0
-    // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
     "notebook.diff.enablePreview": true,
     "debug.inlineValues": "auto",
@@ -1425,8 +1351,8 @@
     "errorLens.enabledDiagnosticLevels": [
         "error",
         "warning",
-        "info",
-        "hint"
+        "hint",
+        "info"
     ],
     "workbench.iconTheme": "vscode-icons",
     "vsicons.associations.files": [
@@ -1624,11 +1550,6 @@
     "editor.suggest.showStatusBar": true,
     // Controls whether an active snippet prevents quick suggestions.
     "editor.suggest.snippetsPreventQuickSuggestions": true,
-    // Font size for the suggest widget. When set to `0`, the value of `editor.fontSize` is used.
-    "editor.suggestFontSize": 14,
-    // Line height for the suggest widget. When set to `0`, the value of `editor.lineHeight` is used. The minimum value is 8.
-    "editor.suggestLineHeight": 0,
-    // Controls whether suggestions should automatically show up when typing trigger characters.
     "editor.suggestOnTriggerCharacters": true,
     // Controls how suggestions are pre-selected when showing the suggest list.
     //  - first: Always select the first suggestion.
@@ -2088,7 +2009,7 @@
     // Enables the inlay hints in the editor.
     "editor.inlayHints.enabled": true,
     // Controls font family of inlay hints in the editor. When set to empty, the `editor.fontFamily` is used.
-    "editor.inlayHints.fontFamily": "",
+    "editor.inlayHints.fontFamily": "'cascadia code', 'fira code', consolas",
     // Controls font size of inlay hints in the editor. When set to `0`, the 90% of `editor.fontSize` is used.
     "editor.inlayHints.fontSize": 0,
     // Controls whether to automatically show inline suggestions in the editor.
@@ -2270,13 +2191,6 @@
     "terminal.integrated.defaultLocation": "",
     "powershell.startAutomatically": false,
     // new action (for keybind)
-    // Controls whether test decorations are shown in the editor gutter.
-    "testing.gutterEnabled": true,
-    "editor.fontSize": 16,
-    "debug.console.fontSize": 16,
-    "terminal.integrated.fontSize": 16,
-    "search.mode": "reuseEditor",
-    "errorLens.fontSize": "12px",
     "powershell.buttons.showPanelMovementButtons": true,
     // "powershell.integratedConsole.focusConsoleOnExecute": true,
     // new config: <https://code.visualstudio.com/updates/v1_60#_new-settings>
@@ -2404,4 +2318,103 @@
     // new feature debug mode in
     // "jupyter.experimental.debugging": true, <https://code.visualstudio.com/updates/v1_60#_jupyter> ve ipykernel v6+ inst
     "terminal.integrated.customGlyphs": true,
+    "window.zoomLevel": 1,
+    // Controls the letter spacing of the terminal, this is an integer value which represents the amount of additional pixels to add between characters.
+    // "terminal.integrated.letterSpacing": 1,
+    // // Controls the line height of the terminal, this number is multiplied by the terminal font size to get the actual line-height in pixels.
+    // "terminal.integrated.lineHeight": 0.3,
+    /*
+
+
+
+  ###### Sect: font-sizes and font properties
+
+
+
+      */
+    // "editor.fontFamily": "'consolas', 'verdana', 'fira code', consolas,  'cascadia code', 'cascadia mono', verdana, 'consolas', arial, cascadia mono, Fira Code Retina, Fira Code, FIra Code Bold, Fira Code L1ht, Fira Code Retina, Consolas, 'Courier New', monospace",
+    /*
+          run command: 'Switch Font'
+      */
+    // "editor.fontFamily": "Cascadia Code Light, JetBrains Mono NL Sem1, JetBrains Mono NL, JetBrains Mono, Fira Code Retina, Fira Code, Cascadia Mono, Cascadia Code, DejaVu Sans Code, Consolas, monospace",
+    // "editor.fontFamily": "Consolas, DejaVu Sans Code, JetBrains Mono NL Sem1, JetBrains Mono NL, JetBrains Mono, Fira Code Retina, Fira Code, Cascadia Mono, Cascadia Code, DejaVu Sans Code, monospace",
+    // "editor.fontFamily": "Consolas, cascadia code, Fira Code Retina', 'fira code'",
+    // "editor.fontFamily": "'DejaVu Sans Code', 'fira code retina',JetBrains Mono', 'Fira Code Retina', consolas,  'cascadia code', JetBrains Mono, Consolas, 'Courier New', monospace",
+    // "editor.fontWeight": "bold",
+    // "editor.fontFamily": "Fira Code, Fira Code Retina, Consolas, JetBrains Mono, Cascadia Mono, Cascadia Code, DejaVu Sans Code, monospace",
+    // NL = no ligature, Mono = no ligature
+    // "editor.fontFamily": "Cascadia Code ExtraLight, Cascadia Code Light, Cascadia Code, Cascadia Code Regular, Cascadia Code Bold, Cascadia Code SemiBold, Cascadia Code SemiLight, Cascadia Mono ExtraLight, Cascadia Mono Light, Cascadia Mono Regular, Cascadia Mono, Cascadia Mono Bold, Cascadia Mono SemiBold, Cascadia Mono SemiLight",
+    "font-switcher.enableLivePreview": true,
+    // "font-switcher.fontFamily": "Arial, Cascadia Code, Cascadia Code PL, Cascadia Mono, Cascadia Mono PL, Consolas, Courier New, Fira Code, Fira Code Bold, Fira Code Retina, Fira Code Retina, Fira Code, Monospace, Verdana",
+    "font-switcher.fontFamily": "'Arial', 'Cascadia Code', 'Cascadia Code PL', 'Cascadia Mono', 'Cascadia Mono PL', 'Consolas', 'Courier New', 'Fira Code', 'Fira Code Bold', 'Fira Code Retina', 'Fira Code Retina', 'Fira Code', 'Monospace', 'Verdana'",
+    // "font-switcher.fontFamily": "Fira Code Retina, Consolas, DejaVu Sans Mono, monospace",
+    // "editor.inlayHints.fontFamily": "calibri, Consolas, corbel, 'cascadia code', Consolas, 'Courier New', monospace",
+    "gitlens.views.compare.files.layout": "tree",
+    // "jupyter.interactiveWindowMode": "perFile",
+    // "editor.suggestLineHeight": 18, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
+    // "debug.console.fontFamily": "calibri",
+    // "debug.console.fontFamily": "'Fira Code Bold', 'Cascadia code mono', 'Fira Code Retina', 'cascadia code', 'Fira Code Retina', Consolas",
+    // "debug.console.$": "Fira Code, 'cascadia code', cascadia mono, Fira Code Retina, Consolas, Fira Code Bold",
+    // Controls whether test decorations are shown in the editor gutter.
+    "testing.gutterEnabled": true,
+    "search.mode": "reuseEditor",
+    "terminal.integrated.fontWeight": "normal",
+    "terminal.integrated.fontWeightBold": "bold",
+    "terminal.integrated.letterSpacing": 0,
+    "errorLens.fontWeight": "normal",
+    "terminal.integrated.lineHeight": 1,
+    "editor.inlayHints.fontFamily": "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
+    "editor.inlayHints.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+    // "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
+    // Font size for the suggest widget. When set to `0`, the value of `editor.fontSize` is used.
+    // Line height for the suggest widget. When set to `0`, the value of `editor.lineHeight` is used. The minimum value is 8.
+    "editor.suggestLineHeight": 0,
+    // Controls whether suggestions should automatically show up when typing trigger characters.
+    "debug.console.fontFamily": "'cascadia code pl', fira code', 'cascadia code', consolas",
+    "editor.fontFamily": "'arial', 'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+    "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code retina', consolas, monospace",
+    "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code', consolas, monospace",
+    "editor.fontFamily": "'cascadia code', verdana, 'cascadia code', monospace",
+    "editor.fontFamily": "'fira code retina', 'cascadia code', Consolas, 'fira code', 'Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'fira code', Consolas, monospace",
+    "editor.fontFamily": "'FiraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
+    "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'FiraCode Nerd Font', 'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
+    "editor.fontFamily": "'fira code', 'cascadia code', consolas, monospace", // retina seems bolder
+    "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
+    "errorLens.fontFamily": "calibri", //"arial bold",
+    "editor.fontSize": 14,
+    "editor.fontSize": 17,
+    "editor.fontSize": 16,
+    "debug.console.fontSize": 16,
+    "terminal.integrated.fontSize": 16,
+    "errorLens.fontSize": "12px",
+    // "editor.fontWeight": "350", // for cascadia code
+    // fira: retina is more bold (on nin8)
+    // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    // "editor.fontWeight": "350", // for cascadia code
+    // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
+    "editor.suggestFontSize": 14, // ctrl+space size
+    "terminal.integrated.fontSize": 15,
+    "errorLens.enabled": true, // for zoom -1
+    "errorLens.delay": 300,
+    "errorLens.followCursor": "closestProblem",
+    "errorLens.exclude": [], //# regex
+    "errorLens.excludeBySource": [], // ["eslint"]
+    "errorLens.followCursorMore": 2,
+    "errorLens.statusBarIconsEnabled": true,
+    // "errorLens.severityText": [
+    //     "ERROR",
+    //     "WARNING",
+    //     "INFO",
+    //     "HINT"
+    // ]
 }

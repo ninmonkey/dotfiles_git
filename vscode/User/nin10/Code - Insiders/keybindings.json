@@ -4,6 +4,7 @@
     See also:
 
     ## Docs:
+        https://code.visualstudio.com/api/references/commands
         https://code.visualstudio.com/api/references/when-clause-contexts
 
 
@@ -14,6 +15,7 @@
         - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
         - <https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened>
 
+
     */
     // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
     {
@@ -22,6 +24,11 @@
         "command": "workbench.view.extensions",
         "when": "editorTextFocus",
         // "args": "",
+    },
+    {
+        "key": "ctrl+numpad6",
+        "command": "workbench.action.toggleMaximizedPanel",
+        "when": ""
     },
     {
         // opens a new term in the editor area, but in a side
@@ -40,18 +47,6 @@
             { "key": "ctrl+w",  "command": "workbench.action.terminal.killEditor",
                 "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'" },
     */
-    {
-        // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
-        "key": "ctrl+w",
-        "command": "workbench.action.closeWindow",
-        "when": "!editorIsOpen && !multipleEditorGroups"
-    },
-    // Temp override: disable it
-    {
-        "key": "ctrl+w",
-        "command": "-workbench.action.closeActiveEditor",
-        "when": "resourceScheme == 'vscode-terminal'"
-    },
     // {
     //     "key": "ctrl+w",
     //     "command": "workbench.action.closeActiveEditor",
@@ -66,6 +61,12 @@
     //     // "when": "!editorIsOpen && !multipleEditorGroups"
     // },
     {
+        // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
+        "key": "ctrl+w",
+        "command": "workbench.action.closeWindow",
+        "when": "!editorIsOpen && !multipleEditorGroups"
+    },
+    {
         "key": "ctrl+shift+c",
         "command": "PowerShell.ShowAdditionalCommands",
         // "when": "editorLangId == 'powershell'"
@@ -79,6 +80,11 @@
         },
         "when": "editorLangId == 'powershell'",
     },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeActiveEditor",
+    //     "when": "resourceScheme == 'vscode-terminal'"
+    // },
     /*
 
     ### Sect: Better Align
