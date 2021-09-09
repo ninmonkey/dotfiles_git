@@ -20,8 +20,8 @@ $__ninConfig ??= @{
         # __doc__: Controls the look of your prompt, not 'Terminal'
         # __uri__: Terminal
         Profile                      = 'default'    # __doc__: default | debugPrompt | Spartan
-        IncludeGitStatus             = $false # show git branch, files changed, etc?
-        PredentLineCount             = 1
+        IncludeGitStatus             = $true # __doc__: Enables Posh-Git status
+        PredentLineCount             = 1 # __doc__: number of newlines befefore prompt
         IncludePredentHorizontalLine = $false
         BreadCrumb                   = @{
             MaxCrumbCount    = -1 # __doc__: default is 3. Negative means no limit

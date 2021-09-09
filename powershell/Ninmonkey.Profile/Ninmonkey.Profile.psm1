@@ -36,6 +36,7 @@ $script:NinProfile_Dotfiles = @{
             'ExternalToolsConfig' = Get-Item 'C:\Program Files (x86)\Common Files\Microsoft Shared\Power BI Desktop\External Tools'
         }
 
+
     }
 }
 
@@ -91,25 +92,43 @@ function _reRollPrompt {
 
 function toggleErrors {
     # todo: cleanup: move to a better location
-    $__ninConfig.Prompt.NumberOfPromptErrors = if($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) { 3 } else { 0 }
+    $__ninConfig.Prompt.NumberOfPromptErrors = if ($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) { 3 } else { 0 }
 }
 
+# Disable Posh-Git from including filepath, I already handle that.
+$GitPromptSettings.DefaultPromptWriteStatusFirst = $true
+$GitPromptSettings.DefaultPromptSuffix.Text = ''
+$GitPromptSettings.DefaultPromptPath.Text = ''
+# see also:
+# $GitPromptSettings.WindowTitle
 
 function _Write-PromptGitStatus {
     <#
     .synopsis
-        temp placement for posh-git
+        Wraps Posh-Git\Prompt
+    .notes
+        see also the values of
+            $GitStatus
+
+            plus 6+ variables named '$Git_<something>'
+
+        docs:
+            https://github.com/dahlbyk/posh-git/wiki/Customizing-Your-PowerShell-Prompt#v1x---customizing-the-posh-git-prompt
+
     .outputs
         either $null, or a string based on git status
     #>
-    $dir_git = Get-GitDirectory
-    [bool]$isGetRepo = $null -ne $dir_git
+    param()
+    & $GitPromptScriptBlock
 
-    if (! $isGetRepo) {
-        return
-    }
+    # $dir_git = Get-GitDirectory
+    # [bool]$isGetRepo = $null -ne $dir_git
 
-    New-Text 'git' -ForegroundColor (Get-GitBranchStatusColor).ForegroundColor
+    # if (! $isGetRepo) {
+    #     return
+    # }
+
+    # New-Text 'git' -ForegroundColor (Get-GitBranchStatusColor).ForegroundColor
 }
 
 function _Write-PromptIsAdminStatus {
@@ -333,7 +352,7 @@ function Write-NinProfilePrompt {
                     _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
                     _Write-PromptDetectParent
                     # "`n"
-                    "🐛> "
+                    '🐛> '
                 ) | Join-String
                 break
             }
@@ -372,7 +391,7 @@ function Write-NinProfilePrompt {
 
 
                     function _Write-PromptDetectError {
-                        if($global:Error.count -gt 0 -and $configErrorLinesLimit -gt 0) {
+                        if ($global:Error.count -gt 0 -and $configErrorLinesLimit -gt 0) {
                             Dev.Nin\Test-DidErrorOccur -Limit $configErrorLinesLimit
                             "`n"
                         }
@@ -381,10 +400,11 @@ function Write-NinProfilePrompt {
                     # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
                     _Write-PromptIsAdminStatus
                     _Write-PromptDetectError
-                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
                     if ($__ninConfig.Prompt.IncludeGitStatus) {
                         _Write-PromptGitStatus # todo: better git status line
+                        "`n"
                     }
+                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
                     "`n🐒> "
                 )
                 $segments | Join-String
