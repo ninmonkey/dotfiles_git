@@ -18,10 +18,6 @@
         }
     ],
     "settings": {
-        "terminal.integrated.shell.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
-        "terminal.integrated.shellArgs.windows": [
-            "-NoLogo"
-        ],
         "files.associations": {
             "*.json": "jsonc",
             "*.ps1xml": "xml",

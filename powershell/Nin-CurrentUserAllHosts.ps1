@@ -13,6 +13,9 @@ $__ninConfig ??= @{
     ImportGitBash              = $true  # __doc__: Include gitbash binaries in path+gcm
     UsePSReadLinePredict       = $true  # __doc__: uses beta PSReadLine [+Predictor]
     UsePSReadLinePredictPlugin = $false # __doc__: uses beta PSReadLine [+Plugin]
+    Import                     = @{
+        SeeminglyScience = $true
+    }
     OnLoad                     = @{
         IgnoreImportWarning = $true # __doc__: Ignore warnings from any modules imported on profile first load
     }
@@ -131,10 +134,16 @@ New-Alias 'rel' -Value '_reloadModule' -ea ignore
         # Test whether term is running, in order to run EditorServicesCommandSuite
         $__ninConfig.Terminal.IsVSCodeAddon_Terminal = $true
     }
-    if ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) {
-        Import-Module EditorServicesCommandSuite
-        Set-PSReadLineKeyHandler -Chord "$([char]0x2665)" -Function AddLine # work around for shift+enter pasting a newline
+    if ($psEditor) {
+        $escs = Import-Module EditorServicesCommandSuite -PassThru
+        if ($null -ne $escs -and $escs.Version.Major -lt 0.5.0) {
+            Import-EditorCommand -Module EditorServicesCommandSuite
+        }
     }
+    # if ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) {
+    #     Import-Module EditorServicesCommandSuite
+    # Set-PSReadLineKeyHandler -Chord "$([char]0x2665)" -Function AddLine # work around for shift+enter pasting a newline
+    # }
 }
 
 
@@ -580,3 +589,14 @@ function Prompt {
 
 _profileEventOnFinalLoad
 New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
+
+if ($__ninConfig.Import.SeeminglyScience) {
+    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+    if ($pathSeem) {
+        Import-Module pslambda
+        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
+    }
+}
