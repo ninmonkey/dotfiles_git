@@ -582,7 +582,7 @@
     // "workbench.editor.focusRecentEditorAfterClose": true,
     "workbench.quickOpen.closeOnFocusLost": false,
     "gitlens.views.repositories.files.layout": "list",
-    "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'consolas', 'cascadia mono', fira code retina, cascadia code, consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
     // "terminal.integrated.inheritEnv": false,
     "codepoint.statusbar": "description",
@@ -647,6 +647,7 @@
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
         "editor.suggest.showWords": true,
+        "editor.semanticHighlighting.enabled": true,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
         "editor.suggest.showFunctions": true,
@@ -2022,7 +2023,7 @@
     // Enables the inlay hints in the editor.
     "editor.inlayHints.enabled": true,
     // Controls font family of inlay hints in the editor. When set to empty, the `editor.fontFamily` is used.
-    "editor.inlayHints.fontFamily": "'cascadia code', 'fira code', consolas",
+    "editor.inlayHints.fontFamily": "'cascadia code pl', verdana, 'cascadia code', monospace",
     // Controls font size of inlay hints in the editor. When set to `0`, the 90% of `editor.fontSize` is used.
     "editor.inlayHints.fontSize": 0,
     // Controls whether to automatically show inline suggestions in the editor.
@@ -2383,7 +2384,7 @@
     "editor.suggestLineHeight": 0,
     // Controls whether suggestions should automatically show up when typing trigger characters.
     "debug.console.fontFamily": "'cascadia code pl', fira code', 'cascadia code', consolas",
-    "editor.fontFamily": "'arial', 'cascadia code', 'fira code', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
