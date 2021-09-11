@@ -6,6 +6,9 @@ using namespace System.Management.Automation # [ErrorRecord]
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'
 
+# temp hack
+Set-Alias 'code' 'code-insiders.cmd'
+
 $__ninConfig ??= @{
     # HackSkipLoadCompleters     = $true
     EnableGreetingOnLoad       = $true
@@ -15,6 +18,10 @@ $__ninConfig ??= @{
     UsePSReadLinePredictPlugin = $false # __doc__: uses beta PSReadLine [+Plugin]
     Import                     = @{
         SeeminglyScience = $true
+    }
+    Config                     = @{
+        PSScriptAnalyzerSettings2 = Get-Item -ea silentlycontinue 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
+        PSScriptAnalyzerSettings  = Get-Item -ea silentlycontinue 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
     }
     OnLoad                     = @{
         IgnoreImportWarning = $true # __doc__: Ignore warnings from any modules imported on profile first load
@@ -57,14 +64,13 @@ $__ninConfig ??= @{
     }
     IsFirstLoad                = $true
 
+
 }
 
 
 
 
 & {
-
-
     $colorA = '#CD919E'
     $colorB = '#454545'
     ($__ninConfig.Prompt.BreadCrumb).ColorStart = $colorB
@@ -148,6 +154,47 @@ New-Alias 'rel' -Value '_reloadModule' -ea ignore
 
 
 <#
+    [section]: Nin.* Environment Variables
+
+
+## Rationale for '$Env:2021' or '$Env:Now'
+
+    verses using a profile-wide '$Nin2021'
+
+    When using filepath parames like
+        $x | copy-item -Destination '$NinNow\something
+
+    Tab completion does not complete. but environment variables will.
+    This means you have to  remember exact filepaths.
+
+    Using Env vars allows typing:
+
+        -dest $env:Nin2021\*bug'
+
+        which resolves to
+            'C:\Users\cppmo_000\Documents\2021\reporting_bugs\
+
+
+#>
+$Env:Nin_Home ??= "$Env:UserProfile\Documents\2021" # what is essentially my base/root directory
+$Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
+$env:NinNow = Get-Item $Env:Nin_Home
+
+
+# Env-Vars are all caps because some apps check for env vars case-sensitive
+# double check that profile isn't failing to set the global env vars
+$Env:LESS ??= '-R'
+$ENV:PAGER ??= 'bat'
+$ENV:PAGER ??= 'less -R'
+$Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
+$Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
+
+$Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
+$Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
+
+
+
+<#
 # enable specific bugfix if you have 'PSUtil'
 if (Get-Module 'psutil' -ListAvailable -ea ignore) {
     # extra case to make sure it runs until 'IsVSCode' is perfect
@@ -208,43 +255,9 @@ $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = 
         But settings for dev.nin / meaning any of these could be obsolete
         because it's experimental
 #>
-$PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true
+$PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true # Was this a typo?
 $PSDefaultParameterValues['Get-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Reset-RandomPerSession:Verbose'] = $true
-
-<#
-    [section]: Nin.* Environment Variables
-
-
-## Rationale for '$Env:2021' or '$Env:Now'
-
-    verses using a profile-wide '$Nin2021'
-
-    When using filepath parames like
-        $x | copy-item -Destination '$NinNow\something
-
-    Tab completion does not complete. but environment variables will.
-    This means you have to  remember exact filepaths.
-
-    Using Env vars allows typing:
-
-        -dest $env:Nin2021\*bug'
-
-        which resolves to
-            'C:\Users\cppmo_000\Documents\2021\reporting_bugs\
-
-
-#>
-$Env:Nin_Home ??= "$Env:UserProfile\Documents\2021" # what is essentially my base/root directory
-$Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
-$env:NinNow = Get-Item $Env:Nin_Home
-
-
-$Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
-$Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
-
-$Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
-$Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
 
 
 # Import-Module Ninmonkey.Console
@@ -368,10 +381,10 @@ if ($true) {
     # should just use 'go' instead? It's not in the actual module
     # Usually not a great idea, but this is for a interactive command line profile
 
-    $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea SilentlyContinue
+    $Profile | Add-Member  -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea Ignore
     $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
     $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
-    $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction SilentlyContinue
+    $Profile | Add-Member  -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
 
     $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
     $Accel::Add('psco', [System.Management.Automation.PSObject])
@@ -585,8 +598,7 @@ function Prompt {
 
 # ie: Lets you set aw breakpoint that fires only once on prompt
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
-# $prompt2
-
+# $prompt2}}
 _profileEventOnFinalLoad
 New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
 
