@@ -563,7 +563,7 @@
 
       */
     "editor.inlineHints.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
-    "editor.codeLensFontFamily": "consolas, 'cascadia code', arial, 'cascadia code'", // this changes "run tests" inside .ps1 pester blocks
+    "editor.codeLensFontFamily": "'cascadia code pl', 'cascadia code', arial, 'cascadia code', 'monospace'", // this changes "run tests" inside .ps1 pester blocks
     "editor.codeLensFontSize": 14,
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
@@ -582,8 +582,8 @@
     // "workbench.editor.focusRecentEditorAfterClose": true,
     "workbench.quickOpen.closeOnFocusLost": false,
     "gitlens.views.repositories.files.layout": "list",
-    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
     // "terminal.integrated.inheritEnv": false,
     "codepoint.statusbar": "description",
     "workbench.quickOpen.closeOnFocusLost": false,
@@ -1256,7 +1256,6 @@
     "terminal.integrated.experimentalLinkProvider": true,
     "terminal.integrated.rightClickBehavior": "copyPaste",
     "terminal.integrated.sendKseybindingsToShell": false,
-    "terminal.integrated.tabs.location": "left",
     "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default changes per-language
     "terminal.integrated.tabs.focusMode": "doubleClick",
     "terminal.integrated.inheritEnv": true,
@@ -2431,4 +2430,34 @@
     //     "INFO",
     //     "HINT"
     // ]
+    /*
+
+    ### Sect: Testing
+
+           tags: Tag1, Tag2
+
+    */
+    // Configures when the error peek view is automatically opened.
+    //  - failureAnywhere: Open automatically no matter where the failure is.
+    //  - failureInVisibleDocument: Open automatically when a test fails in a visible document.
+    //  - never: Never automatically open.
+    "testing.automaticallyOpenPeekView": "failureInVisibleDocument",
+    // Controls whether to automatically open the peek view during auto-run mode.
+    "testing.automaticallyOpenPeekViewDuringAutoRun": false,
+    // How long to wait, in milliseconds, after a test is marked as outdated and starting a new run.
+    "testing.autoRun.delay": 300,
+    // Controls which tests are automatically run.
+    //  - all: Automatically runs all discovered test when auto-run is toggled. Reruns individual tests when they are changed.
+    //  - rerun: Reruns individual tests when they are changed. Will not automatically run any tests that have not been already executed.
+    // "testing.autoRun.mode": "all",
+    "testing.autoRun.mode": "rerun",
+    // Controls the action to take when left-clicking on a test decoration in the gutter.
+    //  - run: Run the test.
+    //  - debug: Debug the test.
+    //  - contextMenu: Open the context menu for more options.
+    "testing.defaultGutterClickAction": "run",
+    // Controls whether the running test should be followed in the test explorer view
+    "testing.followRunningTest": true,
+    // Controls whether test decorations are shown in the editor gutter.
+    "testing.gutterEnabled": true,
 }

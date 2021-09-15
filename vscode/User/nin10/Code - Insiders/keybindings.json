@@ -189,6 +189,11 @@
         "key": "ctrl+alt+l",
         "command": "editor.action.joinLines"
     },
+    {
+        "key": "ctrl+b",
+        "command": "-md-shortcut.toggleBold",
+        "when": "editorTextFocus && markdownShortcuts:enabled"
+    },
     /*
 
     Powershell: Pester

@@ -367,16 +367,17 @@ if ($true) {
     New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
     Set-Alias @splatAlias -Name 's'  -Value Select-Object   -Description 'aggressive: to override other modules'
     Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard   -Description 'aggressive: set clip'
-    New-Alias 'CodeI' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatAlias 'CodeI' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
-    New-Alias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
+    New-Alias @splatAlias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
+    New-Alias @splatAlias 'jp' -Value 'Join-Path' -Description 'quicker for the cli'
 
     if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
         New-Alias -Name 'f ' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
     }
 
-    Remove-Alias 'cd' -Scope global -Force
-    New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Scope global -Description 'Personal Profile for easier movement'
+    Remove-Alias 'cd' -Scope global -Force -ea ignore
+    New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'Personal Profile for easier movement'
     # For personal profile only. Maybe It's too dangerous,
     # should just use 'go' instead? It's not in the actual module
     # Usually not a great idea, but this is for a interactive command line profile
@@ -416,11 +417,11 @@ if ($true) {
 if ($__ninConfig.UsePSReadLinePredict) {
 
     try {
-        Set-PSReadLineOption -PredictionSource History
-        Set-PSReadLineOption -PredictionViewStyle ListView
+        Set-PSReadLineOption -PredictionSource History -ea stop
+        Set-PSReadLineOption -PredictionViewStyle ListView -ea stop
     }
     catch {
-        Write-Warning 'Failed: -PredictionSource History'
+        Write-Warning 'Failed: -PredictionSource History & ListView'
     }
 }
 if ($__ninConfig.UsePSReadLinePredictPlugin) {
@@ -612,3 +613,5 @@ if ($__ninConfig.Import.SeeminglyScience) {
         Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
     }
 }
+
+Set-Alias 'code' 'code-insiders.cmd' # override seeminglysci's alias
