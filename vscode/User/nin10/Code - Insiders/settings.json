@@ -358,7 +358,12 @@
         // "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
-        "editor.fontSize": 15,
+        "editor.fontFamily": "'cascadia code mono', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+        "editor.fontFamily": "'cascadia code', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+        // weight: cascadia code mono: 450 /w 17px
+        // weight: cascadia code: [default] /w 17px
+        // "editor.fontWeight": "400",
+        "editor.fontSize": 17,
         "editor.formatOnPaste": false,
         // "editor.fontWeight": "500",
         // "editor.fontWeight": "400",
@@ -542,11 +547,12 @@
     // "markdown-preview-enhanced.frontMatterRenderingOption": "table",
     "markdownlint.run": "onType",
     "markdownlint.config": {
-        // "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/master/schema/markdownlint-config-schema.json",
         "ul-indent": true,
-        "ul-style": true
-        // "blank_lines":
-        // "no-bare-urls": true
+        "ul-style": true,
+        "MD028": false,
+        "MD025": {
+            "front_matter_title": ""
+        }
     },
     // https: //github.com/eamodio/vscode-gitlens/wiki/Custom-Formatting#commit-tokens
     // "gitlens.hovers.detailsMarkdownFormat": "${avatar} &nbsp;__${author}__, ${ago} &nbsp; _(${date})_ \n\n${message}\n\n${commands}",
@@ -556,7 +562,7 @@
     "markdownlint.customRulesAlwaysAllow": [],
     // "markdown"
     "markdownlint.customRules": [
-        // "f"
+        "{docsmsft.docs-linting}/markdownlint-custom-rules/rules.js"
     ],
     /*
   ###### SubSect: Extension: ⇢ mypy ( todo: sort / cleanup / test these)
@@ -731,6 +737,7 @@
         // "editor.cursorSurroundingLines": 0,
         "editor.quickSuggestionsDelay": 800,
         "editor.quickSuggestionsDelay": 400,
+        "editor.quickSuggestionsDelay": 800,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
         "editor.wordBasedSuggestions": true,
         "editor.wordBasedSuggestionsMode": "matchingDocuments",
@@ -2460,4 +2467,5 @@
     "testing.followRunningTest": true,
     // Controls whether test decorations are shown in the editor gutter.
     "testing.gutterEnabled": true,
+    "editor.columnSelection": true,
 }

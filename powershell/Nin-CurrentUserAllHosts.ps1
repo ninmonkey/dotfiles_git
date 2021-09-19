@@ -30,7 +30,7 @@ $__ninConfig ??= @{
         # __doc__: Controls the look of your prompt, not 'Terminal'
         # __uri__: Terminal
         Profile                      = 'default'    # __doc__: default | debugPrompt | Spartan
-        IncludeGitStatus             = $true # __doc__: Enables Posh-Git status
+        IncludeGitStatus             = $false # __doc__: Enables Posh-Git status
         PredentLineCount             = 1 # __doc__: number of newlines befefore prompt
         IncludePredentHorizontalLine = $false
         BreadCrumb                   = @{
@@ -417,8 +417,8 @@ if ($true) {
 if ($__ninConfig.UsePSReadLinePredict) {
 
     try {
-        Set-PSReadLineOption -PredictionSource History -ea stop
-        Set-PSReadLineOption -PredictionViewStyle ListView -ea stop
+        Set-PSReadLineOption -PredictionSource History -ea SilentlyContinue #stop
+        Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue #stop
     }
     catch {
         Write-Warning 'Failed: -PredictionSource History & ListView'
@@ -426,8 +426,8 @@ if ($__ninConfig.UsePSReadLinePredict) {
 }
 if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
-        Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-        Set-PSReadLineOption -PredictionViewStyle ListView
+        Set-PSReadLineOption -PredictionSource HistoryAndPlugin  -ea SilentlyContinue
+        Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue
     }
     catch {
         Write-Warning 'Failed: -PredictionSource HistoryAndPlugin'
