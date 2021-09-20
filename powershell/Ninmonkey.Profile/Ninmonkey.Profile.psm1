@@ -429,11 +429,22 @@ if ($true) {
     )
 }
 
-# & {
-$src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
-if (Test-Path $src) {
-    . $src
-    Export-ModuleMember -Function 'Backup-VSCode'
+if ( $OneDrive.Enable_MyDocsBugMapping) {
+    'Skipping Backup-VSCode' | 
+    Write-TExtColor orange | Join-string -op 'OneDriveBugFix: ' | write-warning
+}
+
+else {
+    
+    # & {
+        
+    $src = Join-Path $PSScriptR
+    oot 'backup_vscode.ps1'
+    if (Test-Path $src) {
+        
+        . $src
+        Export-ModuleMember -Function 'Backup-VSCode'
+    }
 }
 # }
 

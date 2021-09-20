@@ -2,11 +2,33 @@
 using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
+
+Remove-Module 'psfzf', 'psscripttools', 'zlocation'
+
+try {
+    . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
+}
+catch {
+    write-warning 'Failed parsing: Out-VSCodeVenv.ps1'
+}
+try {
+    . gi (join-path $PSScriptRoot 'Nin-OneDriveFix.ps1')
+}
+catch {
+    write-warning 'Failed parsing: Nin-OneDriveFix.ps1'
+}
 # $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'
 
-# temp hack
+write-warning "run --->>>> '$PSCommandPath'"
+
+$Env:PSModulePath = @(
+    'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
+    $Env:PSModulePath
+    
+) -join ';'
+
 Set-Alias 'code' 'code-insiders.cmd'
 
 $__ninConfig ??= @{
@@ -600,8 +622,11 @@ function Prompt {
 # ie: Lets you set aw breakpoint that fires only once on prompt
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
 # $prompt2}}
-_profileEventOnFinalLoad
 New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
+
+if (! $OneDrive.Enable_MyDocsBugMapping) {
+    _profileEventOnFinalLoad
+}
 
 if ($__ninConfig.Import.SeeminglyScience) {
     $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
@@ -615,3 +640,19 @@ if ($__ninConfig.Import.SeeminglyScience) {
 }
 
 Set-Alias 'code' 'code-insiders.cmd' # override seeminglysci's alias
+# temp hack
+if (! (gcm 'code-venv' -ea ignore) ) { 
+    # somehow didn't load, so do it now
+    . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\Out-VSCodeVenv.ps1'
+    # try {
+    #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
+    # }
+    # catch {
+    #     write-warning 'Failed parsing: Out-VSCodeVenv.ps1'
+    # }
+}
+if ($OneDrive.Enable_MyDocsBugMapping) {
+    Remove-Module 'psfzf', 'psscripttools', 'zlocation'
+    Set-Alias 'code' 'code-venv' -Force
+    pushd 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
+}
