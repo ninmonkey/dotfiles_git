@@ -1,4 +1,4 @@
-write-warning "run --->>>> '$PSCommandPath'"
+Write-Warning "run --->>>> '$PSCommandPath'"
 # $OneDrive_VSCode
 # & $OneDrive_VSCode @('-r', '-g', 'telemetryCache.otc')
 # & $OneDrive_VSCode @('-r', '-g', 'telemetryCache.otc')
@@ -36,6 +36,11 @@ function Out-VsCodeVenv {
         # WhatIf
         [Parameter()][switch]$WhatIf,
 
+        # Open the app to resume sessions
+        [Alias('Start')]
+        [Parameter(Mandatory, ParameterSetName = 'Resume')]
+        [switch]$ResumeSession,
+
         # args to vs code instead
         [Parameter(Mandatory, ParameterSetName = 'ExplicitArgs')]
         [string[]]$ArgsRest
@@ -48,7 +53,7 @@ function Out-VsCodeVenv {
         $Regex = @{
             FilepathWithPosition = '(:\d+){1,}$'
         }
-        $bin_vscode = gi -ea stop $VirtualEnv
+        $bin_vscode = Get-Item -ea stop $VirtualEnv
     }
 
     end {
@@ -63,10 +68,10 @@ function Out-VsCodeVenv {
                         'NYI: dropping positions on file uris'
                         $targetPath | Join-String -DoubleQuote -op '  '
                         $targetPath -replace $Regex.FilepathWithPosition, '' | Join-String -DoubleQuote -op '  '
-                    ) | Join-String -sep "`n" | Write-warning
+                    ) | Join-String -sep "`n" | Write-Warning
                     $targetPath = $targetPath -replace $Regex.FilepathWithPosition, ''
                 }
-                $Fullpath = gi -ea stop $targetPath                
+                $Fullpath = Get-Item -ea stop $targetPath                
                 $isAFolder = Test-IsDirectory $Fullpath
 
                 if ($isAFolder) {
@@ -87,31 +92,45 @@ function Out-VsCodeVenv {
             if ($WhatIf) {
                 
                 Write-Information "IsDir? $IsAFolder"
-                $VirtualEnv | Join-string -op 'vscode_venv: ' -DoubleQuote | Write-TExtColor 'hotpink3'
-                $code_args  | join-string -op  'vscode_args: ' -sep ' ' -SingleQuote  | Write-TExtColor 'hotpink3'
+                $VirtualEnv | Join-String -op 'vscode_venv: ' -DoubleQuote | Write-TExtColor 'hotpink3'
+                $code_args  | Join-String -op 'vscode_args: ' -sep ' ' -SingleQuote  | Write-TExtColor 'hotpink3'
                 $VirtualEnv
                 return
             }
             Write-Information "IsDir? $IsAFolder" | Write-Information
-            $VirtualEnv | Join-string -op 'vscode_venv: ' -DoubleQuote  | Write-TExtColor 'hotpink3' |  write-information
-            $code_args | join-string -op  'vscode_args: ' -sep ' ' -SingleQuote  | Write-TExtColor 'hotpink3' |  write-information
+            $VirtualEnv | Join-String -op 'vscode_venv: ' -DoubleQuote  | Write-TExtColor 'hotpink3' |  Write-Information
+            $code_args | Join-String -op 'vscode_args: ' -sep ' ' -SingleQuote  | Write-TExtColor 'hotpink3' |  Write-Information
             
             & $bin_vscode @code_args
         }
 
+        function _handleResumeSession {            
+            $code_args = @()
+            if ($WhatIf) {
+                "run: '$bin_vscode'"
+                return
+            }
+            & $bin_vscode
+        }
+
         function _handleExplicitArgs {            
-            write-error -ea stop -Category NotImplemented -Message 'Args nyi'
+            Write-Error -ea stop -Category NotImplemented -Message 'Args nyi'
         }
         
         switch ($PSCmdlet.ParameterSetName) {
+            'Resume' {
+                _handleResumeSession
+                break
+            }
             'ExplicitArgs' {
                 _handleExplicitArgs
+                break
             }
             default {
                 _handleOpenFile
+                break
 
             }
         }
-
     }
 }

@@ -3,31 +3,44 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
-Remove-Module 'psfzf', 'psscripttools', 'zlocation'
+if ($false) {
+
+    'should not be required:'
+
+    Remove-Module 'psfzf', 'psscripttools', 'zlocation' -ea silentlycontinue
+    'psfzf', 'psscripttools', 'zlocation' | Join-String -sep ', ' -op 'Removing: ' | Write-Warning
+}
 
 try {
-    . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
+    . Get-Item (Join-Path $PSScriptRoot 'Out-VSCodeVenv.ps1')
 }
 catch {
-    write-warning 'Failed parsing: Out-VSCodeVenv.ps1'
+    Write-Warning 'Failed parsing: Out-VSCodeVenv.ps1'
 }
 try {
-    . gi (join-path $PSScriptRoot 'Nin-OneDriveFix.ps1')
+    . Get-Item (Join-Path $PSScriptRoot 'Nin-OneDriveFix.ps1')
 }
 catch {
-    write-warning 'Failed parsing: Nin-OneDriveFix.ps1'
+    Write-Warning 'Failed parsing: Nin-OneDriveFix.ps1'
 }
 # $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'
 
-write-warning "run --->>>> '$PSCommandPath'"
+Write-Warning "run --->>>> '$PSCommandPath'"
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
     $Env:PSModulePath
     
 ) -join ';'
+
+if ($OneDrive.Enable_MyDocsBugMapping) {
+    $Env:PSModulePath = @(
+        $Env:PSModulePath
+        'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell' 
+    ) -join ';'        
+}
 
 Set-Alias 'code' 'code-insiders.cmd'
 
@@ -42,8 +55,8 @@ $__ninConfig ??= @{
         SeeminglyScience = $true
     }
     Config                     = @{
-        PSScriptAnalyzerSettings2 = Get-Item -ea silentlycontinue 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
-        PSScriptAnalyzerSettings  = Get-Item -ea silentlycontinue 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
+        PSScriptAnalyzerSettings2 = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
+        PSScriptAnalyzerSettings  = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
     }
     OnLoad                     = @{
         IgnoreImportWarning = $true # __doc__: Ignore warnings from any modules imported on profile first load
@@ -85,8 +98,11 @@ $__ninConfig ??= @{
         #IsAdmin = Test-UserIsAdmin # __doc__: set later to delay load. very naive test. just for styling
     }
     IsFirstLoad                = $true
+}
 
-
+if ($OneDrive.Enable_MyDocsBugMapping) { 
+    $__ninConfig.Config['PSScriptAnalyzerSettings2'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
+    $__ninConfig.Config['PSScriptAnalyzerSettings'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
 }
 
 
@@ -387,8 +403,8 @@ if ($true) {
     # todo:  # can I move this logic to profile? at first I thought there was scope issues, but that doesn't matter
     Remove-Alias -Name 'cd' -ea ignore
     New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
-    Set-Alias @splatAlias -Name 's'  -Value Select-Object   -Description 'aggressive: to override other modules'
-    Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard   -Description 'aggressive: set clip'
+    Set-Alias @splatAlias -Name 's' -Value Select-Object -Description 'aggressive: to override other modules'
+    Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard -Description 'aggressive: set clip'
     New-Alias @splatAlias 'CodeI' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
     New-Alias @splatAlias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
@@ -404,10 +420,10 @@ if ($true) {
     # should just use 'go' instead? It's not in the actual module
     # Usually not a great idea, but this is for a interactive command line profile
 
-    $Profile | Add-Member  -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea Ignore
+    $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea Ignore
     $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
     $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
-    $Profile | Add-Member  -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
+    $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
 
     $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
     $Accel::Add('psco', [System.Management.Automation.PSObject])
@@ -448,7 +464,7 @@ if ($__ninConfig.UsePSReadLinePredict) {
 }
 if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
-        Set-PSReadLineOption -PredictionSource HistoryAndPlugin  -ea SilentlyContinue
+        Set-PSReadLineOption -PredictionSource HistoryAndPlugin -ea SilentlyContinue
         Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue
     }
     catch {
@@ -546,7 +562,9 @@ if (Test-Path $Env:Nin_PSModulePath) {
         $env:PSModulePath = $Env:Nin_PSModulePath, $env:PSModulePath -join ';'
     }
 }
-$Env:PSModulePath = $Env:PSModulePath, 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell' -join ';'
+$Env:PSModulePath = @(
+    $Env:PSModulePath, 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell'
+) | Join-String -sep ';'
 Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 
 <#
@@ -565,10 +583,12 @@ $OptionalImports = @(
     'Dev.Nin'
     'Ninmonkey.Console'
     'Ninmonkey.Powershell'
-    'PSFzf'
-    'Posh-Git'
+    # 'PSFzf'
+    # 'Posh-Git'
     # 'ZLocation'
 )
+Write-Warning 'Disabled [Posh-Git] because of performance issues' # maybe the prompt function is in a recursive loop
+
 $OptionalImports
 | Join-String -sep ', ' -SingleQuote -op '[v] Loading Modules:' | Write-Verbose
 
@@ -641,7 +661,7 @@ if ($__ninConfig.Import.SeeminglyScience) {
 
 Set-Alias 'code' 'code-insiders.cmd' # override seeminglysci's alias
 # temp hack
-if (! (gcm 'code-venv' -ea ignore) ) { 
+if (! (Get-Command 'code-venv' -ea ignore) ) { 
     # somehow didn't load, so do it now
     . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\Out-VSCodeVenv.ps1'
     # try {
@@ -654,5 +674,5 @@ if (! (gcm 'code-venv' -ea ignore) ) {
 if ($OneDrive.Enable_MyDocsBugMapping) {
     Remove-Module 'psfzf', 'psscripttools', 'zlocation'
     Set-Alias 'code' 'code-venv' -Force
-    pushd 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
+    Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
 }

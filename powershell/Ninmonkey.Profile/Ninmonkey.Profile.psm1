@@ -58,18 +58,18 @@ $splatIgnoreGlobal = $splatIgnorePass += @{
 Remove-Alias -Name 'cd' -ea ignore
 Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(
-    New-Alias @splatIgnorePass   -Name 'CodeI'     -Value 'code-insiders'      -Description 'VS Code insiders version'
-    New-Alias @splatIgnorePass   -Name 'CtrlChar'  -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
-    New-Alias @splatIgnorePass   -Name 'Wi'        -Value 'Write-Information'  -Description 'Write Information'
-    Set-Alias @splatIgnorePass   -Name 'Gpi'       -Value 'ClassExplorer\Get-Parameter'  -Description 'Write Information'
+    New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'VS Code insiders version'
+    New-Alias @splatIgnorePass -Name 'CtrlChar' -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
+    New-Alias @splatIgnorePass -Name 'Wi' -Value 'Write-Information' -Description 'Write Information'
+    Set-Alias @splatIgnorePass -Name 'Gpi' -Value 'ClassExplorer\Get-Parameter' -Description 'Write Information'
     # New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
     # New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
-    New-Alias @splatIgnoreGlobal -Name 'Cd'        -Value 'Set-NinLocation'    -Description 'A modern "cd"'
-    Set-Alias @splatIgnorePass   -Name 'S'         -Value 'Select-Object'      -Description 'aggressive: to override other modules'
-    Set-Alias @splatIgnorePass   -Name 'Cl'        -Value 'Set-Clipboard'      -Description 'aggressive: set clip'
-    New-Alias @splatIgnorePass   -Name 'CodeI'     -Value 'code-insiders'      -Description 'quicker cli toggling whether to use insiders or not'
-    New-Alias @splatIgnorePass   -Name 'F'         -Value 'PSScriptTools\Select-First' -Description 'quicker cli toggling whether to use insiders or not'
-    New-Alias @splatIgnorePass   -Name 'Len'         -Value 'Ninmonkey.Console\Measure-ObjectCount' -Description 'A quick count of objects in the pipeline'
+    New-Alias @splatIgnoreGlobal -Name 'Cd' -Value 'Set-NinLocation' -Description 'A modern "cd"'
+    Set-Alias @splatIgnorePass -Name 'S' -Value 'Select-Object' -Description 'aggressive: to override other modules'
+    Set-Alias @splatIgnorePass -Name 'Cl' -Value 'Set-Clipboard' -Description 'aggressive: set clip'
+    New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass -Name 'F' -Value 'PSScriptTools\Select-First' -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass -Name 'Len' -Value 'Ninmonkey.Console\Measure-ObjectCount' -Description 'A quick count of objects in the pipeline'
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
     # New-Alias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
     # guard did not catch this correctly anyway, maybe -ea disables loading? i don not want to use an -all
@@ -95,10 +95,12 @@ function toggleErrors {
     $__ninConfig.Prompt.NumberOfPromptErrors = if ($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) { 3 } else { 0 }
 }
 
-# Disable Posh-Git from including filepath, I already handle that.
-$GitPromptSettings.DefaultPromptWriteStatusFirst = $true
-$GitPromptSettings.DefaultPromptSuffix.Text = ''
-$GitPromptSettings.DefaultPromptPath.Text = ''
+if ($GitPromptSettings) {
+    # Disable Posh-Git from including filepath, I already handle that.
+    $GitPromptSettings.DefaultPromptWriteStatusFirst = $true
+    $GitPromptSettings.DefaultPromptSuffix.Text = ''
+    $GitPromptSettings.DefaultPromptPath.Text = ''
+}
 # see also:
 # $GitPromptSettings.WindowTitle
 
@@ -118,8 +120,21 @@ function _Write-PromptGitStatus {
     .outputs
         either $null, or a string based on git status
     #>
+    [cmdletbinding(PositionalBinding = $false)]
     param()
-    & $GitPromptScriptBlock
+
+    try {
+        if (! $GitPromptScriptBlock) {
+            # write warning ? 
+            Write-Verbose 'Posh-Git scriptblock is missing'
+            return
+        }
+
+        & $GitPromptScriptBlock
+    }
+    catch {
+        Write-Error -ErrorRecord $_ Message 'failed invoking $GitPromptScriptBlock' -TargetObject $GitPromptScriptBlock
+    }
 
     # $dir_git = Get-GitDirectory
     # [bool]$isGetRepo = $null -ne $dir_git
@@ -431,7 +446,7 @@ if ($true) {
 
 if ( $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | 
-    Write-TExtColor orange | Join-string -op 'OneDriveBugFix: ' | write-warning
+    Write-TExtColor orange | Join-String -op 'OneDriveBugFix: ' | Write-Warning
 }
 
 else {
