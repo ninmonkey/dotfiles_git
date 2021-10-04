@@ -12,12 +12,6 @@ if ($false) {
 }
 
 try {
-    . Get-Item (Join-Path $PSScriptRoot 'Out-VSCodeVenv.ps1')
-}
-catch {
-    Write-Warning 'Failed parsing: Out-VSCodeVenv.ps1'
-}
-try {
     . Get-Item (Join-Path $PSScriptRoot 'Nin-OneDriveFix.ps1')
 }
 catch {

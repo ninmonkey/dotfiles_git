@@ -125,7 +125,7 @@ function _Write-PromptGitStatus {
 
     try {
         if (! $GitPromptScriptBlock) {
-            # write warning ? 
+            # write warning ?
             Write-Verbose 'Posh-Git scriptblock is missing'
             return
         }
@@ -403,18 +403,22 @@ function Write-NinProfilePrompt {
                         NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
                         IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
                     }
-
-
-                    function _Write-PromptDetectError {
-                        if ($global:Error.count -gt 0 -and $configErrorLinesLimit -gt 0) {
-                            Dev.Nin\Test-DidErrorOccur -Limit $configErrorLinesLimit
-                            "`n"
+                    <#
+                    $EnablePromptDetectError = $false
+                    if ($EnablePromptDetectError) {
+                        function _Write-PromptDetectError {
+                            if ($global:Error.count -gt 0 -and $configErrorLinesLimit -gt 0) {
+                                Dev.Nin\Test-DidErrorOccur -Limit $configErrorLinesLimit
+                                "`n"
+                            }
                         }
+                        _Write-PromptDetectError
                     }
+                    #>
+
                     _Write-Predent @splatPredent
                     # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
                     _Write-PromptIsAdminStatus
-                    _Write-PromptDetectError
                     if ($__ninConfig.Prompt.IncludeGitStatus) {
                         _Write-PromptGitStatus # todo: better git status line
                         "`n"
@@ -445,18 +449,17 @@ if ($true) {
 }
 
 if ( $OneDrive.Enable_MyDocsBugMapping) {
-    'Skipping Backup-VSCode' | 
-    Write-TExtColor orange | Join-String -op 'OneDriveBugFix: ' | Write-Warning
+    'Skipping Backup-VSCode' | Write-TExtColor orange
+    | Join-String -op 'OneDriveBugFix: ' | Write-Warning
 }
 
 else {
-    
+
     # & {
-        
-    $src = Join-Path $PSScriptR
-    oot 'backup_vscode.ps1'
+
+    $src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
     if (Test-Path $src) {
-        
+
         . $src
         Export-ModuleMember -Function 'Backup-VSCode'
     }
