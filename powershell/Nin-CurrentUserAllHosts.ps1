@@ -26,14 +26,14 @@ Write-Warning "run --->>>> '$PSCommandPath'"
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
     $Env:PSModulePath
-    
+
 ) -join ';'
 
 if ($OneDrive.Enable_MyDocsBugMapping) {
     $Env:PSModulePath = @(
         $Env:PSModulePath
-        'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell' 
-    ) -join ';'        
+        'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell'
+    ) -join ';'
 }
 
 Set-Alias 'code' 'code-insiders.cmd'
@@ -94,7 +94,7 @@ $__ninConfig ??= @{
     IsFirstLoad                = $true
 }
 
-if ($OneDrive.Enable_MyDocsBugMapping) { 
+if ($OneDrive.Enable_MyDocsBugMapping) {
     $__ninConfig.Config['PSScriptAnalyzerSettings2'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
     $__ninConfig.Config['PSScriptAnalyzerSettings'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
 }
@@ -653,11 +653,25 @@ if ($__ninConfig.Import.SeeminglyScience) {
     }
 }
 
-Set-Alias 'code' 'code-insiders.cmd' # override seeminglysci's alias
+if(! (Get-Command 'Out-VSCodeVenv' -ea ignore)){
+    write-warning "Out-VSCodeVenv did not load!"
+    # $src = gi -ea ignore (gc 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1')
+    $src = gi -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
+    if($src) {
+        . $src
+    }
+}
+# Set-Alias 'code' 'code-insiders.cmd' # override seeminglysci's alias
+
+
+
 # temp hack
-if (! (Get-Command 'code-venv' -ea ignore) ) { 
+if (! (Get-Command 'code-venv' -ea ignore) ) {
     # somehow didn't load, so do it now
-    . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\Out-VSCodeVenv.ps1'
+    $src = gi -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
+    if($src) {
+        . $src
+    }
     # try {
     #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
     # }
