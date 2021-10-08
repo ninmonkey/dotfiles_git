@@ -1,6 +1,119 @@
 Search,Search Count,Last Search Date
-"path""c:\"" game dir:",1,132748380092354149
-"ext:ps1;pbix;md;pq;png dm:last2days me:",1,132748262416590829
+"( dm:last2months ext:ps1;ps1xml;md;py;json;ps1xml;psm1;psd1 ) ",1,132781913305094329
+"( dm:last2months ext:pbix )",1,132781910315384415
+"( dm:last2months devImg: )",1,132781910183419354
+"j",1,132781909792020724
+"( dm:last2months ( devImg: | ext:pbix)) | ( 2021: )",1,132781909094061222
+"( devImg:) 2021: ()",1,132781908340210932
+"( devImg:) | (2021:         ( !path:""client\.vscode-test"")   )",1,132781908062945488
+"dm:last6months ext:pbix;pq;md;json;ps1;png 2021_all:",4,132781907730398740
+"2021: ext:svgz ext:dax;json;lnk;md;png;ps1;sqlite;svg;svgz;xcf !path:""client\.vscode-test"" ",3,132781906518991830
+"2021: ext:dax;json;lnk;md;png;ps1;sqlite;svg;svgz;xcf !path:""client\.vscode-test""",1,132781905676611815
+"2021: ext:svg;svgz !path:""client\.vscode-test"" ext:",1,132781905448767539
+"2021: ext:svg !path:""client\.vscode-test""",1,132781903317562593
+"dm:today ext:png",2,132781902551887270
+"dm:last6months ext:pbix;pq;md;json;ps1;png 2021_all: ( web )",2,132781886287047591
+"dm:last6months ext:pbix;pq;md;json;ps1 2021_all: ( web )",1,132781859654211557
+"2021_all:",2,132781857566810288
+"dm:last3months me: bookmark:",1,132781359207168429
+"ext:ps1 me: ( format | measure | command | nin) nin meas",2,132781209212600903
+"ext:ps1 ( path:my_github ) me: dm:last3months content:write-information",1,132781121237316375
+"ext:ps1 ( infor ) me:",1,132781118820436508
+"ext:pbix;pq dm:today",2,132780489058620274
+"ext:pbix dm:today",9,132779621596519919
+"ext:ps1 me: ( path:not | path:bad ) !path:dbatool",1,132778694051045423
+"file:powerquery me:",1,132778548164700537
+"ext:pq;md;pbix;png;gif;jpeg;jpg; me: (path:culture | path:locale| path:date ) me:",2,132778524173331014
+"ext:pq;md;pbix;png;gif;jpeg;jpg; me: (path:culture | path:locale| path:date )",1,132777887513502959
+"ext:pq;md;pbix;png;gif;jpeg;jpg; me: (path:culture | path:locale )",1,132777886781165966
+"ext:pq;md;pbix me: (path:culture | path:locale )",1,132777886649998915
+"ext:ps1 me: path:profile content:venv",2,132777885519981382
+"ext:ps1 me: dm:last10days content:convertfromutf32",1,132777703725902130
+"ext:ps1 me: dm:last2hours",1,132777682286080669
+"ext:png;jpg dm:last3days me:",1,132777661258255813
+"ext:png;jpg dm:last3days",1,132777661213334190
+"ext:ps1 dm:last2hours",1,132777627206849427
+"ext:tests.ps1",1,132777503468748058
+"saet",2,132777503010627515
+"ext:json path:code %appdata%",1,132776696735611965
+"( ext:pbix;pq;md path:record ext:pq me: )",2,132776000339587884
+"powerquery lib me:",1,132775112074469909
+"( dm:last2months path:robo )",3,132774938858632796
+"( ext:pbix;pq;md path:record ext:pq )",1,132774353434629821
+"( dm:last18months path:gedcom ) | ( path:robo  me: )",1,132774311019978751
+"dm:last18months path:gedcom",2,132774305469831680
+"(path:fam | path:dot | Path:geo ) (ext:csv;pbix;",2,132767030774484485
+"dm:last18months path:geodcom",1,132767027510383719
+"family: tree",1,132767005209878791
+"(  dm:last3days skydrive:   )",1,132767002526611675
+"skydrive: ext:ps1;md path:mini ( Path:comple | path:attri )",1,132766351593328086
+"skydrive: ext:pbix dm:today",1,132766314278958729
+"skydrive: ext:pdf power query",1,132766306710093920
+"""C:\Users\cppmo_000\AppData\Local\Microsoft\OneDrive\logs\Personal"" dm:today !(ext:aodl | ext:ini | ext:json | ext:log | ext:odlgz | ext:odlsent | ext:otc-shm | ext:txt)",4,132766306556788964
+" dm:today skydrive:",1,132766296425676868
+"""C:\Users\cppmo_000\AppData\Local\Microsoft\OneDrive\logs\Personal"" dm:today !ext:odlsent",1,132765669737166031
+"""C:\Users\cppmo_000\AppData\Local\Microsoft\OneDrive\logs\Personal"" dm:today",1,132765669278816105
+"""C:\Users\cppmo_000\AppData\Local\Microsoft\OneDrive\logs\Personal""",1,132765668405780018
+"""C:\Users\cppmo_000\AppData\Local\Microsoft\OneDrive\logs"" ",2,132765668200665723
+"""C:\Users\cppmo_000\AppData\Local\Microsoft\OneDrive\logs\Business1\"" ",1,132765645427628433
+"ext:log dm:last13minutes",2,132765645028274904
+"dm:last3minutes ( %AppData% | %LocalAppData% )            !path:mozilla",1,132764897977446588
+"dm:last3minutes path:ww:%AppData%",1,132764897422016418
+"dm:last3minutes ext:log;json;md",1,132764897164963320
+"( ext:dll ) ( path:ww:%ProgramFiles% | path:ww:""%ProgramFiles(x86)%"" | ( ( path:ww:""%ProgramFiles%\WindowsApps"" path:""Microsoft.MicrosoftPowerBIDesktop"" )) )",2,132764896772350114
+"2019: no_venv: ""C:\Users\cppmo_000\Documents\2019\python\PoC\PoC_1-offs\1-off wip"" utf8:file:🐈 file:regex:""e 🐈""   file:regex:"".exe 🐈.*""  file:"".exe 🐈"" utf8:file:regex:"".exe [\x{2028}]+"" ",2,132764896536403619
+"2020: dm:today",2,132764896498886343
+"pic:  ( ""C:\Users\cppmo_000\Documents\2020\powershell\"" |  ""C:\Users\cppmo_000\Documents\2020\ninmonkeys.com ┐ wip"" | ""C:\Users\cppmo_000\Documents\2020\ninmonkeys"" | ""C:\Users\cppmo_000\Documents\2020\Power BI""  )",2,132764896472296469
+"ext:png;gif;mpv path:fzf",2,132764896247184932
+"ext:png fzf me:",1,132764659805346765
+"ext:PS1 dm:last4hours",1,132764636590709680
+"dm:last15minutes ( path:log |  ) !path:""code - insiders"" !path:.vscode !path:firefox",2,132763566952238671
+"dm:last15minutes ( path:log ) !path:""code - insiders"" !path:.vscode",1,132763544851160153
+"dm:last15minutes ( path:log ) !path:",1,132763544587112593
+"dm:last15minutes ( path:log )",1,132763544230088916
+"dm:last15minutes ( ext:log | path:log )",1,132763538153443675
+"ext:ps1;md;py me:",1,132763537718375814
+"ext:ps1;md me: get-valid",7,132761861599342563
+"ext:ps1 (me: | 2021: ) path:smart",1,132761471510751292
+"ext:ps1 path:tests.ps1 (me: | 2021: ) dm:last1hours",1,132761420273349639
+"ext:ps1 path:tests.ps1 (me: | 2021: ) content:""-foreach""",1,132761195090170844
+"ext:ps1 path:tests.ps1 (me: | 2021: )",1,132761188750385366
+"ext:ps1 path:tests.ps1 (me: | 2021: ) content:-foreach",1,132761187854238651
+"ext:ps1 path:tests.ps1 me: content:-foreach",1,132761187411293653
+"ext:ps1 path:tests.ps1 me: content:foreach",1,132761186749428462
+"dm:last3minutes",2,132760536385449094
+"ext:ps1;md me: content:dynamiccompleter",1,132759436933720477
+"ext:ps1;md me: (path:script)",1,132758630167121754
+"ext:ps1;md dm:last3days",1,132758617410107358
+"ext:pbix me: dm:last1years ",5,132758617171811992
+"ext:ps1 me: (path:comple | path:dynami | path:set )",1,132757877260748321
+"ext:md;json dm:today",1,132757681026937742
+"ext:json dm:lastminute",1,132757680869074569
+"ext:md;ps1 dm:last1hours ",1,132757609469559922
+"ext:ps1 dm:last1hours ",1,132757609425363372
+"dm:thisweek me: walk",3,132756871430955685
+"ext:md;json;PS1;pbix;pq dm:last30days",2,132755371817439717
+"dm:thisweek me:",1,132754259961603021
+"dm:today me:",1,132754171683637743
+"ext:png ",1,132754168139426021
+"ext:code-workspace me:",2,132754165144099635
+"ext:md;json;PS1;pbix;pq dm:last30days\",1,132752887993589767
+"ext:md;json;PS1;pbix;pq dm:last30days !path:ww:""gog""",2,132752887935315855
+"ext:md;json;PS1;pbix;pq dm:last30days me: uni",2,132752805235406694
+"ext:md;json;PS1;pbix;pq dm:last30days me: specif (|uni)",1,132752782035879686
+"ext:PS1;pbix;pq dm:last30days me:",1,132752728645962300
+"ext:ps1 dm:today",14,132752432484518624
+"ext:xlsx path:source",1,132750699920335908
+"ext:pbix",53,132750696175209613
+"ext:ps1;pbix;md;pq;png dm:last3days me:",6,132749821719482546
+"""C:\Users\cppmo_000\Documents\2021\Power BI\Buffer\"" ext:xlsx",2,132749820680349305
+"ext:xlsx me: purchase log",1,132748994130119158
+"""C:\Users\cppmo_000\Documents\2021\Power BI\Buffer\"" ",1,132748951692285993
+"me: ext:xlsx;csv;pbix dm:last5months",1,132748951461579093
+"ext:png me: dm:today",1,132748494052793520
+"ext:png me:",1,132748492804731899
+"ext:ps1;pbix;md;pq;png dm:last2days me:",3,132748394982213605
+"path""c:\"" game dir:",1,132748394874317356
 "ext:ps1;pbix;md;pq;png dm:last3weeks me:",8,132748262323213783
 "ext:pbix me: weather",1,132748186502054922
 "path:ww:""C:\Users\cppmo_000\AppData\Roaming\Apple Computer""",2,132747262665502254
@@ -55,7 +168,6 @@ Search,Search Count,Last Search Date
 "dm:last1hours profil",1,132738017175906795
 "ext:ps1 dm:last1hours",2,132738016901415444
 "ext:svg",1,132737857882739214
-"ext:pbix",52,132737854726722383
 "ext:pbix html",1,132737229548895332
 "ext:ps1 url",2,132737228688376090
 """C:\Program Files\WindowsApps\Microsoft.MicrosoftPowerBIDesktop_2.96.701.0_x64__8wekyb3d8bbwe"" tabular",1,132736407618360245
@@ -63,7 +175,6 @@ Search,Search Count,Last Search Date
 "ext:ps1;pbix dm:last2days !github:",1,132736245542642859
 "ext:ps1;pbix dm:last2days !github: ",1,132736245258108117
 "ext:ps1 dm:last2days !github: ",1,132736062026865094
-"ext:ps1 dm:today",12,132735993179523267
 "ext:svg;ps1;md ( everything | every | search) !skydrive:",1,132735198816021920
 "ext:ps1;md ( everything | every | search) !skydrive:",2,132735198106798525
 "ext:ps1;md ( everything | every | search)",1,132734679806533821
@@ -249,160 +360,3 @@ Search,Search Count,Last Search Date
 "ext:ps1 git !path:x",1,132704273940026649
 "ext:ps1 git",2,132704267460905661
 "!path:x ext:ps1 !github:",2,132704267306522116
-"ext:ps1 !github:",1,132703464428283498
-"ext:code-workspace ( path:2020 | path:2021 ) ext:pbix",1,132703462407591277
-"ext:code-workspace ( path:2020 | path:2021 )",3,132703462346745484
-"node_Modules dm:thisyear",1,132702493740019623
-"node_Modules",1,132702492626780376
-"ext:ps1 dm:last7days content:shouldpr",2,132702472974602093
-"ext:ps1 git mer path:buf",1,132699892256747891
-"ext:ps1 git mer",1,132699891414175096
-"ext:ps1 merge",1,132699865419525834
-"folder:portal",2,132699147077771126
-"folder:"".git"" path:corval",1,132698956017281678
-"settings.json",3,132698955576080170
-".egstore path:satis",2,132698806523793559
-"ww:settings.json path: dm:last7days",3,132698244506965894
-"ww:settings.json path:",1,132698202225181517
-"ww:settings.json path: ",1,132698202070285591
-"ww:settings.json ",1,132698201155761518
-"profile.json",1,132698200379274999
-"folder:ww:"".git"" folder: !path:""$Recycle.Bin""",2,132698199987999735
-"ext:ps1 scope",1,132697998040297430
-"ext:ps1 path",6,132697997965887900
-"folder:ww:"".git"" folder:",1,132697992792331930
-"file:wholeword:""/.git""",1,132697991092572663
-"wholeword:.git folder: ",2,132697990501405393
-"folder:"".git""",1,132697989860032872
-"dm:today",5,132697973408409584
-"ext:ps1;md;pq;pbix;xlsx;csv;json dm:last78hours me: dm:today",1,132695462931248483
-"ext:ps1;md;pq;pbix;xlsx;csv;json dm:last78hours me:",1,132695450958326583
-"ext:ps1;md;pq;pbix;xlsx;csv;json dm:last78hours",1,132695450667856533
-"ext:ps1 me: fileNonAscii:",1,132695410801761634
-"ext:pbix power query lib",2,132695409936998606
-"vscode powerquery",1,132694797291028065
-"ext:csv",6,132694797199374739
-"ext:csv !downloads:",1,132693943466966409
-"path:portal work",1,132693929302973671
-"ext:png dm:today",2,132693928991130689
-"folder: dm:today bug",1,132693253080412568
-"ext:pbix;pq dm:today",3,132693248468165383
-"ext:pbix dm:today",10,132693213805957651
-"ext:ps1 dm:last72hours",1,132693202237958034
-"path:spotify ext:json   !downloads:",2,132693197091698671
-"path:spotify ext:json   !downloads: path:""%LocalAppData%\Packages\Spotify""",1,132693191876481313
-"ext:pbix ",6,132693189904407028
-"path:spotify ext:json  ",1,132693179729235444
-"path:spotify ext:json",2,132693178408873066
-"ext:pbix dm:last2minutes",3,132693178284790942
-"g:\2021 path:dot",1,132692952136321441
-"g:\2021 seemin",1,132692952053633767
-"dm:last2minutes",1,132692808059908762
-"path:ww:""%UserProfile%\Microsoft\Power BI Desktop Store\""",1,132692807746888322
-"ext:pbix;ps1;pq;md dm:last48hours !github:",1,132692403274726860
-"ext:pbix;ps1;pq;md dm:last48hours",2,132692402961713007
-"path:power path:bi !github:",1,132692402847984319
-"ext:pbix;ps1",2,132692391052103443
-"ext:ps1 path:buffer",2,132692272070614573
-"ancestry expor",2,132692232843471061
-"ext:pbix;pq;ps1;md dm:today",2,132692152085555718
-"path:ww:""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App"" content:""11eaa305-36a2-4638-8f51-854ccb1d0dd5""",1,132692082410280924
-"ext:ps1;md dm:today",1,132692081645223523
-"ext:xlsx data",2,132691418457718123
-"C:\Users\cppmo_000\Documents\2019\ ext:py;sh;md !path:venv !path:env !path:.git content:pprint",2,132691162307180575
-"ext:png waia",1,132691162162357311
-"ext:csv path:dmv",1,132691158432456279
-"ext:log",4,132691096351877573
-"%userprofile%\Documents      ext:pbix",1,132690645873085746
-"ext:ps1    dm:thisweek  ",2,132690640165729669
-"ext:ps1    dm:thisweek",1,132690637217232480
-"ext:pbix;pq    web",2,132690634835214738
-"ext:ps1 appx",1,132690601183045939
-"ext:pbix button",1,132690584418466978
-"ext:md;ps1",2,132689722776588945
-"ext:pbix date",2,132689407093995383
-"ext:png;ps1 dm:today",3,132688749213744013
-"ext:pbix;pq (( web | req | http | text ) | )",2,132687712892765964
-"ext:pbix;pq ( web | req | http | )",1,132687712702851421
-"( cheat) ext:pq;pbix",1,132687706678364171
-"(power | ext:pbix | |measure) svg ext:pbix;pq;md",2,132687706362293468
-"(power | ext:pbix | |measure) svg",1,132687612760614635
-"purchase log",2,132687593974682771
-"ext:pbix inspect",2,132687181981226288
-"path:ww:G:\2020-github-downloads dfink",2,132686061199486615
-"path:ww:G:\2020-github-downloads ext:json;md;pbix;png;pq;ps1",3,132685895792817710
-"ext:json;md;pbix;png;pq;ps1 -path .",1,132685893861243672
-"path:ww:C:\Users\cppmo_000\Documents\2020\powershell\MyModules_Github\Dev.Nin\public dm:today ext:json;md;pbix;png;pq;ps1",1,132685893006295023
-"dm:today ext:json;md;pbix;png;pq;ps1 -path ~",1,132685891017886960
-"dm:today ext:json;md;pbix;png;pq;ps1",2,132685890882937762
-"ext:ps1 property",3,132685278063536071
-"%userprofile%\.vscode grammar",1,132685263661240506
-"ext:ps1 dm:last13days content:commandtype",2,132685207776549874
-"ext:ps1 dm:last3days content:commandtype",4,132684386344453571
-"ext:ps1 property (set|list) c:\",1,132684369233571893
-"ext:ps1 smart alias",1,132683655076514448
-"ext:ps1 dm:yesterday | dm:today",3,132683654988761284
-"( ext:ps1 dm:thisweek) content:$cat",1,132683395018833148
-"( ext:ps1 dm:thisweek) content:cat",1,132683394909952917
-"( ext:ps1 dm:today test)",1,132683394007305194
-"( ext:gif;jpg;jpeg;png dm:last3hours  )",1,132683377059950149
-"( ext:gif;png dm:last3hours  )",1,132683376862679948
-"(ext:ps1 dm:last3days ( find  )) | ( ext:gif;png dm:last3hours  )",1,132683376588581607
-"(ext:ps1 dm:last3days) find n",1,132683368671334719
-"(ext:ps1 dm:last3days) path:ninmonkey.console",1,132683367292003297
-"(ext:ps1 dm:last3days) content:get-command",1,132683364022678419
-"(ext:ps1 dm:last3days) Get-Nin",1,132683363626244390
-"(ext:ps1 dm:last3days) hel",1,132683362928286803
-"ext:ps1 dm:last3days",4,132683356041677590
-"ext:ps1 dm:yesterday | dm:today |(siabled dm:last3days)",3,132683301391516299
-"code-workspace🐒 Ninmonkey.PowerQueryLib.code-workspace",1,132683300729572770
-"code-workspace",1,132683300282783875
-"ext:ps1 dm:today content:env:psmodule",1,132682867942322526
-"path:""dotfiles_git\vscode"" settings",1,132682656009470498
-"ext:ps1 completer ",3,132682585831858312
-"ext:ps1 validate",1,132681008430140155
-"ext:ps1 prop custom",3,132681008210157464
-"ext:ps1 ",1,132680872283947041
-"ext:ps1 prop sele",1,132680862469106323
-"ext:ps1 using scri",1,132680816970728669
-"ext:pbix image",5,132680816768384167
-"ext:xlsx",3,132679916968989159
-"ext:pbix;pq dead",1,132679907568998174
-"ext:pbix split",1,132679836570400268
-"ext:pbix dax",1,132679092417352099
-"ext:pbix Base64",1,132678383588954468
-"SamplePSReadLineProfile.ps1",6,132677603759172704
-"ext:ps1 event",2,132676039560966763
-"ext:pbix dm:thisweek",2,132675628530795207
-"(pwsh | powershell)                       (!ext:log;js;css; )",1,132675592696592379
-"(pwsh | powershell) ( path:code )                              (!ext:log;js;css; )",1,132675586832739698
-"pwsh ( path:code )",1,132675585643926775
-"ext:exe pwsh",1,132675585325768415
-"ext:png;xcf dm:last2days perf",3,132675585188428155
-"ext:pq (rand | gener)",1,132675526028478003
-"ext:pbix inline",4,132675511344797560
-"ext:png dm:last2days perf",1,132675465328126697
-"ext:ps1 code dot",1,132674907772319108
-"""X:\2020-data-secondary\screen to gif""           ( |( file:power | file:fzf shell | wt | term |   increment||comple ) ) path:""x:\"" ( !ext:png  ) inc",3,132674907405496534
-"""X:\2020-data-secondary\screen to gif""           ( |( file:power | file:fzf shell | wt | term | comple ) ) path:""x:\""",1,132674797209014236
-"ext:ps1 validateset",2,132674795967917106
-"""X:\2020-data-secondary\screen to gif""           ( |( file:power | file:fzf shell | wt | term | comple ) ) complete",1,132674674029843343
-"""X:\2020-data-secondary\screen to gif""           ( | power | shell | wt | term )",1,132674673630059803
-"""X:\2020-data-secondary\screen to gif""           ( | )",1,132674673499845958
-"""X:\2020-data-secondary\screen to gif""",1,132674673332795224
-"""X:\2020-data-secondary\screen to gif"" valid",2,132674665397230063
-"""X:\2020-data-secondary\screen to gif"" ",1,132674664649050131
-"X:\2020-data-secondary\screen to gif""",1,132674663804174994
-"ext:gif ",1,132674663663911992
-"ext:json settings path:code path:dotfile",2,132674663543363422
-"ext:json settings path:code",1,132674139624158754
-"backup path:code ext:json",1,132673942184751910
-"path:overwatch",2,132673877991713511
-"path:dwarf  ( path:newbie | )",1,132673261213735663
-"asana | (dad)  ",2,132672930368359142
-"asana | (dad)  !( %appdata%  (path:ww:""CachedData"" | path:ww:""CacheStorage"" )  ",1,132672927503752879
-"asana | (dad)  ( %appdata%  ""CachedData"" )",1,132672926184658968
-"ext:ps1;pbix;pq dm:last5hours",2,132672918905409322
-"ext:pbix;pq dm:last5hours",2,132672463150135334
-"ext:pbix dm:last5minutes",2,132672457912412219
-"""C:\Users\cppmo_000\Documents\2021\Screenshots Dump\"" ",4,132670724576947123
