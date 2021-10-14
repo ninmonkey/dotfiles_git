@@ -79,6 +79,11 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     #     New-Alias -Name 'f ' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
     # }
 )
+# To external functions
+$newAliasList += @(
+    New-Alias @splatIgnorePass -Name 'pinfo' -Value 'PSScriptTools Get-ParameterInfo' -Description 'anoter parameter info inspection ' -ea ignore
+
+)
 
 Export-ModuleMember -Alias $newAliasList
 $newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '

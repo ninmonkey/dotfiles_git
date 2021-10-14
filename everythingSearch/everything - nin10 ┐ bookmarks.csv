@@ -1,4 +1,7 @@
 Name,Case,Whole Word,Path,Diacritic,Regex,Sort,Descending,Filter,Search,Index,File List,Host,Link Type,Macro,Key,View
+"[📌] 2021-10 | Show current images",0,0,0,0,0,"Path",0,"📌 Everything (almost, with filters)     def:","dm:last1weeks ext:png me:",0,"","",1,,,256
+"[📌] 2021-10 | Show current PBI",0,0,0,0,0,"Date Modified",1,"📌 Everything (almost, with filters)     def:","( dm:last2months ext:pbix;pq )",0,"","",1,,,0
+"[📌] 2021-10 | Show current Code",0,0,0,0,0,"Date Modified",1,"📌 Everything (almost, with filters)     def:","( dm:last2months ext:ps1;ps1xml;md;py;json;ps1xml;psm1;psd1 ) ",0,"","",1,,,0
 "screen2gif     with highlighting",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","( ""X:\2020-data-secondary\screen to gif"" ) !ext:png          ( |( code|vs|file| fzf | shell | wt | term | completer|cli|command|line ) )",0,"","",1,,,240
 "[image] newest powershell screenshots ",0,0,0,0,0,"Date Modified",1,"EVERYTHING","( (path:ww:""C:\Users\cppmo_000\Downloads\screen caps delete after month\save these"" | path:ww:""C:\Users\cppmo_000\Downloads\screen caps delete after month"" | ""C:\Users\cppmo_000\Documents\2020\powershell"" ) pic: )",0,"","",1,,,128
 "[image] newest ninmonkeys.com",0,0,0,0,0,"Date Modified",1,"EVERYTHING","( (path:ww:""C:\Users\cppmo_000\Documents\2020"" path:""ninmonkeys.com"" ) pic: )",0,"","",1,,,256
@@ -83,6 +86,3 @@ Name,Case,Whole Word,Path,Diacritic,Regex,Sort,Descending,Filter,Search,Index,Fi
 "screenshot cli dump",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","""C:\Users\cppmo_000\Documents\2021\Screenshots Dump\"" ",0,"","",1,,,256
 "export_filelist:       "".git""  folders",0,0,0,0,0,"Path",0,"EVERYTHING","folder:ww:"".git"" folder: !path:""$Recycle.Bin""",0,"","",1,,,0
 "find decent images -- ext:png;jpg;gif (width:>300 | height:>300)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Documents\2021\"" ext:png;jpg;gif (width:>300 | height:>300)",0,"","",1,,,256
-"[📌] 2021-10 | Show current images",0,0,0,0,0,"Path",0,"📌 Everything (almost, with filters)     def:","dm:last1weeks ext:png me:",0,"","",1,,,256
-"[📌] 2021-10 | Show current PBI",0,0,0,0,0,"Date Modified",1,"📌 Everything (almost, with filters)     def:","( dm:last2months ext:pbix;pq )",0,"","",1,,,0
-"[📌] 2021-10 | Show current Code",0,0,0,0,0,"Date Modified",1,"📌 Everything (almost, with filters)     def:","( dm:last2months ext:ps1;ps1xml;md;py;json;ps1xml;psm1;psd1 ) ",0,"","",1,,,0
