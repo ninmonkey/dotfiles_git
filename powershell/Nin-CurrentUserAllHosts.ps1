@@ -36,8 +36,6 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
     ) -join ';'
 }
 
-Set-Alias 'code' 'code-insiders.cmd'
-
 $__ninConfig ??= @{
     # HackSkipLoadCompleters     = $true
     EnableGreetingOnLoad       = $true
@@ -270,9 +268,10 @@ if ($false) {
 
         details why: <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-7.1#changing-the-default-encoding>
 #>
+$PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
-$PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'FzfSelected'
+$PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'fzf'
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
@@ -653,25 +652,29 @@ if ($__ninConfig.Import.SeeminglyScience) {
     }
 }
 
-if(! (Get-Command 'Out-VSCodeVenv' -ea ignore)){
-    write-warning "Out-VSCodeVenv did not load!"
+if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
+    Write-Warning 'Out-VSCodeVenv did not load!'
     # $src = gi -ea ignore (gc 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1')
-    $src = gi -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
-    if($src) {
+    $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
+    if ($src) {
         . $src
     }
 }
-# Set-Alias 'code' 'code-insiders.cmd' # override seeminglysci's alias
-
-
 
 # temp hack
 if (! (Get-Command 'code-venv' -ea ignore) ) {
+    Set-Alias 'code' 'code-insiders.cmd'
     # somehow didn't load, so do it now
-    $src = gi -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
-    if($src) {
+    $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
+    if ($src) {
         . $src
     }
+    Set-Alias 'code' -Value 'Invoke-VSCodeVenv'
+    New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value @(
+        Get-Command -ea ignore -CommandType Application code-insiders.cmd
+        Get-Command -ea ignore -CommandType Alias code.cmd
+        Get-Command -ea ignore 'venv-code'
+    ) | Select-Object -First 1
     # try {
     #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
     # }
@@ -681,6 +684,6 @@ if (! (Get-Command 'code-venv' -ea ignore) ) {
 }
 if ($OneDrive.Enable_MyDocsBugMapping) {
     Remove-Module 'psfzf', 'psscripttools', 'zlocation'
-    Set-Alias 'code' 'code-venv' -Force
+    Set-Alias 'code' -Value 'Invoke-VSCodeVenv' -Force
     Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
 }

@@ -1,7 +1,6 @@
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 
-$PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSScriptRoot)
 # adds full filepath this file's directory
 # & {
 $s_optionalItem = @{
@@ -40,6 +39,63 @@ $script:NinProfile_Dotfiles = @{
     }
 }
 
+
+function __Add-DocstringMemberInfo {
+    <#
+    .synopsis
+        mutates objects, appending a simple docstring, then returns it
+    .notes
+        future:
+        - tags argument?
+        - save where it was created
+    #>
+    [Alias('__doc__')]
+    [cmdletbinding(PositionalBinding = $False)]
+    param(
+        # Base object
+        [Parameter(
+            Mandatory, Position = 0, ValueFromPipeline)]
+        [object]$InputObject,
+
+        # text to save
+        [Alias('String', 'Text', 'Help')]
+        [Parameter(Mandatory, Position = 0)]
+        [string[]]$DocString,
+
+        [Parameter()][switch]$AsMarkdown
+    )
+
+    if (! $AsMarkdown) {
+        $addMember_splat = @{
+            InputObject       = $InputObject
+            NotePropertyName  = '__doc__'
+            NotePropertyValue = $DocString | Join-String -sep "`n"
+            # TypeName          = 'x'
+            PassThru          = $true
+        }
+
+        Add-Member @addMember_splat
+    }
+
+}
+
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSScriptRoot)
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'NinDotfiles' -NotePropertyValue ((Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'NinDocs' -NotePropertyValue ($(Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'NinPSModules' -NotePropertyValue ((Get-Item $Env:Nin_PSModulePath -ea ignore) ?? $null )
+
+$ignoreSplat = @{
+    Ea = 'Ignore'
+}
+$dictMembers = @{
+    'Ninmonkey.Profile.psm1' = Get-Item @ignoreSplat $PSSCriptRoot
+    'NinDotfiles'            = Get-Item @ignoreSplat $Env:Nin_Dotfiles
+    'NinPSModules'           = Get-Item @ignoreSplat $Env:Nin_PSModulePath
+}
+$PROFILE | Add-Member -ea continue -NotePropertyMembers $dictMembers -PassThru -Force
+
+
+
 # https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file
 $Env:RIPGREP_CONFIG_PATH = $script:NinProfile_Dotfiles.RipGrep.FullName
 
@@ -58,20 +114,23 @@ $splatIgnoreGlobal = $splatIgnorePass += @{
 Remove-Alias -Name 'cd' -ea ignore
 Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(
-    New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'VS Code insiders version'
-    New-Alias @splatIgnorePass -Name 'CtrlChar' -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
-    New-Alias @splatIgnorePass -Name 'Wi' -Value 'Write-Information' -Description 'Write Information'
-    Set-Alias @splatIgnorePass -Name 'Gpi' -Value 'ClassExplorer\Get-Parameter' -Description 'Write Information'
     # New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
     # New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
-    New-Alias @splatIgnoreGlobal -Name 'Cd' -Value 'Set-NinLocation' -Description 'A modern "cd"'
-    Set-Alias @splatIgnorePass -Name 'S' -Value 'Select-Object' -Description 'aggressive: to override other modules'
-    Set-Alias @splatIgnorePass -Name 'Cl' -Value 'Set-Clipboard' -Description 'aggressive: set clip'
-    New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'quicker cli toggling whether to use insiders or not'
-    New-Alias @splatIgnorePass -Name 'F' -Value 'PSScriptTools\Select-First' -Description 'quicker cli toggling whether to use insiders or not'
-    New-Alias @splatIgnorePass -Name 'Len' -Value 'Ninmonkey.Console\Measure-ObjectCount' -Description 'A quick count of objects in the pipeline'
+    New-Alias @splatIgnoreGlobal    -Name 'Cd'          -Value 'Set-NinLocation'                            -Description 'A modern "cd"'
+    Set-Alias @splatIgnorePass      -Name 'Cl'          -Value 'Set-Clipboard'                              -Description 'aggressive: set clip'
+    New-Alias @splatIgnorePass      -Name 'CodeI'       -Value 'code-insiders'                              -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass      -Name 'CodeI'       -Value 'code-insiders'                              -Description 'VS Code insiders version'
+    New-Alias @splatIgnorePass      -Name 'CtrlChar'    -Value 'Format-ControlChar'                         -Description 'Converts ANSI escapes to safe-to-print text'
+    New-Alias @splatIgnorePass      -Name 'F'           -Value 'PSScriptTools\Select-First'                 -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass      -Name 'jPath'       -Value 'Microsoft.PowerShell.Management\Join-Path'  -Description 'Alias to the built-in'
+    # New-Alias @splatIgnorePass      -Name 'jP'          -Value 'Microsoft.PowerShell.Management\Join-Path'  -Description 'Alias to the built-in'
+    New-Alias @splatIgnorePass      -Name 'jStr'        -Value 'Microsoft.PowerShell.Utility\Join-String'   -Description 'Alias to the built-in'
+    New-Alias @splatIgnorePass      -Name 'Len'         -Value 'Ninmonkey.Console\Measure-ObjectCount'      -Description 'A quick count of objects in the pipeline'
+    Set-Alias @splatIgnorePass      -Name 'S'           -Value 'Select-Object'                              -Description 'aggressive: to override other modules'
+    New-Alias @splatIgnorePass      -Name 'Wi'          -Value 'Write-Information'                          -Description 'Write Information'
+    Set-Alias @splatIgnorePass      -Name 'Gpi'         -Value 'ClassExplorer\Get-Parameter'                -Description 'Write Information'
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
-    # New-Alias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
+
     # guard did not catch this correctly anyway, maybe -ea disables loading? i don not want to use an -all
     #   on a profile load, for performance.
     #   the 'nicest' way could be to delay binding using a profile 'async'? or just allow it to bind without existing.
