@@ -3,6 +3,34 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+# Get-Command __doc__ | Join-String -op ' loaded?'
+# see also: C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10\AddDocstring-Sketch\Add-Docstring-sketch-iter3.ps1
+# try {
+#     . Get-Item -ea stop (Join-Path $PSScriptRoot 'Add-DocstringMemberInfo.ps1')
+# }
+# catch {
+#     Write-Host '♥ :('
+#     Write-Host '♥ :( Failed to import __doc__'
+#     Write-Warning '♥ :( Failed to import __doc__, falling back on no-op polyfill'
+#     # Set-Alias '__doc__' -Value '__noop__' -Description 'failback for silent errors on documentation, as an experiment' -ea silentlyignore -Force
+# }
+# Get-Command __doc__ | Join-String -op ' loaded?'
+# . Get-Item -ea stop (Join-Path $PSScriptRoot 'Add-DocstringMemberInfo.ps1')
+# Get-Command __doc__ | Join-String -op ' loaded?'
+function __noop__ {
+    <#
+    .synopsis
+        "polyfill" air qoute, it's a stub that just consumes all pipes or arguments
+    .example
+        # none of these will error
+        0..4 | __noop__
+        0..4 | __noop__ 'foo'
+        __noop__ 'foo'
+        __noop__ -foo bar
+    #>
+    param()
+}
+
 if ($false) {
 
     'should not be required:'
@@ -90,7 +118,7 @@ $__ninConfig ??= @{
         #IsAdmin = Test-UserIsAdmin # __doc__: set later to delay load. very naive test. just for styling
     }
     IsFirstLoad                = $true
-}
+} #| __doc__ 'root to user-facing configuration options, see files and __doc__ for more'
 
 if ($OneDrive.Enable_MyDocsBugMapping) {
     $__ninConfig.Config['PSScriptAnalyzerSettings2'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
