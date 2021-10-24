@@ -689,6 +689,26 @@ if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
     }
 }
 
+Import-Module PsFzf
+if (Get-Command Set-PsFzfOption -ea ignore) {
+    # Set reverse hist fzf
+    Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
+    # 'Ctrl+r' | write-blue
+    # | str prefix 'PsFzf: History set to '
+
+    hr 1
+
+    'Ctrl+r' | Write-Color blue
+    | str prefix ([string]@(
+            'PsFzf:' | Write-Color gray60
+            'keybind ↳ History set to ↳ '
+        ))
+
+    hr 1
+}
+
+
+
 # temp hack
 if (! (Get-Command 'code-venv' -ea ignore) ) {
     Set-Alias 'code' 'code-insiders.cmd'

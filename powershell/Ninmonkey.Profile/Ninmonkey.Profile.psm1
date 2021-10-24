@@ -121,8 +121,17 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 # To external functions
 $newAliasList += @(
     New-Alias @splatIgnorePass -Name 'pinfo' -Value 'PSScriptTools Get-ParameterInfo' -Description 'anoter parameter info inspection ' -ea ignore
-
 )
+
+# try {
+#     Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
+# }
+# catch {
+#     Write-Verbose 'Module not Found'
+# }
+## FZF optional
+
+
 
 Export-ModuleMember -Alias $newAliasList
 $newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '
