@@ -179,6 +179,7 @@ function _reloadModule {
 }
 
 New-Alias 'rel' -Value '_reloadModule' -ea ignore
+New-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
     if ($parent -eq 'code') {
@@ -692,7 +693,9 @@ if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
 Import-Module PsFzf
 if (Get-Command Set-PsFzfOption -ea ignore) {
     # Set reverse hist fzf
-    Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
+
+    # Really needs filtering
+    Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+shift+r'
     # 'Ctrl+r' | write-blue
     # | str prefix 'PsFzf: History set to '
 
