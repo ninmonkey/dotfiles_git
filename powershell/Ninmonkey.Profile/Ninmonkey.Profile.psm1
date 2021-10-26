@@ -1,6 +1,11 @@
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 
+@(
+    'Profile: 🏠 --> Start'
+    hr 1
+)
+| write-warning
 function __globalStat {
     <#
     .description
@@ -91,6 +96,8 @@ $splatIgnorePass = @{
 $splatIgnoreGlobal = $splatIgnorePass += @{
     Scope = 'Global'
 }
+
+
 Remove-Alias -Name 'cd' -ea ignore
 Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(
@@ -104,8 +111,10 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass      -Name 'F'           -Value 'PSScriptTools\Select-First'                 -Description 'quicker cli toggling whether to use insiders or not'
     New-Alias @splatIgnorePass      -Name 'jPath'       -Value 'Microsoft.PowerShell.Management\Join-Path'  -Description 'Alias to the built-in'
     # New-Alias @splatIgnorePass      -Name 'jP'          -Value 'Microsoft.PowerShell.Management\Join-Path'  -Description 'Alias to the built-in'
+    New-Alias @splatIgnorePass      -Name 'sc'          -Value 'Microsoft.PowerShell.Management\Set-Content'   -Description 'Alias to the built-in'
     New-Alias @splatIgnorePass      -Name 'jStr'        -Value 'Microsoft.PowerShell.Utility\Join-String'   -Description 'Alias to the built-in'
     New-Alias @splatIgnorePass      -Name 'Len'         -Value 'Ninmonkey.Console\Measure-ObjectCount'      -Description 'A quick count of objects in the pipeline'
+
     Set-Alias @splatIgnorePass      -Name 'S'           -Value 'Select-Object'                              -Description 'aggressive: to override other modules'
     New-Alias @splatIgnorePass      -Name 'Wi'          -Value 'Write-Information'                          -Description 'Write Information'
     Set-Alias @splatIgnorePass      -Name 'Gpi'         -Value 'ClassExplorer\Get-Parameter'                -Description 'Write Information'
@@ -120,7 +129,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 )
 # To external functions
 $newAliasList += @(
-    New-Alias @splatIgnorePass -Name 'pinfo' -Value 'PSScriptTools Get-ParameterInfo' -Description 'anoter parameter info inspection ' -ea ignore
+    New-Alias @splatIgnorePass -Name 'pinfo' -Value 'PSScriptTools\Get-ParameterInfo' -Description 'anoter parameter info inspection ' -ea ignore
 )
 
 # try {
@@ -132,11 +141,24 @@ $newAliasList += @(
 ## FZF optional
 
 
+$newAliasList | %{ $_.DisplayName }
+| str csv -Sort | write-color gray60
+| str prefix ('Profile Aliases: ' | Write-TExtColor gray80)# #orange)
+| write-debug # long form
+
+# short names only
+$newAliasList | %{ $_.Name }
+| str csv -Sort | write-color gray60
+| str prefix ('Profile Aliases: ' | Write-TExtColor gray80)# #orange)
+| Write-Warning
 
 Export-ModuleMember -Alias $newAliasList
-$newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '
-| New-Text -fg 'pink' | Join-String -op 'Ninmonkey.Profile: '
-| Write-Debug
+
+
+# $newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '
+# | New-Text -fg 'pink' | Join-String -op 'Ninmonkey.Profile: '
+# | Write-Debug
+
 
 function _reRollPrompt {
     # Re-randomizes the breadcrumb key names
@@ -505,7 +527,6 @@ if ( $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-TExtColor orange
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
 }
-
 else {
 
     # & {
@@ -517,6 +538,13 @@ else {
         Export-ModuleMember -Function 'Backup-VSCode'
     }
 }
+@(
+    'Profile: 🏠 <-- End'
+    hr 1
+)
+| write-warning
+# 'Profile Aliases: ' | Write-TExtColor orange
+# | Join-String -op 'Profile Aliases: ' | Write-Warning
 # }
 
 # Get-ChildItem fg: | Where-Object { $_.X11ColorName -match 'alm|moun' } | Sort-Object Rgb | ForEach-Object { New-Text $_.x11ColorName -fg $_ } | Join-String -sep ' . '
