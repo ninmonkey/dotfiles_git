@@ -664,7 +664,9 @@ function Prompt {
 # ie: Lets you set aw breakpoint that fires only once on prompt
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
 # $prompt2}}
-New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
+# New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
+# New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | write-warning
+New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan' | ForEach-Object ToString | write-warning
 
 if (! $OneDrive.Enable_MyDocsBugMapping) {
     _profileEventOnFinalLoad
@@ -700,16 +702,16 @@ if (Get-Command Set-PsFzfOption -ea ignore) {
     # | str prefix 'PsFzf: History set to '
 
     hr 1
+    'keybind ↳ History set to ↳ '
 
-    'Ctrl+r' | Write-Color blue
-    | str prefix ([string]@(
-            'PsFzf:' | Write-Color gray60
-            'keybind ↳ History set to ↳ '
-        ))
+    # 'Ctrl+r' | Write-Color blue
+    # | str prefix ([string]@(
+    #         'PsFzf:' | Write-Color gray60
+    #         'keybind ↳ History set to ↳ '
+    #     ))
 
     hr 1
 }
-
 
 
 # temp hack
@@ -721,11 +723,12 @@ if (! (Get-Command 'code-venv' -ea ignore) ) {
         . $src
     }
     Set-Alias 'code' -Value 'Invoke-VSCodeVenv'
-    New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value @(
+    $Value = (@(
         Get-Command -ea ignore -CommandType Application code-insiders.cmd
         Get-Command -ea ignore -CommandType Alias code.cmd
         Get-Command -ea ignore 'venv-code'
-    ) | Select-Object -First 1
+    ) | Select-Object -First 1)
+    New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value $Value
     # try {
     #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
     # }
@@ -738,3 +741,5 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
     Set-Alias 'code' -Value 'Invoke-VSCodeVenv' -Force
     Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
 }
+
+New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | write-warning
