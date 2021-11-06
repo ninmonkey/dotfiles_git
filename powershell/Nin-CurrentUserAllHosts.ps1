@@ -11,7 +11,7 @@ using namespace System.Management.Automation # [ErrorRecord]
 # catch {
 #     Write-Host '♥ :('
 #     Write-Host '♥ :( Failed to import __doc__'
-#     Write-Warning '♥ :( Failed to import __doc__, falling back on no-op polyfill'
+#     Warn🛑 '♥ :( Failed to import __doc__, falling back on no-op polyfill'
 #     # Set-Alias '__doc__' -Value '__noop__' -Description 'failback for silent errors on documentation, as an experiment' -ea silentlyignore -Force
 # }
 # Get-Command __doc__ | Join-String -op ' loaded?'
@@ -31,12 +31,37 @@ function __noop__ {
     param()
 }
 
+$__warn = $false
+function Warn {
+    [cmdletbinding()]
+    [Alias('Warn🛑')]
+    param(
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Alias('Message', 'Warn')]
+        [Parameter(Position = 0, ValueFromPipeline)]
+        [object]$InputObject
+    )
+    process {
+        # if (! $__ninConfig.debug.GlobalWarn) {
+        if ($null -eq $InputObject) {
+            return
+        }
+        if ($__ninConfig.debug.GlobalWarn ?? $__warn) {
+            if ($InputObject) {
+                $InputText | Write-Warning        
+            }
+            return 
+        }
+    }
+}
+
 if ($false) {
 
     'should not be required:'
 
     Remove-Module 'psfzf', 'psscripttools', 'zlocation' -ea silentlycontinue
-    'psfzf', 'psscripttools', 'zlocation' | Join-String -sep ', ' -op 'Removing: ' | Write-Warning
+    'psfzf', 'psscripttools', 'zlocation' | Join-String -sep ', ' -op 'Removing: ' | Warn🛑
 }
 
 if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
@@ -54,16 +79,16 @@ if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
 #   Invoke-Expression -Command $(gh completion -s powershell | Out-String)
 # } }
 
-try {
-    . Get-Item (Join-Path $PSScriptRoot 'Nin-OneDriveFix.ps1')
-} catch {
-    Write-Warning 'Failed parsing: Nin-OneDriveFix.ps1'
-}
+# try {
+#     . Get-Item (Join-Path $PSScriptRoot 'Nin-OneDriveFix.ps1')
+# } catch {
+#     Warn🛑 'Failed parsing: Nin-OneDriveFix.ps1'
+# }
 # $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'
 
-Write-Warning "run --->>>> '$PSCommandPath'"
+Warn🛑 "run --->>>> '$PSCommandPath'"
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
@@ -326,7 +351,10 @@ $PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true # Was th
 $PSDefaultParameterValues['Get-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Reset-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Invoke-GHRepoList:Infa'] = 'Continue'
-
+$PSDefaultParameterValues['ls:dir'] = $true
+$PSDefaultParameterValues['_PeekAfterJoinLinesMaybe:infa'] = 'Continue'
+$PSDefaultParameterValues['Dev.Nin\_Peek-NewestItem:infa'] = 'Continue'
+$PSDefaultParameterValues['Dev.Nin\Peek-NewestItem:infa'] = 'Continue'
 
 # Import-Module Ninmonkey.Console
 
@@ -442,7 +470,7 @@ if ($true) {
     New-Alias @splatAlias 'jp' -Value 'Join-Path' -Description 'quicker for the cli'
 
     if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
-        New-Alias -Name 'f ' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
+        New-Alias -Name 'f' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
     }
 
     Remove-Alias 'cd' -Scope global -Force -ea ignore
@@ -489,7 +517,7 @@ if ($__ninConfig.UsePSReadLinePredict) {
         Set-PSReadLineOption -PredictionSource History -ea SilentlyContinue #stop
         Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue #stop
     } catch {
-        Write-Warning 'Failed: -PredictionSource History & ListView'
+        Warn🛑 'Failed: -PredictionSource History & ListView'
     }
 }
 if ($__ninConfig.UsePSReadLinePredictPlugin) {
@@ -497,7 +525,7 @@ if ($__ninConfig.UsePSReadLinePredictPlugin) {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin -ea SilentlyContinue
         Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue
     } catch {
-        Write-Warning 'Failed: -PredictionSource HistoryAndPlugin'
+        Warn🛑 'Failed: -PredictionSource HistoryAndPlugin'
     }
 }
 
@@ -613,11 +641,12 @@ $OptionalImports = @(
     'Dev.Nin'
     'Ninmonkey.Console'
     'Ninmonkey.Powershell'
-    # 'PSFzf'
     # 'Posh-Git'
+    
+    # 'PSFzf'
     # 'ZLocation'
 )
-# Write-Warning 'Disabled [Posh-Git] because of performance issues' # maybe the prompt function is in a recursive loop
+# Warn🛑 'Disabled [Posh-Git] because of performance issues' # maybe the prompt function is in a recursive loop
 
 $OptionalImports
 | Join-String -sep ', ' -SingleQuote -op '[v] Loading Modules:' | Write-Verbose
@@ -675,8 +704,9 @@ function Prompt {
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
 # $prompt2}}
 # New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
-# New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | write-warning
-New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan' | ForEach-Object ToString | Write-Warning
+# New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
+New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan'
+| ForEach-Object ToString | Warn🛑
 
 if (! $OneDrive.Enable_MyDocsBugMapping) {
     _profileEventOnFinalLoad
@@ -694,7 +724,7 @@ if ($__ninConfig.Import.SeeminglyScience) {
 }
 
 # if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
-#     Write-Warning 'Out-VSCodeVenv did not load!'
+#     Warn🛑 'Out-VSCodeVenv did not load!'
 #     # $src = gi -ea ignore (gc 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1')
 #     $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
 #     if ($src) {
@@ -743,7 +773,7 @@ if (! (Get-Command 'code-venv' -ea ignore) ) {
     #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
     # }
     # catch {
-    #     write-warning 'Failed parsing: Out-VSCodeVenv.ps1'
+    #     Warn🛑 'Failed parsing: Out-VSCodeVenv.ps1'
     # }
 }
 if ($OneDrive.Enable_MyDocsBugMapping) {
@@ -752,4 +782,4 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
     Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
 }
 
-New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Warning
+# New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑

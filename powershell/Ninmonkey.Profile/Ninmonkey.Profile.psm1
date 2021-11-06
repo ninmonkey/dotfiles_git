@@ -108,7 +108,6 @@ $splatIgnoreGlobal = $splatIgnorePass += @{
     Scope = 'Global'
 }
 
-
 Remove-Alias -Name 'cd' -ea ignore
 Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(

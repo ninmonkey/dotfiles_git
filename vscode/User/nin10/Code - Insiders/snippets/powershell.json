@@ -254,6 +254,21 @@
             "}"
         ]
     },
+    "Exception ⇢ Basic Catch 🐒": {
+        "prefix": "Try Catch Exception ⇢ Basic 🐒",
+        "description": "minimal catch | Supports selected text.",
+        "body": [
+            // "",
+            "try {",
+            "    ${1:${TM_SELECTED_TEXT}}",
+            "    ${0}",
+            "}",
+            "catch {",
+            "    \\$PSCmdlet.WriteError(\\$_)",
+            "}",
+            // "",
+        ]
+    },
     // "Label🐈": {
     //     "prefix": "prefix🐶",
     //     "description": "description🦆",

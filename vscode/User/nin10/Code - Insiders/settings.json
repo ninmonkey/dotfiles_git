@@ -1225,7 +1225,7 @@
     "terminal.integrated.allowChords": true,
     "terminal.integrated.automationShell.windows": null,
     "terminal.integrated.allowWorkspaceConfiguration": false,
-    "terminal.integrated.defaultProfile.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe (migrated)",
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.enableFileLinks": true,
     "terminal.integrated.environmentChangesIndicator": "warnonly",
     /*
@@ -1248,6 +1248,7 @@
 
       */
     // "powershell.pester.outputVerbosity": "Minimal", //"Diagnostic",
+    "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
     "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
     "powershell.pester.debugOutputVerbosity": "Detailed", // "Detailed", //Diagnostic",
     "terminal.integrated.environmentChangesRelaunch": true,
@@ -2280,7 +2281,6 @@
     "powershell.startAutomatically": true,
     "testExplorer.addToEditorContextMenu": true,
     "testExplorer.showOnRun": true,
-    "editor.bracketPairColorization.enabled": true,
     // not new, just hadn't used
     "csharp.semanticHighlighting.enabled": true,
     /*
@@ -2467,5 +2467,5 @@
     "testing.followRunningTest": true,
     // Controls whether test decorations are shown in the editor gutter.
     "testing.gutterEnabled": true,
-    "editor.columnSelection": true,
+    "editor.guides.bracketPairs": true,
 }
