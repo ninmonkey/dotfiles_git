@@ -6,6 +6,7 @@ function Backup-VSCode {
         .
     .example
         PS> Backup-VSCode
+        todo: allow multiple sources.
     #>
     [CmdletBinding(PositionalBinding = $false)]
     param(
@@ -24,8 +25,8 @@ function Backup-VSCode {
         #>
         New-Text -fg yellow  "`n`nBacking up VS Code ---------------------------`n" | Write-Host
 
-        # $dest = Get-Item -ea stop 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\vscode\User\nin10\Code'
-        $dotfileRoot = Get-Item -ea stop "$Env:UserProfile\Documents\2021\dotfiles_git\vscode\User\nin10"
+        # $dest = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10\Code'
+        $dotfileRoot = Get-Item -ea stop "$Env:UserProfile\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10"
 
         ## =========== code
         # $src = Get-Item "$Env:AppData\Code\User\*"

@@ -1,16 +1,27 @@
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 
+function _nyi {
+    <#
+    .synopsis
+        minimal function to throw nyi where needed
+    #>
+    param()
+    Write-Error -Category NotImplemented -ea Continue -Message (@(
+            'func: NYI'
+            $args -join ', ' 
+        ) | ForEach-Object tostring)
+}
+
 @(
     'Profile: 🏠 --> Start'
     hr 1
 )
-| write-warning
+| Write-Warning
 function __globalStat {
     <#
     .description
-        the idea is that I can easily tap into this global stat tracker
-        without manually writing code to log
+        the idea is that I can easily tap into this global stat tracker, without manually writing code to log
 
         this isn't config, its more like
         - [ ] save which colors are used by write-color, the most
@@ -60,11 +71,11 @@ $script:NinProfile_Dotfiles = @{
     }
 }
 
-
-# $PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSScriptRoot)
-# $PROFILE | Add-Member -ea ignore -NotePropertyName 'NinDotfiles' -NotePropertyValue ((Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
-# $PROFILE | Add-Member -ea ignore -NotePropertyName 'NinDocs' -NotePropertyValue ($(Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
-# $PROFILE | Add-Member -ea ignore -NotePropertyName 'NinPSModules' -NotePropertyValue ((Get-Item $Env:Nin_PSModulePath -ea ignore) ?? $null )
+# $profile | Add-Member
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile/*' -NotePropertyValue (Get-Item $PSScriptRoot)
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSCommandPath)
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_Dotfiles' -NotePropertyValue ((Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
+$PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_PSModules' -NotePropertyValue ((Get-Item $Env:Nin_PSModulePath -ea ignore) ?? $null )
 
 $ignoreSplat = @{
     Ea = 'Ignore'
@@ -77,7 +88,7 @@ $dictMembers = @{
     'NinPSModules'           = Get-Item @ignoreSplat $Env:Nin_PSModulePath
     # | __doc__ 'personal module paths'
 }
-$PROFILE | Add-Member -ea continue -NotePropertyMembers $dictMembers -PassThru -Force
+# $PROFILE | Add-Member -ea ignore -NotePropertyMembers $dictMembers -PassThru -Force
 
 
 
@@ -103,21 +114,59 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(
     # New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
     # New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
-    New-Alias @splatIgnoreGlobal    -Name 'Cd'          -Value 'Set-NinLocation'                            -Description 'A modern "cd"'
-    Set-Alias @splatIgnorePass      -Name 'Cl'          -Value 'Set-Clipboard'                              -Description 'aggressive: set clip'
-    New-Alias @splatIgnorePass      -Name 'CodeI'       -Value 'code-insiders'                              -Description 'quicker cli toggling whether to use insiders or not'
-    New-Alias @splatIgnorePass      -Name 'CodeI'       -Value 'code-insiders'                              -Description 'VS Code insiders version'
-    New-Alias @splatIgnorePass      -Name 'CtrlChar'    -Value 'Format-ControlChar'                         -Description 'Converts ANSI escapes to safe-to-print text'
-    New-Alias @splatIgnorePass      -Name 'F'           -Value 'PSScriptTools\Select-First'                 -Description 'quicker cli toggling whether to use insiders or not'
-    New-Alias @splatIgnorePass      -Name 'jPath'       -Value 'Microsoft.PowerShell.Management\Join-Path'  -Description 'Alias to the built-in'
+    New-Alias @splatIgnoreGlobal -Name 'Cd' -Value 'Set-NinLocation' -Description 'A modern "cd"'
+    Set-Alias @splatIgnorePass -Name 'Cl' -Value 'Set-Clipboard' -Description 'aggressive: set clip'
+    New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'VS Code insiders version'
+    New-Alias @splatIgnorePass -Name 'CtrlChar' -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
+    New-Alias @splatIgnorePass -Name 'F' -Value 'PSScriptTools\Select-First' -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatIgnorePass -Name 'jPath' -Value 'Microsoft.PowerShell.Management\Join-Path' -Description 'Alias to the built-in'
     # New-Alias @splatIgnorePass      -Name 'jP'          -Value 'Microsoft.PowerShell.Management\Join-Path'  -Description 'Alias to the built-in'
-    New-Alias @splatIgnorePass      -Name 'sc'          -Value 'Microsoft.PowerShell.Management\Set-Content'   -Description 'Alias to the built-in'
-    New-Alias @splatIgnorePass      -Name 'jStr'        -Value 'Microsoft.PowerShell.Utility\Join-String'   -Description 'Alias to the built-in'
-    New-Alias @splatIgnorePass      -Name 'Len'         -Value 'Ninmonkey.Console\Measure-ObjectCount'      -Description 'A quick count of objects in the pipeline'
+    New-Alias @splatIgnorePass -Name 'sc' -Value 'Microsoft.PowerShell.Management\Set-Content' -Description 'Alias to the built-in'
+    New-Alias @splatIgnorePass -Name 'jStr' -Value 'Microsoft.PowerShell.Utility\Join-String' -Description 'Alias to the built-in'
+    New-Alias @splatIgnorePass -Name 'Len' -Value 'Ninmonkey.Console\Measure-ObjectCount' -Description 'A quick count of objects in the pipeline'
 
-    Set-Alias @splatIgnorePass      -Name 'S'           -Value 'Select-Object'                              -Description 'aggressive: to override other modules'
-    New-Alias @splatIgnorePass      -Name 'Wi'          -Value 'Write-Information'                          -Description 'Write Information'
-    Set-Alias @splatIgnorePass      -Name 'Gpi'         -Value 'ClassExplorer\Get-Parameter'                -Description 'Write Information'
+    Set-Alias @splatIgnorePass -Name 'S' -Value 'Select-Object' -Description 'aggressive: to override other modules'
+    New-Alias @splatIgnorePass -Name 'Wi' -Value 'Write-Information' -Description 'Write Information'
+    Set-Alias @splatIgnorePass -Name 'Gpi' -Value 'ClassExplorer\Get-Parameter' -Description 'Write Information'
+
+
+    # Built In
+    New-Alias @splatIgnorePass -Name 'To->Csv' -Value ConvertTo-Csv
+    New-Alias @splatIgnorePass -Name 'To->Json' -Value ConvertTo-Json
+    New-Alias @splatIgnorePass -Name 'From->Json' -Value ConvertFrom-Json
+    New-Alias @splatIgnorePass -Name 'From->Csv' -Value ConvertFrom-Csv
+    
+    ## Mine
+    New-Alias @splatIgnorePass -Name 'From->LiteralPath' -Value Dev.Nin\ConvertFrom-LiteralPath
+    New-Alias @splatIgnorePass -Name 'From->RelativeTs' -Value Ninmonkey.Console\ConvertTo-Timespan
+    New-Alias @splatIgnorePass -Name 'From->Base64' -Value _nyi  #(_nyi 'Ninmonkey.Console\ConvertFrom-Base64String')
+    New-Alias @splatIgnorePass -Name 'To->Base64' -Value Ninmonkey.Console\ConvertTo-Base64String
+    New-Alias @splatIgnorePass -Name 'To->BitString' -Value Utility\ConvertTo-BitString
+    New-Alias @splatIgnorePass -Name 'To->CommandName' -Value Ninmonkey.Console\Resolve-CommandName
+    New-Alias @splatIgnorePass -Name 'To->HexString' -Value Ninmonkey.Console\ConvertTo-HexString
+    New-Alias @splatIgnorePass -Name 'To->RelativePath' -Value Ninmonkey.Console\Format-RelativePath
+    New-Alias @splatIgnorePass -Name 'To->Encode' -Value _nyi # To/From: Unicode bytes <-> String
+    New-Alias @splatIgnorePass -Name 'From->Decode' -Value _nyi # To/From: Unicode bytes <-> String
+    
+
+    
+    <#
+    maybe:
+        Dev.Nin\ConvertFrom-GistList
+        Dev.Nin\ConvertFrom-LiteralPath
+        Dev.Nin\ConvertTo-MarkdownTable
+        Dev.Nin\ConvertTo-PwshLiteral
+        Dev.Nin\Maybe-GetDatetime
+        Ninmonkey.Console\Convert-Object
+        Ninmonkey.Console\ConvertTo-Base64String
+        Ninmonkey.Console\ConvertTo-HexString
+        Ninmonkey.Console\ConvertTo-Number
+        Ninmonkey.Console\ConvertTo-PropertyList
+        Ninmonkey.Console\ConvertTo-RegexLiteral
+        Ninmonkey.Console\ConvertTo-Timespan
+        Ninmonkey.Powershell\ConvertTo-Culture
+    #>
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
 
     # guard did not catch this correctly anyway, maybe -ea disables loading? i don not want to use an -all
@@ -141,14 +190,14 @@ $newAliasList += @(
 ## FZF optional
 
 
-$newAliasList | %{ $_.DisplayName }
-| str csv -Sort | write-color gray60
+$newAliasList | ForEach-Object { $_.DisplayName }
+| str csv -Sort | Write-Color gray60
 | str prefix ('Profile Aliases: ' | Write-TExtColor gray80)# #orange)
-| write-debug # long form
+| Write-Debug # long form
 
 # short names only
-$newAliasList | %{ $_.Name }
-| str csv -Sort | write-color gray60
+$newAliasList | ForEach-Object { $_.Name }
+| str csv -Sort | Write-Color gray60
 | str prefix ('Profile Aliases: ' | Write-TExtColor gray80)# #orange)
 | Write-Warning
 
@@ -206,8 +255,7 @@ function _Write-PromptGitStatus {
         }
 
         & $GitPromptScriptBlock
-    }
-    catch {
+    } catch {
         Write-Error -ErrorRecord $_ Message 'failed invoking $GitPromptScriptBlock' -TargetObject $GitPromptScriptBlock
     }
 
@@ -315,8 +363,7 @@ function _Write-PromptPathToBreadCrumbs {
                     # $finalSegments.reverse() | Out-null
                     $FinalSegments | Out-ReversePipeline
                     | Join-String -sep $crumbJoinText
-                }
-                else {
+                } else {
                     $finalSegments
                     | Join-String -sep $crumbJoinText
                 }
@@ -331,8 +378,7 @@ function _Write-PromptPathToBreadCrumbs {
         }
 
         $FinalOutputString | Join-String -sep ''
-    }
-    catch {
+    } catch {
         $PSCmdlet.WriteError( $_ )
     }
 }
@@ -504,8 +550,7 @@ function Write-NinProfilePrompt {
                 $segments | Join-String
             }
         }
-    }
-    catch {
+    } catch {
         $PSCmdlet.WriteError( $_ )
     }
 }
@@ -526,8 +571,7 @@ if ($true) {
 if ( $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-TExtColor orange
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
-}
-else {
+} else {
 
     # & {
 
@@ -542,7 +586,7 @@ else {
     'Profile: 🏠 <-- End'
     hr 1
 )
-| write-warning
+| Write-Warning
 # 'Profile Aliases: ' | Write-TExtColor orange
 # | Join-String -op 'Profile Aliases: ' | Write-Warning
 # }

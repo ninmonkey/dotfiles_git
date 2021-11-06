@@ -39,10 +39,24 @@ if ($false) {
     'psfzf', 'psscripttools', 'zlocation' | Join-String -sep ', ' -op 'Removing: ' | Write-Warning
 }
 
+if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
+    gh completion --shell powershell | Set-Content -Path temp:\complete_gh.ps1
+} else {
+    . (Get-Item Temp:\complete_gh.ps1)
+}
+
+
+# Measure-Command { & {
+#   gh completion --shell powershell | Set-Content -Path temp:\complete_gh.ps1
+#   . (gi Temp:\complete_gh.ps1)
+# } }
+# Measure-Command { & {
+#   Invoke-Expression -Command $(gh completion -s powershell | Out-String)
+# } }
+
 try {
     . Get-Item (Join-Path $PSScriptRoot 'Nin-OneDriveFix.ps1')
-}
-catch {
+} catch {
     Write-Warning 'Failed parsing: Nin-OneDriveFix.ps1'
 }
 # $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
@@ -121,13 +135,8 @@ $__ninConfig ??= @{
 } #| __doc__ 'root to user-facing configuration options, see files and __doc__ for more'
 
 if ($OneDrive.Enable_MyDocsBugMapping) {
-    $__ninConfig.Config['PSScriptAnalyzerSettings2'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
-    $__ninConfig.Config['PSScriptAnalyzerSettings'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
+    $__ninConfig.Config['PSScriptAnalyzerSettings'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Skydrive\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
 }
-
-
-
-
 & {
     $colorA = '#CD919E'
     $colorB = '#454545'
@@ -143,6 +152,7 @@ npm /w node.js
 $toadd = Get-Item -ea Continue "$Env:AppData\Npm"
 $Env:path = $toAdd, $Env:path -join ';'
 #>
+
 
 
 function _reRollPrompt {
@@ -172,8 +182,7 @@ function _reloadModule {
     # Ignore warnings, allow errors
     if (!$AllowWarn) {
         Import-Module @importModuleSplat 3>$null
-    }
-    else {
+    } else {
         Import-Module @importModuleSplat
     }
 }
@@ -185,12 +194,10 @@ New-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
     if ($parent -eq 'code') {
         $__ninConfig.Terminal.CurrentTerminal = 'code'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'Code - Insiders') {
+    } elseif ($parent -eq 'Code - Insiders') {
         $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'windowsterminal') {
+    } elseif ($parent -eq 'windowsterminal') {
         # preview still uses this name
         $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
     }
@@ -266,7 +273,7 @@ if (Import-Module 'Pansies' -ea ignore) {
 }
 
 
-'Config: ', $__ninConfig | Join-String | Write-Debug
+# 'Config: ', $__ninConfig | Join-String | Write-Debug
 <#
 check old config for settings
     <C:\Users\cppmo_000\Documents\2020\dotfiles_git\powershell\NinSettings.ps1>
@@ -318,6 +325,7 @@ $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = 
 $PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true # Was this a typo?
 $PSDefaultParameterValues['Get-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Reset-RandomPerSession:Verbose'] = $true
+$PSDefaultParameterValues['Invoke-GHRepoList:Infa'] = 'Continue'
 
 
 # Import-Module Ninmonkey.Console
@@ -427,6 +435,7 @@ if ($true) {
     New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
     Set-Alias @splatAlias -Name 's' -Value Select-Object -Description 'aggressive: to override other modules'
     Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard -Description 'aggressive: set clip'
+    Set-Alias @splatAlias -Name 'resCmd' -Value 'Resolve-CommandName' -Description '.'
     New-Alias @splatAlias 'CodeI' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
     New-Alias @splatAlias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
@@ -479,8 +488,7 @@ if ($__ninConfig.UsePSReadLinePredict) {
     try {
         Set-PSReadLineOption -PredictionSource History -ea SilentlyContinue #stop
         Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue #stop
-    }
-    catch {
+    } catch {
         Write-Warning 'Failed: -PredictionSource History & ListView'
     }
 }
@@ -488,8 +496,7 @@ if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin -ea SilentlyContinue
         Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue
-    }
-    catch {
+    } catch {
         Write-Warning 'Failed: -PredictionSource HistoryAndPlugin'
     }
 }
@@ -509,33 +516,33 @@ if ($true) {
 }
 
 
-if ($false -and 'ask for command equiv') {
-    $setPSReadLineOptionSplat = @{
-        ContinuationPrompt            = '    '
-        HistoryNoDuplicates           = $true
-        AddToHistoryHandler           = 'Func<string,Object>'
-        CommandValidationHandler      = '<Action[CommandAST]>'
-        MaximumHistoryCount           = 9999999
-        HistorySearchCursorMovesToEnd = $true
-        MaximumKillRingCount          = 999999
-        ShowToolTips                  = $true
-        ExtraPromptLineCount          = 1
-        CompletionQueryItems          = 30
-        DingTone                      = 3
-        DingDuration                  = 2
-        BellStyle                     = 'Visual'
-        WordDelimiters                = ', '
-        HistorySearchCaseSensitive    = $true
-        HistorySaveStyle              = 'SaveIncrementally'
-        HistorySavePath               = 'path'
-        AnsiEscapeTimeout             = 4
-        PromptText                    = 'PS> '
-        PredictionSource              = 'History'
-        PredictionViewStyle           = 'ListView'
-        Colors                        = @{}
-    }
-    Set-PSReadLineOption @setPSReadLineOptionSplat
-}
+# if ($false -and 'ask for command equiv') {
+#     $setPSReadLineOptionSplat = @{
+#         ContinuationPrompt            = '    '
+#         HistoryNoDuplicates           = $true
+#         AddToHistoryHandler           = 'Func<string,Object>'
+#         CommandValidationHandler      = '<Action[CommandAST]>'
+#         MaximumHistoryCount           = 9999999
+#         HistorySearchCursorMovesToEnd = $true
+#         MaximumKillRingCount          = 999999
+#         ShowToolTips                  = $true
+#         ExtraPromptLineCount          = 1
+#         CompletionQueryItems          = 30
+#         DingTone                      = 3
+#         DingDuration                  = 2
+#         BellStyle                     = 'Visual'
+#         WordDelimiters                = ', '
+#         HistorySearchCaseSensitive    = $true
+#         HistorySaveStyle              = 'SaveIncrementally'
+#         HistorySavePath               = 'path'
+#         AnsiEscapeTimeout             = 4
+#         PromptText                    = 'PS> '
+#         PredictionSource              = 'History'
+#         PredictionViewStyle           = 'ListView'
+#         Colors                        = @{}
+#     }
+#     Set-PSReadLineOption @setPSReadLineOptionSplat
+# }
 
 # Set-PSReadLineOption -ContinuationPrompt '    ' -HistoryNoDuplicates -AddToHistoryHandler 'Func<string,Object>' -CommandValidationHandler '<Action[CommandAST]>' -MaximumHistoryCount 9999999 -HistorySearchCursorMovesToEnd -MaximumKillRingCount 999999 -ShowToolTips -ExtraPromptLineCount 1 -CompletionQueryItems 30 -DingTone 3 -DingDuration 2 -BellStyle Visual -WordDelimiters ', ' -HistorySearchCaseSensitive -HistorySaveStyle SaveIncrementally -HistorySavePath 'path' -AnsiEscapeTimeout 4 -PromptText 'PS> ' -PredictionSource History -PredictionViewStyle ListView -Colors @{}
 <#
@@ -597,6 +604,7 @@ $splatMaybeWarn = @{}
 
 if ($__ninConfig.Module.IgnoreImportWarning) {
     $splatMaybeWarn['Warning-Action'] = 'Ignore'
+    $splatMaybeWarn['Warning-Action'] = 'Continue'
 }
 # Soft/Optional Requirements
 $OptionalImports = @(
@@ -609,20 +617,22 @@ $OptionalImports = @(
     # 'Posh-Git'
     # 'ZLocation'
 )
-Write-Warning 'Disabled [Posh-Git] because of performance issues' # maybe the prompt function is in a recursive loop
+# Write-Warning 'Disabled [Posh-Git] because of performance issues' # maybe the prompt function is in a recursive loop
 
 $OptionalImports
 | Join-String -sep ', ' -SingleQuote -op '[v] Loading Modules:' | Write-Verbose
 
+
 $OptionalImports | ForEach-Object {
     Write-Debug "[v] Import-Module: $_"
-    Import-Module $_ @splatMaybeWarn -DisableNameChecking
+    # Import-Module $_ @splatMaybeWarn -DisableNameChecking
+    Import-Module $_ -wa continue -ea continue # -DisableNameChecking
 }
 # }
 
-
+Import-Module posh-git
 # finally "profile"
-Import-Module Ninmonkey.Profile -DisableNameChecking
+Import-Module Ninmonkey.Profile #-DisableNameChecking
 # & {
 
 # currently, all profiles use utf8
@@ -666,7 +676,7 @@ function Prompt {
 # $prompt2}}
 # New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
 # New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | write-warning
-New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan' | ForEach-Object ToString | write-warning
+New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan' | ForEach-Object ToString | Write-Warning
 
 if (! $OneDrive.Enable_MyDocsBugMapping) {
     _profileEventOnFinalLoad
@@ -683,14 +693,14 @@ if ($__ninConfig.Import.SeeminglyScience) {
     }
 }
 
-if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
-    Write-Warning 'Out-VSCodeVenv did not load!'
-    # $src = gi -ea ignore (gc 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1')
-    $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
-    if ($src) {
-        . $src
-    }
-}
+# if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
+#     Write-Warning 'Out-VSCodeVenv did not load!'
+#     # $src = gi -ea ignore (gc 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1')
+#     $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
+#     if ($src) {
+#         . $src
+#     }
+# }
 
 Import-Module PsFzf
 if (Get-Command Set-PsFzfOption -ea ignore) {
@@ -724,10 +734,10 @@ if (! (Get-Command 'code-venv' -ea ignore) ) {
     }
     Set-Alias 'code' -Value 'Invoke-VSCodeVenv'
     $Value = (@(
-        Get-Command -ea ignore -CommandType Application code-insiders.cmd
-        Get-Command -ea ignore -CommandType Alias code.cmd
-        Get-Command -ea ignore 'venv-code'
-    ) | Select-Object -First 1)
+            Get-Command -ea ignore -CommandType Application code-insiders.cmd
+            Get-Command -ea ignore -CommandType Alias code.cmd
+            Get-Command -ea ignore 'venv-code'
+        ) | Select-Object -First 1)
     New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value $Value
     # try {
     #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
@@ -742,4 +752,4 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
     Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
 }
 
-New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | write-warning
+New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Warning
