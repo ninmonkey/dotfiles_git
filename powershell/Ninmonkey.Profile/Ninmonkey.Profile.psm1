@@ -567,25 +567,22 @@ if ($true) {
     )
 }
 
+$src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
+if (Test-Path $src) {
+    . $src
+    Export-ModuleMember -Function 'Backup-VSCode'
+}
 if ( $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-TExtColor orange
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
-} else {
+} 
+# & {
 
-    # & {
 
-    $src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
-    if (Test-Path $src) {
-
-        . $src
-        Export-ModuleMember -Function 'Backup-VSCode'
-    }
-}
 @(
     'Profile: 🏠 <-- End'
     hr 1
-)
-| Write-Warning
+) | Warn🛑
 # 'Profile Aliases: ' | Write-TExtColor orange
 # | Join-String -op 'Profile Aliases: ' | Write-Warning
 # }
