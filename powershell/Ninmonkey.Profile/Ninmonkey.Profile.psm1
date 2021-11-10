@@ -130,23 +130,31 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     Set-Alias @splatIgnorePass -Name 'Gpi' -Value 'ClassExplorer\Get-Parameter' -Description 'Write Information'
 
 
-    # Built In
-    New-Alias @splatIgnorePass -Name 'To->Csv' -Value ConvertTo-Csv
-    New-Alias @splatIgnorePass -Name 'To->Json' -Value ConvertTo-Json
-    New-Alias @splatIgnorePass -Name 'From->Json' -Value ConvertFrom-Json
-    New-Alias @splatIgnorePass -Name 'From->Csv' -Value ConvertFrom-Csv
+    ## 
     
-    ## Mine
+    ## Category 'Out->'    
+    ## Category 'Pipe->'    
+
+    ## Category 'Dive->'
+    New-Alias @splatIgnorePass -Name '%.' -Value Dev.Nin\Dive.Prop -Description 'Alias for using diving similar to chaining ForEach objects'
+
+    ## Category 'From->'
+    New-Alias @splatIgnorePass -Name 'From->Base64' -Value _nyi  #(_nyi 'Ninmonkey.Console\ConvertFrom-Base64String')
+    New-Alias @splatIgnorePass -Name 'From->Csv' -Value ConvertFrom-Csv
+    New-Alias @splatIgnorePass -Name 'From->Decode' -Value _nyi # To/From: Unicode bytes <-> String
+    New-Alias @splatIgnorePass -Name 'From->Json' -Value ConvertFrom-Json
     New-Alias @splatIgnorePass -Name 'From->LiteralPath' -Value Dev.Nin\ConvertFrom-LiteralPath
     New-Alias @splatIgnorePass -Name 'From->RelativeTs' -Value Ninmonkey.Console\ConvertTo-Timespan
-    New-Alias @splatIgnorePass -Name 'From->Base64' -Value _nyi  #(_nyi 'Ninmonkey.Console\ConvertFrom-Base64String')
+    
+    ## Category 'To->'
     New-Alias @splatIgnorePass -Name 'To->Base64' -Value Ninmonkey.Console\ConvertTo-Base64String
     New-Alias @splatIgnorePass -Name 'To->BitString' -Value Utility\ConvertTo-BitString
     New-Alias @splatIgnorePass -Name 'To->CommandName' -Value Ninmonkey.Console\Resolve-CommandName
-    New-Alias @splatIgnorePass -Name 'To->HexString' -Value Ninmonkey.Console\ConvertTo-HexString
-    New-Alias @splatIgnorePass -Name 'To->RelativePath' -Value Ninmonkey.Console\Format-RelativePath
+    New-Alias @splatIgnorePass -Name 'To->Csv' -Value ConvertTo-Csv
     New-Alias @splatIgnorePass -Name 'To->Encode' -Value _nyi # To/From: Unicode bytes <-> String
-    New-Alias @splatIgnorePass -Name 'From->Decode' -Value _nyi # To/From: Unicode bytes <-> String
+    New-Alias @splatIgnorePass -Name 'To->HexString' -Value Ninmonkey.Console\ConvertTo-HexString
+    New-Alias @splatIgnorePass -Name 'To->Json' -Value ConvertTo-Json
+    New-Alias @splatIgnorePass -Name 'To->RelativePath' -Value Ninmonkey.Console\Format-RelativePath
     
 
     
@@ -571,7 +579,7 @@ $src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
 if (Test-Path $src) {
     . $src
     Export-ModuleMember -Function 'Backup-VSCode'
-}
+} 
 if ( $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-TExtColor orange
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning

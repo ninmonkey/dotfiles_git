@@ -355,6 +355,8 @@ $PSDefaultParameterValues['ls:dir'] = $true
 $PSDefaultParameterValues['_PeekAfterJoinLinesMaybe:infa'] = 'Continue'
 $PSDefaultParameterValues['Dev.Nin\_Peek-NewestItem:infa'] = 'Continue'
 $PSDefaultParameterValues['Dev.Nin\Peek-NewestItem:infa'] = 'Continue'
+$PSDefaultParameterValues['Dev.Nin\Pipe->Error:infa'] = 'Continue'
+# $PSDefaultParameterValues['Dev.Nin\Pipe->*:infa'] = 'Continue'
 
 # Import-Module Ninmonkey.Console
 
