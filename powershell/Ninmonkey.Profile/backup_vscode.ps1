@@ -65,25 +65,33 @@ function Backup-VSCode {
                 $copyItemSplat['WhatIf'] = $true
             }
 
-            # attempt to get -Recurse to filter patterns, but it seems to ignore it.
-            # instead, just hardcode subdirs
-            $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
+            if (! $TestOnly ) {
+                # attempt to get -Recurse to filter patterns, but it seems to ignore it.
+                # instead, just hardcode subdirs
+                $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
 
 
-            $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
-            | New-Text -bg 'gray20' -fg 'gray70'
-            | Write-Information
+                $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
+                | New-Text -bg 'gray20' -fg 'gray70'
+                | Write-Information
+            }
 
 
             "
-        Source  : {0}'
-        Dest    : {1}" -f @(
-                $src | Format-RelativePath -BasePath "$Env:UserProfile"
+        Dotfiile: {0}
+        Source  : {1}'
+        Dest    : {2}" -f @(
+                $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
-                $dest | Format-RelativePath -BasePath "$Env:UserProfile"
+
+                $src | Ninmonkey.Console\Format-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
+                | New-Text -fg green
+
+                $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
                 | New-Text -fg green
             )
+
             ## =========== code
             $src = "$Env:AppData\Code - Insiders\User\*"
             $dest = "$dotfileRoot\Code - Insiders"
@@ -99,14 +107,16 @@ function Backup-VSCode {
                 $copyItemSplat['WhatIf'] = $true
             }
 
-            # attempt to get -Recurse to filter patterns, but it seems to ignore it.
-            # instead, just hardcode subdirs
-            $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
+            if (! $TestOnly ) {
+                # attempt to get -Recurse to filter patterns, but it seems to ignore it.
+                # instead, just hardcode subdirs
+                $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
 
 
-            $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
-            | New-Text -bg 'gray20' -fg 'gray70'
-            | Write-Information
+                $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
+                | New-Text -bg 'gray20' -fg 'gray70'
+                | Write-Information
+            }
 
 
             "
@@ -125,9 +135,7 @@ function Backup-VSCode {
             )
         
         }
-        if ($TestOnly) {
-            return
-        }
+    
         _processOneProfile
     }
 }
