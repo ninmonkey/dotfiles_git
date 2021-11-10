@@ -10,7 +10,10 @@ function Backup-VSCode {
         .
     .example
         PS> Backup-VSCode
-        todo: allow multiple sources.
+    .example
+        PS> Backup-VSCode -infa Continue -Options @{'FileListFormat' = 'ul' }
+        Backup-VSCode -infa Continue -Options @{'FileListFormat' = 'csv' }
+        
     #>
     [CmdletBinding(PositionalBinding = $false)]
     param(
@@ -26,9 +29,21 @@ function Backup-VSCode {
         [Parameter()][switch]$WhatIf,
 
         # Test, like whatif, without built in messages (ie: readability)
-        [Parameter()][switch]$TestOnly
+        [Parameter()][switch]$TestOnly,
 
+        # extra options, kwargs
+        [Parameter()][hashtable]$Options
     )
+    begin {
+        # [hashtable]$ColorType = Join-Hashtable $ColorType ($Options.ColorType ?? @{})       
+        [hashtable]$Config = @{
+            FileListFormat = 'ul' # 'csv' # 'csv' # 
+            # AlignKeyValuePairs = $true
+            # Title              = 'Default'
+            # DisplayTypeName    = $true
+        }
+        $Config = Join-Hashtable $Config ($Options ?? @{})        
+    }
     process {
         <#
         This example copies the contents of the C:\Logfiles directory into the existing C:\Drawings directory. The Logfiles directory isn't copied.
@@ -70,10 +85,14 @@ function Backup-VSCode {
                 # instead, just hardcode subdirs
                 $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
 
-
+                # 1 / 0
                 $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
                 | New-Text -bg 'gray20' -fg 'gray70'
                 | Write-Information
+
+                $copied | To->RelativePath $dotfileRoot
+                | str $Config.FileListFormat
+                | Join-String -op "Wrote $($copied.count) Files: "
             }
 
 
