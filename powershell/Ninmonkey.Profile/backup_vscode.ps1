@@ -43,6 +43,16 @@ function Backup-VSCode {
             # DisplayTypeName    = $true
         }
         $Config = Join-Hashtable $Config ($Options ?? @{})        
+        $ColorStyle = @{
+            'dim'        = @{
+                Fg = 'gray70'
+                Bg = 'gray20'
+            }
+            'boldOrange' = @{
+                Fg = 'gray70'
+                Bg = 'gray20'
+            }
+        }
     }
     process {
         <#
@@ -86,18 +96,38 @@ function Backup-VSCode {
                 $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
 
                 # 1 / 0
+                $newTextSplat = $ColorStyle.dim
+                
+
                 $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
-                | New-Text -bg 'gray20' -fg 'gray70'
+                | New-Text @newTextSplat
                 | Write-Information
 
-                $copied | To->RelativePath $dotfileRoot
-                | str $Config.FileListFormat
-                | Join-String -op "Wrote $($copied.count) Files: "
+
+                h1 'here' | wi 
+                $copied
+                | To->RelativePath $dotfileRoot
+                | str $Config.FileListFormat -Sort -Unique
+                | ForEach-Object {
+                    $splat = $ColorStyle.dim
+                    $_ | Write-Color @splat
+                }                
+                | Str prefix "Wrote $($copied.count) Files: "
+                | wi 
             }
+            @(
+                $copyItemSplat | format-dict
+                $meta = @{
+                    Source = $src
+                    Dest   = $DestPath
+                }
+                $Config | format-dict
+                $ColorStyle | format-dict
+            ) | wi
 
 
             "
-        Dotfiile: {0}
+        Dotfiles: {0}
         Source  : {1}'
         Dest    : {2}" -f @(
                 $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
