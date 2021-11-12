@@ -223,7 +223,11 @@ function _reRollPrompt {
 
 function toggleErrors {
     # todo: cleanup: move to a better location
-    $__ninConfig.Prompt.NumberOfPromptErrors = if ($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) { 3 } else { 0 }
+    $__ninConfig.Prompt.NumberOfPromptErrors = if ($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) {
+        3 
+    } else {
+        0 
+    }
 }
 
 if ($GitPromptSettings) {
@@ -424,7 +428,7 @@ function _Write-ErrorSummaryPrompt {
     # $error[0].Message
     # $error[1].Exception.Message
 }
-function _Write-PromptDetectParent {
+function _Write-PromptDetectParent_iter0 {
     <#
     .synopsis
         verbose prompt to test term detection
@@ -437,6 +441,59 @@ function _Write-PromptDetectParent {
         ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) ? 'Y' : 'N'
     ) | Join-String
     $chunk | Join-String -os "`n"
+}
+function _Write-PromptForBugReport {
+    <#
+    .synopsis
+        verbose prompt to test term detection
+    #>
+    [object[]]$chunk = @()
+
+    $venv_info = Code-vEnv -PassThru -infa Ignore
+    $codeBin = Get-Command $venv_info.CodeBinPath -ea Continue
+    [bool]$isPwshDebugTerm = $__ninConfig.Terminal.IsVSCodeAddon_Terminal
+
+    $chunk += @(
+        # if ($__ninConfig.Terminal.IsVSCode) {
+        #     'VsCode'
+        # }
+        
+        # & $codeBin @('--version') | Join-String -sep ', ' -op "$codeBin.Name"
+    )
+    $chunk += @(
+        "`n"
+        'is PSIT? ' #| Write-Color 'gray60'
+        if ($isPwshDebugTerm) {
+            'yes' | Write-Color green
+        } else {
+            'no ' | Write-Color darkred
+        }
+        ' '
+        $query_addonVersion = & $codeBin @('--list-extensions', '--show-versions')
+        | Where-Object { $_ -match 'ms-vscode.powershell-preview' }
+        | ForEach-Object { 
+            $_ -split '@'
+            | str csv -sep ' '
+        }
+        $query_addonVersion
+    ) | Join-String
+
+    if ($__ninConfig.Terminal.IsVSCode) {
+        $chunk += @(
+            "`n"
+            & $codeBin @('--version')
+            | Join-String -sep ', ' -op "${fg:purple}$($codeBin.Name): ${fg:cyan}"            
+        )
+    }
+    $chunk += @(
+        "`n"
+        'Pwsh {0}' -f @($PSVersionTable.PSVersion.ToString())
+        '> '
+    )
+
+    $chunk | Join-String -os "`n"
+
+    
 }
 
 function _Write-Predent {
@@ -493,7 +550,17 @@ function Write-NinProfilePrompt {
                 # __doc__: Clearly shows whether you're in the PSIT or not
                 @(
                     _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-                    _Write-PromptDetectParent
+                    _Write-PromptDetectParent_iter0
+                    # "`n"
+                    '🐛> '
+                ) | Join-String
+                break
+            }
+            'bugReport' {
+                # __doc__: Clearly shows whether you're in the PSIT or not
+                @(
+                    _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                    _Write-PromptForBugReport
                     # "`n"
                     '🐛> '
                 ) | Join-String
@@ -570,8 +637,9 @@ if ($true) {
         '_Write-PromptIsAdminStatus'
         '_Write-PromptPathToBreadCrumbs'
         '_Write-PromptGitStatus'
-        '_Write-PromptDetectParent'
+        '_Write-PromptDetectParent_iter0'
         '_Write-ErrorSummaryPrompt'
+        '_Write-PromptForBugReport'
     )
 }
 
