@@ -37,7 +37,7 @@ function Backup-VSCode {
     begin {
         # [hashtable]$ColorType = Join-Hashtable $ColorType ($Options.ColorType ?? @{})       
         [hashtable]$Config = @{
-            FileListFormat = 'ul' # 'csv' # 'csv' # 
+            FileListFormat = 'csv' # 'ul' # 'csv' # 'csv' # 
             # AlignKeyValuePairs = $true
             # Title              = 'Default'
             # DisplayTypeName    = $true
@@ -74,7 +74,8 @@ function Backup-VSCode {
 
         function _processOneProfile {
 
-            ## =========== code
+            hr
+            ## =========== profile: code
             # $src = Get-Item "$Env:AppData\Code\User\*"
             $src = "$Env:AppData\Code\User\*" # star is important based on how command works
             $dest = "$dotfileRoot\code"
@@ -126,10 +127,11 @@ function Backup-VSCode {
             ) | wi
 
 
-            "
+            '
+        Dest    : {2}
         Dotfiles: {0}
-        Source  : {1}'
-        Dest    : {2}" -f @(
+        Source  : {1}
+        ' -f @(
                 $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
@@ -141,7 +143,8 @@ function Backup-VSCode {
                 | New-Text -fg green
             )
 
-            ## =========== code
+            hr
+            ## =========== profile: code-insiders
             $src = "$Env:AppData\Code - Insiders\User\*"
             $dest = "$dotfileRoot\Code - Insiders"
             $copyItemSplat = @{
@@ -167,11 +170,12 @@ function Backup-VSCode {
                 | Write-Information
             }
 
-
-            "
-        Dotfiile: {0}
-        Source  : {1}'
-        Dest    : {2}" -f @(
+            
+            '
+        Dest    : {2}
+        Dotfiles: {0}
+        Source  : {1}
+        ' -f @(
                 $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
@@ -179,11 +183,106 @@ function Backup-VSCode {
                 $src | Ninmonkey.Console\Format-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
+                # $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
+                # | New-Text -fg green
+
+                $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
+                | str Ul | Write-Color 'green'
+                # | New-Text -fg green
+            )
+
+            hr
+            ## =========== profile: j:/vscode_datadir/games
+            # 'J:\vscode_datadir\games\User\'
+            $src = 'J:\vscode_datadir\games\User\*'
+            $dest = "$dotfileRoot\Code - Insiders"
+            $ProfileName = 'vscode_datadir\profile_game'
+            # $dest = "$dotfileRoot\<profile>"
+            $dest = Join-Path $dotfileRoot $ProfileName
+            $copyItemSplat = @{
+                # WhatIf      = $true
+                Path        = $src
+                Destination = $dest
+                # Verbose     = $true
+                Recurse     = $true
+                Force       = $true # for hidden files
+            }
+            if ($WhatIf) {
+                $copyItemSplat['WhatIf'] = $true
+            }
+
+            if (! $TestOnly ) {
+                # attempt to get -Recurse to filter patterns, but it seems to ignore it.
+                # instead, just hardcode subdirs
+                $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
+
+
+                $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
+                | New-Text -bg 'gray20' -fg 'gray70'
+                | Write-Information
+            }
+
+            # // pretty print relative paths
+            $sourcesFormatted = @(
+                $srcBase = (Get-Item $src).Directory.Fullname | Select-Object -First 1 | Get-Item # ensures asterisk is filtered 
+                $itemsOut = Resolve-Path $src | To->RelativePath $srcBase
+                | ForEach-Object {
+                    if (Test-IsDirectory (Join-Path $srcBase $_ )) {
+                        "$_/" | Write-Color blue 
+                    } else {
+                        $_ 
+                    } 
+                }
+                switch ($Config.FileListFormat) {
+                    'csv' {
+                        $itemsOut | str Csv -sep ' '
+                        break
+                    }
+                    'ul' {
+                        $itemsOut | Str ul
+                        break
+                    }
+                    default {
+                        $itemsOut 
+                    }
+                }
+            )
+
+            # Wait-Debugger
+            '
+        Dest    : {2}
+        Dotfiles: {0}
+        Source  : {1}
+        ' -f @(
+                $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
+                | New-Text -fg green
+                
+                $sourcesFormatted               
+                # $src | Ninmonkey.Console\Format-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
+                # | New-Text -fg green
+                
+                
                 $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
                 | New-Text -fg green
+                
             )
+
+      
+            # | ForEach-Object { 
+            #     if ('asCsv') {
+            #         $_ | str Csv -sep ' '
+            #     } else {
+            #         $_ | str ul 
+            #     }
+            # }
+            
         
         }
+        # Resolve-Path $src | Get-Item
+        # | To->RelativePath ($src -replace '\*$' | Get-Item | ForEach-Object fullname)
+        # | str ul
+        # # | str prefix ('Resolved (not necessarily copied): = ' | Write-Color 'blue')
+        
     
         _processOneProfile
     }

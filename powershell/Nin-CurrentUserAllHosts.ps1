@@ -622,10 +622,26 @@ if (Test-Path $Env:Nin_PSModulePath) {
     }
 }
 $Env:PSModulePath = @(
-    $Env:PSModulePath, 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell'
+    $Env:PSModulePath
+    'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell'
+    'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell'
+    $pathSeem
 ) | Join-String -sep ';'
 Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 
+<#
+    [section]: Seemingly Sci imports
+#>
+if ($__ninConfig.Import.SeeminglyScience) {
+    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+    if ($pathSeem) {
+        Import-Module pslambda
+        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
+    }
+}
 <#
     [section]: Optional imports
 #>
@@ -638,6 +654,7 @@ if ($__ninConfig.Module.IgnoreImportWarning) {
 }
 # Soft/Optional Requirements
 $OptionalImports = @(
+    # 'Utility' # loaded above
     'ClassExplorer'
     'Pansies'
     'Dev.Nin'
@@ -714,16 +731,7 @@ if (! $OneDrive.Enable_MyDocsBugMapping) {
     _profileEventOnFinalLoad
 }
 
-if ($__ninConfig.Import.SeeminglyScience) {
-    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-    if ($pathSeem) {
-        Import-Module pslambda
-        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
-        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
-    }
-}
+
 
 # if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
 #     Warn🛑 'Out-VSCodeVenv did not load!'
