@@ -403,30 +403,134 @@ function _Write-ErrorSummaryPrompt {
         summarize errors briefly, for screenshots / interactive animation
     #>
     param(
-        #
-        [Parameter(Position = 0)]
-        [string]$Name
+        # print, even when newcount is false
+        [Parameter()]
+        [switch]$AlwaysShow
+        # #
+        # [Parameter(Position = 0)]
+        # [string]$Name
     )
+    begin { 
+        $colors = @{
+            ErrorDim    = [PoshCode.Pansies.RgbColor]'#8B0000' # darkred'
+            ErrorBright = [PoshCode.Pansies.RgbColor]'#FF82AB'
+            ErrorPale   = [PoshCode.Pansies.RgbColor]'#CD5C5C'
+            Error       = [PoshCode.Pansies.RgbColor]'#CD3700'
+            FgVeryDim   = [PoshCode.Pansies.RgbColor]'gray40'
+            FgDim       = [PoshCode.Pansies.RgbColor]'gray60'
+            Fg          = [PoshCode.Pansies.RgbColor]'gray80'
+            FgBright    = [PoshCode.Pansies.RgbColor]'gray90'
+            FgBright2   = [PoshCode.Pansies.RgbColor]'gray100'
+            
+        }
+        $c = $colors
+    }
+    end {
+        # or quit early skipping render?
+        if (! (Dev.Nin\Test-HasNewError)) {
+            if (! $AlwaysShow ) {
+                return
+            }
+        }
+        $FormatMode = 'SimpleColor'
+        $errStat = Dev.Nin\Test-HasNewError -PassThru
+        switch ($FormatMode) {
+            'SimpleColor' {
+                $cDef = $c.fg
+                @(
+                    $cStatus = if ($errStat.DeltaCount -ne 0) {
+                        'red'
+                    } else {
+                        'green'
+                    }
+                    'errΔ [' | Write-Color $cDef
+                    '{0}' -f @(
+                        $errStat.DeltaCount | Write-Color $cStatus
+                    )
+                    ']' | Write-Color $cDef
+                    ' of ['
+                    '{0}' -f @(
+                        $errStat.CurCount | Write-Color $cStatus
+                    )
+                    ']'
 
-    Dev.Nin\Test-DidErrorOccur -Limit 3
+                ) | Join-String 
 
-    # $script:__temp.LastErrorCount ??= $error.count
-    # $newErrorCount = $error.count - $script:__temp.LastErrorCount
-    # $script:__temp.LastErrorCount = $error.count
+                break
+            }
+            'MedColor' {
+                # 'e[0] of [y]'
+                @(
+                    'e[{0}]' -f @(
+                        ($errStat.CurCount | Write-Color $c.ErrorPale)
+                    )
+                    'Δ '
+                    '[{0}]' -f @(
+                        ($errStat.DeltaCount | Write-Color $c.FgDim)
+                    )
+                    ' new'
+                ) | Join-String 
+
+                # $errStat.
+                break 
+            }
+            default {
+                if ($errStat.DeltaCount -eq 0) { 
+
+                } else {
+                    '{0} new' -f @( $errStat.DeltaCount)
+                }
+            }
+        }
+  
+        return 
+        # if ($false) {
+        #     $template = @(            
+        #         'Viewing: '
+        #         '[{0}]' -f @(
+        #             if ($Count) {
+        #                 [math]::Min( $Count, $global:error.Count )
+        #             } else {
+        #                 'All'
+        #             }
+                
+        #         )
+        #         | Write-Color green
+
+        #         ' of '
+        #         '[{0}] ' -f @(
+        #             $global:Error.count ?? 0
+        #         )
+        #         | Write-Color darkgreen
+        #         ' errors'
+        #     ) -join ''
+
+        # }
+        
+
+       
 
 
-    # @(
-    #     "New Error Count: $NewErrorCount."
-    # ) | Join-String -sep "`n"
+        # Dev.Nin\Test-DidErrorOccur -Limit 3
 
-    # $template
-    # $lastCount = $error.count
-    #1 / 0
-    # ($error.count) - $lastCount
+        # $script:__temp.LastErrorCount ??= $error.count
+        # $newErrorCount = $error.count - $script:__temp.LastErrorCount
+        # $script:__temp.LastErrorCount = $error.count
 
 
-    # $error[0].Message
-    # $error[1].Exception.Message
+        # @(
+        #     "New Error Count: $NewErrorCount."
+        # ) | Join-String -sep "`n"
+
+        # $template
+        # $lastCount = $error.count
+        #1 / 0
+        # ($error.count) - $lastCount
+
+
+        # $error[0].Message
+        # $error[1].Exception.Message
+    }
 }
 function _Write-PromptDetectParent_iter0 {
     <#
@@ -460,6 +564,7 @@ function _Write-PromptForBugReport {
         
         # & $codeBin @('--version') | Join-String -sep ', ' -op "$codeBin.Name"
     )
+    $chunk += _Write-ErrorSummaryPrompt -AlwaysShow
     $chunk += @(
         "`n"
         'is PSIT? ' #| Write-Color 'gray60'
@@ -541,13 +646,13 @@ function Write-NinProfilePrompt {
                     "`n"
                     # err?
                     # hr
-                    _Write-ErrorSummaryPrompt
+                    _Write-ErrorSummaryPrompt                    
                     "`n🐒> "
                 ) | Join-String
                 break
             }
             'debugPrompt' {
-                # __doc__: Clearly shows whether you're in the PSIT or not
+                # __doc__: Clearly shows whether you're in the PSIT or not, older version of 'bugReport', or same but with less info
                 @(
                     _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
                     _Write-PromptDetectParent_iter0
@@ -583,6 +688,7 @@ function Write-NinProfilePrompt {
             'spartan' {
                 @(
                     _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                    _Write-ErrorSummaryPrompt -AlwaysShow:$false
                     "`n🐒> "
                 ) | Join-String
                 break
@@ -619,6 +725,7 @@ function Write-NinProfilePrompt {
                         "`n"
                     }
                     _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                    _Write-ErrorSummaryPrompt -AlwaysShow:$false
                     "`n🐒> "
                 )
                 $segments | Join-String

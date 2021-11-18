@@ -329,29 +329,34 @@ if ($false) {
 
         details why: <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-7.1#changing-the-default-encoding>
 #>
-$PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
-$PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'fzf'
-$PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
-$PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
-$PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
+$PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
+$PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+$PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'fzf'
+$PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
+$PSDefaultParameterValues['Microsoft.PowerShell.Core\Get-Help:detailed'] = $true
+$PSDefaultParameterValues['Get-Help:detailed'] = $true
+$PSDefaultParameterValues['help:detailed'] = $true
 
 
 <#
-
     [section]: $PSDefaultParameterValues
 
         But settings for dev.nin / meaning any of these could be obsolete
         because it's experimental
+    
+    todo future: 
+        - [ ] linter warn when parameter name isn't valid, like a code change, or datatype change
 #>
+$PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
 $PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true # Was this a typo?
 $PSDefaultParameterValues['Get-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Reset-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Invoke-GHRepoList:Infa'] = 'Continue'
-$PSDefaultParameterValues['ls:dir'] = $true
+# $PSDefaultParameterValues['ls:dir'] = $true
 $PSDefaultParameterValues['_PeekAfterJoinLinesMaybe:infa'] = 'Continue'
 $PSDefaultParameterValues['Dev.Nin\_Peek-NewestItem:infa'] = 'Continue'
 $PSDefaultParameterValues['Dev.Nin\Peek-NewestItem:infa'] = 'Continue'
