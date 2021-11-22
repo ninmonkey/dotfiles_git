@@ -1,6 +1,8 @@
+#Requires -Module dev.nin
+
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
-
+Import-Module Dev.Nin
 function _nyi {
     <#
     .synopsis
@@ -199,13 +201,13 @@ $newAliasList += @(
 
 $newAliasList | ForEach-Object { $_.DisplayName }
 | str csv -Sort | Write-Color gray60
-| str prefix ('Profile Aliases: ' | Write-TExtColor gray80)# #orange)
+| str prefix ('Profile Aliases: ' | Write-Host -fg magenta)# #orange)
 | Write-Debug # long form
 
 # short names only
 $newAliasList | ForEach-Object { $_.Name }
 | str csv -Sort | Write-Color gray60
-| str prefix ('Profile Aliases: ' | Write-TExtColor gray80)# #orange)
+| str prefix ('Profile Aliases: ' | Write-Host -fg magenta)# #orange)
 | Write-Warning
 
 Export-ModuleMember -Alias $newAliasList
@@ -724,8 +726,9 @@ function Write-NinProfilePrompt {
                         _Write-PromptGitStatus # todo: better git status line
                         "`n"
                     }
-                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
                     _Write-ErrorSummaryPrompt -AlwaysShow:$false
+                    "`n"
+                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
                     "`n🐒> "
                 )
                 $segments | Join-String
@@ -756,7 +759,7 @@ if (Test-Path $src) {
     Export-ModuleMember -Function 'Backup-VSCode'
 } 
 if ( $OneDrive.Enable_MyDocsBugMapping) {
-    'Skipping Backup-VSCode' | Write-TExtColor orange
+    'Skipping Backup-VSCode' | Write-Host -ForegroundColor 'green'
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
 } 
 # & {

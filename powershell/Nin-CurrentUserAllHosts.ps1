@@ -3,6 +3,23 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+<#
+    [section]: Seemingly Sci imports
+#>
+if ($true) {
+    #$__ninConfig.Import.SeeminglyScience) {
+    # refactor: temp test to see if it loads right
+    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+    if ($pathSeem) {
+        Import-Module pslambda
+        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
+    }
+}
+Import-Module Dev.Nin -Force
+
 # Get-Command __doc__ | Join-String -op ' loaded?'
 # see also: C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10\AddDocstring-Sketch\Add-Docstring-sketch-iter3.ps1
 # try {
@@ -214,6 +231,7 @@ function _reloadModule {
 
 New-Alias 'rel' -Value '_reloadModule' -ea ignore
 New-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
+New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Description 'to prevent shadowing by PSSCriptTools'
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
     if ($parent -eq 'code') {
@@ -635,19 +653,6 @@ $Env:PSModulePath = @(
 Write-Debug "New `$Env:PSModulePath: $($env:PSModulePath)"
 
 <#
-    [section]: Seemingly Sci imports
-#>
-if ($__ninConfig.Import.SeeminglyScience) {
-    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-    if ($pathSeem) {
-        Import-Module pslambda
-        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
-        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
-    }
-}
-<#
     [section]: Optional imports
 #>
 # & {
@@ -683,6 +688,7 @@ $OptionalImports | ForEach-Object {
 }
 # }
 
+Import-Module Dev.Nin -Force
 Import-Module posh-git
 # finally "profile"
 Import-Module Ninmonkey.Profile #-DisableNameChecking
