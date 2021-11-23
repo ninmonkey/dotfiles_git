@@ -362,11 +362,23 @@
 
 see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10\Code - Insiders\DefaultSettings.settings.json>
     */
+  "debug.inlineValues": true,
   "editor.suggest.filterGraceful": true,
+  "editor.fontSize": 15,
   "editor.fontSize": 16,
+  "editor.fontSize": 14,
   "editor.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
+  "editor.fontFamily": "'cascadia code', 'cascadia code pl', Consolas, 'Courier New', monospace",
   "editor.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
+  "editor.fontFamily": "'cascadia code pl'",
+  // when super tiny: at least right now for the editor, 'cascadia code' *is* better looking than 'cascadia code pl'
+  // when zoom: 0 : 'pl' is nicer
+  "terminal.integrated.fontFamily": "'consolas', 'cascadia code mono', Consolas,  monospace",
+  "terminal.integrated.fontFamily": "'cascadia code', 'cascadia code mono', Consolas,  monospace",
+
+  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontSize": 14,
   "markdownlint.customRules": [
     "{docsmsft.docs-linting}/markdownlint-custom-rules/rules.js"
   ],
@@ -405,6 +417,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "powershell.pester.debugOutputVerbosity": "Detailed",
   "powershell.pester.outputVerbosity": "Detailed",
   "powershell.pester.useLegacyCodeLens": false,
+  // "pester.autoRunOnSave": true,
   "powershell.promptToUpdatePowerShell": false,
   "window.titleSeparator": " ┐ ",
   // "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
@@ -511,41 +524,15 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     
     ### Sect: Workbench Color Overrides
     
-           tags: color, theme
+          tags: color, theme
+          refs:
+              intro: https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme
+              customizing semanticTokenColorCustomizations: https://code.visualstudio.com/docs/getstarted/themes#_editor-semantic-highlighting
     
     */
 
   "workbench.colorCustomizations": {
-    // custom dim theme
-
-    "editorBracketHighlight.foreground1": "#ffffff80", // dim gray
-    "editorBracketHighlight.foreground1": "#ffd780", // # dim
-    "editorBracketHighlight.foreground1": "#ffd780", // #def
-    "editorBracketHighlight.foreground2": "#da70d6", //def
-    "editorBracketHighlight.foreground2": "#da70d686", // dim
-    "editorBracketHighlight.foreground3": "#179fff", // def
-    "editorBracketHighlight.foreground3": "#179f80", // dim
-    // default cycles after 3
-    "editorBracketHighlight.foreground4": "#ff0065", // magenta
-    "editorBracketHighlight.foreground4": "#ffffff80", // dim gray
-    // "editorBracketHighlight.foreground5": "#ff0080",
-    // "editorBracketHighlight.foreground5": "#ff0040",
-    // "editorBracketHighlight.foreground6": "#ff0040",
-    // "editorBracketHighlight.foreground6": "#ff0040",
-    //sep
-
-    // "editorBracketHighlight.unexpectedBracket.foreground": "#ff1212cc",
-    // "editorBracketMatch.background": "#0064001a",
-    // "editorBracketMatch.background": "#00ff001a",
-    "editorBracketMatch.border": "#888888",
-    // work bench tests
-
-    // "errorLens.infoGutterIconPath": ,
-    "errorLens.errorGutterIconColor": "#e45454",
-    "errorLens.infoGutterIconPath": "",
-    "errorLens.errorGutterIconPath": "",
-    "errorLens.warningGutterIconColor": "#ff942f",
-    "errorLens.warningGutterIconPath": "",
+    // "editorError.background": "#1cf0864f",
     "errorLens.warningMessageBackground": "#2f323813",
     "errorLens.warningMessageBackground": "#ff880000",
     "errorLens.warningMessageBackground": "#ff942f19", // # def
@@ -557,35 +544,44 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "errorLens.errorForeground": "#ff0000b6",
     "errorLens.errorForeground": "#f77777ad", // peach
     "errorLens.errorForeground": "#f77777ad",
-
-    // "errorLens.errorMessageBackground": "#e4545419",
-    // "errorLens.warningMessageBackground": "#ff942f19",
-    // "errorLens.infoMessageBackground": "#00b7e419",
-    // "errorLens.hintMessageBackground": "#17a2a219",
-
-    // "errorLens.errorBackground": "#7354e40a",
-    // "errorLens.errorBackground": "#e4545417",
-    // "errorLens.errorBackground": "#c8ff02e8",
+    // "errorLens.statusBarErrorForeground": "#00f853",
+    // "errorLens.statusBarIconErrorForeground": "#00f853", //has do do with selected/found lines
+    // "errorLens.hintBackground": "#25cf50", //has do do with selected/found lines
 
     // "errorLens.errorMessageBackground": "#c8ff02e8",
     "errorLens.errorMessageBackground": "#332424", // default:#332424
     "errorLens.errorMessageBackground": "#e4545419",
     "errorLens.errorBackground": "#362b1f6b", // default:#332424
     "errorLens.errorBackground": "#362b1f34", // dim
-
-    "errorLens.statusBarColorsEnabled": true, // not sure what this is
-    // "errorLens.warningMessageBackground": "#ff880011",
-    // "errorLens.warningBackground": "#e454540a",
-    // "errorLens.warningBackground": "#ff880011",
-    // "errorLens.warningForeground": "#e454540a",
     "errorLens.warningForeground": "#F2962D", // orange default
-    "errorLens.warningForeground": "#f2962d32", // default -> dim 2x
-    "errorLens.warningForeground": "#f2962d6c", // default -> dim 1x
+    "errorLens.warningForeground": "#f2962d32", // default -> dim 2x + brown
+    // "errorLens.warningForeground": "#ff0cb66c", // default -> dim 1x + purp
+    "errorLens.infoForeground": "#ea00ff", // this is where?
+    // "errorLens.hintForeground": "#ff16d8", // hint, like 'setting not recognized'
+    // "fo.barl":3,
 
-    // "errorLens.background": "#2f323813",
+    // custom dim theme
 
-    // "errorLens.infoMessageBackground": "#00b7e419",
-    // "errorLens.hintMessageBackground": "#17a2a219",
+    "editorBracketHighlight.foreground1": "#ffffff80", // dim gray
+    // "editorBracketHighlight.foreground1": "#ffd780", // # dim
+    // "editorBracketHighlight.foreground1": "#ffd780", // #def
+    // "editorBracketHighlight.foreground2": "#", //def
+    "editorBracketHighlight.foreground2": "#da70d686", // dim of default = #da70d6
+    "editorBracketHighlight.foreground3": "#179f80", // dim of default = #179fff
+    // default cycles after 3
+    "editorBracketHighlight.foreground4": "#ff0065", // magenta
+    "editorBracketHighlight.foreground4": "#ffffff80", // dim gray
+    // "editorBracketHighlight.foreground5": "#ff0080",
+    // "editorBracketHighlight.foreground5": "#ff0040",
+    // "editorBracketHighlight.foreground6": "#ff0040",
+    // "editorBracketHighlight.foreground6": "#ff0040",
+    //sep
+
+    // "editorBracketHighlight.unexpectedBracket.foreground": "#ff1212cc",
+
+    "editorBracketMatch.border": "#888888",
+    // work bench tests
+
     // "editorLineNumber.foreground": "#ff0000",
     // "editorLineNumber.foreground": "#487285", // dim: blueish foreground color
     "editorLineNumber.foreground": "#858585", // default: gray fade
@@ -594,7 +590,136 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
     // "editorLineNumber.activeForeground": "#6ad4ee",
     "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
-    "editorLineNumber.activeForeground": "#929292" // dim
+    "editorLineNumber.activeForeground": "#929292", // dim
+
+    /*
+    
+    ### Sect: JustinGrote's pester theme
+    
+           tags: theme, pester, testing
+
+          from: <https://discord.com/channels/180528040881815552/446531919644065804/911758649897127976>
+    
+    */
+
+    // "editorBracketHighlight.foreground1": "#569CD6",
+    // "editorBracketHighlight.foreground2": "#C586C0",
+    // "editorBracketHighlight.foreground3": "#4EC9B0",
+    // "editorBracketHighlight.foreground4": "#CE9178",
+    "errorLens.errorBackground": "#e4545410",
+    "errorLens.errorForeground": "#ff646440",
+    "errorLens.errorMessageBackground": "#e4545405",
+    "errorLens.warningBackground": "#ff942f10",
+    "errorLens.warningForeground": "#fa973a70",
+    
+
+    // "testing.message.error.lineBackground": "#e4545405",
+    "errorLens.warningMessageBackground": "#fff00005",
+    "tab.lastPinnedBorder": "#2472c8",
+    "terminal.ansiBlack": "#000000",
+    "terminal.ansiBlue": "#2472c8",
+    "terminal.ansiBrightBlack": "#666666",
+    "terminal.ansiBrightBlue": "#569cd6",
+    "terminal.ansiBrightCyan": "#9cdcfe",
+    "terminal.ansiBrightGreen": "#b5cea8",
+    "terminal.ansiBrightMagenta": "#daadd6",
+    "terminal.ansiBrightMagenta": "#d38bcd", // his was '#daadd6'
+    "terminal.ansiBrightRed": "#f14c4c",
+    "terminal.ansiBrightWhite": "#e5e5e5",
+    "terminal.ansiBrightYellow": "#DCDCAA", // his was
+    "terminal.ansiBrightYellow": "#ecec6a", // nin
+    "terminal.ansiCyan": "#11a8cd",
+    "terminal.ansiGreen": "#6a9955",
+    "terminal.ansiMagenta": "#C586C0",
+    "terminal.ansiRed": "#cd3131",
+    "terminal.ansiWhite": "#e5e5e5",
+    "terminal.ansiYellow": "#CE9178",
+    "terminal.background": "#1E1E1E",
+    "terminal.foreground": "#D4D4D4",
+    "editor.lineHighlightBackground": "#1073cf2d",
+    "editor.lineHighlightBorder": "#9fced11f",
+
+    /*
+      
+      ### Sect: end of JustinGrote theme
+      
+      */
+
+    /*
+    
+    ### Sect: My overrides of JustinGrote
+     
+    */
+    // brackets
+    // these are the default theme, dimmed to not have super high contrast
+    
+    // "editorBracketHighlight.foreground1": "#ffd780",     // def + Dim
+    // "editorBracketHighlight.foreground2": "#da70d686",   // def + Dim
+    // "editorBracketHighlight.foreground3": "#179f80",     // def + Dim
+    // "editorBracketHighlight.foreground4": "#ffffff80",   // def + Dim 
+
+    // "testing.message.error.decorationForeground": "#ff646440", // JG's
+    // "testing.message.error.decorationForeground": "#ff646440", // JG's
+    // "testing.message.error.lineBackground": "#e4545405",       // JG's    
+
+    "testing.message.error.decorationForeground": "#e0ac9779", // JG's: #ff646440
+    "testing.message.error.lineBackground": "#e454541a", // same color, less invisibleJG's: #e4545405
+
+    /*
+    and some were missing
+    */
+    "testing.peekBorder": "#F14C4C", // pop-up showing previous runs. default = #F14C4C 
+    "testing.peekHeaderBackground": "#F14C4C1a", // pop-up showing previous runs. default = #F14C4C1a (same plus alpha)
+    // "testing.iconErrored": "#00ff0d41"
+    "testing.iconFailed": "#cd3131", // set as term.ansiiRed; 2 places: [1] gutter [2] test explorer
+    "testing.iconPassed": "#6a9955", // set as term.ansiiGreen
+    "testing.iconQueued": "#CCA700", // color before executing; default = #CCA700
+    "testing.iconUnset": "#848484", //  2 icons: [1] in explorer the 'o' icon and the 'arrow' icon. default = #848484
+
+    // I set these to the same bright magenta color, to try to find them
+    "testing.message.info.decorationForeground": "#ff00ff", // where?
+    "testing.message.info.lineBackground": "#ff00ff",       // where?
+    "testing.iconSkipped": "#ff00ff", // where?
+    "testing.iconErrored": "#ff00ff", // where?
+    /*
+          
+          ### Sect: End of My overrides of JustinGrote
+           
+          */
+  },
+  "editor.tokenColorCustomizations": {
+    "[Default Dark+]": {
+      "textMateRules": [
+        {
+          "scope": [
+            "punctuation.section.bracket.begin.powershell",
+            "punctuation.section.bracket.end.powershell"
+          ],
+          "settings": {
+            "foreground": "#569CD6"
+          }
+        }
+      ]
+    }
+    /*
+        
+        ### Sect: end of JustinGrote theme
+        
+        */
+  },
+  "editor.semanticTokenColorCustomizations": {
+    "[Default Dark+]": {
+      "enabled": true,
+      "rules": {
+        "punctuation.section.bracket.begin.powershell": "#569CD6",
+        "punctuation.section.bracket.end.powershell": "#569CD6"
+      }
+    }
+    /*
+          
+          ### Sect: end of JustinGrote theme
+          
+          */
   },
 
   /*
@@ -604,12 +729,40 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
            tags: Tag1, Tag2
     
     */
-    "errorLens.gutterIconSet": "default",
-    "errorLens.gutterIconSet": "defaultOutline",
-    "errorLens.gutterIconSet": "borderless",
-    "errorLens.gutterIconSet": "circle",
-    "errorLens.gutterIconsFollowCursorOverride": false, // show just selected errors or whole file? 
-  "errorLens.gutterIconsFollowCursorOverride": true, // show just selected errors or whole file? 
+  // "editorBracketMatch.background": "#0064001a",
+  // "editorBracketMatch.background": "#00ff001a",
+  // "errorLens.infoGutterIconPath": ,
+  "errorLens.errorGutterIconColor": "#e45454",
+  "errorLens.infoGutterIconPath": "",
+  "errorLens.errorGutterIconPath": "",
+  "errorLens.warningGutterIconColor": "#ff942f",
+  "errorLens.warningGutterIconPath": "",
+
+  // "errorLens.errorMessageBackground": "#e4545419",
+  // "errorLens.warningMessageBackground": "#ff942f19",
+  // "errorLens.infoMessageBackground": "#00b7e419",
+  // "errorLens.hintMessageBackground": "#17a2a219",
+
+  // "errorLens.errorBackground": "#7354e40a",
+  // "errorLens.errorBackground": "#e4545417",
+  // "errorLens.errorBackground": "#c8ff02e8",
+
+  "errorLens.statusBarColorsEnabled": true, // not sure what this is
+  // "errorLens.warningMessageBackground": "#ff880011",
+  // "errorLens.warningBackground": "#e454540a",
+  // "errorLens.warningBackground": "#ff880011",
+  // "errorLens.warningForeground": "#e454540a",
+
+  // "errorLens.background": "#2f323813",
+
+  // "errorLens.infoMessageBackground": "#00b7e419",
+  // "errorLens.hintMessageBackground": "#17a2a219",
+  "errorLens.gutterIconSet": "default",
+  "errorLens.gutterIconSet": "defaultOutline",
+  "errorLens.gutterIconSet": "borderless",
+  "errorLens.gutterIconSet": "circle",
+  "errorLens.gutterIconsFollowCursorOverride": false, // show just selected errors or whole file?
+  "errorLens.gutterIconsFollowCursorOverride": true, // show just selected errors or whole file?
   "errorLens.enabledDiagnosticLevels": ["error", "hint", "warning", "info"],
 
   "errorLens.fontWeight": 200,
@@ -622,6 +775,8 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // "editor.fontWeight": "100",
   "errorLens.fontSize": "15",
   "errorLens.fontSize": "80%",
+  "editor.codeLensFontSize": 12,
+  "editor.inlayHints.fontSize": 10,
   "editor.overviewRulerBorder": true, // not sure what it does
   "errorLens.borderRadius": 400,
   "errorLens.warningGutterIconColor": "#ff942f", // def: #ff942f
@@ -632,7 +787,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "errorLens.followCursorMore": 2,
   "errorLens.infoGutterIconColor": "#d46f6f",
   "errorLens.infoGutterIconColor": "#00b7e4",
-  "errorLens.errorGutterIconColor": "#e45454", // #def 
+  "errorLens.errorGutterIconColor": "#e45454", // #def
   "errorLens.errorGutterIconPath": "",
   "errorLens.gutterIconSize": "50%", // Change gutter icon size. Examples: auto, contain, cover, 50%, 150%
 
@@ -724,6 +879,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
 
   // Controls whether the hover is shown.
   "editor.hover.enabled": true,
+
   // "editor.gotoLocation.*":
 
   /*
@@ -751,12 +907,14 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "suppressRebaseSwitchToTextWarning": false
   },
   "editor.codeLens": true,
+
   "editor.codeLensFontFamily": "'consolas', 'cascadia code pl', 'fira code retina', 'calibri', sans",
   // "editor.inlayHints.fontFamily": "",
 
   "editor.fontLigatures": true,
   "editor.hover.sticky": true,
-  // "prettier.configPath": "",
+  "prettier.requireConfig": true,
+  "prettier.configPath": "C:/Users/cppmo_000/SkyDrive/Documents/2021/dotfiles_git/web/prettier/.prettierrc", // # this actually prevents other formats
   // "prettier.printWidth": 140,
   // "prettier.proseWrap": "preserve",
   // "prettier.tabWidth": 4,
@@ -775,7 +933,6 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "pester.suppressCodeLensNotice": true,
   "testExplorer.useNativeTesting": true,
   "powershell.codeFormatting.ignoreOneLineBlock": false,
-  "editor.suggest.preview": true,
   "editor.suggest.showStatusBar": true,
 
   /*
@@ -836,5 +993,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
       "format": "svg",
       "icon": "helper"
     }
-  ]
+  ],
+  "editor.suggest.insertMode": "replace",
+  "editor.snippetSuggestions": "bottom"
 }

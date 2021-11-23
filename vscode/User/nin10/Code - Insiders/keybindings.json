@@ -277,4 +277,33 @@
 
         (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
     */
+    /*
+
+    [section]: Debugging
+
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "-workbench.action.terminal.openNativeConsole",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.terminal.killEditor",
+        "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
+    },
+    {
+        "key": "ctrl+shift+k ctrl+shift+b",
+        "command": "editor.action.selectToBracket"
+    },
 ]
