@@ -18,7 +18,7 @@ if ($true) {
         Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
     }
 }
-Import-Module Dev.Nin -Force
+Import-Module Dev.Nin #-Force
 
 # Get-Command __doc__ | Join-String -op ' loaded?'
 # see also: C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10\AddDocstring-Sketch\Add-Docstring-sketch-iter3.ps1

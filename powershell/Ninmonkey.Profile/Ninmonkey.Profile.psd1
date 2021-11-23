@@ -55,7 +55,7 @@
         'Ninmonkey.Console'
         'ClassExplorer'
         'Pansies'
-        'dev.nin' # temporarily depends on dev.nin
+        # 'dev.nin' # temporarily depends on dev.nin
     )
 
     # Assemblies that must be loaded prior to importing this module

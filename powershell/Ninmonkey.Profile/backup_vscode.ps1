@@ -13,7 +13,7 @@ function Backup-VSCode {
     .example
         PS> Backup-VSCode -infa Continue -Options @{'FileListFormat' = 'ul' }
         Backup-VSCode -infa Continue -Options @{'FileListFormat' = 'csv' }
-        
+
     #>
     [CmdletBinding(PositionalBinding = $false)]
     param(
@@ -35,14 +35,14 @@ function Backup-VSCode {
         [Parameter()][hashtable]$Options
     )
     begin {
-        # [hashtable]$ColorType = Join-Hashtable $ColorType ($Options.ColorType ?? @{})       
+        # [hashtable]$ColorType = Join-Hashtable $ColorType ($Options.ColorType ?? @{})
         [hashtable]$Config = @{
-            FileListFormat = 'csv' # 'ul' # 'csv' # 'csv' # 
+            FileListFormat = 'csv' # 'ul' # 'csv' # 'csv' #
             # AlignKeyValuePairs = $true
             # Title              = 'Default'
             # DisplayTypeName    = $true
         }
-        $Config = Join-Hashtable $Config ($Options ?? @{})        
+        $Config = Join-Hashtable $Config ($Options ?? @{})
         $ColorStyle = @{
             'dim'        = @{
                 Fg = 'gray70'
@@ -69,8 +69,8 @@ function Backup-VSCode {
         # $dest = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10\Code'
         $dotfileRoot = Get-Item -ea stop "$Env:UserProfile\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10"
         $dotfileRoot | to->RelativePath -BasePath $env:Nin_Dotfiles
-        | prefix '$dotfileRoot = '
-        | wi        
+        | str prefix '$dotfileRoot = '
+        | wi
 
         function _processOneProfile {
 
@@ -98,23 +98,23 @@ function Backup-VSCode {
 
                 # 1 / 0
                 $newTextSplat = $ColorStyle.dim
-                
+
 
                 $copied | Join-String -sep ', ' Name -op "Wrote $($copied.count) Files: "
                 | New-Text @newTextSplat
                 | Write-Information
 
 
-                h1 'here' | wi 
+                h1 'here' | wi
                 $copied
                 | To->RelativePath $dotfileRoot
                 | str $Config.FileListFormat -Sort -Unique
                 | ForEach-Object {
                     $splat = $ColorStyle.dim
                     $_ | Write-Color @splat
-                }                
+                }
                 | Str prefix "Wrote $($copied.count) Files: "
-                | wi 
+                | wi
             }
             @(
                 $copyItemSplat | format-dict
@@ -170,7 +170,7 @@ function Backup-VSCode {
                 | Write-Information
             }
 
-            
+
             '
         Dest    : {2}
         Dotfiles: {0}
@@ -224,14 +224,14 @@ function Backup-VSCode {
 
             # // pretty print relative paths
             $sourcesFormatted = @(
-                $srcBase = (Get-Item $src).Directory.Fullname | Select-Object -First 1 | Get-Item # ensures asterisk is filtered 
+                $srcBase = (Get-Item $src).Directory.Fullname | Select-Object -First 1 | Get-Item # ensures asterisk is filtered
                 $itemsOut = Resolve-Path $src | To->RelativePath $srcBase
                 | ForEach-Object {
                     if (Test-IsDirectory (Join-Path $srcBase $_ )) {
-                        "$_/" | Write-Color blue 
+                        "$_/" | Write-Color blue
                     } else {
-                        $_ 
-                    } 
+                        $_
+                    }
                 }
                 switch ($Config.FileListFormat) {
                     'csv' {
@@ -243,7 +243,7 @@ function Backup-VSCode {
                         break
                     }
                     default {
-                        $itemsOut 
+                        $itemsOut
                     }
                 }
             )
@@ -256,37 +256,34 @@ function Backup-VSCode {
         ' -f @(
                 $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
-                
-                $sourcesFormatted               
+
+                $sourcesFormatted
                 # $src | Ninmonkey.Console\Format-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
                 # | New-Text -fg green
-                
-                
+
+
                 $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
                 | New-Text -fg green
-                
+
             )
 
-      
-            # | ForEach-Object { 
+
+            # | ForEach-Object {
             #     if ('asCsv') {
             #         $_ | str Csv -sep ' '
             #     } else {
-            #         $_ | str ul 
+            #         $_ | str ul
             #     }
             # }
-            
-        
+
+
         }
         # Resolve-Path $src | Get-Item
         # | To->RelativePath ($src -replace '\*$' | Get-Item | ForEach-Object fullname)
         # | str ul
         # # | str prefix ('Resolved (not necessarily copied): = ' | Write-Color 'blue')
-        
-    
+
+
         _processOneProfile
     }
 }
-
-
-

@@ -42,3 +42,6 @@ function Prompt {
 # unlike the Set-PSDebug cmdlet, Set-StrictMode affects only the current scope and its child scopes. Therefore, you can use it in a script or function without affecting the global scope
 # Set-PSDebug -Strict
 # Set-StrictMode -Version latest
+
+'Load Complete' | Write-Host -ForegroundColor blue
+'Load Complete'

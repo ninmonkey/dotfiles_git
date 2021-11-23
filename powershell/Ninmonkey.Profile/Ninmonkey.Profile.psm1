@@ -1,8 +1,10 @@
-#Requires -Module dev.nin
+
 
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 Import-Module Dev.Nin
+[PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
+
 function _nyi {
     <#
     .synopsis
@@ -209,9 +211,21 @@ $newAliasList | ForEach-Object { $_.Name }
 | str csv -Sort | Write-Color gray60
 | str prefix ('Profile Aliases: ' | Write-Host -fg magenta)# #orange)
 | Write-Warning
+# Wait-Debugger
+# Export-ModuleMember -Variable $newAliasList
 
-Export-ModuleMember -Alias $newAliasList
+# Func: Summarize  Aliases:
 
+$newAliasList
+| Sort-Object Name, ResolvedCommand
+| Join-String {
+    '{0} [{1}] {2}' -f @(
+        $_.Name | Write-Color 'green'
+        $_.ResolvedCommand | Write-Color 'darkgreen'
+        'desc' | Write-Color gray50
+    )
+} -sep "`n" | SplitStr Newline | str HR
+| Write-Warning
 
 # $newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '
 # | New-Text -fg 'pink' | Join-String -op 'Ninmonkey.Profile: '
