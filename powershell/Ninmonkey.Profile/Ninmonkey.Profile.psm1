@@ -13,7 +13,7 @@ function _nyi {
     param()
     Write-Error -Category NotImplemented -ea Continue -Message (@(
             'func: NYI'
-            $args -join ', ' 
+            $args -join ', '
         ) | ForEach-Object tostring)
 }
 
@@ -128,16 +128,18 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass -Name 'sc' -Value 'Microsoft.PowerShell.Management\Set-Content' -Description 'Alias to the built-in'
     New-Alias @splatIgnorePass -Name 'jStr' -Value 'Microsoft.PowerShell.Utility\Join-String' -Description 'Alias to the built-in'
     New-Alias @splatIgnorePass -Name 'Len' -Value 'Ninmonkey.Console\Measure-ObjectCount' -Description 'A quick count of objects in the pipeline'
+    Set-Alias @splatIgnorePass -Name 'fzf' -Value 'Ninmonkey.Console\Out-Fzf' -Description 'nin'
 
     Set-Alias @splatIgnorePass -Name 'S' -Value 'Select-Object' -Description 'aggressive: to override other modules'
     New-Alias @splatIgnorePass -Name 'Wi' -Value 'Write-Information' -Description 'Write Information'
     Set-Alias @splatIgnorePass -Name 'Gpi' -Value 'ClassExplorer\Get-Parameter' -Description 'Write Information'
 
 
-    ## 
-    
-    ## Category 'Out->'    
-    ## Category 'Pipe->'    
+    ##
+    New-Alias @splatIgnorePass 'Err' -Value Dev.Nin\Test-HasNewError -Description 'makes -clear and -reset 1🤚ed'
+
+    ## Category 'Out->'
+    ## Category 'Pipe->'
 
     ## Category 'Dive->'
     New-Alias @splatIgnorePass -Name '%.' -Value Dev.Nin\Dive.Prop -Description 'Alias for using diving similar to chaining ForEach objects'
@@ -149,7 +151,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass -Name 'From->Json' -Value ConvertFrom-Json
     New-Alias @splatIgnorePass -Name 'From->LiteralPath' -Value Dev.Nin\ConvertFrom-LiteralPath
     New-Alias @splatIgnorePass -Name 'From->RelativeTs' -Value Ninmonkey.Console\ConvertTo-Timespan
-    
+
     ## Category 'To->'
     New-Alias @splatIgnorePass -Name 'To->Base64' -Value Ninmonkey.Console\ConvertTo-Base64String
     New-Alias @splatIgnorePass -Name 'To->BitString' -Value Utility\ConvertTo-BitString
@@ -159,9 +161,9 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass -Name 'To->HexString' -Value Ninmonkey.Console\ConvertTo-HexString
     New-Alias @splatIgnorePass -Name 'To->Json' -Value ConvertTo-Json
     New-Alias @splatIgnorePass -Name 'To->RelativePath' -Value Ninmonkey.Console\Format-RelativePath
-    
 
-    
+
+
     <#
     maybe:
         Dev.Nin\ConvertFrom-GistList
@@ -203,13 +205,14 @@ $newAliasList += @(
 
 $newAliasList | ForEach-Object { $_.DisplayName }
 | str csv -Sort | Write-Color gray60
-| str prefix ('Profile Aliases: ' | Write-Host -fg magenta)# #orange)
-| Write-Debug # long form
+| str prefix ('Profile Aliases: ')# #orange)
+# | Write-Debug # long form
 
 # short names only
 $newAliasList | ForEach-Object { $_.Name }
 | str csv -Sort | Write-Color gray60
-| str prefix ('Profile Aliases: ' | Write-Host -fg magenta)# #orange)
+| str prefix ('Profile Aliases: ')# #orange)
+| Join-String
 | Write-Warning
 # Wait-Debugger
 # Export-ModuleMember -Variable $newAliasList
@@ -225,8 +228,9 @@ $newAliasList
         'desc' | Write-Color gray50
     )
 } -sep "`n" | SplitStr Newline | str HR
+| Join-String
 | Write-Warning
-
+# Wait-Debugger
 # $newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '
 # | New-Text -fg 'pink' | Join-String -op 'Ninmonkey.Profile: '
 # | Write-Debug
@@ -240,9 +244,9 @@ function _reRollPrompt {
 function toggleErrors {
     # todo: cleanup: move to a better location
     $__ninConfig.Prompt.NumberOfPromptErrors = if ($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) {
-        3 
+        3
     } else {
-        0 
+        0
     }
 }
 
@@ -426,7 +430,7 @@ function _Write-ErrorSummaryPrompt {
         # [Parameter(Position = 0)]
         # [string]$Name
     )
-    begin { 
+    begin {
         $colors = @{
             ErrorDim    = [PoshCode.Pansies.RgbColor]'#8B0000' # darkred'
             ErrorBright = [PoshCode.Pansies.RgbColor]'#FF82AB'
@@ -437,7 +441,7 @@ function _Write-ErrorSummaryPrompt {
             Fg          = [PoshCode.Pansies.RgbColor]'gray80'
             FgBright    = [PoshCode.Pansies.RgbColor]'gray90'
             FgBright2   = [PoshCode.Pansies.RgbColor]'gray100'
-            
+
         }
         $c = $colors
     }
@@ -470,7 +474,7 @@ function _Write-ErrorSummaryPrompt {
                     )
                     ']'
 
-                ) | Join-String 
+                ) | Join-String
 
                 break
             }
@@ -485,23 +489,23 @@ function _Write-ErrorSummaryPrompt {
                         ($errStat.DeltaCount | Write-Color $c.FgDim)
                     )
                     ' new'
-                ) | Join-String 
+                ) | Join-String
 
                 # $errStat.
-                break 
+                break
             }
             default {
-                if ($errStat.DeltaCount -eq 0) { 
+                if ($errStat.DeltaCount -eq 0) {
 
                 } else {
                     '{0} new' -f @( $errStat.DeltaCount)
                 }
             }
         }
-  
-        return 
+
+        return
         # if ($false) {
-        #     $template = @(            
+        #     $template = @(
         #         'Viewing: '
         #         '[{0}]' -f @(
         #             if ($Count) {
@@ -509,7 +513,7 @@ function _Write-ErrorSummaryPrompt {
         #             } else {
         #                 'All'
         #             }
-                
+
         #         )
         #         | Write-Color green
 
@@ -522,9 +526,9 @@ function _Write-ErrorSummaryPrompt {
         #     ) -join ''
 
         # }
-        
 
-       
+
+
 
 
         # Dev.Nin\Test-DidErrorOccur -Limit 3
@@ -577,7 +581,7 @@ function _Write-PromptForBugReport {
         # if ($__ninConfig.Terminal.IsVSCode) {
         #     'VsCode'
         # }
-        
+
         # & $codeBin @('--version') | Join-String -sep ', ' -op "$codeBin.Name"
     )
     $chunk += _Write-ErrorSummaryPrompt -AlwaysShow
@@ -592,7 +596,7 @@ function _Write-PromptForBugReport {
         ' '
         $query_addonVersion = & $codeBin @('--list-extensions', '--show-versions')
         | Where-Object { $_ -match 'ms-vscode.powershell-preview' }
-        | ForEach-Object { 
+        | ForEach-Object {
             $_ -split '@'
             | str csv -sep ' '
         }
@@ -603,7 +607,7 @@ function _Write-PromptForBugReport {
         $chunk += @(
             "`n"
             & $codeBin @('--version')
-            | Join-String -sep ', ' -op "${fg:purple}$($codeBin.Name): ${fg:cyan}"            
+            | Join-String -sep ', ' -op "${fg:purple}$($codeBin.Name): ${fg:cyan}"
         )
     }
     $chunk += @(
@@ -614,7 +618,7 @@ function _Write-PromptForBugReport {
 
     $chunk | Join-String -os "`n"
 
-    
+
 }
 
 function _Write-Predent {
@@ -662,7 +666,7 @@ function Write-NinProfilePrompt {
                     "`n"
                     # err?
                     # hr
-                    _Write-ErrorSummaryPrompt                    
+                    _Write-ErrorSummaryPrompt
                     "`n🐒> "
                 ) | Join-String
                 break
@@ -771,11 +775,11 @@ $src = Join-Path $PSScriptRoot 'backup_vscode.ps1'
 if (Test-Path $src) {
     . $src
     Export-ModuleMember -Function 'Backup-VSCode'
-} 
+}
 if ( $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-Host -ForegroundColor 'green'
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
-} 
+}
 # & {
 
 

@@ -1,12 +1,32 @@
 {
   "launch": {
     "configurations": [
+      {
+        // doesn't work in profile, but does in workspace.
+        "name": "Cur.tests.ps1 🐛", // [nin.PowerShell]",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "Invoke-Pester",
+        "args": [
+          "-Path",
+          "${file}",
+          // "-Path '${file}'",
+          "-Output",
+          "Detailed"
+        ],
+        "cwd": "${file}",
+        "presentation": {
+          "hidden": false,
+          "group": "",
+          "order": 2
+        }
+      },
       /*
-      
+
       ### Sect: Build in-Dotnet launchers
-      
+
              tags: dotnet, defaults, launch.json
-      
+
       */
 
       // attach to -> remote dotnet core console
@@ -97,11 +117,11 @@
       },
 
       /*
-      
+
       ### Sect: From JustinGrote
-      
+
       tags: dotnet, launch.json, justinGrote
-      
+
       */
       // [1] JustinGrote:
       {
@@ -158,13 +178,12 @@
         "type": "PowerShell"
       },
 
-      
       /*
-      
+
       ### Sect: Personal Launchers
-      
+
       tags: dotnet, launch.json
-      
+
       */
       {
         "name": "Main.ps1 🏃‍♂️",
@@ -189,6 +208,26 @@
           "order": 1
         },
         "cwd": "${workspaceFolder}"
+      },
+      {
+        // doesn't work in profile, but does in workspace.
+        "name": "Cur.tests.ps1 🐛 (not working profile)", // [nin.PowerShell]",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "Invoke-Pester",
+        "args": [
+          "-Path",
+          "${file}",
+          // "-Path '${file}'",
+          "-Output",
+          "Detailed"
+        ],
+        "cwd": "${file}",
+        "presentation": {
+          "hidden": false,
+          "group": "",
+          "order": 2
+        }
       },
       {
         "presentation": {
@@ -357,27 +396,29 @@
   },
   /*
     profile: j:/vscode_datadir/games/users/settings.json
-    brand new 
+    brand new
     created from scratch: 2021-11-02
 
 
 see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10\Code - Insiders\DefaultSettings.settings.json>
     */
-    "debug.inlineValues": true,
+  "debug.inlineValues": true,
   "editor.suggest.filterGraceful": true,
   "editor.fontSize": 15,
   "editor.fontSize": 16,
+  "editor.fontSize": 14,
   "editor.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
   "editor.fontFamily": "'cascadia code', 'cascadia code pl', Consolas, 'Courier New', monospace",
   "editor.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
   "editor.fontFamily": "'cascadia code pl'",
-  // when super tiny: at least right now for the editor, 'cascadia code' *is* better looking than 'cascadia code pl'  
+  // when super tiny: at least right now for the editor, 'cascadia code' *is* better looking than 'cascadia code pl'
   // when zoom: 0 : 'pl' is nicer
   "terminal.integrated.fontFamily": "'consolas', 'cascadia code mono', Consolas,  monospace",
   "terminal.integrated.fontFamily": "'cascadia code', 'cascadia code mono', Consolas,  monospace",
-  
+
   "terminal.integrated.fontSize": 18,
   "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontSize": 14,
   "markdownlint.customRules": [
     "{docsmsft.docs-linting}/markdownlint-custom-rules/rules.js"
   ],
@@ -416,6 +457,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "powershell.pester.debugOutputVerbosity": "Detailed",
   "powershell.pester.outputVerbosity": "Detailed",
   "powershell.pester.useLegacyCodeLens": false,
+  // "pester.autoRunOnSave": true,
   "powershell.promptToUpdatePowerShell": false,
   "window.titleSeparator": " ┐ ",
   // "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
@@ -425,11 +467,11 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // 📄📁⁞ ┐⇽
 
   /*
-    
+
     ### Sect: Screencasting
-    
+
            tags: Screencasting
-    
+
     */
 
   "screencastMode.fontSize": 20,
@@ -440,11 +482,11 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "screencastMode.mouseIndicatorColor": "#ff8800a4",
 
   /*
-    
+
     ### Sect: Mouse and Scrolling
-    
+
            tags: scrollbar, mouse, sensitivity
-    
+
     */
   "editor.scrollbar.verticalScrollbarSize": 4,
   "editor.scrollbar.vertical": "hidden",
@@ -464,12 +506,12 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "workbench.commandPalette.preserveInput": true,
 
   /*
-    
+
     ### Sect: Default Workbench Colors
-    
+
            tags: color, reference, theme
-    
-    from defaults/theme. some are default 
+
+    from defaults/theme. some are default
     I assume because they were commented out?
 
 
@@ -519,14 +561,18 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "search.seedWithNearestWord": true,
 
   /*
-    
+
     ### Sect: Workbench Color Overrides
-    
-           tags: color, theme
-    
+
+          tags: color, theme
+          refs:
+              intro: https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme
+              customizing semanticTokenColorCustomizations: https://code.visualstudio.com/docs/getstarted/themes#_editor-semantic-highlighting
+
     */
 
   "workbench.colorCustomizations": {
+    // "editorError.background": "#1cf0864f",
     "errorLens.warningMessageBackground": "#2f323813",
     "errorLens.warningMessageBackground": "#ff880000",
     "errorLens.warningMessageBackground": "#ff942f19", // # def
@@ -538,6 +584,9 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "errorLens.errorForeground": "#ff0000b6",
     "errorLens.errorForeground": "#f77777ad", // peach
     "errorLens.errorForeground": "#f77777ad",
+    // "errorLens.statusBarErrorForeground": "#00f853",
+    // "errorLens.statusBarIconErrorForeground": "#00f853", //has do do with selected/found lines
+    // "errorLens.hintBackground": "#25cf50", //has do do with selected/found lines
 
     // "errorLens.errorMessageBackground": "#c8ff02e8",
     "errorLens.errorMessageBackground": "#332424", // default:#332424
@@ -545,21 +594,23 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "errorLens.errorBackground": "#362b1f6b", // default:#332424
     "errorLens.errorBackground": "#362b1f34", // dim
     "errorLens.warningForeground": "#F2962D", // orange default
-    "errorLens.warningForeground": "#f2962d32", // default -> dim 2x
-    "errorLens.warningForeground": "#f2962d6c", // default -> dim 1x
+    "errorLens.warningForeground": "#f2962d32", // default -> dim 2x + brown
+    // "errorLens.warningForeground": "#ff0cb66c", // default -> dim 1x + purp
+    "errorLens.infoForeground": "#ea00ff", // this is where?
+    // "errorLens.hintForeground": "#ff16d8", // hint, like 'setting not recognized'
+    // "fo.barl":3,
 
     // custom dim theme
 
-    "editorBracketHighlight.foreground1": "#ffffff80", // dim gray
-    "editorBracketHighlight.foreground1": "#ffd780", // # dim
-    "editorBracketHighlight.foreground1": "#ffd780", // #def
-    "editorBracketHighlight.foreground2": "#da70d6", //def
-    "editorBracketHighlight.foreground2": "#da70d686", // dim
-    "editorBracketHighlight.foreground3": "#179fff", // def
-    "editorBracketHighlight.foreground3": "#179f80", // dim
-    // default cycles after 3
-    "editorBracketHighlight.foreground4": "#ff0065", // magenta
-    "editorBracketHighlight.foreground4": "#ffffff80", // dim gray
+    // "editorBracketHighlight.foreground1": "#ffffff80", // dim gray
+    // "editorBracketHighlight.foreground1": "#ffd780", // # dim
+    // "editorBracketHighlight.foreground1": "#ffd780", // #def
+    // "editorBracketHighlight.foreground2": "#", //def
+    // "editorBracketHighlight.foreground2": "#da70d686", // dim of default = #da70d6
+    // "editorBracketHighlight.foreground3": "#179f80", // dim of default = #179fff
+    // // default cycles after 3
+    // "editorBracketHighlight.foreground4": "#ff0065", // magenta
+    // "editorBracketHighlight.foreground4": "#ffffff80", // dim gray
     // "editorBracketHighlight.foreground5": "#ff0080",
     // "editorBracketHighlight.foreground5": "#ff0040",
     // "editorBracketHighlight.foreground6": "#ff0040",
@@ -579,15 +630,144 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
     // "editorLineNumber.activeForeground": "#6ad4ee",
     "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
-    "editorLineNumber.activeForeground": "#929292" // dim
+    "editorLineNumber.activeForeground": "#929292", // dim
+
+    /*
+
+    ### Sect: JustinGrote's pester theme
+
+           tags: theme, pester, testing
+
+          from: <https://discord.com/channels/180528040881815552/446531919644065804/911758649897127976>
+
+    */
+
+    "errorLens.errorBackground": "#e4545410",
+    "errorLens.errorForeground": "#ff646440",
+    "errorLens.errorMessageBackground": "#e4545405",
+    "errorLens.warningBackground": "#ff942f10",
+    "errorLens.warningForeground": "#fa973a70",
+
+    // "testing.message.error.lineBackground": "#e4545405",
+    "errorLens.warningMessageBackground": "#fff00005",
+    "tab.lastPinnedBorder": "#2472c8",
+    "terminal.ansiBlack": "#000000",
+    "terminal.ansiBlue": "#2472c8",
+    "terminal.ansiBrightBlack": "#666666",
+    "terminal.ansiBrightBlue": "#569cd6",
+    "terminal.ansiBrightCyan": "#9cdcfe",
+    "terminal.ansiBrightGreen": "#b5cea8",
+    "terminal.ansiBrightMagenta": "#daadd6",
+    "terminal.ansiBrightMagenta": "#d38bcd", // his was '#daadd6'
+    "terminal.ansiBrightRed": "#f14c4c",
+    "terminal.ansiBrightWhite": "#e5e5e5",
+    "terminal.ansiBrightYellow": "#DCDCAA", // his was
+    "terminal.ansiBrightYellow": "#ecec6a", // nin
+    "terminal.ansiCyan": "#11a8cd",
+    "terminal.ansiGreen": "#6a9955",
+    "terminal.ansiMagenta": "#C586C0",
+    "terminal.ansiRed": "#cd3131",
+    "terminal.ansiWhite": "#e5e5e5",
+    "terminal.ansiYellow": "#CE9178",
+    "terminal.background": "#1E1E1E",
+    "terminal.foreground": "#D4D4D4",
+    "editor.lineHighlightBackground": "#1073cf2d",
+    "editor.lineHighlightBorder": "#9fced11f",
+
+    /*
+
+      ### Sect: end of JustinGrote theme
+
+      */
+
+    /*
+
+    ### Sect: My overrides of JustinGrote
+
+    */
+    // brackets
+    // these are the default theme, dimmed to not have super high contrast
+
+    // "editorBracketHighlight.foreground1": "#569CD6",     // JG's
+    // "editorBracketHighlight.foreground2": "#C586C0",     // JG's
+    // "editorBracketHighlight.foreground3": "#4EC9B0",     // JG's
+    // "editorBracketHighlight.foreground4": "#CE9178",     // JG's
+    "editorBracketHighlight.foreground1": "#ffd780", // def + Dim
+    "editorBracketHighlight.foreground2": "#da70d686", // def + Dim
+    "editorBracketHighlight.foreground3": "#179f80", // def + Dim
+    "editorBracketHighlight.foreground4": "#ffffff80", // def + Dim
+
+    // multi-cursor lets you toggle config in one stroke
+    // multi-line select does not
+    "testing.message.error.decorationForeground": "#ff646440", // JG's
+    "testing.message.error.lineBackground": "#e4545405", // JG's
+    // "testing.message.error.decorationForeground": "#e0ac9779", // JG's: #ff646440
+    // "testing.message.error.lineBackground": "#e454541a", // same color, less invisibleJG's: #e4545405
+
+    /*
+    and some were missing
+    */
+    "testing.peekBorder": "#F14C4C", // pop-up showing previous runs. default = #F14C4C
+    "testing.peekHeaderBackground": "#F14C4C1a", // pop-up showing previous runs. default = #F14C4C1a (same plus alpha)
+    // "testing.iconErrored": "#00ff0d41"
+    "testing.iconFailed": "#cd3131", // set as term.ansiiRed; 2 places: [1] gutter [2] test explorer
+    "testing.iconPassed": "#6a9955", // set as term.ansiiGreen
+    "testing.iconQueued": "#CCA700", // color before executing; default = #CCA700
+    "testing.iconUnset": "#848484", //  2 icons: [1] in explorer the 'o' icon and the 'arrow' icon. default = #848484
+
+    // I didn't find these. I set these to the same bright magenta color, to try to find them
+
+    // "testing.message.info.decorationForeground": "#ff00ff", // where?
+    // "testing.message.info.lineBackground": "#00ccff", // where?
+    "testing.iconSkipped": "#ff00ff", // where?
+    "testing.iconErrored": "#ff00ff" // where?
+    /*
+
+          ### Sect: End of My overrides of JustinGrote
+
+          */
+  },
+  "editor.tokenColorCustomizations": {
+    "[Default Dark+]": {
+      "textMateRules": [
+        {
+          "scope": [
+            "punctuation.section.bracket.begin.powershell",
+            "punctuation.section.bracket.end.powershell"
+          ],
+          "settings": {
+            "foreground": "#569CD6"
+          }
+        }
+      ]
+    }
+    /*
+
+        ### Sect: end of JustinGrote theme
+
+        */
+  },
+  "editor.semanticTokenColorCustomizations": {
+    "[Default Dark+]": {
+      "enabled": true,
+      "rules": {
+        "punctuation.section.bracket.begin.powershell": "#569CD6",
+        "punctuation.section.bracket.end.powershell": "#569CD6"
+      }
+    }
+    /*
+
+          ### Sect: end of JustinGrote theme
+
+          */
   },
 
   /*
-    
+
     ### Sect: theme: subtler error lens
-    
+
            tags: Tag1, Tag2
-    
+
     */
   // "editorBracketMatch.background": "#0064001a",
   // "editorBracketMatch.background": "#00ff001a",
@@ -617,24 +797,23 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
 
   // "errorLens.infoMessageBackground": "#00b7e419",
   // "errorLens.hintMessageBackground": "#17a2a219",
-  "errorLens.gutterIconSet": "default",
-  "errorLens.gutterIconSet": "defaultOutline",
-  "errorLens.gutterIconSet": "borderless",
-  "errorLens.gutterIconSet": "circle",
-  "errorLens.gutterIconsFollowCursorOverride": false, // show just selected errors or whole file?
+  "errorLens.gutterIconSet": "circle", // <borderless | circle | default | defaultOutline>
+  // "errorLens.gutterIconsFollowCursorOverride": false, // show just selected errors or whole file?
   "errorLens.gutterIconsFollowCursorOverride": true, // show just selected errors or whole file?
   "errorLens.enabledDiagnosticLevels": ["error", "hint", "warning", "info"],
 
   "errorLens.fontWeight": 200,
-  "errorLens.delay": 2500,
+
   "errorLens.fontFamily": "calibri",
   // "editor.fontWeight": "300",
   // "editor.fontWeight": "400",
   // "editor.fontWeight": "300",
   // "editor.fontWeight": "200",
   // "editor.fontWeight": "100",
-  "errorLens.fontSize": "15",
+  // "errorLens.fontSize": "15",
   "errorLens.fontSize": "80%",
+  "editor.codeLensFontSize": 12,
+  "editor.inlayHints.fontSize": 10,
   "editor.overviewRulerBorder": true, // not sure what it does
   "errorLens.borderRadius": 400,
   "errorLens.warningGutterIconColor": "#ff942f", // def: #ff942f
@@ -677,9 +856,28 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // The indent color when there is a mix between spaces and tabs.
   // To be disabled this coloring set this to an empty string.
   "indentRainbow.tabmixColor": "rgba(128,32,96,0.6)",
+  "editor.matchBrackets": "near", // experiment
+  "workbench.editor.centeredLayoutAutoResize": true,
+
+  "editor.quickSuggestionsDelay": 1500,
+  // "editor.inlayHints.enabled": false,
+  // "editor.inlayHints.fontFamily": "arial",
+  "testing.autoRun.delay": 1000,
+  "workbench.hover.delay": 200,
+  // Controls the delay in milliseconds after which the hover is shown.
+  "workbench.hover.delay": 200,
+  "editor.hover.delay": 300,
+  "errorLens.delay": 2500,
+  "html.suggest.html5": true,
+  "emmet.showSuggestionsAsSnippets": true,
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "debug.console.historySuggestions": true,
+
+  "editor.suggest.preview": true,
+  // ""
+  "search.useReplacePreview": true,
 
   "[powershell]": {
-    "editor.semanticHighlighting.enabled": false,
     "editor.semanticHighlighting.enabled": true,
     "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
     "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
@@ -700,18 +898,41 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "indentRainbow.ignoreErrorLanguages": ["json", "markdown", "haskell"],
 
   "[powerquery]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "editor.suggest.preview": true
   },
+  /*
+
+  ###### SubSect: Files ⇢ Files.Associations
+
+      */
+  "files.defaultLanguage": "${activeEditorLanguage}",
+  "files.trimTrailingWhitespace": true,
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
   "files.associations": {
-    "*.json": "jsonc"
+    // these have higher precendence than extensions
+    "*.dax": "sql",
+    "*.json": "jsonc",
+    // powershell
+    "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
+    // microsoft / vs studio
+    "*.wixproj": "xml",
+    "*.mproj": "xml",
+    "*.odc": "html",
+    // ripgrep, bat
+    ".batrc": "shellscript",
+    ".ripgreprc": "shellscript",
+    "nuget.config": "xml",
+    "*.psm1": "powershell"
   },
 
   /*
-    
+
     ### Sect: Brackets and Guides and Rulers
-    
+
            tags: brackets, guides, rulers, pair
-    
+
     */
 
   "debug.showBreakpointsInOverviewRuler": true,
@@ -732,20 +953,17 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // Controls whether the cursor should be hidden in the overview ruler.
   "editor.hideCursorInOverviewRuler": false,
 
-  // Controls the delay in milliseconds after which the hover is shown.
-  "editor.hover.delay": 300,
-
   // Controls whether the hover is shown.
   "editor.hover.enabled": true,
 
   // "editor.gotoLocation.*":
 
   /*
-    
+
     ### Sect: Addon 🔧 Git Lens
-    
+
            tags: git, color
-    
+
     */
   "gitlens.advanced.abbreviatedShaLength": 7,
   "gitlens.advanced.quickPick.closeOnFocusOut": true,
@@ -765,6 +983,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "suppressRebaseSwitchToTextWarning": false
   },
   "editor.codeLens": true,
+
   "editor.codeLensFontFamily": "'consolas', 'cascadia code pl', 'fira code retina', 'calibri', sans",
   // "editor.inlayHints.fontFamily": "",
 
@@ -778,10 +997,12 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // "prettier.useTabs": true,
   // "prettier.documentSelectors": ["*.json", "*.jsonc"],
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.suggest.preview": true
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.suggest.preview": true
   },
 
   "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
@@ -793,20 +1014,20 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "editor.suggest.showStatusBar": true,
 
   /*
-  
+
   ### Sect: vscode icons
-  
+
          tags: icons
-  
+
   */
 
   "workbench.iconTheme": "vscode-icons",
   /*
-    
+
     ### Sect: vscode-icons
-    
+
            tags: Addon, Icons
-    
+
     */
 
   "vsicons.associations.files": [
@@ -852,5 +1073,159 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     }
   ],
   "editor.suggest.insertMode": "replace",
-  "editor.snippetSuggestions": "bottom"
+  "editor.snippetSuggestions": "bottom",
+  "files.trimTrailingWhitespace": true,
+  /*
+
+  ###### SubSect: Extension: ⇢ xml "redhat.vscode-xml"
+
+      */
+  // schema for Powershell
+  "xml.fileAssociations": [
+    {
+      "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd",
+      "pattern": "**/*.Format.ps1xml"
+    },
+    {
+      "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Types.xsd",
+      "pattern": "**/*.Types.ps1xml"
+    }
+  ],
+  /*
+
+###### SubSect: Extension: ⇢ dotnet / C#: 'csharpextensions'
+
+    */
+  "csharpextensions.privateMemberPrefix": "_",
+  "csharpextensions.useThisForCtorAssignments": false,
+  /*
+
+###### SubSect: editorAssociations ViewType Overrides / File Type Overrides
+
+
+    applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
+*/
+  // "workbench.editorAssociations": {
+  //     "*.ipynb": "jupyter-notebook"
+  // },
+  /*
+
+  ###### SubSect: Files ⇢ Files.Exclude
+
+      */
+  /* Example configs
+      // [1] files by extensions
+      "files.exclude": {
+          "/*.lnk": true
+      // [2] files with multiple extensions
+      "files.exclude": {
+          "/*.{ext1,ext2,ext3}": true
+      },
+      // [3] files with siblings by name
+      "files.exclude": {
+          "/*.source-extension": {
+              "when": "$(basename).target-extension"
+          }
+      },
+      // [4] folder by name (any location)
+      "files.exclude": {
+          "/name": true
+      },
+      // [5] folder by name (top level)
+      "files.exclude": {
+          "name": true
+      },
+      // [6] folders with multiple names (by level)
+      "files.exclude": {
+          "{folder1,folder2,folder3}": true
+      },
+      */
+  // [7] default value
+  // default value
+  "files.exclude": {
+    "**/*.exe": true,
+    "**/*.lnk": true,
+    "**/.git": true,
+    "**/*.pbix": true,
+    "**/*.zip": true,
+    // venv, cache, or compiled
+    "**/*.py[co]": true,
+    "**/__pycache__": true,
+    "**/node_modules": true,
+    "**/.mypy_cache": true,
+    "**/venv": true
+    // "**/*.js": {
+    //     "when": "$(basename).min.js",
+    //     "exclude": false,
+    //     ""
+    // },
+    // "**/*.js": false,
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.hg/store/**": true
+  },
+  /*
+
+  ###### SubSect: Files ⇢ Search.Exclude
+
+      */
+  "search.exclude": {
+    // "**/*.mez": true,
+    "**/*.lnk": true,
+    "**/*.log": true
+  },
+  "breadcrumbs.filePath": "off",
+  "breadcrumbs.filePath": "last", // theme-tag: minimalism
+  "breadcrumbs.filePath": "on", // theme-tag: information
+  "breadcrumbs.enabled": false, // theme-tag: minimalism,
+  "breadcrumbs.enabled": true, //
+  "breadcrumbs.icons": false, // theme-tag: minimalism
+  "breadcrumbs.icons": true, // doesn't seem to change much, not even outline
+  // "editor.renderControlCharacters": true,
+  "editor.fontLigatures": true,
+  "workbench.editor.labelFormat": "medium",
+  // "breadcrumbs.showArrays": true,
+  "search.useReplacePreview": true,
+  // "explorer.sortOrder": "modified", // nice for log files
+  "editor.renderLineHighlightOnlyWhenFocus": true,
+  "editor.renderControlCharacters": true,
+  "breadcrumbs.symbolSortOrder": "type",
+  "editor.wordWrapColumn": 160,
+  "editor.wrappingIndent": "deepIndent",
+  "editor.detectIndentation": false,
+  // "diffEditor.ignoreTrimWhitespace": true,
+  // "editor.suggest.maxVisibleSuggestions": 15, : this is obsolete as of 2020-11
+  // "html.autoClosingTags": true,
+  // "powershell.enableProfileLoading": true,
+  "workbench.settings.editor": "json",
+  // "workbench.settings.enableNaturalLanguageSearch": false,
+  // "workbench.settings.settingsSearchTocBehavior": "filter",
+  // "workbench.editor.labelFormat": "long",
+  // "editor.cursorWidth": 60,
+  "editor.cursorBlinking": "smooth", // "smooth",
+  // "editor.cursorStyle": "block-outline",
+  "editor.cursorStyle": " underline",
+  /* cursor config for screenshots */
+  "editor.cursorBlinking": "solid", // "smooth",
+  "editor.cursorStyle": "block-outline",
+  // "editor.cursorSurrounding"underline"s": 50,
+  // "terminal.integrated.cursorWidth": 1,
+  // "terminal.integrated.cursorWidth": 1,
+  "terminal.integrated.scrollback": 2000,
+  // "terminal.integrated.allowMnemonics": false, ?
+  // "terminal.integrated.windowsEnableConpty": true,
+  "terminal.integrated.showLinkHover": true,
+  "terminal.integrated.sendKeybindingsToShell": false,
+  "terminal.integrated.splitCwd": "workspaceRoot",
+  "terminal.integrated.titleMode": "sequence",
+  "terminal.integrated.tabs.enabled": true,
+  "editor.letterSpacing": 0,
+  // "editor.hideCursorInOverviewRuler": false,
+  "docsView.documentationView.updateMode": "live",
+  // "debug.console.historySuggestions": true,
+  // makes left click instant
+  "editor.cursorSmoothCaretAnimation": false
 }

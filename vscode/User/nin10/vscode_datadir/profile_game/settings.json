@@ -22,11 +22,11 @@
         }
       },
       /*
-      
+
       ### Sect: Build in-Dotnet launchers
-      
+
              tags: dotnet, defaults, launch.json
-      
+
       */
 
       // attach to -> remote dotnet core console
@@ -117,11 +117,11 @@
       },
 
       /*
-      
+
       ### Sect: From JustinGrote
-      
+
       tags: dotnet, launch.json, justinGrote
-      
+
       */
       // [1] JustinGrote:
       {
@@ -179,11 +179,11 @@
       },
 
       /*
-      
+
       ### Sect: Personal Launchers
-      
+
       tags: dotnet, launch.json
-      
+
       */
       {
         "name": "Main.ps1 🏃‍♂️",
@@ -394,9 +394,10 @@
       // }
     ]
   },
+  "yaml.schemas": {},
   /*
     profile: j:/vscode_datadir/games/users/settings.json
-    brand new 
+    brand new
     created from scratch: 2021-11-02
 
 
@@ -467,11 +468,11 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // 📄📁⁞ ┐⇽
 
   /*
-    
+
     ### Sect: Screencasting
-    
+
            tags: Screencasting
-    
+
     */
 
   "screencastMode.fontSize": 20,
@@ -482,11 +483,11 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "screencastMode.mouseIndicatorColor": "#ff8800a4",
 
   /*
-    
+
     ### Sect: Mouse and Scrolling
-    
+
            tags: scrollbar, mouse, sensitivity
-    
+
     */
   "editor.scrollbar.verticalScrollbarSize": 4,
   "editor.scrollbar.vertical": "hidden",
@@ -506,12 +507,12 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "workbench.commandPalette.preserveInput": true,
 
   /*
-    
+
     ### Sect: Default Workbench Colors
-    
+
            tags: color, reference, theme
-    
-    from defaults/theme. some are default 
+
+    from defaults/theme. some are default
     I assume because they were commented out?
 
 
@@ -535,13 +536,18 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
         "outline.icons": false,
         "workbench.activityBar.visible": false,
     */
+  "editor.wrappingStrategy": "simple",
+  "editor.wordWrap": "bounded",
 
-  "editor.minimap.enabled": true,
   "editor.minimap.enabled": false, // for clean, default this off
+  "editor.minimap.enabled": true,
   "editor.minimap.size": "fill",
   "editor.minimap.size": "fit",
   "editor.minimap.showSlider": "mouseover",
   "editor.inlineSuggest.enabled": true,
+  "editor.minimap.renderCharacters": true,
+  //   "editor.minimap.scale": 3,
+  "editor.minimap.maxColumn": 120,
   "outline.icons": false,
   "outline.icons": true,
   "editor.selectionHighlight": true,
@@ -561,16 +567,16 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "search.seedWithNearestWord": true,
 
   /*
-    
+
     ### Sect: Workbench Color Overrides
-    
+
           tags: color, theme
           refs:
               intro: https://code.visualstudio.com/docs/getstarted/themes#_customizing-a-color-theme
               customizing semanticTokenColorCustomizations: https://code.visualstudio.com/docs/getstarted/themes#_editor-semantic-highlighting
-    
-    */
 
+    */
+  "notebook.editorOptionsCustomizations": {},
   "workbench.colorCustomizations": {
     // "editorError.background": "#1cf0864f",
     "errorLens.warningMessageBackground": "#2f323813",
@@ -599,6 +605,77 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "errorLens.infoForeground": "#ea00ff", // this is where?
     // "errorLens.hintForeground": "#ff16d8", // hint, like 'setting not recognized'
     // "fo.barl":3,
+    // "minimap"
+    /*
+    ref colors from the CSS
+    --vscode-minimap-findMatchHighlight: #d18616;
+    --vscode-minimap-selectionOccurrenceHighlight: #676767;
+    --vscode-minimap-selectionHighlight: #264f78;
+    --vscode-minimap-errorHighlight: rgba(255, 18, 18, 0.7);
+    --vscode-minimap-warningHighlight: #cca700;
+    --vscode-minimap-background: #ff0000;
+    --vscode-minimap-foregroundOpacity: #000000;
+    --vscode-minimap-unicodeHighlight: #d18616;
+--vscode-minimapSlider-background: rgba(121, 121, 121, 0.2);
+--vscode-minimapSlider-hoverBackground: rgba(100, 100, 100, 0.35);
+--vscode-minimapSlider-activeBackground: rgba(191, 191, 191, 0.2);
+--vscode-minimapGutter-modifiedBackground: #0c7d9d;
+--vscode-minimapGutter-addedBackground: #587c0c;
+--vscode-minimapGutter-deletedBackground: #94151b;
+*/
+//"minimap.errorHighlight": "#ff1212b3",
+
+// "minimap.background": "#ff0000",
+"minimap.findMatchHighlight": "#1ef029", // def: #d18616
+"minimap.warningHighlight": "#ee6f8a6b",
+"minimap.foregroundOpacity": "#ff000081", // this only uses the opacity byte
+"minimap.selectionHighlight": "#264f78",  //  def: 264f78
+"minimap.selectionOccurrenceHighlight": "#feef2e", // def: "#676767", waldo
+"minimap.unicodeHighlight": "#d18616",
+
+"minimapGutter.addedBackground": "#587c0c",
+"minimapGutter.deletedBackground": "#94151b",
+"minimapGutter.modifiedBackground": "#0c7d9d",
+"minimapSlider.activeBackground": "#bfbfbf33",
+"minimapSlider.background": "#79797933",
+"minimapSlider.hoverBackground": "#64646459",
+
+    		//"menu.selectionBackground": "#094771",
+		//"menu.selectionForeground": "#ffffff",
+		//"menu.separatorBackground": "#bbbbbb",
+		//"menubar.selectionBackground": "#ffffff1a",
+		//"menubar.selectionForeground": "#cccccc",
+		//"merge.commonContentBackground": "#60606029",
+		//"merge.commonHeaderBackground": "#60606066",
+		//"merge.currentContentBackground": "#40c8ae33",
+		//"merge.currentHeaderBackground": "#40c8ae80",
+		//"merge.incomingContentBackground": "#40a6ff33",
+		//"merge.incomingHeaderBackground": "#40a6ff80",
+		//"notebook.cellBorderColor": "#37373d",
+		//"notebook.cellEditorBackground": "#252526",
+		//"notebook.cellInsertionIndicator": "#007fd4",
+		//"notebook.cellStatusBarItemHoverBackground": "#ffffff26",
+		//"notebook.cellToolbarSeparator": "#80808059",
+		//"notebook.focusedCellBorder": "#007fd4",
+		//"notebook.focusedEditorBorder": "#007fd4",
+		//"notebook.inactiveFocusedCellBorder": "#37373d",
+		//"notebook.selectedCellBackground": "#37373d",
+		//"notebook.selectedCellBorder": "#37373d",
+		//"notebook.symbolHighlightBackground": "#ffffff0b",
+		//"notebookScrollbarSlider.activeBackground": "#bfbfbf66",
+		//"notebookScrollbarSlider.background": "#79797966",
+		//"notebookScrollbarSlider.hoverBackground": "#646464b3",
+		//"notebookStatusErrorIcon.foreground": "#f48771",
+		//"notebookStatusRunningIcon.foreground": "#cccccc",
+		//"notebookStatusSuccessIcon.foreground": "#89d185",
+		//"notificationCenterHeader.background": "#303031",
+		//"notificationLink.foreground": "#3794ff",
+		//"notifications.background": "#252526",
+		//"notifications.border": "#303031",
+		//"notifications.foreground": "#cccccc",
+		//"notificationsErrorIcon.foreground": "#f14c4c",
+		//"notificationsInfoIcon.foreground": "#3794ff",
+		//"notificationsWarningIcon.foreground": "#cca700",
 
     // custom dim theme
 
@@ -633,13 +710,13 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "editorLineNumber.activeForeground": "#929292", // dim
 
     /*
-    
+
     ### Sect: JustinGrote's pester theme
-    
+
            tags: theme, pester, testing
 
           from: <https://discord.com/channels/180528040881815552/446531919644065804/911758649897127976>
-    
+
     */
 
     "errorLens.errorBackground": "#e4545410",
@@ -675,15 +752,15 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "editor.lineHighlightBorder": "#9fced11f",
 
     /*
-      
+
       ### Sect: end of JustinGrote theme
-      
+
       */
 
     /*
-    
+
     ### Sect: My overrides of JustinGrote
-     
+
     */
     // brackets
     // these are the default theme, dimmed to not have super high contrast
@@ -717,19 +794,32 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
 
     // I didn't find these. I set these to the same bright magenta color, to try to find them
 
-    "testing.message.info.decorationForeground": "#ff00ff", // where?
-    "testing.message.info.lineBackground": "#ff00ff", // where?
+    // "testing.message.info.decorationForeground": "#ff00ff", // where?
+    // "testing.message.info.lineBackground": "#00ccff", // where?
     "testing.iconSkipped": "#ff00ff", // where?
     "testing.iconErrored": "#ff00ff" // where?
     /*
-          
+
           ### Sect: End of My overrides of JustinGrote
-           
+
           */
   },
+
+  /*
+
+              ### Sect: End of My overrides of JustinGrote
+
+*/
+
+  "problems.autoReveal": true,
+//   "problems.showCurrentInStatus": true,
+
+
   "editor.tokenColorCustomizations": {
     "[Default Dark+]": {
       "textMateRules": [
+
+
         {
           "scope": [
             "punctuation.section.bracket.begin.powershell",
@@ -742,9 +832,9 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
       ]
     }
     /*
-        
+
         ### Sect: end of JustinGrote theme
-        
+
         */
   },
   "editor.semanticTokenColorCustomizations": {
@@ -756,18 +846,18 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
       }
     }
     /*
-          
+
           ### Sect: end of JustinGrote theme
-          
+
           */
   },
 
   /*
-    
+
     ### Sect: theme: subtler error lens
-    
+
            tags: Tag1, Tag2
-    
+
     */
   // "editorBracketMatch.background": "#0064001a",
   // "editorBracketMatch.background": "#00ff001a",
@@ -803,7 +893,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "errorLens.enabledDiagnosticLevels": ["error", "hint", "warning", "info"],
 
   "errorLens.fontWeight": 200,
-  "errorLens.delay": 2500,
+
   "errorLens.fontFamily": "calibri",
   // "editor.fontWeight": "300",
   // "editor.fontWeight": "400",
@@ -856,9 +946,28 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // The indent color when there is a mix between spaces and tabs.
   // To be disabled this coloring set this to an empty string.
   "indentRainbow.tabmixColor": "rgba(128,32,96,0.6)",
+  "editor.matchBrackets": "near", // experiment
+  "workbench.editor.centeredLayoutAutoResize": true,
+
+  "editor.quickSuggestionsDelay": 1500,
+  // "editor.inlayHints.enabled": false,
+  // "editor.inlayHints.fontFamily": "arial",
+  "testing.autoRun.delay": 1000,
+  "workbench.hover.delay": 200,
+  // Controls the delay in milliseconds after which the hover is shown.
+  "workbench.hover.delay": 200,
+  "editor.hover.delay": 300,
+  "errorLens.delay": 2500,
+  "html.suggest.html5": true,
+  "emmet.showSuggestionsAsSnippets": true,
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "debug.console.historySuggestions": true,
+
+  "editor.suggest.preview": true,
+  // ""
+  "search.useReplacePreview": true,
 
   "[powershell]": {
-    "editor.semanticHighlighting.enabled": false,
     "editor.semanticHighlighting.enabled": true,
     "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
     "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
@@ -879,18 +988,41 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "indentRainbow.ignoreErrorLanguages": ["json", "markdown", "haskell"],
 
   "[powerquery]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "editor.suggest.preview": true
   },
+  /*
+
+  ###### SubSect: Files ⇢ Files.Associations
+
+      */
+  "files.defaultLanguage": "${activeEditorLanguage}",
+  "files.trimTrailingWhitespace": true,
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
   "files.associations": {
-    "*.json": "jsonc"
+    // these have higher precendence than extensions
+    "*.dax": "sql",
+    "*.json": "jsonc",
+    // powershell
+    "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
+    // microsoft / vs studio
+    "*.wixproj": "xml",
+    "*.mproj": "xml",
+    "*.odc": "html",
+    // ripgrep, bat
+    ".batrc": "shellscript",
+    ".ripgreprc": "shellscript",
+    "nuget.config": "xml",
+    "*.psm1": "powershell"
   },
 
   /*
-    
+
     ### Sect: Brackets and Guides and Rulers
-    
+
            tags: brackets, guides, rulers, pair
-    
+
     */
 
   "debug.showBreakpointsInOverviewRuler": true,
@@ -911,20 +1043,17 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // Controls whether the cursor should be hidden in the overview ruler.
   "editor.hideCursorInOverviewRuler": false,
 
-  // Controls the delay in milliseconds after which the hover is shown.
-  "editor.hover.delay": 300,
-
   // Controls whether the hover is shown.
   "editor.hover.enabled": true,
 
   // "editor.gotoLocation.*":
 
   /*
-    
+
     ### Sect: Addon 🔧 Git Lens
-    
+
            tags: git, color
-    
+
     */
   "gitlens.advanced.abbreviatedShaLength": 7,
   "gitlens.advanced.quickPick.closeOnFocusOut": true,
@@ -958,10 +1087,12 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   // "prettier.useTabs": true,
   // "prettier.documentSelectors": ["*.json", "*.jsonc"],
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.suggest.preview": true
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.suggest.preview": true
   },
 
   "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
@@ -973,20 +1104,20 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
   "editor.suggest.showStatusBar": true,
 
   /*
-  
+
   ### Sect: vscode icons
-  
+
          tags: icons
-  
+
   */
 
   "workbench.iconTheme": "vscode-icons",
   /*
-    
+
     ### Sect: vscode-icons
-    
+
            tags: Addon, Icons
-    
+
     */
 
   "vsicons.associations.files": [
@@ -1032,5 +1163,439 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     }
   ],
   "editor.suggest.insertMode": "replace",
-  "editor.snippetSuggestions": "bottom"
+  "editor.snippetSuggestions": "bottom",
+  "files.trimTrailingWhitespace": true,
+  /*
+
+  ###### SubSect: Extension: ⇢ xml "redhat.vscode-xml"
+
+      */
+  // schema for Powershell
+  "xml.fileAssociations": [
+    {
+      "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd",
+      "pattern": "**/*.Format.ps1xml"
+    },
+    {
+      "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Types.xsd",
+      "pattern": "**/*.Types.ps1xml"
+    }
+  ],
+  /*
+
+###### SubSect: Extension: ⇢ dotnet / C#: 'csharpextensions'
+
+    */
+  "csharpextensions.privateMemberPrefix": "_",
+  "csharpextensions.useThisForCtorAssignments": false,
+  /*
+
+###### SubSect: editorAssociations ViewType Overrides / File Type Overrides
+
+
+    applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
+*/
+  // "workbench.editorAssociations": {
+  //     "*.ipynb": "jupyter-notebook"
+  // },
+  /*
+
+  ###### SubSect: Files ⇢ Files.Exclude
+
+      */
+  /* Example configs
+      // [1] files by extensions
+      "files.exclude": {
+          "/*.lnk": true
+      // [2] files with multiple extensions
+      "files.exclude": {
+          "/*.{ext1,ext2,ext3}": true
+      },
+      // [3] files with siblings by name
+      "files.exclude": {
+          "/*.source-extension": {
+              "when": "$(basename).target-extension"
+          }
+      },
+      // [4] folder by name (any location)
+      "files.exclude": {
+          "/name": true
+      },
+      // [5] folder by name (top level)
+      "files.exclude": {
+          "name": true
+      },
+      // [6] folders with multiple names (by level)
+      "files.exclude": {
+          "{folder1,folder2,folder3}": true
+      },
+      */
+  // [7] default value
+  // default value
+  "files.exclude": {
+    "**/*.exe": true,
+    "**/*.lnk": true,
+    "**/.git": true,
+    "**/*.pbix": true,
+    "**/*.zip": true,
+    // venv, cache, or compiled
+    "**/*.py[co]": true,
+    "**/__pycache__": true,
+    "**/node_modules": true,
+    "**/.mypy_cache": true,
+    "**/venv": true
+    // "**/*.js": {
+    //     "when": "$(basename).min.js",
+    //     "exclude": false,
+    //     ""
+    // },
+    // "**/*.js": false,
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.hg/store/**": true
+  },
+  /*
+
+  ###### SubSect: Files ⇢ Search.Exclude
+
+      */
+  "search.exclude": {
+    // "**/*.mez": true,
+    "**/*.lnk": true,
+    "**/*.log": true
+  },
+  "breadcrumbs.filePath": "off",
+  "breadcrumbs.filePath": "last", // theme-tag: minimalism
+  "breadcrumbs.filePath": "on", // theme-tag: information
+  "breadcrumbs.enabled": false, // theme-tag: minimalism,
+  "breadcrumbs.enabled": true, //
+  "breadcrumbs.icons": false, // theme-tag: minimalism
+  "breadcrumbs.icons": true, // doesn't seem to change much, not even outline
+  // "editor.renderControlCharacters": true,
+  "editor.fontLigatures": true,
+  "workbench.editor.labelFormat": "medium",
+  // "breadcrumbs.showArrays": true,
+  "search.useReplacePreview": true,
+  // "explorer.sortOrder": "modified", // nice for log files
+  "editor.renderLineHighlightOnlyWhenFocus": true,
+  "editor.renderControlCharacters": true,
+  "breadcrumbs.symbolSortOrder": "type",
+  "editor.wordWrapColumn": 160,
+  "editor.wrappingIndent": "deepIndent",
+  "editor.detectIndentation": false,
+  // "diffEditor.ignoreTrimWhitespace": true,
+  // "editor.suggest.maxVisibleSuggestions": 15, : this is obsolete as of 2020-11
+  // "html.autoClosingTags": true,
+  // "powershell.enableProfileLoading": true,
+  "workbench.settings.editor": "json",
+  // "workbench.settings.enableNaturalLanguageSearch": false,
+  // "workbench.settings.settingsSearchTocBehavior": "filter",
+  // "workbench.editor.labelFormat": "long",
+  // "editor.cursorWidth": 60,
+  "editor.cursorBlinking": "smooth", // "smooth",
+  // "editor.cursorStyle": "block-outline",
+  "editor.cursorStyle": " underline",
+  /* cursor config for screenshots */
+  "editor.cursorBlinking": "solid", // "smooth",
+  "editor.cursorStyle": "block-outline",
+  // "editor.cursorSurrounding"underline"s": 50,
+  // "terminal.integrated.cursorWidth": 1,
+  // "terminal.integrated.cursorWidth": 1,
+  "terminal.integrated.scrollback": 2000,
+  // "terminal.integrated.allowMnemonics": false, ?
+  // "terminal.integrated.windowsEnableConpty": true,
+  "terminal.integrated.showLinkHover": true,
+  "terminal.integrated.sendKeybindingsToShell": false,
+  "terminal.integrated.splitCwd": "workspaceRoot",
+  "terminal.integrated.titleMode": "sequence",
+  "terminal.integrated.tabs.enabled": true,
+  "editor.letterSpacing": 0,
+  // "editor.hideCursorInOverviewRuler": false,
+  "docsView.documentationView.updateMode": "live",
+  // "debug.console.historySuggestions": true,
+  // makes left click instant
+  "editor.cursorSmoothCaretAnimation": false,
+  /*
+
+  ### Sect: Terminal Config
+
+      */
+  /*
+
+  docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
+      examples:
+          // CMD, Win PS, GitBash, and WSL
+          "terminal.integrated.shell.windows": "C:/Windows/System32/cmd.exe"
+          // PowerShell
+          "terminal.integrated.shell.windows": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+          // Git Bash
+          "terminal.integrated.shell.windows": "C:/Program Files/Git/git-cmd.exe",
+          "terminal.integrated.shellArgs.windows": [ "--command=usr/bin/bash.exe", "-l", "-i" ]
+          // Bash on Ubuntu (on Windows)
+          "terminal.integrated.shell.windows": "C:/Windows/System32/bash.exe"
+      */
+  // "terminal.integrated.cwd": "c:/data/jake",
+  "terminal.integrated.commandsToSkipShell": [
+    "workbench.action.files.newUntitledFile",
+    "workbench.action.toggleSidebarVisibility",
+    "workbench.action.showAllSymbols"
+  ],
+  // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
+  // "terminal.integrated.shell.windows": "C:/Program Files/Git/git-bash.exe",
+  // "terminal.integrated.shell.linux": "C:/Windows/System32/cmd.exe",
+  // // "terminal.integrated.shell.windows": "C:/Windows/System32/cmd.exe",
+  // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
+  // "terminal.external.windowsExec": "powershell",
+  // "terminal.integrated.shellArgs.windows": [
+  // "-nop"
+  // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
+  // ],
+  "terminal.integrated.rendererType": "canvas",
+  // "terminal.integrated.fontSize": 12,
+  // "terminal.integrated.inheritEnv": false
+  // "terminal.integrated.shell.windows": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+  // "terminal.integrated.shell.windows": "C:/Windows/System32/bash.exe"
+  /*
+
+      external term
+          was using: // "terminal.external.windowsExec": "C:/Program Files/PowerShell/7/pwsh.exe",
+
+      */
+  "terminal.external.windowsExec": "wt",
+  // "terminal.explorerKind": "external",
+  // "terminal.integrated.shell.windows": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe",
+  /*
+      This is deprecated, the new recommended way to configure your default shell is by creating a terminal profile in `#terminal.integrated.profiles.windows#` and setting its profile name as the default in `#terminal.integrated.defaultProfile.windows#`. This will currently take priority over the new profiles settings but that will change in the future.
+      */
+  // "terminal.integrated.shell.windows": "C:/Program Files/PowerShell/7/pwsh.exe",
+  // "terminal.integrated.shellArgs.windows": [
+  //     "-NoLogo"
+  // ],
+  "debug.inlineValues": "auto",
+  "terminal.integrated.allowChords": true,
+  "terminal.integrated.automationShell.windows": null,
+  "terminal.integrated.allowWorkspaceConfiguration": false,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.enableFileLinks": true,
+  "terminal.integrated.environmentChangesIndicator": "warnonly",
+  /*
+      none:       none
+      minimal:    only print errors, hide green text.
+      normal:     no difference?
+      detailed:   Normal with green successful tests displayed
+      diagnostic: most verbose, prints filters used to select tests to run
+
+      "powershell.pester.debugOutputVerbosity": "Diagnostic",
+
+          [none | minimal | normal | detailed | diagnostic]
+
+      "powershell.pester.outputVerbosity":
+
+          [Diagnostic | None | Detailed | FromPreference | Minimal | Normal]
+
+
+          default value 'FromPreference', will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none
+
+      */
+  // "powershell.pester.outputVerbosity": "Minimal", //"Diagnostic",
+  "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
+  "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
+  "powershell.pester.debugOutputVerbosity": "Detailed", // "Detailed", //Diagnostic",
+  "terminal.integrated.environmentChangesRelaunch": true,
+  // "terminal.integrated.fontWeight": "500",
+  "terminal.integrated.experimentalUseTitleEvent": false, // An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals
+  "terminal.integrated.cursorBlinking": false,
+  // "terminal.integrated.cursorStyle": "line", # no like.
+  "terminal.integrated.cursorStyle": "underline",
+  "terminal.integrated.cursorStyle": "block",
+  "terminal.integrated.altClickMovesCursor": true, // sometimes wonky
+  "terminal.integrated.localEchoStyle": "dim", // ?
+  "terminal.integrated.localEchoStyle": "underlined", // ?
+  "terminal.integrated.experimentalLinkProvider": true,
+  "terminal.integrated.rightClickBehavior": "copyPaste",
+  "terminal.integrated.sendKseybindingsToShell": false,
+  "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default changes per-language
+  "terminal.integrated.tabs.focusMode": "doubleClick",
+  "terminal.integrated.inheritEnv": true,
+  "terminal.integrated.useWslProfiles": true,
+  "terminal.integrated.tabs.hideCondition": "singleTerminal",
+  "terminal.integrated.tabs.showActiveTerminal": "always",
+  "terminal.integrated.tabs.showActiveTerminal": "singleTerminal",
+  "terminal.integrated.tabs.showActiveTerminal": "never",
+  "terminal.integrated.tabs.showActiveTerminal": "singleTerminalOrNarrow",
+  "terminal.integrated.localEchoLatencyThreshold": 30,
+  "terminal.integrated.cursorWidth": 2,
+  // An explicit start path where the terminal will be launched, this is used as the current working directory (cwd) for the shell process. This may be particularly useful in workspace settings if the root directory is not a convenient cwd.
+  "terminal.integrated.cwd": "",
+  // Controls where newly created terminals will appear.
+  //  - editor: Create terminals in the editor
+  //  - view: Create terminals in the terminal view
+  "terminal.integrated.defaultLocation": "view",
+  // The default profile used on Linux. This setting will currently be ignored if either `terminal.integrated.shell.linux` or `terminal.integrated.shellArgs.linux` are set.
+  "terminal.integrated.defaultProfile.linux": null,
+  // The default profile used on macOS. This setting will currently be ignored if either `terminal.integrated.shell.osx` or `terminal.integrated.shellArgs.osx` are set.
+  "terminal.integrated.defaultProfile.osx": null,
+  // The default profile used on Windows. This setting will currently be ignored if either `terminal.integrated.shell.windows` or `terminal.integrated.shellArgs.windows` are set.
+  //  - PowerShell: $(terminal-powershell) PowerShell
+  // - path: C:\Program Files\PowerShell\7\pwsh.exe
+  //  - Command Prompt: $(terminal-cmd) Command Prompt
+  // - path: C:\WINDOWS\System32\cmd.exe
+  // - args: []
+  //  - Git Bash: $(terminal) Git Bash
+  // - path: C:\Program Files\Git\bin\bash.exe
+  // - args: [--login]
+  //  - PowerShellfsds: $(terminal-powershell) PowerShellfsds
+  // - path: C:\Program Files\PowerShell\7\pwsh.exe
+  //  - Pwsh -NoProfile: $(terminal-powershell) Pwsh -NoProfile
+  // - path: pwsh.exe
+  // - args: [-NoProfile','-NoLogo]
+  //  - Pwsh: $(terminal-powershell) Pwsh
+  // - path: pwsh.exe
+  // - args: [-NoLogo]
+  //  - Windows PowerShell: $(terminal) Windows PowerShell
+  // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+  // - args: [-NoLogo','-NoProfile]
+  "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
+  "terminal.integrated.localEchoExcludePrograms": [
+    // default
+    "vim",
+    "vi",
+    "nano",
+    "tmux"
+  ],
+  "debug.terminal.clearBeforeReusing": false,
+  "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
+  /*
+
+  ###### SubSect: Semantic highlighting
+
+      */
+  "csharp.semanticHighlighting.enabled": true,
+  "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
+  "editor.semanticTokenColorCustomizations": {
+    // per-theme
+    "[Default Dark+]": {
+      "enabled": true,
+      "rules": {
+        // single value
+        "parameter": "#d4d4d4",
+        // vs many
+        "parameter": {
+          "foreground": "#ff0000",
+          "foreground": "#464545", // nintheme
+          "underline": true,
+          "bold": true,
+          "italic": true,
+          "fontStyle": "italic bold underline"
+        }
+      }
+    },
+    // "variable": "#fae",
+    // "variable": "#9dccfe",
+    // or global
+    "enabled": true,
+    "rules": {
+      /*
+              "parameter": "#d4d4d4",
+              "variable": "#9dccfe"
+              "xmlDocCommentAttributeQuotes": "#ff0000",
+              "*.builtin": {
+                  "foreground": "#FF0000",
+                  "fontStyle": "bold"
+              }
+              */
+    }
+  },
+  "pesterExplorer.autoDiscoverOnOpen": true,
+  /*
+
+    ### Sect: Testing
+
+           tags: Tag1, Tag2
+
+    */
+  // Configures when the error peek view is automatically opened.
+  //  - failureAnywhere: Open automatically no matter where the failure is.
+  //  - failureInVisibleDocument: Open automatically when a test fails in a visible document.
+  //  - never: Never automatically open.
+  "testing.automaticallyOpenPeekView": "failureInVisibleDocument",
+  // Controls whether to automatically open the peek view during auto-run mode.
+  "testing.automaticallyOpenPeekViewDuringAutoRun": false,
+  // How long to wait, in milliseconds, after a test is marked as outdated and starting a new run.
+  "testing.autoRun.delay": 300,
+  // Controls which tests are automatically run.
+  //  - all: Automatically runs all discovered test when auto-run is toggled. Reruns individual tests when they are changed.
+  //  - rerun: Reruns individual tests when they are changed. Will not automatically run any tests that have not been already executed.
+  // "testing.autoRun.mode": "all",
+  "testing.autoRun.mode": "rerun",
+  // Controls the action to take when left-clicking on a test decoration in the gutter.
+  //  - run: Run the test.
+  //  - debug: Debug the test.
+  //  - contextMenu: Open the context menu for more options.
+  "testing.defaultGutterClickAction": "run",
+  // Controls whether the running test should be followed in the test explorer view
+  "testing.followRunningTest": true,
+  // Controls whether test decorations are shown in the editor gutter.
+  "testing.gutterEnabled": true,
+  "editor.guides.bracketPairs": true,
+  "powershell.pester.codeLens": false,
+  "csharp.referencesCodeLens.filteredSymbols": [
+    ".*",
+    "*",
+    "function",
+    "Commands.Reports"
+  ],
+  "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
+  "diffEditor.ignoreTrimWhitespace": false,
+  "powershell.codeFormatting.autoCorrectAliases": true,
+  "pester.suppressCodeLensNotice": true,
+  "testExplorer.useNativeTesting": true,
+  "powershell.codeFormatting.ignoreOneLineBlock": false,
+  "editor.suggest.showStatusBar": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.lineNumbers": "relative", // weird
+  "editor.lineNumbers": "interval", // cleaner
+  // "editor.lineHeight": 25, // 0-8 are multipliers, > 8 are literal px sizes
+  "notebook.lineNumbers": "off",
+  "zenMode.hideLineNumbers": true,
+  "zenMode.centerLayout": true,
+  "zenMode.fullScreen": false,
+  "zenMode.hideActivityBar": true,
+  "zenMode.hideStatusBar": true,
+  "zenMode.hideTabs": true,
+  "zenMode.restore": true,
+  "zenMode.silentNotifications": true, // true shows only errors
+  "testing.gutterEnabled": true,
+  "testExplorer.gutterDecoration": true,
+  "testing.defaultGutterClickAction": "run", // default
+  "testing.defaultGutterClickAction": "debug",
+  "testing.defaultGutterClickAction": "contextMenu",
+  "docs-visual-areas.gutterIndicatorHeight": 100,
+  "docs-visual-areas.gutterIndicatorOpacity": 60,
+  "docs-visual-areas.gutterIndicatorOffset": 12,
+  "docs-visual-areas.gutterIndicatorWidth": 4,
+  "editor.semanticHighlighting.enabled": true,
+  "errorLens.enabled": true,
+  "errorLens.gutterIconsEnabled": true,
+  "powershell.codeFormatting.preset": "OTBS",
+  "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+  "powershell.codeFormatting.useConstantStrings": true,
+  "powershell.codeFormatting.useCorrectCasing": true,
+  "powershell.codeFormatting.whitespaceBetweenParameters": true,
+  "powershell.integratedConsole.suppressStartupBanner": true,
+  "powershell.pester.debugOutputVerbosity": "Detailed",
+  "powershell.pester.outputVerbosity": "Detailed",
+  "powershell.pester.useLegacyCodeLens": false,
+  "powershell.promptToUpdatePowerShell": false,
+  "window.zoomLevel": 1
+  /*
+
+    ### Sect: Mouse and Scrolling
+
+           tags: scrollbar, mouse, sensitivity
+
+    */
 }
