@@ -306,4 +306,56 @@
         "key": "ctrl+shift+k ctrl+shift+b",
         "command": "editor.action.selectToBracket"
     },
+    /*
+    added new from the data dir configs
+    */
+    /* this bind/hotkey is what breaks multiline pasting */
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "workbench.action.problems.focus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorLangId == 'json' || editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-bookmarks.jumpToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "bookmarks.toggleLabeled",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "-bookmarks.toggle",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "-bookmarks.jumpToNext",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+numpad5",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "bookmarks.list"
+    },
 ]

@@ -20,6 +20,21 @@ if ($true) {
 }
 Import-Module Dev.Nin #-Force
 
+Write-Warning @'
+
+first: 🚀
+    - [ ] ask about how to namespace enums?
+
+    - [ ] step pipepline
+        do { Set-Content @someExistingVar }.GetSteppablePipeline() and play with it
+
+    - [ ] fix iprop
+    - [ ] edit sci's bits to a _colorizeBits
+
+    - [ ] PQ markkdown patch
+
+'@
+
 # Get-Command __doc__ | Join-String -op ' loaded?'
 # see also: C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10\AddDocstring-Sketch\Add-Docstring-sketch-iter3.ps1
 # try {
@@ -66,9 +81,9 @@ function Warn {
         }
         if ($__ninConfig.debug.GlobalWarn ?? $__warn) {
             if ($InputObject) {
-                $InputText | Write-Warning        
+                $InputText | Write-Warning
             }
-            return 
+            return
         }
     }
 }
@@ -105,7 +120,7 @@ if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
 # $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
 # $ErrorActionPreference = 'continue'
 
-Warn🛑 "run --->>>> '$PSCommandPath'"
+# Warn🛑 "run --->>>> '$PSCommandPath'"
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
@@ -328,11 +343,6 @@ aka
 
 #>
 
-# explicit color because it's before imports
-if ($false) {
-    "`e[96mBegin: -->`e[0m'$PSScriptRoot'" | Write-Host
-}
-
 <#
 
     [section]: VS ONLY
@@ -353,7 +363,8 @@ $PSDefaultParameterValues['Install-Module:Verbose'] = $true
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-$PSDefaultParameterValues['Out-Fzf:OutVariable'] = 'fzf'
+$PSDefaultParameterValues['Ninmonkey.Console\Out-Fzf:OutVariable'] = 'fzf'
+$PSDefaultParameterValues['Ninmonkey.Console\Out-Fzf:MultiSelect'] = $true
 $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
 $PSDefaultParameterValues['Microsoft.PowerShell.Core\Get-Help:detailed'] = $true
 $PSDefaultParameterValues['Get-Help:detailed'] = $true
@@ -365,8 +376,8 @@ $PSDefaultParameterValues['help:detailed'] = $true
 
         But settings for dev.nin / meaning any of these could be obsolete
         because it's experimental
-    
-    todo future: 
+
+    todo future:
         - [ ] linter warn when parameter name isn't valid, like a code change, or datatype change
 #>
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
@@ -385,45 +396,7 @@ $PSDefaultParameterValues['Dev.Nin\Pipe->Error:infa'] = 'Continue'
 
 function _profileEventOnFinalLoad {
     function _writeTodoGreeting {
-
-        New-Text -fg gray70 -bg gray30 'next
-    - if vscode:
-        - [ ] prompt name: "VS Code Pwsh>"
-
-    - if vscode as PSIT
-        - [ ] prompt name: "VS Code Integrated Terminal>"
-        - [ ] editor services import
-        - [ ] and that string import
-
-    - if wt
-        - [ ] auto-import: Import-NinKeys
-
-    - if admin:
-        - [ ] skip import-keys
-        - [ ] red prompt
-
-
-------------------
-
-    first:
-        [5] dotfile backup
-        [1] move: Write-NinPrompt to module: profile
-        [2] colorize breadcrumbs using gradient
-        [3] editfunction jump to line number
-        [4] ripgreb bat env dotfiles load
-
-    [1]
-        alt+enter/ctrl+enter hotkeys for newline
-
-    [2]
-        dotfiles missing
-            [rg] bat? less?
-
-
-$seg = 4
-Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
-
-'
+        Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
         | Join-String
         Hr
         # h1 'Todo' | New-Text -fg yellow -bg magenta
@@ -508,6 +481,7 @@ if ($true) {
     $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
     $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
     $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
+    $Profile | Add-Member -NotePropertyName 'PSDefaultParameterValues' -NotePropertyValue $PSCommandPath -ErrorAction Ignore
 
     $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
     $Accel::Add('psco', [System.Management.Automation.PSObject])
@@ -671,7 +645,7 @@ $OptionalImports = @(
     'Ninmonkey.Console'
     'Ninmonkey.Powershell'
     # 'Posh-Git'
-    
+
     # 'PSFzf'
     # 'ZLocation'
 )

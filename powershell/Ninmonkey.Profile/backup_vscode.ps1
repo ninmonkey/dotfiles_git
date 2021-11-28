@@ -1,6 +1,7 @@
 #Requires -Version 7
 #Requires -Module Ninmonkey.Console
 #Requires -Module Pansies
+#Requires -Module Dev.Nin
 
 function Backup-VSCode {
     <#
@@ -132,14 +133,14 @@ function Backup-VSCode {
         Dotfiles: {0}
         Source  : {1}
         ' -f @(
-                $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
+                $dotfileRoot | Ninmonkey.Console\ConvertTo-RelativePath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
 
-                $src | Ninmonkey.Console\Format-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
+                $src | Ninmonkey.Console\ConvertTo-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
-                $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
+                $dest | Ninmonkey.Console\ConvertTo-RelativePath -BasePath "$env:Nin_Dotfiles"
                 | New-Text -fg green
             )
 
@@ -176,17 +177,17 @@ function Backup-VSCode {
         Dotfiles: {0}
         Source  : {1}
         ' -f @(
-                $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
+                $dotfileRoot | Ninmonkey.Console\ConvertTo-RelativePath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
 
-                $src | Ninmonkey.Console\Format-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
+                $src | Ninmonkey.Console\ConvertTo-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
-                # $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
+                # $dest | Ninmonkey.Console\ConvertTo-RelativePath -BasePath "$env:Nin_Dotfiles"
                 # | New-Text -fg green
 
-                $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
+                $dest | Ninmonkey.Console\ConvertTo-RelativePath -BasePath "$env:Nin_Dotfiles"
                 | str Ul | Write-Color 'green'
                 # | New-Text -fg green
             )
@@ -254,15 +255,15 @@ function Backup-VSCode {
         Dotfiles: {0}
         Source  : {1}
         ' -f @(
-                $dotfileRoot | Ninmonkey.Console\Format-RelativePath -BasePath "$Env:UserProfile"
+                $dotfileRoot | Ninmonkey.Console\ConvertTo-RelativePath -BasePath "$Env:UserProfile"
                 | New-Text -fg green
 
                 $sourcesFormatted
-                # $src | Ninmonkey.Console\Format-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
+                # $src | Ninmonkey.Console\ConvertTo-RelativePath -LiteralPath -BasePath "$Env:UserProfile"
                 # | New-Text -fg green
 
 
-                $dest | Ninmonkey.Console\Format-RelativePath -BasePath "$env:Nin_Dotfiles"
+                $dest | Ninmonkey.Console\ConvertTo-RelativePath -BasePath "$env:Nin_Dotfiles"
                 | New-Text -fg green
 
             )

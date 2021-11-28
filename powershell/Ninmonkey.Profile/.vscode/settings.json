@@ -1,4 +1,4 @@
 {
-    "powershell.debugging.createTemporaryIntegratedConsole": true,
+    // "powershell.debugging.createTemporaryIntegratedConsole": true,
     "editor.fontSize": 16
 }

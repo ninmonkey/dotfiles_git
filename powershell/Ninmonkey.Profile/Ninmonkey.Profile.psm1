@@ -2,7 +2,8 @@
 
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
-Import-Module Dev.Nin
+
+Import-Module Dev.Nin -ea stop
 [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
 
 function _nyi {
@@ -160,7 +161,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass -Name 'To->Encode' -Value _nyi # To/From: Unicode bytes <-> String
     New-Alias @splatIgnorePass -Name 'To->HexString' -Value Ninmonkey.Console\ConvertTo-HexString
     New-Alias @splatIgnorePass -Name 'To->Json' -Value ConvertTo-Json
-    New-Alias @splatIgnorePass -Name 'To->RelativePath' -Value Ninmonkey.Console\Format-RelativePath
+    New-Alias @splatIgnorePass -Name 'To->RelativePath' -Value Ninmonkey.Console\ConvertTo-RelativePath
 
 
 
@@ -776,9 +777,12 @@ if (Test-Path $src) {
     . $src
     Export-ModuleMember -Function 'Backup-VSCode'
 }
-if ( $OneDrive.Enable_MyDocsBugMapping) {
+if ( $false -and $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-Host -ForegroundColor 'green'
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
+} else {
+    'temp toggle backup is off'
+    # Backup-VSCode
 }
 # & {
 
