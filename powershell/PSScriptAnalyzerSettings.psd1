@@ -52,13 +52,18 @@ examples:
             NoEmptyLineBefore  = $false
         }
 
-
+        # PSUseConsistentIndentation = @{
+        # this is for WinPS, not PS pre-denting pipes
+        # Enable = $false
+        # Kind                = 'space'
+        # PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
+        # IndentationSize     = 4
+        # }
         PSUseConsistentIndentation = @{
-            # this is for WinPS, not PS pre-denting pipes
-            Enable = $false
-            # Kind                = 'space'
-            # PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
-            # IndentationSize     = 4
+            Enable              = $true
+            Kind                = 'space'
+            PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
+            IndentationSize     = 4
         }
 
         PSUseConsistentWhitespace  = @{
