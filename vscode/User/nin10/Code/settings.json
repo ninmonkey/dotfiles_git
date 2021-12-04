@@ -745,7 +745,7 @@
         "files.insertFinalNewline": true,
         "files.trimFinalNewlines": true
     },
-    "editor.suggestFontSize": 14,
+    "editor.suggestFontSize": 12,
     "editor.codeLensFontSize": 12,
     "editor.inlayHints.fontSize": 12,
     // "powershell.buttons.showPanelMovementButtons": true,
@@ -1293,14 +1293,16 @@
     // "editor.suggestLineHeight": 17, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
     // for zoom = 0
     "debug.console.fontSize": 14,
+    "terminal.integrated.fontSize": 16, //12, // for zoom 0
     "debug.console.fontSize": 16,
     "terminal.integrated.fontSize": 14, //12, // for zoom 0
-    "terminal.integrated.fontSize": 16, //12, // for zoom 0
     // "editor.fontSize": 14, // for zoom -0
     "editor.fontSize": 17, //18 16, // for zoom -1
     "editor.fontSize": 20, //18 16, // for zoom -1
     "editor.fontSize": 18, //18 16, // for zoom -1
     "editor.fontSize": 16,
+    "editor.fontSize": 13,
+    "editor.fontSize": 14,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -1605,7 +1607,7 @@
     // "workbench.editor.splitSizing": "split",
     "workbench.editor.closeOnFileDelete": false,
     "python.analysis.extraPaths": [],
-    "powershell.integratedConsole.showOnStartup": false,
+    "powershell.integratedConsole.showOnStartup": true,
     /*
 
         ### Sect: New inline suggestions
@@ -1645,7 +1647,7 @@
     // Controls whether an active snippet prevents quick suggestions.
     "editor.suggest.snippetsPreventQuickSuggestions": true,
     // Font size for the suggest widget. When set to `0`, the value of `editor.fontSize` is used.
-    "editor.suggestFontSize": 14,
+    "editor.suggestFontSize": 12,
     // Line height for the suggest widget. When set to `0`, the value of `editor.lineHeight` is used. The minimum value is 8.
     "editor.suggestLineHeight": 0,
     // Controls whether suggestions should automatically show up when typing trigger characters.
@@ -2142,7 +2144,7 @@
     "terminal.integrated.confirmOnExit": "hasChildProcesses",
     "terminal.integrated.confirmOnKill": "editor",
     "terminal.integrated.defaultLocation": "editor",
-    "powershell.startAutomatically": false,
+    "powershell.pester.codeLens": false,
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
 }

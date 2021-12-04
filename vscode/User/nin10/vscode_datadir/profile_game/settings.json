@@ -1058,8 +1058,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.suggest.preview": true
     },
-    "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
-    "diffEditor.ignoreTrimWhitespace": false,
+    "pesterExplorer.autoDiscoverOnOpen": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
@@ -1524,8 +1523,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
         "function",
         "Commands.Reports"
     ],
-    "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
-    "diffEditor.ignoreTrimWhitespace": false,
+    "pesterExplorer.autoDiscoverOnOpen": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
@@ -1583,6 +1581,7 @@ see also: full profile: <C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
     "bookmarks.useWorkaroundForFormatters": true,
     "bookmarks.sideBar.expanded": true,
+    "mssql.connections": [],
     // "bookmarks.saveBookmarksInProject": true
     /*
 

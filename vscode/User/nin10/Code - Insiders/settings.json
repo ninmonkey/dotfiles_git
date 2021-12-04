@@ -182,7 +182,9 @@
                     "group": "",
                     "order": 1
                 },
-                "cwd": "${workspaceFolder}"
+                // "cwd": "${workspaceFolder}"
+                // "cwd": "${file}"
+                "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
             },
             {
                 "presentation": {
@@ -647,13 +649,7 @@
     // "editor.acceptSuggestionOnEnter": "smart",
     "editor.suggest.showFields": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "editor.links": true,
-    /*
-
-  ### Sect: Clipboard: Copy Paste
-
-      */
-    "terminal.integrated.copyOnSelection": true, // this might be the cause of the copy paste issues
+    "editor.links": true, // this might be the cause of the copy paste issues
     // "editor.copyWithSyntaxHighlighting": true,
     "editor.emptySelectionClipboard": false,
     /*
@@ -942,14 +938,27 @@
     "editor.wordWrapColumn": 140,
     "terminal.integrated.rendererType": "auto",
     // "workbench.editor.focusRecentEditorAfterClose": true,
-    "workbench.quickOpen.closeOnFocusLost": false,
     "gitlens.views.repositories.files.layout": "list",
     "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
     // "terminal.integrated.inheritEnv": false,
+    // try some new
+    // "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
+    // "editor.inlayHints.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "codepoint.statusbar": "description",
-    "workbench.quickOpen.closeOnFocusLost": false,
+    "workbench.quickOpen.closeOnFocusLost": false, // it means the command palette
+    "workbench.quickOpen.preserveInput": true,
+    "task.quickOpen.detail": true,
+    "task.quickOpen.history": 30,
+    "task.quickOpen.showAll": false,
+    "task.quickOpen.skip": false,
+    "gitlens.advanced.quickPick.closeOnFocusOut": true,
     // "editor.suggest.statusBar.visible": true,
     // "editor.formatOnSave": true,
     // "editor.formatOnPaste": true,
@@ -2658,7 +2667,8 @@
     // The logging level the extension logs at.
     "jupyter.logging.level": "debug",
     // Sets the logging verbosity level for the PowerShell Editor Services host executable.  Valid values are 'Diagnostic', 'Verbose', 'Normal', 'Warning', and 'Error'
-    "powershell.developer.editorServicesLogLevel": "Normal",
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    // "powershell.developer.editorServicesLogLevel": "Normal",
     // Launches the language service with the /waitForDebugger flag to force it to wait for a .NET debugger to attach before proceeding.
     "powershell.developer.editorServicesWaitForDebugger": false,
     // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
@@ -2710,7 +2720,8 @@
     // The logging level the extension logs at.
     "jupyter.logging.level": "debug",
     // Sets the logging verbosity level for the PowerShell Editor Services host executable.  Valid values are 'Diagnostic', 'Verbose', 'Normal', 'Warning', and 'Error'
-    "powershell.developer.editorServicesLogLevel": "Normal",
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    // "powershell.developer.editorServicesLogLevel": "Normal",
     // Launches the language service with the /waitForDebugger flag to force it to wait for a .NET debugger to attach before proceeding.
     "powershell.developer.editorServicesWaitForDebugger": false,
     // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
@@ -2745,7 +2756,6 @@
     "testExplorer.addToEditorContextMenu": true,
     "testExplorer.showOnRun": true,
     "editor.bracketPairColorization.enabled": true,
-    "gitlens.mode.active": "zen",
     // new feature debug mode in
     // "jupyter.experimental.debugging": true, <https://code.visualstudio.com/updates/v1_60#_jupyter> ve ipykernel v6+ inst
     "terminal.integrated.customGlyphs": true,
@@ -2791,7 +2801,7 @@
     "terminal.integrated.fontWeight": "normal",
     "terminal.integrated.fontWeightBold": "bold",
     "terminal.integrated.letterSpacing": 0,
-    "errorLens.fontWeight": "normal",
+    // "errorLens.fontWeight": "normal",
     "terminal.integrated.lineHeight": 1,
     "editor.inlayHints.fontFamily": "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
     "editor.inlayHints.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
@@ -2834,10 +2844,10 @@
     // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
-    "editor.suggestFontSize": 16, // ctrl+space size
-    "terminal.integrated.fontSize": 17,
+    "editor.suggestFontSize": 14, // ctrl+space size
+    "terminal.integrated.fontSize": 18,
     "errorLens.enabled": true, // for zoom -1
-    "errorLens.delay": 300,
+    "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
     "errorLens.exclude": [], //# regex
     "errorLens.excludeBySource": [], // ["eslint"]
@@ -3176,7 +3186,6 @@
     "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekViewDuringAutoRun": false,
     "terminal.explorerKind": "integrated",
-    "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
 }

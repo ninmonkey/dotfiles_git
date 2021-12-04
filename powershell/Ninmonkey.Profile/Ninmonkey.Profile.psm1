@@ -246,7 +246,8 @@ function toggleErrors {
     # todo: cleanup: move to a better location
     $__ninConfig.Prompt.NumberOfPromptErrors = if ($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) {
         3
-    } else {
+    }
+    else {
         0
     }
 }
@@ -287,7 +288,8 @@ function _Write-PromptGitStatus {
         }
 
         & $GitPromptScriptBlock
-    } catch {
+    }
+    catch {
         Write-Error -ErrorRecord $_ Message 'failed invoking $GitPromptScriptBlock' -TargetObject $GitPromptScriptBlock
     }
 
@@ -395,7 +397,8 @@ function _Write-PromptPathToBreadCrumbs {
                     # $finalSegments.reverse() | Out-null
                     $FinalSegments | Out-ReversePipeline
                     | Join-String -sep $crumbJoinText
-                } else {
+                }
+                else {
                     $finalSegments
                     | Join-String -sep $crumbJoinText
                 }
@@ -410,12 +413,83 @@ function _Write-PromptPathToBreadCrumbs {
         }
 
         $FinalOutputString | Join-String -sep ''
-    } catch {
+    }
+    catch {
         $PSCmdlet.WriteError( $_ )
     }
 }
 $script:__temp ??= @{} #??= @{}
 $script:__temp.IncludeDebugPrompt ??= $true
+
+function _Write-PromptDynamicCrumbs {
+    <#
+    .synopsis
+        write current directory as crumbs
+    .notes
+        future:
+        #>
+    [cmdletbinding()]
+    param(
+
+    )
+    begin {
+        # paths to try
+        $TestPaths = @(
+            'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
+            '~'
+            'C:\Users\cppmo_000\SkyDrive\Documents'
+            'G:\2021-github-downloads\'
+            "$Env:AppData"
+            "$Env:LocalAppData"
+            'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Splat.nin'
+        )
+        $PathMapping = @(
+            @{
+                Label = 'Pwsh'
+                Root  = 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
+            }
+            @{
+                Label = 'Docs'
+                Root  = 'C:\Users\cppmo_000\SkyDrive\Documents'
+            }
+            @{
+                Label      = 'gitDownloads' # todo: darken color
+                LabelColor = @(
+                    'git' | Write-Color gray80
+                    "${fg:clear}"
+                    'Downloads'
+                ) -join ''
+                Root       = 'G:\2021-github-downloads\'
+            }
+        ) | Sort-Object { $_.Value.Length }
+
+
+    }
+
+    process {
+        $Selected = $PathMapping | Where-Object {
+            $curMapping = $_
+            # $curFull = [regex]::escape( (gi . | % FullName))
+            $curFull = Get-Item . | ForEach-Object FUllName
+            Test-IsCh
+
+            # $compareFull = [regex]::escape( $curMapping.Root )
+
+            # if ($curFull -match $compareFull) {
+            #     $true; return;
+            # }
+            # return;
+
+        } | Sort-Object { $_.Value.Length } -Descending | Select-Object -First 1
+
+
+        Get-Item . | To->RelativePath -BasePath ~\SkyDrive -ea ignore
+        | Label 'full-rel'
+        Get-Item . | To->RelativePath -BasePath ~\SkyDrive -ea ignore
+        # | ShortenString -50 -FromEnd
+        | Label 'short'
+    }
+}
 
 function _Write-ErrorSummaryPrompt {
     <#
@@ -461,7 +535,8 @@ function _Write-ErrorSummaryPrompt {
                 @(
                     $cStatus = if ($errStat.DeltaCount -ne 0) {
                         'red'
-                    } else {
+                    }
+                    else {
                         'green'
                     }
                     'errΔ [' | Write-Color $cDef
@@ -498,7 +573,8 @@ function _Write-ErrorSummaryPrompt {
             default {
                 if ($errStat.DeltaCount -eq 0) {
 
-                } else {
+                }
+                else {
                     '{0} new' -f @( $errStat.DeltaCount)
                 }
             }
@@ -591,7 +667,8 @@ function _Write-PromptForBugReport {
         'is PSIT? ' #| Write-Color 'gray60'
         if ($isPwshDebugTerm) {
             'yes' | Write-Color green
-        } else {
+        }
+        else {
             'no ' | Write-Color darkred
         }
         ' '
@@ -656,76 +733,79 @@ function Write-NinProfilePrompt {
     [cmdletbinding(PositionalBinding = $false)]
     param (
     )
-    try {
-        $__ninConfig.Prompt.NumberOfPromptErrors ??= 2
-        $configErrorLinesLimit = $__ninConfig.Prompt.NumberOfPromptErrors ?? 2
+    # try {
+    $__ninConfig.Prompt.NumberOfPromptErrors ??= 2
+    $configErrorLinesLimit = $__ninConfig.Prompt.NumberOfPromptErrors ?? 2
 
-        # do not use extra newlines on missing segments
-        switch ($__ninConfig.Prompt.Profile) {
-            'errorSummary' {
-                @(
-                    "`n"
-                    # err?
-                    # hr
-                    _Write-ErrorSummaryPrompt
-                    "`n🐒> "
-                ) | Join-String
-                break
-            }
-            'debugPrompt' {
-                # __doc__: Clearly shows whether you're in the PSIT or not, older version of 'bugReport', or same but with less info
-                @(
-                    _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-                    _Write-PromptDetectParent_iter0
-                    # "`n"
-                    '🐛> '
-                ) | Join-String
-                break
-            }
-            'bugReport' {
-                # __doc__: Clearly shows whether you're in the PSIT or not
-                @(
-                    _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-                    _Write-PromptForBugReport
-                    # "`n"
-                    '🐛> '
-                ) | Join-String
-                break
-            }
+    # do not use extra newlines on missing segments
+    switch ($__ninConfig.Prompt.Profile) {
+        'errorSummary' {
+            @(
+                "`n"
+                # err?
+                # hr
+                _Write-ErrorSummaryPrompt
+                "`n🐒> "
+            ) | Join-String
+            break
+        }
+        'debugPrompt' {
+            # __doc__: Clearly shows whether you're in the PSIT or not, older version of 'bugReport', or same but with less info
+            @(
+                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                _Write-PromptDetectParent_iter0
+                # "`n"
+                '🐛> '
+            ) | Join-String
+            break
+        }
+        'bugReport' {
+            # __doc__: Clearly shows whether you're in the PSIT or not
+            @(
+                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                _Write-PromptForBugReport
+                # "`n"
+                '🐛> '
+            ) | Join-String
+            break
+        }
 
-            'oneLine' {
-                @(
-                    '🐒> '
-                ) | Join-String
-                break
-            }
-            'twoLine' {
-                @(
-                    "`n"
-                    '🐒> '
-                ) | Join-String
-                break
-            }
-            'spartan' {
-                @(
-                    _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
-                    _Write-ErrorSummaryPrompt -AlwaysShow:$false
-                    "`n🐒> "
-                ) | Join-String
-                break
-            }
+        'oneLine' {
+            # __doc__: Minimum possible prompt, just a "nin> "
+            @(
+                '🐒> '
+            ) | Join-String
+            break
+        }
+        'twoLine' {
+            # __doc__: Like 'oneLine' with an extra line of padding
+            @(
+                "`n"
+                '🐒> '
+            ) | Join-String
+            break
+        }
+        'spartan' {
+            # __doc__: simple prompt, but more logic than 'oneline|twoLine'
+            @(
+                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+                _Write-ErrorSummaryPrompt -AlwaysShow:$false
+                "`n🐒> "
+            ) | Join-String
+            break
+        }
 
-            default {
+        default {
 
-                # __doc__: 'main' prompt with breadcrumbs
+            # __doc__: 'main' prompt with breadcrumbs
 
 
-                $segments = @(
-                    $splatPredent = @{
-                        NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
-                        IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
-                    }
-                    <#
+            $segments = @(
+                $splatPredent = @{
+                    NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
+                    IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
+                }
+                <#
                     $EnablePromptDetectError = $false
                     if ($EnablePromptDetectError) {
                         function _Write-PromptDetectError {
@@ -738,30 +818,35 @@ function Write-NinProfilePrompt {
                     }
                     #>
 
-                    _Write-Predent @splatPredent
-                    # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
-                    _Write-PromptIsAdminStatus
-                    if ($__ninConfig.Prompt.IncludeGitStatus) {
-                        _Write-PromptGitStatus # todo: better git status line
-                        "`n"
-                    }
-                    _Write-ErrorSummaryPrompt -AlwaysShow:$false
+                _Write-Predent @splatPredent
+                # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
+                _Write-PromptIsAdminStatus
+                if ($__ninConfig.Prompt.IncludeGitStatus) {
+                    _Write-PromptGitStatus # todo: better git status line
                     "`n"
-                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
-                    "`n🐒> "
-                )
-                $segments | Join-String
-            }
+                }
+                _Write-ErrorSummaryPrompt -AlwaysShow:$false
+                if ($__ninConfig.Prompt.IncludeDynamicCrumbs) {
+                    "`n"
+                    _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
+                }
+                "`n"
+                _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                "`n🐒> "
+            )
+            $segments | Join-String
         }
-    } catch {
-        $PSCmdlet.WriteError( $_ )
     }
+    # } catch {
+    # $PSCmdlet.WriteError( $_ )
+    # }
 }
 
 Export-ModuleMember -Function Write-NinProfilePrompt
 # if debug mode
 if ($true) {
     Export-ModuleMember -Function @(
+        '_Write-PromptDynamicCrumbs'
         'toggleErrors'
         '_Write-PromptIsAdminStatus'
         '_Write-PromptPathToBreadCrumbs'
@@ -780,7 +865,8 @@ if (Test-Path $src) {
 if ( $false -and $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-Host -ForegroundColor 'green'
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
-} else {
+}
+else {
     'temp toggle backup is off'
     # Backup-VSCode
 }
