@@ -578,7 +578,6 @@
     "zenMode.restore": true,
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
-    "gitlens.mode.active": "zen",
     "terminal.integrated.rendererType": "auto",
     // "workbench.editor.focusRecentEditorAfterClose": true,
     "workbench.quickOpen.closeOnFocusLost": false,
@@ -2145,6 +2144,7 @@
     "terminal.integrated.confirmOnKill": "editor",
     "terminal.integrated.defaultLocation": "editor",
     "powershell.pester.codeLens": false,
+    "errorLens.enabled": false,
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
 }

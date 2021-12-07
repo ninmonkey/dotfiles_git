@@ -421,7 +421,6 @@ function _profileEventOnFinalLoad {
         # h1 'Todo' | New-Text -fg yellow -bg magenta
         '🐵'
     }
-    Backup-VSCode -infa Continue
 
     if ($__ninConfig.EnableGreetingOnLoad) {
         _writeTodoGreeting
@@ -683,10 +682,11 @@ $OptionalImports | ForEach-Object {
 }
 # }
 
-Import-Module Dev.Nin -Force
+Import-Module Dev.Nin -Force -DisableNameChecking
 Import-Module posh-git
 # finally "profile"
-Import-Module Ninmonkey.Profile #-DisableNameChecking
+Import-Module Ninmonkey.Profile -DisableNameChecking
+Backup-VSCode -infa Continue
 # & {
 
 # currently, all profiles use utf8

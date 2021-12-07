@@ -21,6 +21,7 @@
                 "type": "coreclr",
                 "request": "attach"
             },
+            ///
             // [2] Attach -> [🐛debugger] to [Remote🖧] dotnet core [Console💻] app
             // [2] 👫Attach -> [🐛debugger] to a .NET Core [Console💻] App on a [remote🖧] machine.
             {
@@ -1538,6 +1539,7 @@
     "errorLens.warningTextColor": "rgba(23,240,240,0.1)",
     "errorLens.infoColor": "rgba(0,20,0,0.4)",
     "errorLens.infoTextColor": "rgba(2,240,240,1.0)",
+    // "errorLens.excludePatterns": [],
     /*
 
   ###### SubSect: Workbench theme overrides
@@ -2176,7 +2178,7 @@
     // Controls whether the diff editor shows +/- indicators for added/removed changes.
     "diffEditor.renderIndicators": false, // false since colors are enabled
     // Controls whether the diff editor shows the diff side by side or inline.
-    "diffEditor.renderSideBySide": true,
+    "diffEditor.renderSideBySide": false,
     //
     //  - off: Lines will never wrap.
     //  - on: Lines will wrap at the viewport width.
@@ -3016,7 +3018,7 @@
     "errorLens.fontSize": "15",
     "errorLens.fontSize": "80%",
     "editor.overviewRulerBorder": true, // not sure what it does
-    "errorLens.borderRadius": 400,
+    // "errorLens.borderRadius": "10px",
     "errorLens.warningGutterIconColor": "#ff942f", // def: #ff942f
     "errorLens.warningGutterIconColor": "#ff932f6e", // dim: 1x
     "errorLens.warningGutterIconColor": "#ff932f3b", // dim: 2x
@@ -3031,6 +3033,7 @@
     // filters
     "editor.guides.highlightActiveIndentation": true,
     "errorLens.exclude": [
+        "cmdlet.*uses an unapproved verb"
         // "is an alias of"
     ],
     // For which languages indent-rainbow should be activated (if empty it means all).
@@ -3188,4 +3191,6 @@
     "terminal.explorerKind": "integrated",
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
+    "workbench.colorTheme": "GitHub Dark",
+    "window.zoomLevel": -1,
 }
