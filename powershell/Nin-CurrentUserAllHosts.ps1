@@ -3,6 +3,9 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+# Keep colors when piping Pwsh in 7.2
+$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
+
 <#
     [section]: Seemingly Sci imports
 #>
@@ -98,7 +101,8 @@ if ($false) {
 
 if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
     gh completion --shell powershell | Set-Content -Path temp:\complete_gh.ps1
-} else {
+}
+else {
     . (Get-Item Temp:\complete_gh.ps1)
 }
 
@@ -239,7 +243,8 @@ function _reloadModule {
     # Ignore warnings, allow errors
     if (!$AllowWarn) {
         Import-Module @importModuleSplat 3>$null
-    } else {
+    }
+    else {
         Import-Module @importModuleSplat
     }
 }
@@ -252,10 +257,12 @@ New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Descriptio
     if ($parent -eq 'code') {
         $__ninConfig.Terminal.CurrentTerminal = 'code'
         $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'Code - Insiders') {
+    }
+    elseif ($parent -eq 'Code - Insiders') {
         $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
         $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'windowsterminal') {
+    }
+    elseif ($parent -eq 'windowsterminal') {
         # preview still uses this name
         $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
     }
@@ -300,6 +307,8 @@ New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Descriptio
 
 
 #>
+# set vars if not already existing
+$Env:TempNin ??= "$Env:UserProfile\SkyDrive\Documents\2021\profile_dump"
 $Env:Nin_Home ??= "$Env:UserProfile\Documents\2021" # what is essentially my base/root directory
 $Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
 $env:NinNow = Get-Item $Env:Nin_Home
@@ -309,12 +318,22 @@ $env:NinNow = Get-Item $Env:Nin_Home
 # double check that profile isn't failing to set the global env vars
 $Env:LESS ??= '-R'
 $ENV:PAGER ??= 'bat'
-$ENV:PAGER ??= 'less -R'
+# $ENV:PAGER ??= 'less -R'
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 $Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
 
-$Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 $Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
+$Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
+
+# now function:\help tests for the experimental feature and gcm on $ENV:PAger
+
+$ENV:PAGER = 'bat'
+<#
+bat
+    --force-colorization --pager <command>
+    --pager "Less -RF"
+    #>
+
 
 
 
@@ -483,8 +502,10 @@ if ($true) {
     $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
     $Profile | Add-Member -NotePropertyName 'PSDefaultParameterValues' -NotePropertyValue $PSCommandPath -ErrorAction Ignore
 
+    # experimenting:
     $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
-    $Accel::Add('psco', [System.Management.Automation.PSObject])
+    $Accel::Add('po', [System.Management.Automation.PSObject])
+    $Accel::Add('obj', [System.Management.Automation.PSObject])
     # expected values:
     # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
     # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\Visual Studio Code Host_history.txt"
