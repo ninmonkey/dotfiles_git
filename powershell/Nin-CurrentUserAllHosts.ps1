@@ -159,7 +159,8 @@ $__ninConfig ??= @{
     Prompt                     = @{
         # __doc__: Controls the look of your prompt, not 'Terminal'
         # __uri__: Terminal
-        Profile                      = 'default'    # __doc__: default | debugPrompt | Spartan
+        Profile                      = 'twoLine' # __doc__: errorSummary | debugPrompt | bugReport | oneLine | twoLine | spartan | default
+        # Profile = 'default' #
         IncludeGitStatus             = $false # __doc__: Enables Posh-Git status
         PredentLineCount             = 1 # __doc__: number of newlines befefore prompt
         IncludePredentHorizontalLine = $false
