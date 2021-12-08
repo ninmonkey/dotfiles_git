@@ -1,3 +1,4 @@
+WARNING: '㏒ [Nin-OneDriveFix.ps1] <<-- old, delete me'
 # write-warning "run --->>>> '$PSCommandPath'"
 # $OneDrive_VSCode
 # & $OneDrive_VSCode @('-r', '-g', 'telemetryCache.otc')

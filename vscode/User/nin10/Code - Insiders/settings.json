@@ -183,6 +183,9 @@
                     "group": "",
                     "order": 1
                 },
+                "args": [
+                    "-Nop"
+                ],
                 // "cwd": "${workspaceFolder}"
                 // "cwd": "${file}"
                 "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
@@ -706,6 +709,7 @@
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
         "editor.suggest.showSnippets": false,
+        "editor.fontSize": 14,
         // "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
@@ -721,7 +725,7 @@
     },
     // "json.maxItemsComputed": 10000,
     "[json]": {
-        // "editor.fontSize": 14,
+        "editor.fontSize": 14,
         "editor.suggest.showSnippets": false,
         // "editor.quickSuggestions": {
         //     "strings": true
@@ -2847,7 +2851,8 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 14,
     "errorLens.enabled": true, // for zoom -1
     "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
@@ -3029,6 +3034,11 @@
     "errorLens.infoGutterIconColor": "#00b7e4",
     "errorLens.errorGutterIconColor": "#e45454", // #def
     "errorLens.errorGutterIconPath": "",
+    "gitlens.advanced.abbreviatedShaLength": 7,
+    "gitlens.heatmap.hotColor": "#f66a0a1f",
+    "gitlens.heatmap.hotColor": "#f66a0acc", // 60%
+    "gitlens.heatmap.hotColor": "#f66a0a",
+    "gitlens.codeLens.authors.command": "gitlens.toggleFileHeatmap",
     "errorLens.gutterIconSize": "50%", // Change gutter icon size. Examples: auto, contain, cover, 50%, 150%
     // filters
     "editor.guides.highlightActiveIndentation": true,
@@ -3192,5 +3202,6 @@
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
     "workbench.colorTheme": "GitHub Dark",
-    "window.zoomLevel": -1,
+    "python.diagnostics.sourceMapsEnabled": true,
+    // "debug.console.acceptSuggestionOnEnter":
 }

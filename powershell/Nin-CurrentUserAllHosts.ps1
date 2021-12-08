@@ -3,6 +3,7 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]'
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 
@@ -12,6 +13,8 @@ $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 if ($true) {
     #$__ninConfig.Import.SeeminglyScience) {
     # refactor: temp test to see if it loads right
+
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
     $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
     if ($pathSeem) {
         Import-Module pslambda
@@ -21,6 +24,8 @@ if ($true) {
         Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
     }
 }
+
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
 Import-Module Dev.Nin #-Force
 
 Write-Warning @'
@@ -100,9 +105,10 @@ if ($false) {
 }
 
 if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Generate "complete_gh.ps1"'
     gh completion --shell powershell | Set-Content -Path temp:\complete_gh.ps1
-}
-else {
+} else {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> complete_gh.ps1'
     . (Get-Item Temp:\complete_gh.ps1)
 }
 
@@ -196,6 +202,7 @@ $__ninConfig ??= @{
     IsFirstLoad                = $true
 } #| __doc__ 'root to user-facing configuration options, see files and __doc__ for more'
 
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> main body start'
 if ($OneDrive.Enable_MyDocsBugMapping) {
     $__ninConfig.Config['PSScriptAnalyzerSettings'] = Get-Item -ea ignore 'C:\Users\cppmo_000\Skydrive\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
 }
@@ -244,8 +251,7 @@ function _reloadModule {
     # Ignore warnings, allow errors
     if (!$AllowWarn) {
         Import-Module @importModuleSplat 3>$null
-    }
-    else {
+    } else {
         Import-Module @importModuleSplat
     }
 }
@@ -258,12 +264,10 @@ New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Descriptio
     if ($parent -eq 'code') {
         $__ninConfig.Terminal.CurrentTerminal = 'code'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'Code - Insiders') {
+    } elseif ($parent -eq 'Code - Insiders') {
         $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
         $__ninConfig.Terminal.IsVSCode = $true
-    }
-    elseif ($parent -eq 'windowsterminal') {
+    } elseif ($parent -eq 'windowsterminal') {
         # preview still uses this name
         $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
     }
@@ -273,6 +277,7 @@ New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Descriptio
         $__ninConfig.Terminal.IsVSCodeAddon_Terminal = $true
     }
     if ($psEditor) {
+        Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> EditorServicesCommandSuite'
         $escs = Import-Module EditorServicesCommandSuite -PassThru
         if ($null -ne $escs -and $escs.Version.Major -lt 0.5.0) {
             Import-EditorCommand -Module EditorServicesCommandSuite
@@ -312,7 +317,7 @@ New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Descriptio
 $Env:TempNin ??= "$Env:UserProfile\SkyDrive\Documents\2021\profile_dump"
 $Env:Nin_Home ??= "$Env:UserProfile\Documents\2021" # what is essentially my base/root directory
 $Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
-$env:NinNow = Get-Item $Env:Nin_Home
+$env:NinNow = "$Env:Nin_Home"
 
 
 # Env-Vars are all caps because some apps check for env vars case-sensitive
@@ -468,6 +473,8 @@ function Get-ProfileAggressiveItem {
     [PSCustomObject]$meta
 }
 
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final body'
+
 if ($true) {
     # $__innerStartAliases = Get-Alias # -Scope local
     $splatAlias = @{
@@ -527,9 +534,9 @@ if ($true) {
             "Alias: $($_.Name)" | New-Text -fg pink
         }
     }
-
-
 }
+
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> start PSReadLine'
 
 if ($__ninConfig.UsePSReadLinePredict) {
 
@@ -662,7 +669,7 @@ $OptionalImports = @(
     # 'Utility' # loaded above
     'ClassExplorer'
     'Pansies'
-    'Dev.Nin'
+    # 'Dev.Nin'
     'Ninmonkey.Console'
     'Ninmonkey.Powershell'
     # 'Posh-Git'
@@ -672,6 +679,7 @@ $OptionalImports = @(
 )
 # Warn🛑 'Disabled [Posh-Git] because of performance issues' # maybe the prompt function is in a recursive loop
 
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> optional imports start'
 $OptionalImports
 | Join-String -sep ', ' -SingleQuote -op '[v] Loading Modules:' | Write-Verbose
 
@@ -683,10 +691,12 @@ $OptionalImports | ForEach-Object {
 }
 # }
 
-Import-Module Dev.Nin -Force -DisableNameChecking
+Import-Module Dev.Nin -DisableNameChecking
 Import-Module posh-git
 # finally "profile"
 Import-Module Ninmonkey.Profile -DisableNameChecking
+
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Backup-VSCode() start'
 Backup-VSCode -infa Continue
 # & {
 
@@ -698,6 +708,7 @@ if (!(Test-UserIsAdmin)) {
 }
 # }
 
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Choco start'
 <#
     [section]: Chocolately
 #>
@@ -769,7 +780,7 @@ if (Get-Command Set-PsFzfOption -ea ignore) {
 
     hr 1
 }
-
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final invokevscode dotsource, should not exist '
 
 # temp hack
 if (! (Get-Command 'code-venv' -ea ignore) ) {
@@ -800,3 +811,5 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
 }
 
 # New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
+
+Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] <-- end of file'

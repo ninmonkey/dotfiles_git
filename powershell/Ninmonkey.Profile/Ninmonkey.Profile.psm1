@@ -1,4 +1,4 @@
-
+Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1]'
 
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
@@ -146,7 +146,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass -Name '%.' -Value Dev.Nin\Dive.Prop -Description 'Alias for using diving similar to chaining ForEach objects'
 
     ## Category 'From->'
-    New-Alias @splatIgnorePass -Name 'From->Base64' -Value _nyi  #(_nyi 'Ninmonkey.Console\ConvertFrom-Base64String')
+    # New-Alias @splatIgnorePass -Name 'From->Base64' -Value _nyi  #('Ninmonkey.Console\ConvertFrom-Base64String')
     New-Alias @splatIgnorePass -Name 'From->Csv' -Value ConvertFrom-Csv
     New-Alias @splatIgnorePass -Name 'From->Decode' -Value _nyi # To/From: Unicode bytes <-> String
     New-Alias @splatIgnorePass -Name 'From->Json' -Value ConvertFrom-Json
@@ -246,8 +246,7 @@ function toggleErrors {
     # todo: cleanup: move to a better location
     $__ninConfig.Prompt.NumberOfPromptErrors = if ($__ninConfig.Prompt.NumberOfPromptErrors -eq 0) {
         3
-    }
-    else {
+    } else {
         0
     }
 }
@@ -277,6 +276,8 @@ function _Write-PromptGitStatus {
     .outputs
         either $null, or a string based on git status
     #>
+
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
     [cmdletbinding(PositionalBinding = $false)]
     param()
 
@@ -288,8 +289,7 @@ function _Write-PromptGitStatus {
         }
 
         & $GitPromptScriptBlock
-    }
-    catch {
+    } catch {
         Write-Error -ErrorRecord $_ Message 'failed invoking $GitPromptScriptBlock' -TargetObject $GitPromptScriptBlock
     }
 
@@ -312,6 +312,8 @@ function _Write-PromptIsAdminStatus {
 
         wt already sets tab titlen
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
+    param()
     "`n"
     if (!(Test-UserIsAdmin)) {
         return
@@ -339,6 +341,7 @@ function _Write-PromptPathToBreadCrumbs {
 
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
     [cmdletbinding(PositionalBinding = $false)]
     param(
         # FormatMode
@@ -397,8 +400,7 @@ function _Write-PromptPathToBreadCrumbs {
                     # $finalSegments.reverse() | Out-null
                     $FinalSegments | Out-ReversePipeline
                     | Join-String -sep $crumbJoinText
-                }
-                else {
+                } else {
                     $finalSegments
                     | Join-String -sep $crumbJoinText
                 }
@@ -413,8 +415,7 @@ function _Write-PromptPathToBreadCrumbs {
         }
 
         $FinalOutputString | Join-String -sep ''
-    }
-    catch {
+    } catch {
         $PSCmdlet.WriteError( $_ )
     }
 }
@@ -428,6 +429,7 @@ function _Write-PromptDynamicCrumbs {
     .notes
         future:
         #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
     [cmdletbinding()]
     param(
 
@@ -497,6 +499,7 @@ function _Write-ErrorSummaryPrompt {
         can't access global scope?
         summarize errors briefly, for screenshots / interactive animation
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
     param(
         # print, even when newcount is false
         [Parameter()]
@@ -535,8 +538,7 @@ function _Write-ErrorSummaryPrompt {
                 @(
                     $cStatus = if ($errStat.DeltaCount -ne 0) {
                         'red'
-                    }
-                    else {
+                    } else {
                         'green'
                     }
                     'errΔ [' | Write-Color $cDef
@@ -573,8 +575,7 @@ function _Write-ErrorSummaryPrompt {
             default {
                 if ($errStat.DeltaCount -eq 0) {
 
-                }
-                else {
+                } else {
                     '{0} new' -f @( $errStat.DeltaCount)
                 }
             }
@@ -634,6 +635,8 @@ function _Write-PromptDetectParent_iter0 {
     .synopsis
         verbose prompt to test term detection
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
+    param()
     $chunk = @()
     $template = "TermName: {0}`nIsVsCode: {1}`nIsPSIT: {2}"
     $chunk += $template -f @(
@@ -648,6 +651,8 @@ function _Write-PromptForBugReport {
     .synopsis
         verbose prompt to test term detection
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
+    param()
     [object[]]$chunk = @()
 
     $venv_info = Code-vEnv -PassThru -infa Ignore
@@ -700,6 +705,7 @@ function _Write-PromptForBugReport {
 }
 
 function _Write-Predent {
+     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
     param(
         # Number of newlines
         [Parameter(Position = 0)]
