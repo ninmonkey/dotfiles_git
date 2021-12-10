@@ -1,6 +1,29 @@
 {
     "launch": {
         "configurations": [
+            {
+                "name": "Py:🐍 <variable>.py",
+                "type": "python",
+                "request": "launch",
+                "args": [
+                    "-Nop"
+                ],
+                "showReturnValue": true,
+                "program": "${file}",
+                // "cwd": "${file.py}",
+                // "internalConsoleOptions": "openOnFirstSessionStart",
+                "justMyCode": true,
+                // "pythonArgs": [],
+                // "redirectOutput": true,
+                // "program": "${workspaceFolderBasename}/Day1/py/day1.py",
+                // "program": "${workspaceFolder}/Day1/day1-i2.py",
+                // "program": "${workspaceFolder}Day1/py/day1.py",
+                // "program": "${file}",
+                // "console": "integratedTerminal",
+                // "console": "externalTerminal",
+                // "redirectOutput": true,
+                // "autoReload": {}
+            },
             /*
 
       ### Sect: Build in-Dotnet launchers
@@ -2853,7 +2876,7 @@
     "editor.suggestFontSize": 14, // ctrl+space size
     "terminal.integrated.fontSize": 16,
     "terminal.integrated.fontSize": 14,
-    "errorLens.enabled": true, // for zoom -1
+    "errorLens.enabled": false, // for zoom -1
     "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
     "errorLens.exclude": [], //# regex

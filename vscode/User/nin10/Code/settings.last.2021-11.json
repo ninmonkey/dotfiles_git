@@ -1312,7 +1312,6 @@
     // [7] default value
     // default value
     "files.exclude": {
-        // # true  means hide. but breadcrumbs may not respec it.
         "**/*.exe": true,
         "**/*.lnk": true,
         "**/.git": true,
@@ -1347,7 +1346,6 @@
         "**/*.lnk": true,
         "**/*.log": true
     },
-    "workbench.commandPalette.history": 50,
     "breadcrumbs.filePath": "off",
     "breadcrumbs.filePath": "last", // theme-tag: minimalism
     "breadcrumbs.filePath": "on", // theme-tag: information
@@ -1580,14 +1578,7 @@
       */
     "workbench.colorCustomizations": {
         // custom for addons:
-        "editorLineNumber.activeForeground": "#A0B0B0",
-        "editorLineNumber.activeForeground": "#adb4b42f",
-        "editorLineNumber.foreground": "#A0B0B0",
-        "editorLineNumber.foreground": "#a0b0b044",
         "errorLens.errorBackground": "#e4545400",
-        // "minimapGutter.modifiedBackground": "#ff0000",
-        // "minimap.warningHighlight": "#hsl(50, 100%, 39%)",
-        "minimap.warningHighlight": "#C8A600",
         "errorLens.errorMessageBackground": "#e4545400",
         "errorLens.errorForeground": "#ff646400",
         "errorLens.warningBackground": "#ff942f00",
@@ -1669,10 +1660,10 @@
     "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
     "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
     "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FiraCode Nerd Font', 'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FiraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'fira code', consolas, monospace",
@@ -1688,8 +1679,8 @@
     "editor.fontFamily": "'Fira Code retina'",
     "editor.fontFamily": "'cascadia code'",
     "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
-    "editor.fontFamily": "'cascadia code', consolas",
     "editor.fontFamily": "'cascadia code pl', consolas",
+    "editor.fontFamily": "'cascadia code', consolas",
     // "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
@@ -1705,9 +1696,9 @@
     "editor.fontSize": 17, //18 16, // for zoom -1
     "editor.fontSize": 20, //18 16, // for zoom -1
     "editor.fontSize": 18, //18 16, // for zoom -1
-    "editor.fontSize": 18,
-    "editor.fontSize": 13,
     "editor.fontSize": 16,
+    "editor.fontSize": 13,
+    "editor.fontSize": 14,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -1744,7 +1735,6 @@
     //         "exePath": "I:\\PowerShell\\7\\pwsh.exe"
     //     }
     // ],
-    "editor.lineNumbers": "interval",
     "powershell.powerShellDefaultVersion": "PowerShell 7",
     "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
     "powershell.pester.debugOutputVerbosity": "Detailed", // "Detailed", //Diagnostic",
@@ -2053,7 +2043,7 @@
     // Controls whether an active snippet prevents quick suggestions.
     "editor.suggest.snippetsPreventQuickSuggestions": true,
     // Font size for the suggest widget. When set to `0`, the value of `editor.fontSize` is used.
-    "editor.suggestFontSize": 14,
+    "editor.suggestFontSize": 12,
     // Line height for the suggest widget. When set to `0`, the value of `editor.lineHeight` is used. The minimum value is 8.
     "editor.suggestLineHeight": 0,
     // Controls whether suggestions should automatically show up when typing trigger characters.
@@ -2553,7 +2543,6 @@
     "powershell.pester.codeLens": false,
     "errorLens.enabled": false,
     "debug.console.acceptSuggestionOnEnter": "on",
-    "window.zoomLevel": 1,
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
 }
