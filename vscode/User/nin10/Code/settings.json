@@ -760,10 +760,11 @@
         // },
         "editor.semanticHighlighting.enabled": true,
         "editor.wordBasedSuggestions": false,
+        "editor.wordBasedSuggestions": true,
         "editor.defaultFormatter": "ms-python.vscode-pylance", //#"ms-python.python",
         "editor.formatOnSave": true,
-        "editor.formatOnSaveMode": "modifications",
-        "editor.formatOnType": false
+        "editor.formatOnSaveMode": "modificationsIfAvailable",
+        "editor.formatOnType": false,
     },
     "[jsonc]": {
         "editor.quickSuggestions": {
@@ -788,8 +789,14 @@
         "editor.detectIndentation": false,
         "editor.tabSize": 4
     },
-    "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
+    // "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
     "[xml]": {
+        "editor.formatOnSave": true,
+        /* for formatting, try these depending on what's installed
+       */
+        "editor.defaultFormatter": "esbenp.prettier-vscode", // prettier
+        "editor.defaultFormatter": "vscode.html-language-features", // built-in
+        "editor.defaultFormatter": "redhat.vscode-xml",
         "editor.formatOnSave": true,
         /* for formatting, try these depending on what's installed
        */
@@ -797,6 +804,13 @@
         "editor.defaultFormatter": "vscode.html-language-features", // built-in
         "editor.defaultFormatter": "redhat.vscode-xml"
     },
+    "xml.format.preserveAttributeLineBreaks": false,
+    "xmlTools.splitAttributesOnFormat": true,
+    "xml.format.splitAttributes": true,
+    "xml.format.splitAttributesIndentSize": 2,
+    // "xmlTools.xmlFormatterImplementation": "v2",
+    "xmlTools.enableXmlTreeView": true,
+    "xml.codeLens.enabled": true,
     "xml.format.preserveAttributeLineBreaks": false,
     "xmlTools.splitAttributesOnFormat": true,
     "xml.format.splitAttributes": true,
@@ -832,7 +846,7 @@
     },
     "[powerquery]": {
         "editor.formatOnSave": false,
-        "editor.semanticHighlighting.enabled": true
+        "editor.semanticHighlighting.enabled": true,
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
     },
@@ -950,6 +964,7 @@
     // "markdown-preview-enhanced.enableExtendedTableSyntax": false,
     // "markdown-preview-enhanced.frontMatterRenderingOption": "table",
     "markdownlint.run": "onType",
+    "markdownlint.run": "onSave",
     "markdownlint.config": {
         // "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/master/schema/markdownlint-config-schema.json",
         "ul-indent": true,
@@ -3021,4 +3036,335 @@
     "testExplorer.useNativeTesting": true,
     "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
+    /*
+    Note: Some of these settings auto-delete when you toggle them off and on again.
+    that is why I have their names copied here
+
+        "editor.minimap.enabled": false,
+        "editor.inlineSuggest.enabled": true,
+        "outline.icons": false,
+        "workbench.activityBar.visible": false,
+    */
+    "editor.minimap.enabled": false, // for clean, default this off
+    "editor.minimap.enabled": true,
+    "editor.minimap.size": "fill",
+    "editor.minimap.size": "fit",
+    "editor.minimap.showSlider": "mouseover",
+    "editor.inlineSuggest.enabled": true,
+    "outline.icons": false,
+    "outline.icons": true,
+    "editor.selectionHighlight": true,
+    "editor.find.autoFindInSelection": "multiline",
+    "workbench.editor.showTabs": false, // cleaner
+    "workbench.editor.showTabs": true,
+    "powershell.startAutomatically": true,
+    "testExplorer.onStart": null,
+    "testExplorer.addToEditorContextMenu": true,
+    //    "testing.automaticallyOpenPeekView": "never",
+    "testing.automaticallyOpenPeekView": "never",
+    "testing.automaticallyOpenPeekViewDuringAutoRun": false,
+    "terminal.explorerKind": "integrated",
+    "terminal.integrated.defaultLocation": "editor",
+    "search.seedWithNearestWord": true,
+    "workbench.colorTheme": "Nord",
+    "python.diagnostics.sourceMapsEnabled": true,
+    // "ligature"
+    // "debug.console.acceptSuggestionOnEnter":
+    /*
+
+    ### Sect: Another dump
+
+           tags: dump, merge
+
+
+    ### Sect: Config Settings to Experiment with
+
+      */
+    "terminal.integrated.persistentSessionReviveProcess": "never", // new experiment config: <https://code.visualstudio.com/docs/editor/integrated-terminal#_terminal-process-reconnection>
+    // will this prevent prompt from synapse (venv) automatically changing your prompt
+    "python.analysis.typeCheckingMode": "basic",
+    "python.terminal.activateEnvInCurrentTerminal": false,
+    "python.terminal.activateEnvironment": false,
+    "debug.openExplorerOnEnd": false, // with auto tester, you want this to false
+    "debug.focusWindowOnBreak": true,
+    "editor.selectionHighlight": true,
+    "editor.autoSurround": "languageDefined",
+    "editor.autoClosingBrackets": "beforeWhitespace",
+    "editor.autoClosingOvertype": "always",
+    "editor.trimAutoWhitespace": true,
+    "editor.dragAndDrop": true,
+    // "editor.codeActionsOnSave":{
+    //     "source.fixAll": true,
+    //     "source.organizeImports": true
+    // },
+    "debug.console.wordWrap": true,
+    "debug.console.historySuggestions": false, // may huge impact on removing 'spam' in debug's intellisense
+    "debug.console.collapseIdenticalLines": true,
+    "editor.copyWithSyntaxHighlighting": true,
+    "editor.codeLens": true,
+    "editor.find.seedSearchStringFromSelection": true,
+    "editor.find.cursorMoveOnType": true,
+    "editor.fontLigatures": true,
+    "editor.folding": true,
+    "editor.foldingHighlight": true, //collapsed folded blocks highlight the single line
+    "editor.foldingStrategy": "auto",
+    "editor.showFoldingControls": "mouseover", // hide icons until you hover the gutter
+    "editor.highlightActiveIndentGuide": true, // highight **just one** specific line-block (the current block)
+    // "editor.fontWeight": "normal", // bold 300, 900,
+    "editor.hover.delay": 300, // 10, 710,
+    "editor.hover.enabled": true, // false,
+    // "editor.hover.sticky": false,
+    "editor.inlineHints.enabled": true, // does what? doesn't seem to be "run tests" or "linting"
+    // Code action kinds to be run on save.
+    // "editor.codeActionsOnSave": {
+    //     "source.fixAll": false,
+    //     "source.organizeImports": false,
+    // },
+    "editor.lightbulb.enabled": true,
+    // "editor.occurrencesHighlight": true,
+    // "editor.overviewRulerBorder": true, // overview does what?
+    // "editor.hideCursorInOverviewRuler": true, // does what?
+    // "editor.inlineHints.fontSize": 0,
+    // "editor.padding.bottom": 0,
+    // "editor.padding.top": 0,
+    "editor.matchBrackets": "near",
+    "editor.matchBrackets": "always", // shows the block you're in, without touching bracket
+    "editor.parameterHints.cycle": true,
+    "editor.parameterHints.enabled": true,
+    "editor.peekWidgetDefaultFocus": "tree",
+    // "editor.quickSuggestions": false | true | Obj
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "diffEditor.ignoreTrimWhitespace": false,
+    // more: "diffEditor.*"
+    // "workbench.editor.limit.value": 10,
+    // 20 more: "workbench.editor.*"
+    // "workbench.editor.untitled.hint": "text",
+    // "explorer.openEditors.sortOrder": "alphabetical",
+    // "editor.stickyTabStops": false,
+    "diffEditor.wordWrap": "inherit",
+    "editor.wrappingStrategy": "simple",
+    // "pesterExplorer.testResultsFilePath": "TestExplorerResults.xml",
+    "pesterExplorer.logpanel": true,
+    // "pesterExplorer.logfile": "pesterExplorer.log",
+    // "pesterExplorer.testRootDirectory": "/public",
+    // "pesterExplorer.testRootDirectory": "./public",
+    // "pesterExplorer.testRootDirectory": ".",
+    /*
+      Can I make person JSON config rules?
+
+      "json.schemas": [
+          {
+              "fileMatch": [
+                  "/myfile"
+              ],
+              "url": "schemaURL"
+          }
+      ],
+      */
+    /*
+      html.format.wrapAttributes
+          "aligned-multiple"              // Wrap when line length is exceeded, align attributes vertically.
+          "auto"                          // Wrap attributes only when line length is exceeded.
+          "force"                         // Wrap each attribute except first
+          "force-aligned"                 // Wrap each attribute except first and keep aligned.
+          "force-expand-multiline         // Wrap each attribute
+          "preserve",                     // Preserve wrapping of attributes
+          "preserve-aligned",             // Preserve wrapping of attributes but align
+
+          */
+    "html.format.wrapAttributes": "auto",
+    "editor.definitionLinkOpensInPeek": true,
+    "editor.definitionLinkOpensInPeek": false,
+    /*
+
+  ###### SubSect: Truly Experimental
+
+      */
+    "search.experimental.searchInOpenEditors": true,
+    "python.insidersChannel": "weekly",
+    /*
+
+  ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
+
+      see also settings:
+          powershell.notebooks.*
+
+      /*
+      "notebook.breadcrumbs.showCodeCells": and
+      "notebook.outline.showCodeCells":
+              https://code.visualstudio.com/updates/v1_53#_outline-and-breadcrumbs
+
+          */
+    "notebook.breadcrumbs.showCodeCells": true,
+    "workbench.panel.defaultLocation": "right",
+    "workbench.panel.defaultLocation": "bottom",
+    "terminal.integrated.tabs.showActions": "singleTerminalOrNarrow",
+    "terminal.integrated.showExitAlert": true,
+    "notebook.outline.showCodeCells": true,
+    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
+    /*
+
+  ###### SubSect: Editor ⇢ Tabs, Pins, Icons, Decorations
+
+      */
+    "workbench.editor.showTabs": false,
+    "workbench.editor.showTabs": true, // default
+    "workbench.editor.showIcons": false,
+    "workbench.editor.showIcons": true, // default
+    // see: <https://code.visualstudio.com/updates/v1_53#_wrap-tabs>
+    "workbench.editor.wrapTabs": false, // default
+    // "workbench.editor.tabSizing": "shrink", // super important if you 'wrapTabs'
+    // "workbench.editor.tabSizing": "fit", // super important if you 'wrapTabs'
+    "workbench.editor.tabSizing": "fit", // super important if you 'wrapTabs'
+    // "workbench.editor.wrapTabs": true,
+    /*
+      "workbench.editor.pinnedTabSizing":
+      Controls the sizing of pinned editor tabs. Pinned tabs are sorted to the beginning of all opened tabs and typically do not close until unpinned. This value is ignored when #workbench.editor.showTabs# is disabled.
+      "compact":      A pinned tab will show in a compact form with only icon or first letter of the editor name.
+      "normal":       [default] A pinned tab inherits the look of non pinned tabs.
+      "shrink":       A pinned tab shrinks to a compact fixed size showing parts of the editor name.
+      */
+    "workbench.editor.pinnedTabSizing": "shrink",
+    "workbench.editor.pinnedTabSizing": "normal", // default
+    "workbench.editor.decorations.colors": true,
+    "workbench.editor.decorations.badges": true,
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+
+###### SubSect: Searching
+
+      */
+    /*
+
+      "search.mode":
+              Default search mode
+
+              The search.mode setting is now available to allow configuring what search UI commands like Search: Find in Files, and the explorer's Find in Folder... and Find in Workspace context menu entries use,
+
+          "view"             Search in the search view, either in the panel or sidebar.
+          "newEditor"        Search in a new search editor
+          "reuseEditor"      Search in an existing search editor if present, otherwise in a new search editor
+
+      */
+    // "search.mode": "view",
+    // "search.mode": "reuseEditor",
+    "search.searchEditor.doubleClickBehaviour": "goToLocation", // "openLocationToSide", "goToLocation"
+    "search.searchEditor.defaultNumberOfContextLines": 1, // grep -C <n>
+    "search.searchEditor.reusePriorSearchConfiguration": true,
+    "search.mode": "newEditor",
+    "editor.links": true,
+    // "editor.glyphMargin": true,
+    // "editor.fontWeight": "normal",
+    // schema for Powershell
+    /*
+
+  ### Sect: Real Config Starts Here
+
+      */
+    /*
+
+  ### Sect: Suggestions, Intellisence, Autocomplete, Completers
+
+      */
+    "editor.suggest.insertMode": "insert",
+    // "editor.quickSuggestionsDelay": 10,
+    "editor.quickSuggestionsDelay": 800,
+    "editor.wordBasedSuggestionsMode": "allDocuments",
+    "editor.wordBasedSuggestionsMode": "matchingDocuments", // "allDocuments" "currentDocuments", "matchingDocuments"
+    /*
+
+      editor: suggest
+          https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
+
+      */
+    "editor.wordBasedSuggestions": true,
+    "editor.suggest.showWords": false, // first test
+    "editor.suggest.showKeywords": true,
+    // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
+    // "editor.suggestSelection": "recentlyUsedByPrefix",
+    // "editor.suggestSelection": "first",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "choseToUpdateConfiguration",
+    "editor.suggest.showStatusBar": true, // https://code.visualstudio.com/updates/v1_51#_status-bar-for-suggestions
+    // "editor.suggest.insertMode":"insert", // https://code.visualstudio.com/updates/v1_51#_move-cursor-to-select-suggestions
+    // "editor.colorDecorators": true,
+    "editor.suggest.filterGraceful": true,
+    "editor.suggest.localityBonus": false,
+    // "editor.acceptSuggestionOnEnter": "smart",
+    "editor.suggest.showFields": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.links": true, // this might be the cause of the copy paste issues
+    // "editor.copyWithSyntaxHighlighting": true,
+    "editor.emptySelectionClipboard": false,
+    /*
+
+  ### Sect: Git, Github
+
+      */
+    /*
+      "git:*"
+          <https://code.visualstudio.com/updates/v1_53#_git-new-settings>
+          "git.autofetch"
+          "git.ignoreRebaseWarning"
+          "git.requireGitUserConfig"
+      */
+    // "git.autofetch": false,           // all | true | false
+    "git.ignoreRebaseWarning": false, // [default]false | true
+    "git.requireGitUserConfig": true, // [def]true | false
+    /*
+
+  ### Sect: Log Levels and Trace / tracing
+
+      */
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    "powerquery.trace.server": "verbose",
+    "powerquery.trace.server": "messages",
+    "python.analysis.logLevel": "Warning", // error/warnining/info/trace
+    // "powershell editor services.trace.server": "verbose",
+    // "powershell editor services.trace.server": "diagnostic",
+    "terminal.integrated.drawBoldTextInBrightColors": true,
+    /*
+
+    ### Sect: more
+
+           tags: Tag1, Tag2
+
+    */
+    "debug.openDebug": "openOnDebugBreak",
+    "editor.wordWrapColumn": 140,
+    "terminal.integrated.rendererType": "auto",
+    // "workbench.editor.focusRecentEditorAfterClose": true,
+    "gitlens.views.repositories.files.layout": "list",
+    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
+    // "terminal.integrated.inheritEnv": false,
+    // try some new
+    // "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
+    // "editor.inlayHints.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+    "codepoint.statusbar": "description",
+    "workbench.quickOpen.closeOnFocusLost": false, // it means the command palette
+    "workbench.quickOpen.preserveInput": true,
+    "task.quickOpen.detail": true,
+    "task.quickOpen.history": 30,
+    "task.quickOpen.showAll": false,
+    "task.quickOpen.skip": false,
+    "gitlens.advanced.quickPick.closeOnFocusOut": true,
+    // "editor.suggest.statusBar.visible": true,
+    // "editor.formatOnSave": true,
+    // "editor.formatOnPaste": true,
+    // "editor.formatOnType": true,
+    // "editor.largeFileOptimizations": false,
+    // "python.linting.mypyEnabled": true,
+    // "debug.inlineValues": true,
+    "editor.find.autoFindInSelection": "multiline",
+    "powershell.developer.waitForSessionFileTimeoutSeconds": 240
 }
