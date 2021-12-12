@@ -165,7 +165,7 @@ $__ninConfig ??= @{
     Prompt                     = @{
         # __doc__: Controls the look of your prompt, not 'Terminal'
         # __uri__: Terminal
-        Profile                      = 'twoLine' # __doc__: errorSummary | debugPrompt | bugReport | oneLine | twoLine | spartan | default
+        Profile                      = 'default' # __doc__: errorSummary | debugPrompt | bugReport | oneLine | twoLine | spartan | default
         # Profile = 'default' #
         IncludeGitStatus             = $false # __doc__: Enables Posh-Git status
         PredentLineCount             = 1 # __doc__: number of newlines befefore prompt
@@ -256,6 +256,7 @@ function _reloadModule {
     }
 }
 
+New-Alias 'Repl->PtPy' -Value 'ptpython' -Description 'repl from: <https://github.com/prompt-toolkit/ptpython>'
 New-Alias 'rel' -Value '_reloadModule' -ea ignore
 New-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
 New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Description 'to prevent shadowing by PSSCriptTools'
@@ -328,12 +329,13 @@ $ENV:PAGER ??= 'bat'
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 $Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
 
-$Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
-$Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
+$Env:Pager ??= 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 
 # now function:\help tests for the experimental feature and gcm on $ENV:PAger
+$Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
 
 $ENV:PAGER = 'bat'
+$ENV:PYTHONSTARTUP = Get-Item -ea continue "${Env:Nin_Dotfiles}/cli/python/nin-py3-x-profile.py"
 <#
 bat
     --force-colorization --pager <command>

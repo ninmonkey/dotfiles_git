@@ -541,6 +541,7 @@ function _Write-ErrorSummaryPrompt {
                     } else {
                         'green'
                     }
+                    'e [' | Write-Color $cDef
                     'errΔ [' | Write-Color $cDef
                     '{0}' -f @(
                         $errStat.DeltaCount | Write-Color $cStatus
@@ -562,7 +563,7 @@ function _Write-ErrorSummaryPrompt {
                     'e[{0}]' -f @(
                         ($errStat.CurCount | Write-Color $c.ErrorPale)
                     )
-                    'Δ '
+                    'e '
                     '[{0}]' -f @(
                         ($errStat.DeltaCount | Write-Color $c.FgDim)
                     )

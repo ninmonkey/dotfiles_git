@@ -426,6 +426,19 @@
        tags: Screencast
 
 */
+    "html.suggest.html5": true,
+    "html.autoClosingTags": true,
+    "html.completion.attributeDefaultValue": "doublequotes",
+    /*
+
+    ### Sect: CustomData vscode builtin
+
+           tags: Addon, Standard, custom, completer
+
+    - [vscode-html-languageservice/docs/customData.md](https://github.com/microsoft/vscode-html-languageservice/blob/main/docs/customData.md)
+    - [custom elements config](https://github.com/microsoft/vscode-custom-data)
+
+    */
     "screencastMode.fontSize": 30,
     // Controls how long (in milliseconds) the keyboard overlay is shown in screencast mode.
     "screencastMode.keyboardOverlayTimeout": 500, // 300, // 800
@@ -952,7 +965,7 @@
     "markdownlint.customRulesAlwaysAllow": [],
     // "markdown"
     "markdownlint.customRules": [
-        // "f"
+        "{docsmsft.docs-linting}/markdownlint-custom-rules/rules.js"
     ],
     /*
   ###### SubSect: Extension: ⇢ mypy ( todo: sort / cleanup / test these)
@@ -1580,6 +1593,7 @@
       */
     "workbench.colorCustomizations": {
         // custom for addons:
+        "editorWarning.foreground": "#00fff252",
         "editorLineNumber.activeForeground": "#A0B0B0",
         "editorLineNumber.activeForeground": "#adb4b42f",
         "editorLineNumber.foreground": "#A0B0B0",
@@ -1587,7 +1601,8 @@
         "errorLens.errorBackground": "#e4545400",
         // "minimapGutter.modifiedBackground": "#ff0000",
         // "minimap.warningHighlight": "#hsl(50, 100%, 39%)",
-        "minimap.warningHighlight": "#C8A600",
+        "minimap.warningHighlight": "#e26de283",
+        "minimap.warningHighlight": "#e26de234",
         "errorLens.errorMessageBackground": "#e4545400",
         "errorLens.errorForeground": "#ff646400",
         "errorLens.warningBackground": "#ff942f00",
@@ -1685,11 +1700,12 @@
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'Fira Code'",
-    "editor.fontFamily": "'Fira Code retina'",
     "editor.fontFamily": "'cascadia code'",
     "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
     "editor.fontFamily": "'cascadia code', consolas",
     "editor.fontFamily": "'cascadia code pl', consolas",
+    "editor.fontFamily": "'cascadia code pl', consolas, monospace",
+    "editor.fontFamily": "'Fira Code retina', 'cascadia code pl'",
     // "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
@@ -1708,6 +1724,7 @@
     "editor.fontSize": 18,
     "editor.fontSize": 13,
     "editor.fontSize": 16,
+    "editor.fontSize": 18,
     // "editor.suggestFontSize": 12, // for zoom 0
     // "terminal.integrated.fontSize": 15, // for zoom -1
     "notebook.experimental.useMarkdownRenderer": true,
@@ -2553,7 +2570,9 @@
     "powershell.pester.codeLens": false,
     "errorLens.enabled": false,
     "debug.console.acceptSuggestionOnEnter": "on",
-    "window.zoomLevel": 1,
+    "docs-build.userType": "Public Contributor",
+    "emmet.triggerExpansionOnTab": true,
+    "emmet.showSuggestionsAsSnippets": true,
     // new action (for keybind)
     // "workbench.action.createTerminalEditorSide":
 }
