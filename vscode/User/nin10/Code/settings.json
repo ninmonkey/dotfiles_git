@@ -379,6 +379,42 @@
             // }
         ]
     },
+    /*
+
+    ### Sect: New Settings: 2021-11
+        https://code.visualstudio.com/updates/v1_63
+
+           tags: what's new
+
+        [configure-problems-navigation-order](https://code.visualstudio.com/updates/v1_63#_configure-problems-navigation-order)
+
+    */
+    "problems.autoReveal": true,
+    "problems.decorations.enabled": true,
+    "problems.showCurrentInStatus": true,
+    "problems.sortOrder": "position", // "position" | "severity"
+    "outline.problems.badges": true,
+    "outline.problems.colors": true,
+    "outline.problems.enabled": true,
+    /*
+
+    ### Sect: not new but experimenting with settings:
+
+           tags: experiment
+
+    */
+    // "problems.autoReveal": true,
+    "outline.showBooleans": false,
+    "outline.showEnumMembers": false,
+    "outline.showNull": false,
+    "outline.showConstructors": false,
+    "errorLens.severityText": [
+        "ERROR",
+        "WARNING",
+        "INFO",
+        "HINT"
+    ],
+    // "python.analysis.diagnosticSeverityOverrides": {"reportMissingImports": "error"},
     // Update the search query to the editor's selected text when focusing the search view. This happens either on click or when triggering the `workbench.views.search.focus` command.
     /*
 
@@ -523,8 +559,8 @@
     "editor.minimap.showSlider": "mouseover",
     //
     // mode: small left
-    "editor.minimap.side": "right",
-    "editor.minimap.maxColumn": 60,
+    "editor.minimap.side": "left",
+    "editor.minimap.maxColumn": 30,
     "editor.linkedEditing": true,
     // "editor.minimap.size": ,
     "editor.minimap.size": "fill",
@@ -543,7 +579,6 @@
         "comments": false,
         "strings": false
     },
-    "diffEditor.ignoreTrimWhitespace": false,
     // more: "diffEditor.*"
     // "workbench.editor.limit.value": 10,
     // 20 more: "workbench.editor.*"
@@ -766,28 +801,22 @@
         "editor.formatOnSaveMode": "modificationsIfAvailable",
         "editor.formatOnType": false,
     },
-    "[jsonc]": {
+    "[json][jsonc][javascript]": {
+        // mult-languages: <https://code.visualstudio.com/updates/v1_63#_multiple-language-specific-editor-settings>
         "editor.quickSuggestions": {
             "strings": true
         },
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
-        "editor.formatOnPaste": false
-    },
-    "[json]": {
-        "editor.quickSuggestions": {
-            "strings": true
-        },
-        // "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.defaultFormatter": "vscode.json-language-features",
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": false,
-        // "editor.formatOnType": true,
         "editor.formatOnPaste": false,
         "editor.semanticHighlighting.enabled": true,
-        // "editor.maxTokenizationLineLength": 20000
-        "editor.detectIndentation": false,
-        "editor.tabSize": 4
+        // "editor.maxTokenizationLineLength": 20000,
+    },
+    "[jsonc]": {},
+    "[json]": {
+        // "editor.formatOnType": true,
+        // "editor.detectIndentation": false,
+        // "editor.tabSize": 4
     },
     // "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
     "[xml]": {
@@ -855,12 +884,14 @@
         "editor.wrappingIndent": "deepIndent",
         "editor.wrappingStrategy": "simple"
     },
-    "[javascript]": {
+    "[typescript][javascript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features",
         // "editor.formatOnType": true,
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false
     },
+    "[javascript]": {},
+    "[typescript]": {},
     /*
     ### Sect: Prettier
 
@@ -1607,17 +1638,13 @@
           docs: <https://code.visualstudio.com/api/references/theme-color>
       */
     "workbench.colorCustomizations": {
-        // custom for addons:
+        // custom for addons:d
         "editorWarning.foreground": "#00fff252",
         "editorLineNumber.activeForeground": "#A0B0B0",
         "editorLineNumber.activeForeground": "#adb4b42f",
         "editorLineNumber.foreground": "#A0B0B0",
         "editorLineNumber.foreground": "#a0b0b044",
         "errorLens.errorBackground": "#e4545400",
-        // "minimapGutter.modifiedBackground": "#ff0000",
-        // "minimap.warningHighlight": "#hsl(50, 100%, 39%)",
-        "minimap.warningHighlight": "#e26de283",
-        "minimap.warningHighlight": "#e26de234",
         "errorLens.errorMessageBackground": "#e4545400",
         "errorLens.errorForeground": "#ff646400",
         "errorLens.warningBackground": "#ff942f00",
@@ -1663,6 +1690,12 @@
 
     */
         // "errorLens.warningMessageBackground": "#fff00005",
+        // "minimapGutter.modifiedBackground": "#ff0000",
+        // "minimap.warningHighlight": "#hsl(50, 100%, 39%)",
+        // "minimap.background": "#ff0000",
+        "minimap.errorHighlight": "#ff7b00d8",
+        "minimap.warningHighlight": "#e26de283",
+        "minimap.warningHighlight": "#e26de234",
         "errorLens.warningBackground": "#ff942f10",
         "errorLens.errorForeground": "#f77777",
         "errorLens.errorMessageBackground": "#e4545405",
@@ -1670,10 +1703,11 @@
         "errorLens.warningForeground": "#fa973a70",
         "errorLens.infoForeground": "#ea00ff",
         "minimap.findMatchHighlight": "#1ef029",
-        "minimap.warningHighlight": "#ee6f8a6b",
+        "minimap.warningHighlight": "#ee6f8a6b", //# browish warnning
+        "minimap.warningHighlight": "#eed06f6b",
         "minimap.foregroundOpacity": "#ff000081",
         "minimap.selectionHighlight": "#264f78",
-        "minimap.selectionOccurrenceHighlight": "#feef2e",
+        "minimap.selectionOccurrenceHighlight": "#2e70fe",
         "minimap.unicodeHighlight": "#d18616",
         "minimapGutter.addedBackground": "#587c0c",
         "minimapGutter.deletedBackground": "#94151b",
@@ -2058,10 +2092,9 @@
     "snippets.viewer.sortSnippetsByName": true,
     "python.defaultInterpreterPath": "c:\\Users\\cppmo_000\\SkyDrive\\Documents\\2020\\python\\one_offs\\Heroes of the Storm stats\\venv\\Scripts\\python.exe",
     "errorLens.enabledDiagnosticLevels": [
-        "error",
-        "warning",
+        "hint",
         "info",
-        "hint"
+        "error"
     ],
     "workbench.iconTheme": "vscode-icons",
     "vsicons.associations.files": [
@@ -2776,12 +2809,12 @@
 
     */
     "errorLens.fontFamily": "calibri", //"arial bold",
-    "editor.fontSize": 14,
-    "editor.fontSize": 18,
     "editor.fontSize": 16,
+    "editor.fontSize": 18,
+    "editor.fontSize": 15,
     // "editor.fontWeight": "600",
-    "debug.console.fontSize": 16,
-    "terminal.integrated.fontSize": 16,
+    "debug.console.fontSize": 14,
+    "terminal.integrated.fontSize": 1,
     "errorLens.fontSize": "12px",
     // "editor.fontWeight": "350", // for cascadia code
     // fira: retina is more bold (on nin8)
@@ -3049,7 +3082,7 @@
     "editor.minimap.enabled": true,
     "editor.minimap.size": "fill",
     "editor.minimap.size": "fit",
-    "editor.minimap.showSlider": "mouseover",
+    "editor.minimap.showSlider": "always",
     "editor.inlineSuggest.enabled": true,
     "outline.icons": false,
     "outline.icons": true,
@@ -3233,7 +3266,7 @@
     "workbench.editor.decorations.colors": true,
     "workbench.editor.decorations.badges": true,
     "workbench.editor.enablePreviewFromCodeNavigation": true,
-
+    /*
 ###### SubSect: Searching
 
       */
@@ -3366,5 +3399,6 @@
     // "python.linting.mypyEnabled": true,
     // "debug.inlineValues": true,
     "editor.find.autoFindInSelection": "multiline",
-    "powershell.developer.waitForSessionFileTimeoutSeconds": 240
+    "powershell.enableProfileLoading": true,
+    "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
 }
