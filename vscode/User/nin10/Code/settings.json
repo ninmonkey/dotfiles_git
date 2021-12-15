@@ -388,7 +388,18 @@
 
         [configure-problems-navigation-order](https://code.visualstudio.com/updates/v1_63#_configure-problems-navigation-order)
 
+        new family of configs: <https://code.visualstudio.com/updates/v1_63#_tasks>
+            <terminal.integrated.automationProfile.*>
+
     */
+    // new: <https://code.visualstudio.com/updates/v1_63#_method-signature-completions>
+    "typescript.suggest.classMemberSnippets.enabled": true,
+    "javascript.suggest.classMemberSnippets.enabled": true,
+    // new: <https://code.visualstudio.com/updates/v1_63#_jsx-attribute-completions>
+    "javascript.preferences.jsxAttributeCompletionStyle": "auto",
+    "typescript.preferences.jsxAttributeCompletionStyle": "auto",
+    "npm.scriptExplorerExclude": [],
+    /* new: auto open markdown: <https://code.visualstudio.com/updates/v1_63#_markdown-preview-custom-editor> */
     "problems.autoReveal": true,
     "problems.decorations.enabled": true,
     "problems.showCurrentInStatus": true,
@@ -396,6 +407,16 @@
     "outline.problems.badges": true,
     "outline.problems.colors": true,
     "outline.problems.enabled": true,
+    "notebook.globalToolbar": true,
+    "screencastMode.keyboardShortcutsFormat": "commandWithGroupAndKeys",
+    "screencastMode.keyboardShortcutsFormat": "commandWithGroupAndKeys",
+    "notebook.globalToolbarShowLabel": "dynamic",
+    //highlight hidden unicode, patch: <https://code.visualstudio.com/updates/v1_63#_unicode-highlighting>
+    "editor.unicodeHighlight.allowedCharacters": {},
+    "editor.unicodeHighlight.ambiguousCharacters": true,
+    "editor.unicodeHighlight.includeComments": "inUntrustedWorkspace",
+    "editor.unicodeHighlight.invisibleCharacters": true,
+    "editor.unicodeHighlight.nonBasicASCII": "inUntrustedWorkspace",
     /*
 
     ### Sect: not new but experimenting with settings:
@@ -404,6 +425,26 @@
 
     */
     // "problems.autoReveal": true,
+    "sortJSON.contextMenu": {
+        "sortJSON": true,
+        "sortJSONReverse": true,
+        "sortJSONKeyLength": true,
+        "sortJSONKeyLengthReverse": true,
+        "sortJSONAlphaNum": true,
+        "sortJSONAlphaNumReverse": true,
+        "sortJSONValues": true,
+        "sortJSONValuesReverse": true,
+        "sortJSONType": true,
+        "sortJSONTypeReverse": true
+    },
+    "sortJSON.excludedFiles": [
+        "package.json",
+        "C:/Users/cppmo_000/AppData/Roaming/Code/User/settings.json"
+    ],
+    "explorer.sortOrder": "modified",
+    "explorer.sortOrder": "mixed",
+    "explorer.sortOrder": "filesFirst",
+    // "sortJSON.orderOverride": [],
     "outline.showBooleans": false,
     "outline.showEnumMembers": false,
     "outline.showNull": false,
@@ -1307,7 +1348,9 @@
       applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
   */
     "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook"
+        "*.ipynb": "jupyter-notebook",
+        /* new: auto open markdown: <https://code.visualstudio.com/updates/v1_63#_markdown-preview-custom-editor> */
+        "*.md": "vscode.markdown.preview.editor",
     },
     /*
 
