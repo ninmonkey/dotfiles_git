@@ -2093,7 +2093,7 @@
       */
     // "csharp.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
     "csharp.semanticHighlighting.enabled": true, // default is false?
-    "editor.semanticHighlighting.enabled": "configuredByTheme",
+    "editor.semanticHighlighting.enabled": true,
     "editor.semanticTokenColorCustomizations": {
         // per-theme
         "enabled": true,
@@ -3476,5 +3476,4 @@
     "editor.find.autoFindInSelection": "multiline",
     "powershell.enableProfileLoading": true,
     "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
-    "markdown-preview-enhanced.enableExtendedTableSyntax": true,
 }
