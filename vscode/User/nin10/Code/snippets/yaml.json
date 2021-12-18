@@ -12,8 +12,11 @@
     // 	],
     // 	"description": "Log output to console"
     // }
+    // ▸⇢⁞ ┐⇽▂
+    // 🐛💻📄📁🏠🖧
+    // DevTool💻 Conversion📏 Style🎨 Format🎨 ArgCompleter🧙‍♂️ NativeApp💻 ExamplesRef📚 TextProcessing📚 Regex🔍 Prompt💻 Cli_Interactive🖐 Experimental🧪 UnderPublic🕵️‍♀️ My🐒 Validation🕵
     "Template: Yaml with header": {
-        "prefix": "Template: Yaml Header",
+        "prefix": "template ┐ Yaml Header",
         "description": "Template🐒 yaml [header]",
         "body": [
             "---",
@@ -26,12 +29,21 @@
             "...",
         ],
     },
+    "core: Record": {
+        "prefix": "record ┐ core",
+        "description": "record🐒 yaml [records]. Basic list of records syntax",
+        "body": [
+            "- ${1:Key}:",
+            "    ${2:Name}: ${3:Value}${0}",
+            // "    ${0:\\:} ",
+        ],
+    },
     "Template: Yaml with array of records": {
-        "prefix": "Template: Yaml Record",
+        "prefix": "template ┐ Yaml Record",
         "description": "Template🐒 yaml [records]",
         "body": [
             "# [record]",
-            "martin:",
+            "- martin:",
             "  name: Martin D'vloper",
             "  job: Developer",
             "  skill: Elite",
