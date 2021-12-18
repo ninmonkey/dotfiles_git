@@ -1681,8 +1681,9 @@
         "errorLens.warningTextColor": "rgba(23,240,240,0.1)",
         "errorLens.infoColor": "rgba(0,20,0,0.4)",
         "errorLens.infoTextColor": "rgba(2,240,240,1.0)",
-        // custom for addons:d
+        // custom for addons`:d
         "editorWarning.foreground": "#00fff252",
+        // "editorWarning.foreground": "#00fff252", // # Squiggle
         "editorLineNumber.activeForeground": "#A0B0B0",
         "editorLineNumber.activeForeground": "#adb4b42f",
         "editorLineNumber.foreground": "#A0B0B0",
@@ -1744,7 +1745,6 @@
         "errorLens.errorMessageBackground": "#e4545405",
         "errorLens.errorBackground": "#e454540a",
         "errorLens.warningForeground": "#fa973a70",
-        "errorLens.infoForeground": "#ea00ff",
         "minimap.findMatchHighlight": "#1ef029",
         "minimap.warningHighlight": "#ee6f8a6b", //# browish warnning
         "minimap.warningHighlight": "#eed06f6b",
@@ -1888,7 +1888,22 @@
         // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
         // "editorLineNumber.activeForeground": "#6ad4ee",
         "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
-        "editorLineNumber.activeForeground": "#929292" // dim
+        "editorLineNumber.activeForeground": "#929292", // dim
+        // more error lens
+        "errorLens.infoBackground": "#00b7e420", // def: 00b7e420
+        "errorLens.infoBackground": "#00b6e40c", // def: 00b7e420
+        // "errorLens.infoBackgroundLight": "#00b7e420", // def 00b7e420
+        "errorLens.infoForeground": "#00b7e4", // def: 00b7e4
+        "errorLens.infoForeground": "#00b6e48e", // def: 00b7e4
+        "errorLens.infoForeground": "#00b6e48e", // def: 00b7e4 is text, not  squiggle
+        "errorLens.infoForegroundLight": "#00b7e4",
+        // "errorLens.infoForegroundLight": "#e45400",
+        //"errorLens.infoMessageBackground": "#ffffff00",
+        //"errorLens.statusBarErrorForeground": "#ff6464",
+        //"errorLens.statusBarHintForeground": "#2faf64",
+        //"errorLens.statusBarIconErrorForeground": "#ff6464",
+        //"errorLens.statusBarIconWarningForeground": "#fa973a",
+        //"errorLens.statusBarInfoForeground": "#00b7e4",
     },
     // Controls the letter spacing of the terminal, this is an integer value which represents the amount of additional pixels to add between characters.
     // "terminal.integrated.letterSpacing": 1,
