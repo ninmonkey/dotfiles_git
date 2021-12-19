@@ -15,9 +15,9 @@
     // ▸⇢⁞ ┐⇽▂
     // 🐛💻📄📁🏠🖧
     // DevTool💻 Conversion📏 Style🎨 Format🎨 ArgCompleter🧙‍♂️ NativeApp💻 ExamplesRef📚 TextProcessing📚 Regex🔍 Prompt💻 Cli_Interactive🖐 Experimental🧪 UnderPublic🕵️‍♀️ My🐒 Validation🕵
-    "Template: Yaml with header": {
+    "template: Yaml with header": {
         "prefix": "template ┐ Yaml Header",
-        "description": "Template🐒 yaml [header]",
+        "description": "template🐒 yaml [header]",
         "body": [
             "---",
             "- Apple",
@@ -38,15 +38,21 @@
             // "    ${0:\\:} ",
         ],
     },
-    "Template: Yaml with array of records": {
+    "template: Yaml with array of records": {
         "prefix": "template ┐ Yaml Record",
-        "description": "Template🐒 yaml [records]",
+        "description": "template🐒 yaml [records]",
         "body": [
             "# [record]",
             "- martin:",
             "  name: Martin D'vloper",
             "  job: Developer",
             "  skill: Elite",
+            "",
+            "# 1 line [record]",
+            "- martin: {name: Martin D'vloper, job: Developer, skill: Elite}",
+            "",
+            "# 1 line [list]",
+            "- fruits: ['Apple', 'Orange', 'Strawberry', 'Mango']",
             "",
             "# [list[record]]",
             "- martin:",
