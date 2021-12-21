@@ -2,6 +2,18 @@
     "launch": {
         "configurations": [
             {
+                "args": [
+                    "--extensionDevelopmentPath=${workspaceFolder}"
+                ],
+                "name": "Launch Extension",
+                "outFiles": [
+                    "${workspaceFolder}/out/**/*.js"
+                ],
+                "preLaunchTask": "npm",
+                "request": "launch",
+                "type": "pwa-extensionHost"
+            },
+            {
                 "name": "Py:🐍 <variable>.py",
                 "type": "python",
                 "request": "launch",
@@ -1046,6 +1058,7 @@
     "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
+        "editor.fontSize": 14,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
         "editor.semanticHighlighting.enabled": true,
@@ -1111,7 +1124,7 @@
         "editor.suggest.showIcons": true,
         "editor.suggest.shareSuggestSelections": false,
         "editor.suggest.showStatusBar": true,
-        "editor.suggestFontSize": 14,
+        "editor.suggestFontSize": 12, // was < 12 | 14 >
         "editor.codeLensFontSize": 12,
         "editor.inlayHints.fontSize": 12,
         "editor.suggestOnTriggerCharacters": true,
@@ -3225,6 +3238,5 @@
     "search.seedWithNearestWord": true,
     "workbench.colorTheme": "GitHub Dark",
     "python.diagnostics.sourceMapsEnabled": true,
-    "window.zoomLevel": -1,
     // "debug.console.acceptSuggestionOnEnter":
 }
