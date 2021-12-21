@@ -408,9 +408,9 @@ $PSDefaultParameterValues['help:detailed'] = $true
         - [ ] linter warn when parameter name isn't valid, like a code change, or datatype change
 #>
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
-$PSDefaultParameterValues['Code-Venv:ForceMode'] = 'code'
-$PSDefaultParameterValues['Dev.Nin\Invoke-VSCodeVenv:ForceMode'] = 'code'
 $PSDefaultParameterValues['code-venv:ForceMode'] = 'code'
+$PSDefaultParameterValues['Dev.Nin\Invoke-VSCodeVenv:ForceMode'] = 'insiders'
+$PSDefaultParameterValues['Code-Venv:ForceMode'] = 'insiders' # < code | insiders >
 # $PSDefaultParameterValues['Dev.Nin\Invoke-VSCodeVenv:infa']='ignore'
 # Dev.Nin\Invoke-VSCodeVenv
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'

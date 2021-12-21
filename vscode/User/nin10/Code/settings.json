@@ -1681,8 +1681,9 @@
         "errorLens.warningTextColor": "rgba(23,240,240,0.1)",
         "errorLens.infoColor": "rgba(0,20,0,0.4)",
         "errorLens.infoTextColor": "rgba(2,240,240,1.0)",
+        "errorLens.infoTextColor": "rgba(2,240,240,1.0)",
         // custom for addons`:d
-        "editorWarning.foreground": "#00fff252",
+        "editorWarning.foreground": "#00fff252", // main squiggle
         // "editorWarning.foreground": "#00fff252", // # Squiggle
         "editorLineNumber.activeForeground": "#A0B0B0",
         "editorLineNumber.activeForeground": "#adb4b42f",

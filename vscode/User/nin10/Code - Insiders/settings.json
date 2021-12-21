@@ -827,7 +827,8 @@
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
-        "editor.wrappingStrategy": "simple"
+        "editor.wrappingStrategy": "simple",
+        "editor.fontSize": 11,
     },
     "[javascript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features",
@@ -979,14 +980,6 @@
     "terminal.integrated.rendererType": "auto",
     // "workbench.editor.focusRecentEditorAfterClose": true,
     "gitlens.views.repositories.files.layout": "list",
-    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
     // "terminal.integrated.inheritEnv": false,
     // try some new
     // "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
@@ -1514,7 +1507,7 @@
     // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
     // ],
     "terminal.integrated.rendererType": "canvas",
-    // "terminal.integrated.fontSize": 12,
+    // 4: 12,
     // "terminal.integrated.inheritEnv": false
     // "terminal.integrated.shell.windows": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
     // "terminal.integrated.shell.windows": "C:/Windows/System32/bash.exe"
@@ -1678,7 +1671,9 @@
         // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
         // "editorLineNumber.activeForeground": "#6ad4ee",
         "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
-        "editorLineNumber.activeForeground": "#929292" // dim
+        "editorLineNumber.activeForeground": "#929292", // dim
+        // new: 2021-12
+        "editorWarning.foreground": "#00fff252", // main squiggle
     },
     "notebook.experimental.useMarkdownRenderer": true,
     "notebook.diff.enablePreview": true,
@@ -2875,9 +2870,17 @@
     "errorLens.fontFamily": "calibri", //"arial bold",
     "editor.fontSize": 14,
     "editor.fontSize": 18,
-    "editor.fontSize": 16,
+    "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
     // "editor.fontWeight": "600",
     "debug.console.fontSize": 16,
+    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'fira code', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontSize": 16,
     "errorLens.fontSize": "12px",
     // "editor.fontWeight": "350", // for cascadia code
@@ -2886,8 +2889,9 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 16,
     "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 12,
     "errorLens.enabled": false, // for zoom -1
     "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
@@ -3049,14 +3053,14 @@
     ],
     "errorLens.fontWeight": 200,
     "errorLens.delay": 2500,
-    "errorLens.fontFamily": "calibri",
+    "errorLens.fontFamily": "'cascadia code pl', 'calibri'",
     // "editor.fontWeight": "300",
     // "editor.fontWeight": "400",
     // "editor.fontWeight": "300",
     // "editor.fontWeight": "200",
     // "editor.fontWeight": "100",
     "errorLens.fontSize": "15",
-    "errorLens.fontSize": "80%",
+    "errorLens.fontSize": "80%", // was: [15, 80% ]
     "editor.overviewRulerBorder": true, // not sure what it does
     // "errorLens.borderRadius": "10px",
     "errorLens.warningGutterIconColor": "#ff942f", // def: #ff942f
