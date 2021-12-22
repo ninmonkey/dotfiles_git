@@ -222,8 +222,8 @@
                     "-Nop"
                 ],
                 // "cwd": "${workspaceFolder}"
-                // "cwd": "${file}"
-                "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
             },
             {
                 "presentation": {
@@ -498,19 +498,17 @@
     //
     // mode: small right
     "editor.minimap.renderCharacters": true,
-    "editor.minimap.maxColumn": 70,
     //
     // mode: renderBlocks wide
     // "editor.minimap.renderCharacters": false,
     // "debug.focusWindowOnBreak": true,
-    "editor.minimap.maxColumn": 140,
+    "editor.minimap.maxColumn": 40,
     "editor.minimap.scale": 1, // nice on large monitor
-    "editor.minimap.showSlider": "always",
     "editor.minimap.showSlider": "mouseover",
+    "editor.minimap.showSlider": "always",
     //
     // mode: small left
     "editor.minimap.side": "right",
-    "editor.minimap.maxColumn": 60,
     "editor.linkedEditing": true,
     // "editor.minimap.size": ,
     "editor.minimap.size": "fill",
@@ -1054,6 +1052,7 @@
         "editor.fontSize": 14,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
+        "editor.semanticHighlighting.enabled": false,
         "editor.semanticHighlighting.enabled": true,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
@@ -1196,8 +1195,8 @@
     "powershell.codeFormatting.newLineAfterOpenBrace": false,
     "powershell.promptToUpdatePowerShell": false,
     // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
-    // "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
-    "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/skydrive/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
     "powershell.scriptAnalysis.enable": true,
     /*
 
@@ -2889,9 +2888,9 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 16,
     "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 14,
     "errorLens.enabled": false, // for zoom -1
     "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
@@ -3223,7 +3222,6 @@
     "editor.minimap.enabled": true,
     "editor.minimap.size": "fill",
     "editor.minimap.size": "fit",
-    "editor.minimap.showSlider": "mouseover",
     "editor.inlineSuggest.enabled": true,
     "outline.icons": false,
     "outline.icons": true,
@@ -3240,7 +3238,6 @@
     "terminal.explorerKind": "integrated",
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
-    "workbench.colorTheme": "GitHub Dark",
     "python.diagnostics.sourceMapsEnabled": true,
     // "debug.console.acceptSuggestionOnEnter":
 }
