@@ -113,9 +113,25 @@ $splatIgnoreGlobal = $splatIgnorePass += @{
     Scope = 'Global'
 }
 
+function Sort-NewestChildItem {
+    # Sort files by LastWriteTime [ -Descending ]
+    [alias('sortWriteTime')]
+    param([switch]$Descending)
+    $sortObjectSplat = @{
+        Property = 'LastWriteTime'
+    }
+    if ($Descending) {
+        $sortObjectSplat['Descending'] = $true
+    }
+
+    $input | Sort-Object @sortObjectSplat #-Descending $Descending
+}
+
 Remove-Alias -Name 'cd' -ea ignore
 Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 [object[]]$newAliasList = @(
+    'sortWriteTime'
+
     # New-Alias @splatIgnorePass   -Name 'SetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Set-NinConfiguration'
     # New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
     New-Alias @splatIgnoreGlobal -Name 'Cd' -Value 'Set-NinLocation' -Description 'A modern "cd"'

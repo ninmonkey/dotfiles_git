@@ -335,16 +335,6 @@
         "when": "editorTextFocus"
     },
     {
-        "key": "ctrl+alt+k",
-        "command": "bookmarks.toggleLabeled",
-        "when": "editorTextFocus"
-    },
-    {
-        "key": "ctrl+alt+k",
-        "command": "-bookmarks.toggle",
-        "when": "editorTextFocus"
-    },
-    {
         "key": "ctrl+alt+l",
         "command": "-bookmarks.jumpToNext",
         "when": "editorTextFocus"
@@ -358,4 +348,14 @@
         "key": "ctrl+alt+l",
         "command": "bookmarks.list"
     },
+    {
+        "key": "shift+alt+j",
+        "command": "-bookmarks.expandSelectionToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+l",
+        "command": "-bookmarks.expandSelectionToNext",
+        "when": "editorTextFocus"
+    }
 ]

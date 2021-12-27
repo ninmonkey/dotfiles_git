@@ -1049,7 +1049,7 @@
     "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
-        "editor.fontSize": 14,
+        "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
         "editor.semanticHighlighting.enabled": false,
@@ -3239,5 +3239,7 @@
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
     "python.diagnostics.sourceMapsEnabled": true,
+    "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
+    "bookmarks.saveBookmarksInProject": true,
     // "debug.console.acceptSuggestionOnEnter":
 }
