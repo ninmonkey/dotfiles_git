@@ -2889,8 +2889,8 @@
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
     "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 14,
     "errorLens.enabled": false, // for zoom -1
     "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
@@ -3241,5 +3241,6 @@
     "python.diagnostics.sourceMapsEnabled": true,
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
     "bookmarks.saveBookmarksInProject": true,
+    "window.zoomLevel": 1,
     // "debug.console.acceptSuggestionOnEnter":
 }
