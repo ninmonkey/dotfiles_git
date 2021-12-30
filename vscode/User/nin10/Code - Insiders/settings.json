@@ -911,7 +911,7 @@
     "prettier.withNodeModules": false,
     "prettier.printWidth": 140,
     "prettier.tabWidth": 4, // 2
-    "terminal.integrated.drawBoldTextInBrightColors": true,
+    "terminal.integrated.drawBoldTextInBrightColors": false,
     // "editor.quickSuggestions": {
     //     "other": true,
     //     "comments": false,
@@ -1049,7 +1049,7 @@
     "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
-        "editor.fontSize": 15,
+        // "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
         "editor.semanticHighlighting.enabled": false,
@@ -2833,11 +2833,6 @@
     // Controls whether test decorations are shown in the editor gutter.
     "testing.gutterEnabled": true,
     "search.mode": "reuseEditor",
-    "terminal.integrated.fontWeight": "normal",
-    "terminal.integrated.fontWeightBold": "bold",
-    "terminal.integrated.letterSpacing": 0,
-    // "errorLens.fontWeight": "normal",
-    "terminal.integrated.lineHeight": 1,
     "editor.inlayHints.fontFamily": "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
     "editor.inlayHints.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     // "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
@@ -2867,18 +2862,18 @@
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
-    "editor.fontSize": 14,
-    "editor.fontSize": 18,
     "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
+    "editor.fontSize": 18,
+    "editor.fontSize": 14,
     // "editor.fontWeight": "600",
-    "debug.console.fontSize": 16,
-    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
+    "debug.console.fontSize": 14,
+    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'fira code', 'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontSize": 16,
     "errorLens.fontSize": "12px",
@@ -2889,9 +2884,17 @@
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
     "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 12,
-    "errorLens.enabled": false, // for zoom -1
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontWeight": "350", // maybe too bold
+    "terminal.integrated.fontWeight": "100", // maybe too bold
+    "terminal.integrated.fontWeight": "normal", // maybe too bold
+    "terminal.integrated.fontWeightBold": "bold",
+    "terminal.integrated.fontWeightBold": "bold",
+    "terminal.integrated.letterSpacing": 0,
+    // "errorLens.fontWeight": "normal",
+    "terminal.integrated.lineHeight": 1,
+    "errorLens.enabled": true, // for zoom -1
     "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
     "errorLens.exclude": [], //# regex
@@ -3241,5 +3244,6 @@
     "python.diagnostics.sourceMapsEnabled": true,
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
     "bookmarks.saveBookmarksInProject": true,
+    "window.zoomLevel": 1,
     // "debug.console.acceptSuggestionOnEnter":
 }

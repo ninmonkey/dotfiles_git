@@ -1,30 +1,11 @@
 // Place your key bindings in this file to override the defaults
 [
     /*
-        Rules are evaluated bottom to top, choosing the first binding that matches the 'when' expression. (ie: )
-
+    See also:
 
     ## Docs:
-
-        - schema of keybindings.json: https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-rules
-
-        - built-ins: https://code.visualstudio.com/api/references/commands
-        - when filtering: https://code.visualstudio.com/api/references/when-clause-contexts
-        - virtual key codes: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
-
-    ## Operators
-
-        'in' operator: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
-            Why?
-            >  if you wanted to add a context menu command to folders that contain a certain type of file (or something that can't be statically known), you can now use the in operator to achieve it.
-
-        match operator:
-            https://code.visualstudio.com/docs/getstarted/keybindings#_conditional-operators
-            standard ops, and
-
-    | operator | symbol | Example                                 |
-    | -------- | ------ | --------------------------------------- |
-    | Matches  | =~     | "resourceScheme =~ /^untitled$|^file$/" |
+        https://code.visualstudio.com/api/references/commands
+        https://code.visualstudio.com/api/references/when-clause-contexts
 
 
     ## Examples:
@@ -376,23 +357,5 @@
         "key": "shift+alt+l",
         "command": "-bookmarks.expandSelectionToNext",
         "when": "editorTextFocus"
-    },
-    // test: don't close terminal consoles
-    {
-        "key": "ctrl+w",
-        "command": "-workbench.action.closeWindow",
-        "when": "terminalFocus || terminalEditorFocus"
-    },
-    /*
-    ctrl+w may fires these:
-        workbench.action.closeWindow            // Close Window
-        workbench.action.closeGroup             // null
-        workbench.action.closeActiveEditor      //View: Close Editor
-        workbench.action.terminal.killEditor    //Terminal: Kill the Active Terminal in Editor Area
-
-    related examples:
-        // Keybindings that are complementary
-        { "key": "f5",              "command": "workbench.action.debug.continue", "when": "inDebugMode" },
-        { "key": "f5",              "command": "workbench.action.debug.start",    "when": "!inDebugMode" },
-    */
+    }
 ]
