@@ -146,7 +146,8 @@
     //     // "when": "!editorIsOpen && !multipleEditorGroups"
     // },
     {
-        // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
+        // don't close window when there's no editors left
+        // [whatsNew]: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
         "key": "ctrl+w",
         "command": "workbench.action.closeWindow",
         "when": "!editorIsOpen && !multipleEditorGroups"
@@ -447,7 +448,7 @@
     {
         "key": "ctrl+w",
         "command": "-workbench.action.closeWindow",
-        "when": "terminalFocus || terminalEditorFocus"
+        // "when": "terminalFocus || terminalEditorFocus"
     },
     /*
     ctrl+w may fires these:
@@ -461,9 +462,53 @@
         { "key": "f5",              "command": "workbench.action.debug.continue", "when": "inDebugMode" },
         { "key": "f5",              "command": "workbench.action.debug.start",    "when": "!inDebugMode" },
     */
-    { // don't close window when there's no editors left
+    {
         "key": "ctrl+w",
-        "command": "workbench.action.closeWindow",
-        "when": "!editorIsOpen && !multipleEditorGroups"
-    }
+        "command": "-workbench.action.closeWindow", // Close Window
+        // "when": "1 == 1",
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.closeGroup", // null
+        // "when": "1 == 1",
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.closeActiveEditor", //View: Close Editor
+        // "when": "1 == 1",
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.terminal.killEditor", //Terminal: Kill the Active Terminal in Editor Area
+        // "when": "1 == 1",
+    },
+    /*
+
+    ### Sect: from SeeminglySci's profile
+
+    */
+    {
+        "key": "alt+shift+s",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ConvertToSplatExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "alt+shift+n",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "AddResolvedNamespace"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "alt+shift+m",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ExpandMemberExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
 ]
