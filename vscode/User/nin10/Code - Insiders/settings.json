@@ -2209,9 +2209,7 @@
     // Timeout in milliseconds after which diff computation is cancelled. Use 0 for no timeout.
     "diffEditor.maxComputationTime": 5000,
     // Controls whether the diff editor shows +/- indicators for added/removed changes.
-    "diffEditor.renderIndicators": false, // false since colors are enabled
-    // Controls whether the diff editor shows the diff side by side or inline.
-    "diffEditor.renderSideBySide": false,
+    "diffEditor.renderIndicators": false,
     //
     //  - off: Lines will never wrap.
     //  - on: Lines will wrap at the viewport width.

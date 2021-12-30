@@ -386,6 +386,7 @@
     {
         "key": "ctrl+w",
         "command": "-workbench.action.terminal.killEditor",
+        // "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
         "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
     },
     {
@@ -462,25 +463,22 @@
         { "key": "f5",              "command": "workbench.action.debug.continue", "when": "inDebugMode" },
         { "key": "f5",              "command": "workbench.action.debug.start",    "when": "!inDebugMode" },
     */
-    {
-        "key": "ctrl+w",
-        "command": "-workbench.action.closeWindow", // Close Window
-        // "when": "1 == 1",
-    },
-    {
-        "key": "ctrl+w",
-        "command": "-workbench.action.closeGroup", // null
-        // "when": "1 == 1",
-    },
-    {
-        "key": "ctrl+w",
-        "command": "-workbench.action.closeActiveEditor", //View: Close Editor
-        // "when": "1 == 1",
-    },
+    /* initial wide net test */
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeWindow", // Close Window
+    // },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeGroup", // null
+    // },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeActiveEditor", //View: Close Editor
+    // },
     {
         "key": "ctrl+w",
         "command": "-workbench.action.terminal.killEditor", //Terminal: Kill the Active Terminal in Editor Area
-        // "when": "1 == 1",
     },
     /*
 
