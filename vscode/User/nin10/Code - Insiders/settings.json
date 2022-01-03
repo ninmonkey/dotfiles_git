@@ -757,8 +757,12 @@
         // "editor.fontWeight": "400",
     },
     // "json.maxItemsComputed": 10000,
+    "[json][jsonc][markdown]": {
+        // "editor.fontSize": 13,
+    },
+    "[markdown-math][markdown_latex_combined]": {},
+    "[dotnet-interactive.markdown]": {},
     "[json]": {
-        "editor.fontSize": 14,
         "editor.suggest.showSnippets": false,
         // "editor.quickSuggestions": {
         //     "strings": true
@@ -2882,13 +2886,12 @@
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
     "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontSize": 14,
-    "terminal.integrated.fontWeight": "350", // maybe too bold
-    "terminal.integrated.fontWeight": "100", // maybe too bold
-    "terminal.integrated.fontWeight": "normal", // maybe too bold
-    "terminal.integrated.fontWeightBold": "bold",
-    "terminal.integrated.fontWeightBold": "bold",
+    "terminal.integrated.fontSize": 12,
+    // "terminal.integrated.fontWeight": "350", // maybe too bold
+    // "terminal.integrated.fontWeight": "100", // maybe too bold
+    // "terminal.integrated.fontWeight": "normal", // maybe too bold
+    // "terminal.integrated.fontWeightBold": "normal",
     "terminal.integrated.letterSpacing": 0,
     // "errorLens.fontWeight": "normal",
     "terminal.integrated.lineHeight": 1,
@@ -3242,6 +3245,5 @@
     "python.diagnostics.sourceMapsEnabled": true,
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
     "bookmarks.saveBookmarksInProject": true,
-    "window.zoomLevel": 1,
     // "debug.console.acceptSuggestionOnEnter":
 }
