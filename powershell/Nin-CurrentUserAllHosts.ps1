@@ -15,14 +15,28 @@ if ($true) {
     # refactor: temp test to see if it loads right
 
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
-    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-    if ($pathSeem) {
-        Import-Module pslambda
-        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+    if ($true) {
+        # some reason import for sci's module requires full path, even with psmodule path
+        $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+        if ($pathSeem) {
+            Import-Module pslambda
+            Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+            Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+            Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+            Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
+        }
+    } else {
+        $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+        $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell') -join ''
+        $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience') -join ''
+        # Import-Module pslambda
+        Import-Module Utility
         Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
         Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
     }
+
+
+
 }
 
 Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
@@ -512,6 +526,7 @@ if ($true) {
     # Usually not a great idea, but this is for a interactive command line profile
 
     $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea Ignore
+    $Profile | Add-Member -NotePropertyName '$Profile' -NotePropertyValue (Get-Item $PSCommandPath) -ea Ignore
     $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
     $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
     $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore

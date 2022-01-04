@@ -2540,7 +2540,7 @@
     //  - none: Disable parameter name hints.
     //  - literals: Enable parameter name hints only for literal arguments.
     //  - all: Enable parameter name hints for literal and non-literal arguments.
-    "typescript.inlayHints.parameterNames.enabled": "none",
+    "typescript.inlayHints.parameterNames.enabled": "all",
     // Suppress parameter name hints on arguments whose text is identical to the parameter name.
     "typescript.inlayHints.parameterNames.suppressWhenArgumentMatchesName": true,
     // Enable/disable inlay hints for implicit parameter types:
@@ -2602,15 +2602,15 @@
     // Enable/disable introducing aliases for object shorthand properties during renames. Requires using TypeScript 3.4 or newer in the workspace.
     "typescript.preferences.useAliasesForRenames": true,
     // Enable/disable references CodeLens in TypeScript files.
-    "typescript.referencesCodeLens.enabled": false,
+    "typescript.referencesCodeLens.enabled": true,
     // Enable/disable references CodeLens on all functions in TypeScript files.
-    "typescript.referencesCodeLens.showOnAllFunctions": false,
+    "typescript.referencesCodeLens.showOnAllFunctions": true,
     // Report style checks as warnings.
     "typescript.reportStyleChecksAsWarnings": true,
     // Enable/disable auto import suggestions.
     "typescript.suggest.autoImports": true,
     // Complete functions with their parameter signature.
-    "typescript.suggest.completeFunctionCalls": false,
+    "typescript.suggest.completeFunctionCalls": true,
     // Enable/disable suggestion to complete JSDoc comments.
     "typescript.suggest.completeJSDocs": true,
     // Enabled/disable autocomplete suggestions.
@@ -3245,5 +3245,11 @@
     "python.diagnostics.sourceMapsEnabled": true,
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
     "bookmarks.saveBookmarksInProject": true,
+    "typescript.format.insertSpaceAfterTypeAssertion": true,
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "javascript.inlayHints.parameterTypes.enabled": true,
+    "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
+    "javascript.inlayHints.variableTypes.enabled": true,
+    "window.zoomLevel": 1,
     // "debug.console.acceptSuggestionOnEnter":
 }
