@@ -742,7 +742,7 @@
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
         "editor.suggest.showSnippets": false,
-        "editor.fontSize": 14,
+        "editor.fontSize": 13,
         // "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
@@ -826,6 +826,7 @@
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
     },
+    "editor.fontSize": 13,
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
@@ -2864,9 +2865,9 @@
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
-    "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
-    "editor.fontSize": 18,
-    "editor.fontSize": 14,
+    // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
+    // "editor.fontSize": 18,
+    // "editor.fontSize": 14,
     // "editor.fontWeight": "600",
     "debug.console.fontSize": 14,
     "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
@@ -3250,6 +3251,6 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 2,
     // "debug.console.acceptSuggestionOnEnter":
 }

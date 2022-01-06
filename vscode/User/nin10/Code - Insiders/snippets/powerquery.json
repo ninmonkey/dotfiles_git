@@ -31,6 +31,18 @@
             "    MeasureTable",
         ],
     },
+    "Summary | Records Table | template": {
+        "prefix": "Summary Template",
+        "description": "converts list of records to a quick summary table",
+        "body": [
+            // "Summary = Table.FromRecords({ Record.Combine({",
+            "Table.FromRecords({ Record.Combine({", //or if no prefix
+            "    [ ${1:A = 0} ],",
+            "    [ ${2:A = 4} ],",
+            "    [ ${0:B = 2} ]",
+            "})})",
+        ],
+    },
     "Table.Join | Table Inner Join": {
         "prefix": "Table [inner] join",
         "description": "Table.Join for inner (or other)",

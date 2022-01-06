@@ -1255,8 +1255,6 @@
     "powershell.codeFormatting.alignPropertyValuePairs": true,
     "powershell.codeFormatting.autoCorrectAliases": false,
     "powershell.codeFormatting.autoCorrectAliases": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
-    "powershell.codeFormatting.ignoreOneLineBlock": true,
     "powershell.codeFormatting.newLineAfterOpenBrace": false,
     "powershell.codeFormatting.newLineAfterOpenBrace": true,
     "powershell.codeFormatting.newLineAfterCloseBrace": false,
@@ -2986,7 +2984,6 @@
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.lineNumbers": "relative", // weird
@@ -3159,7 +3156,6 @@
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     /*
     Note: Some of these settings auto-delete when you toggle them off and on again.
