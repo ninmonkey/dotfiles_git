@@ -2616,7 +2616,7 @@
     // Controls whether the diff editor shows +/- indicators for added/removed changes.
     "diffEditor.renderIndicators": false, // false since colors are enabled
     // Controls whether the diff editor shows the diff side by side or inline.
-    "diffEditor.renderSideBySide": true,
+    "diffEditor.renderSideBySide": false,
     //
     //  - off: Lines will never wrap.
     //  - on: Lines will wrap at the viewport width.
@@ -2979,8 +2979,7 @@
         "function",
         "Commands.Reports"
     ],
-    "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
-    "diffEditor.ignoreTrimWhitespace": false,
+    "pesterExplorer.autoDiscoverOnOpen": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
@@ -3151,8 +3150,7 @@
     // The indent color when there is a mix between spaces and tabs.
     // To be disabled this coloring set this to an empty string.
     "indentRainbow.tabmixColor": "rgba(128,32,96,0.6)",
-    "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
-    "diffEditor.ignoreTrimWhitespace": false,
+    "pesterExplorer.autoDiscoverOnOpen": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,

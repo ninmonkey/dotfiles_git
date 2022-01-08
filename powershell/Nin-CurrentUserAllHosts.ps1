@@ -274,6 +274,9 @@ New-Alias 'Repl->PtPy' -Value 'ptpython' -Description 'repl from: <https://githu
 New-Alias 'rel' -Value '_reloadModule' -ea ignore
 New-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
 New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Description 'to prevent shadowing by PSSCriptTools'
+New-Alias -ea ignore -Name 'DismSB' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'sci''s SB to Expressions module'
+New-Alias -ea ignore -Name 'Sci->Dism' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
+New-Alias -ea ignore -Name 'Dev->SBtoDismExpression' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
     if ($parent -eq 'code') {

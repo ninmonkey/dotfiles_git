@@ -2657,11 +2657,6 @@
     //  - all: Automatically runs all discovered test when auto-run is toggled. Reruns individual tests when they are changed.
     //  - rerun: Reruns individual tests when they are changed. Will not automatically run any tests that have not been already executed.
     "testing.autoRun.mode": "all",
-    // Controls the action to take when left-clicking on a test decoration in the gutter.
-    //  - run: Run the test.
-    //  - debug: Debug the test.
-    //  - contextMenu: Open the context menu for more options.
-    "testing.defaultGutterClickAction": "run",
     // Controls whether the running test should be followed in the test explorer view
     "testing.followRunningTest": true,
     // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
@@ -2931,11 +2926,6 @@
     //  - rerun: Reruns individual tests when they are changed. Will not automatically run any tests that have not been already executed.
     // "testing.autoRun.mode": "all",
     "testing.autoRun.mode": "rerun",
-    // Controls the action to take when left-clicking on a test decoration in the gutter.
-    //  - run: Run the test.
-    //  - debug: Debug the test.
-    //  - contextMenu: Open the context menu for more options.
-    "testing.defaultGutterClickAction": "run",
     // Controls whether the running test should be followed in the test explorer view
     "testing.followRunningTest": true,
     // Controls whether test decorations are shown in the editor gutter.
@@ -2970,9 +2960,7 @@
     "zenMode.silentNotifications": true, // true shows only errors
     "testing.gutterEnabled": true,
     "testExplorer.gutterDecoration": true,
-    "testing.defaultGutterClickAction": "run", // default
     "testing.defaultGutterClickAction": "debug",
-    "testing.defaultGutterClickAction": "contextMenu",
     "docs-visual-areas.gutterIndicatorHeight": 100,
     "docs-visual-areas.gutterIndicatorOpacity": 60,
     "docs-visual-areas.gutterIndicatorOffset": 12,
@@ -3251,6 +3239,5 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
-    "window.zoomLevel": 2,
     // "debug.console.acceptSuggestionOnEnter":
 }
