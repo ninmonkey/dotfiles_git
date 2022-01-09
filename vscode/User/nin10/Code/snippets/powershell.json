@@ -9,13 +9,18 @@
     todo:
         - [ ] autocollect -> dotfiles_github
 
-
     Refs:
+        snippet pattern examples:
+            <https://gist.github.com/ninmonkey/4fe8062d5ad1b2ad17e6f91a96984851>
+
+            transforming input: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples>
+            new: snippet variables: <https://code.visualstudio.com/updates/v1_53#_new-snippet-variables>
+            docs: <https://code.visualstudio.com/docs/editor/userdefinedsnippets>
         dotfiles:
             $Env:userprofile\Documents\2020\MyModules_Github\VSCode-ConfigSnippets\snippet\powershell.json
 
-        snippet pattern examples:
-            <https://gist.github.com/ninmonkey/4fe8062d5ad1b2ad17e6f91a96984851>
+
+        from: <https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/master/.vscode/snippets.code-snippets>
 
         extension dir:
             $Env:UserProfile\.vscode\extensions\ms-vscode.powershell[-preview]-<version>\snippets\PowerShell.json
@@ -23,7 +28,6 @@
             https://code.visualstudio.com/docs/editor/userdefinedsnippets#_choice
 
     see also:
-
         https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
@@ -56,6 +60,14 @@
         ],
         "description": "inline definition to enumrate over '$_.PSObject.Properties' "
     },
+    // "🐒regex: ($␀)?.NullConditional": {
+    //     "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+    //     "prefix": "?.NullConditional : selection",
+    //     "description": "($␀) Transforms \" ⇒ \\\"",
+    //     "body": [
+    //         "(${1:$TM_SELECTED_TEXT})?{0}"
+    //     ]
+    // },
     "herestring variables": {
         "prefix": "hereStr : Variable 🐒",
         "body": [
@@ -113,6 +125,30 @@
             "# ${1:Docstring}",
             "[Parameter(${2:Mandatory, Position = 0})]",
             "[${3:object}]$${4:ParameterName}${0}",
+        ],
+    },
+    "Dev.Nin ⇢ Template": {
+        /*
+        */
+        "prefix": "Dev.nin🧪 Func Template 🐒",
+        "description": "a quick dev.nin template",
+        "body": [
+            "#Requires -Version 7",
+            "",
+            "if ( \\$experimentToExport ) {",
+            "    \\$experimentToExport.function += @(",
+            "        'F'",
+            "    )",
+            "    \\$experimentToExport.alias += @(",
+            "        # 'A'",
+            "    )",
+            "}",
+            "",
+            "${0:$TM_SELECTED_TEXT}",
+            "",
+            "if (! \\$experimentToExport) {",
+            "    # ...",
+            "}",
         ],
     },
     "Parameter ⇢ Simple (extra tabstop choices)": {

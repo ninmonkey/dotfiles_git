@@ -2616,7 +2616,7 @@
     // Controls whether the diff editor shows +/- indicators for added/removed changes.
     "diffEditor.renderIndicators": false, // false since colors are enabled
     // Controls whether the diff editor shows the diff side by side or inline.
-    "diffEditor.renderSideBySide": false,
+    "diffEditor.renderSideBySide": true,
     //
     //  - off: Lines will never wrap.
     //  - on: Lines will wrap at the viewport width.
