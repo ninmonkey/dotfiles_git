@@ -41,7 +41,13 @@
         ],
         "powershell.scriptAnalysis.enable": true,
         "workbench.settings.editor": "json",
-        "powershell.codeFormatting.addWhitespaceAroundPipe": true
+        "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+        "markdownlint.config": {
+            "MD028": false,
+            "MD025": {
+                "front_matter_title": ""
+            }
+        }
     },
     "launch": {
         "version": "0.2.0",

@@ -564,19 +564,34 @@ if ($true) {
 
 Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> start PSReadLine'
 
-if ($__ninConfig.UsePSReadLinePredict) {
+<# play nice
+(gcm 'Set-PSReadLineOption' | % Parameters | % keys) -contains 'PredictionViewStyle'
+(gcm 'Set-PSReadLineOption' | % Parameters | % keys) -contains 'PredictionSource'
+#>
 
+$eaIgnore = @{
+    ErrorAction = 'ignore'
+}
+if ($__ninConfig.UsePSReadLinePredict) {
     try {
-        Set-PSReadLineOption -PredictionSource History -ea SilentlyContinue #stop
-        Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue #stop
+        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionSource') {
+            Set-PSReadLineOption @eaIgnore -PredictionSource History # SilentlyContinue #stop
+        }
+        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionViewStyle') {
+            Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView # SilentlyContinue
+        }
     } catch {
         Warn🛑 'Failed: -PredictionSource History & ListView'
     }
 }
 if ($__ninConfig.UsePSReadLinePredictPlugin) {
     try {
-        Set-PSReadLineOption -PredictionSource HistoryAndPlugin -ea SilentlyContinue
-        Set-PSReadLineOption -PredictionViewStyle ListView -ea SilentlyContinue
+        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionSource') {
+            Set-PSReadLineOption @eaIgnore -PredictionSource HistoryAndPlugin
+        }
+        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionViewStyle') {
+            Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView
+        }
     } catch {
         Warn🛑 'Failed: -PredictionSource HistoryAndPlugin'
     }
@@ -751,6 +766,8 @@ Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Choco st
 
         see Ninmonkey.Profile.psm1
 #>
+
+$env:NinEnableToastDebug = $True
 
 function Prompt {
     <#
