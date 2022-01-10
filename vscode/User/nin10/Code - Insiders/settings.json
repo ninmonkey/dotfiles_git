@@ -1685,7 +1685,7 @@
     "terminal.integrated.allowChords": true,
     "terminal.integrated.automationShell.windows": null,
     "terminal.integrated.allowWorkspaceConfiguration": false,
-    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    // "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.enableFileLinks": true,
     "terminal.integrated.environmentChangesIndicator": "warnonly",
     /*
@@ -1765,7 +1765,8 @@
     //  - Windows PowerShell: $(terminal) Windows PowerShell
     // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
     // - args: [-NoLogo','-NoProfile]
-    "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
+    // "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",

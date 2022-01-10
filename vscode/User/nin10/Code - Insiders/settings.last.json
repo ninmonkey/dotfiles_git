@@ -1,6 +1,41 @@
 {
     "launch": {
         "configurations": [
+            {
+                "args": [
+                    "--extensionDevelopmentPath=${workspaceFolder}"
+                ],
+                "name": "Launch Extension",
+                "outFiles": [
+                    "${workspaceFolder}/out/**/*.js"
+                ],
+                "preLaunchTask": "npm",
+                "request": "launch",
+                "type": "pwa-extensionHost"
+            },
+            {
+                "name": "Py:🐍 <variable>.py",
+                "type": "python",
+                "request": "launch",
+                "args": [
+                    "-Nop"
+                ],
+                "showReturnValue": true,
+                "program": "${file}",
+                // "cwd": "${file.py}",
+                // "internalConsoleOptions": "openOnFirstSessionStart",
+                "justMyCode": true,
+                // "pythonArgs": [],
+                // "redirectOutput": true,
+                // "program": "${workspaceFolderBasename}/Day1/py/day1.py",
+                // "program": "${workspaceFolder}/Day1/day1-i2.py",
+                // "program": "${workspaceFolder}Day1/py/day1.py",
+                // "program": "${file}",
+                // "console": "integratedTerminal",
+                // "console": "externalTerminal",
+                // "redirectOutput": true,
+                // "autoReload": {}
+            },
             /*
 
       ### Sect: Build in-Dotnet launchers
@@ -21,6 +56,7 @@
                 "type": "coreclr",
                 "request": "attach"
             },
+            ///
             // [2] Attach -> [🐛debugger] to [Remote🖧] dotnet core [Console💻] app
             // [2] 👫Attach -> [🐛debugger] to a .NET Core [Console💻] App on a [remote🖧] machine.
             {
@@ -182,7 +218,12 @@
                     "group": "",
                     "order": 1
                 },
-                "cwd": "${workspaceFolder}"
+                "args": [
+                    "-Nop"
+                ],
+                // "cwd": "${workspaceFolder}"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
             },
             {
                 "presentation": {
@@ -457,19 +498,17 @@
     //
     // mode: small right
     "editor.minimap.renderCharacters": true,
-    "editor.minimap.maxColumn": 70,
     //
     // mode: renderBlocks wide
     // "editor.minimap.renderCharacters": false,
     // "debug.focusWindowOnBreak": true,
-    "editor.minimap.maxColumn": 140,
-    "editor.minimap.scale": 2, // nice on large monitor
-    "editor.minimap.showSlider": "always",
+    "editor.minimap.maxColumn": 40,
+    "editor.minimap.scale": 1, // nice on large monitor
     "editor.minimap.showSlider": "mouseover",
+    "editor.minimap.showSlider": "always",
     //
     // mode: small left
     "editor.minimap.side": "right",
-    "editor.minimap.maxColumn": 60,
     "editor.linkedEditing": true,
     // "editor.minimap.size": ,
     "editor.minimap.size": "fill",
@@ -647,13 +686,7 @@
     // "editor.acceptSuggestionOnEnter": "smart",
     "editor.suggest.showFields": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "editor.links": true,
-    /*
-
-  ### Sect: Clipboard: Copy Paste
-
-      */
-    "terminal.integrated.copyOnSelection": true, // this might be the cause of the copy paste issues
+    "editor.links": true, // this might be the cause of the copy paste issues
     // "editor.copyWithSyntaxHighlighting": true,
     "editor.emptySelectionClipboard": false,
     /*
@@ -709,6 +742,7 @@
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
         "editor.suggest.showSnippets": false,
+        "editor.fontSize": 13,
         // "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
@@ -723,8 +757,12 @@
         // "editor.fontWeight": "400",
     },
     // "json.maxItemsComputed": 10000,
+    "[json][jsonc][markdown]": {
+        // "editor.fontSize": 13,
+    },
+    "[markdown-math][markdown_latex_combined]": {},
+    "[dotnet-interactive.markdown]": {},
     "[json]": {
-        // "editor.fontSize": 14,
         "editor.suggest.showSnippets": false,
         // "editor.quickSuggestions": {
         //     "strings": true
@@ -788,10 +826,12 @@
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
     },
+    "editor.fontSize": 13,
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
-        "editor.wrappingStrategy": "simple"
+        "editor.wrappingStrategy": "simple",
+        "editor.fontSize": 11,
     },
     "[javascript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features",
@@ -876,7 +916,7 @@
     "prettier.withNodeModules": false,
     "prettier.printWidth": 140,
     "prettier.tabWidth": 4, // 2
-    "terminal.integrated.drawBoldTextInBrightColors": true,
+    "terminal.integrated.drawBoldTextInBrightColors": false,
     // "editor.quickSuggestions": {
     //     "other": true,
     //     "comments": false,
@@ -942,14 +982,19 @@
     "editor.wordWrapColumn": 140,
     "terminal.integrated.rendererType": "auto",
     // "workbench.editor.focusRecentEditorAfterClose": true,
-    "workbench.quickOpen.closeOnFocusLost": false,
     "gitlens.views.repositories.files.layout": "list",
-    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'fira code retina', 'fira code', 'cascadia mono', consolas, monospace",
     // "terminal.integrated.inheritEnv": false,
+    // try some new
+    // "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
+    // "editor.inlayHints.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "codepoint.statusbar": "description",
-    "workbench.quickOpen.closeOnFocusLost": false,
+    "workbench.quickOpen.closeOnFocusLost": false, // it means the command palette
+    "workbench.quickOpen.preserveInput": true,
+    "task.quickOpen.detail": true,
+    "task.quickOpen.history": 30,
+    "task.quickOpen.showAll": false,
+    "task.quickOpen.skip": false,
+    "gitlens.advanced.quickPick.closeOnFocusOut": true,
     // "editor.suggest.statusBar.visible": true,
     // "editor.formatOnSave": true,
     // "editor.formatOnPaste": true,
@@ -1009,8 +1054,10 @@
     "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
+        // "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
+        "editor.semanticHighlighting.enabled": false,
         "editor.semanticHighlighting.enabled": true,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
@@ -1074,7 +1121,7 @@
         "editor.suggest.showIcons": true,
         "editor.suggest.shareSuggestSelections": false,
         "editor.suggest.showStatusBar": true,
-        "editor.suggestFontSize": 14,
+        "editor.suggestFontSize": 12, // was < 12 | 14 >
         "editor.codeLensFontSize": 12,
         "editor.inlayHints.fontSize": 12,
         "editor.suggestOnTriggerCharacters": true,
@@ -1153,8 +1200,8 @@
     "powershell.codeFormatting.newLineAfterOpenBrace": false,
     "powershell.promptToUpdatePowerShell": false,
     // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
-    // "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
-    "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/skydrive/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
     "powershell.scriptAnalysis.enable": true,
     /*
 
@@ -1387,7 +1434,6 @@
     "search.useReplacePreview": true,
     // "explorer.sortOrder": "modified", // nice for log files
     "editor.renderLineHighlightOnlyWhenFocus": true,
-    "editor.renderControlCharacters": true,
     "breadcrumbs.symbolSortOrder": "type",
     "editor.wordWrapColumn": 160,
     "editor.wrappingIndent": "deepIndent",
@@ -1465,7 +1511,7 @@
     // "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
     // ],
     "terminal.integrated.rendererType": "canvas",
-    // "terminal.integrated.fontSize": 12,
+    // 4: 12,
     // "terminal.integrated.inheritEnv": false
     // "terminal.integrated.shell.windows": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
     // "terminal.integrated.shell.windows": "C:/Windows/System32/bash.exe"
@@ -1529,6 +1575,7 @@
     "errorLens.warningTextColor": "rgba(23,240,240,0.1)",
     "errorLens.infoColor": "rgba(0,20,0,0.4)",
     "errorLens.infoTextColor": "rgba(2,240,240,1.0)",
+    // "errorLens.excludePatterns": [],
     /*
 
   ###### SubSect: Workbench theme overrides
@@ -1628,7 +1675,9 @@
         // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
         // "editorLineNumber.activeForeground": "#6ad4ee",
         "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
-        "editorLineNumber.activeForeground": "#929292" // dim
+        "editorLineNumber.activeForeground": "#929292", // dim
+        // new: 2021-12
+        "editorWarning.foreground": "#00fff252", // main squiggle
     },
     "notebook.experimental.useMarkdownRenderer": true,
     "notebook.diff.enablePreview": true,
@@ -1636,7 +1685,7 @@
     "terminal.integrated.allowChords": true,
     "terminal.integrated.automationShell.windows": null,
     "terminal.integrated.allowWorkspaceConfiguration": false,
-    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    // "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.enableFileLinks": true,
     "terminal.integrated.environmentChangesIndicator": "warnonly",
     /*
@@ -1716,7 +1765,8 @@
     //  - Windows PowerShell: $(terminal) Windows PowerShell
     // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
     // - args: [-NoLogo','-NoProfile]
-    "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
+    // "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",
@@ -1769,7 +1819,7 @@
     },
     "oneDarkPro.bold": true,
     "pesterExplorer.autoDiscoverOnOpen": true,
-    "editor.renderWhitespace": "trailing",
+    "editor.renderWhitespace": "none",
     "powershell.codeFormatting.pipelineIndentationStyle": "None",
     "redhat.telemetry.enabled": false,
     "snippets.viewer.sortSnippetsByName": true,
@@ -2165,9 +2215,7 @@
     // Timeout in milliseconds after which diff computation is cancelled. Use 0 for no timeout.
     "diffEditor.maxComputationTime": 5000,
     // Controls whether the diff editor shows +/- indicators for added/removed changes.
-    "diffEditor.renderIndicators": false, // false since colors are enabled
-    // Controls whether the diff editor shows the diff side by side or inline.
-    "diffEditor.renderSideBySide": true,
+    "diffEditor.renderIndicators": false,
     //
     //  - off: Lines will never wrap.
     //  - on: Lines will wrap at the viewport width.
@@ -2494,7 +2542,7 @@
     //  - none: Disable parameter name hints.
     //  - literals: Enable parameter name hints only for literal arguments.
     //  - all: Enable parameter name hints for literal and non-literal arguments.
-    "typescript.inlayHints.parameterNames.enabled": "none",
+    "typescript.inlayHints.parameterNames.enabled": "all",
     // Suppress parameter name hints on arguments whose text is identical to the parameter name.
     "typescript.inlayHints.parameterNames.suppressWhenArgumentMatchesName": true,
     // Enable/disable inlay hints for implicit parameter types:
@@ -2556,15 +2604,15 @@
     // Enable/disable introducing aliases for object shorthand properties during renames. Requires using TypeScript 3.4 or newer in the workspace.
     "typescript.preferences.useAliasesForRenames": true,
     // Enable/disable references CodeLens in TypeScript files.
-    "typescript.referencesCodeLens.enabled": false,
+    "typescript.referencesCodeLens.enabled": true,
     // Enable/disable references CodeLens on all functions in TypeScript files.
-    "typescript.referencesCodeLens.showOnAllFunctions": false,
+    "typescript.referencesCodeLens.showOnAllFunctions": true,
     // Report style checks as warnings.
     "typescript.reportStyleChecksAsWarnings": true,
     // Enable/disable auto import suggestions.
     "typescript.suggest.autoImports": true,
     // Complete functions with their parameter signature.
-    "typescript.suggest.completeFunctionCalls": false,
+    "typescript.suggest.completeFunctionCalls": true,
     // Enable/disable suggestion to complete JSDoc comments.
     "typescript.suggest.completeJSDocs": true,
     // Enabled/disable autocomplete suggestions.
@@ -2610,11 +2658,6 @@
     //  - all: Automatically runs all discovered test when auto-run is toggled. Reruns individual tests when they are changed.
     //  - rerun: Reruns individual tests when they are changed. Will not automatically run any tests that have not been already executed.
     "testing.autoRun.mode": "all",
-    // Controls the action to take when left-clicking on a test decoration in the gutter.
-    //  - run: Run the test.
-    //  - debug: Debug the test.
-    //  - contextMenu: Open the context menu for more options.
-    "testing.defaultGutterClickAction": "run",
     // Controls whether the running test should be followed in the test explorer view
     "testing.followRunningTest": true,
     // https://code.visualstudio.com/updates/v1_59#_child-process-tracking-and-close-warnings
@@ -2658,7 +2701,8 @@
     // The logging level the extension logs at.
     "jupyter.logging.level": "debug",
     // Sets the logging verbosity level for the PowerShell Editor Services host executable.  Valid values are 'Diagnostic', 'Verbose', 'Normal', 'Warning', and 'Error'
-    "powershell.developer.editorServicesLogLevel": "Normal",
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    // "powershell.developer.editorServicesLogLevel": "Normal",
     // Launches the language service with the /waitForDebugger flag to force it to wait for a .NET debugger to attach before proceeding.
     "powershell.developer.editorServicesWaitForDebugger": false,
     // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
@@ -2710,7 +2754,8 @@
     // The logging level the extension logs at.
     "jupyter.logging.level": "debug",
     // Sets the logging verbosity level for the PowerShell Editor Services host executable.  Valid values are 'Diagnostic', 'Verbose', 'Normal', 'Warning', and 'Error'
-    "powershell.developer.editorServicesLogLevel": "Normal",
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    // "powershell.developer.editorServicesLogLevel": "Normal",
     // Launches the language service with the /waitForDebugger flag to force it to wait for a .NET debugger to attach before proceeding.
     "powershell.developer.editorServicesWaitForDebugger": false,
     // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
@@ -2745,7 +2790,6 @@
     "testExplorer.addToEditorContextMenu": true,
     "testExplorer.showOnRun": true,
     "editor.bracketPairColorization.enabled": true,
-    "gitlens.mode.active": "zen",
     // new feature debug mode in
     // "jupyter.experimental.debugging": true, <https://code.visualstudio.com/updates/v1_60#_jupyter> ve ipykernel v6+ inst
     "terminal.integrated.customGlyphs": true,
@@ -2788,11 +2832,6 @@
     // Controls whether test decorations are shown in the editor gutter.
     "testing.gutterEnabled": true,
     "search.mode": "reuseEditor",
-    "terminal.integrated.fontWeight": "normal",
-    "terminal.integrated.fontWeightBold": "bold",
-    "terminal.integrated.letterSpacing": 0,
-    "errorLens.fontWeight": "normal",
-    "terminal.integrated.lineHeight": 1,
     "editor.inlayHints.fontFamily": "corbel, 'cascadia code', calibri, Consolas,  Consolas, 'Courier New', monospace",
     "editor.inlayHints.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     // "editor.fontFamily": "cascadia code, calibri, 'cascadia code', Consolas, 'Courier New', monospace",
@@ -2822,11 +2861,19 @@
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
-    "editor.fontSize": 14,
-    "editor.fontSize": 18,
-    "editor.fontSize": 16,
+    // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
+    // "editor.fontSize": 18,
+    // "editor.fontSize": 14,
     // "editor.fontWeight": "600",
-    "debug.console.fontSize": 16,
+    "debug.console.fontSize": 14,
+    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'fira code', 'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontSize": 16,
     "errorLens.fontSize": "12px",
     // "editor.fontWeight": "350", // for cascadia code
@@ -2834,10 +2881,19 @@
     // "editor.fontFamily": "'comic sans', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
-    "editor.suggestFontSize": 16, // ctrl+space size
-    "terminal.integrated.fontSize": 17,
+    "editor.suggestFontSize": 14, // ctrl+space size
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 12,
+    // "terminal.integrated.fontWeight": "350", // maybe too bold
+    // "terminal.integrated.fontWeight": "100", // maybe too bold
+    // "terminal.integrated.fontWeight": "normal", // maybe too bold
+    // "terminal.integrated.fontWeightBold": "normal",
+    "terminal.integrated.letterSpacing": 0,
+    // "errorLens.fontWeight": "normal",
+    "terminal.integrated.lineHeight": 1,
     "errorLens.enabled": true, // for zoom -1
-    "errorLens.delay": 300,
+    "errorLens.delay": 1300,
     "errorLens.followCursor": "closestProblem",
     "errorLens.exclude": [], //# regex
     "errorLens.excludeBySource": [], // ["eslint"]
@@ -2871,11 +2927,6 @@
     //  - rerun: Reruns individual tests when they are changed. Will not automatically run any tests that have not been already executed.
     // "testing.autoRun.mode": "all",
     "testing.autoRun.mode": "rerun",
-    // Controls the action to take when left-clicking on a test decoration in the gutter.
-    //  - run: Run the test.
-    //  - debug: Debug the test.
-    //  - contextMenu: Open the context menu for more options.
-    "testing.defaultGutterClickAction": "run",
     // Controls whether the running test should be followed in the test explorer view
     "testing.followRunningTest": true,
     // Controls whether test decorations are shown in the editor gutter.
@@ -2890,7 +2941,7 @@
     ],
     "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
     "diffEditor.ignoreTrimWhitespace": false,
-    "powershell.codeFormatting.autoCorrectAliases": true,
+    // "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
     "powershell.codeFormatting.ignoreOneLineBlock": false,
@@ -2910,9 +2961,7 @@
     "zenMode.silentNotifications": true, // true shows only errors
     "testing.gutterEnabled": true,
     "testExplorer.gutterDecoration": true,
-    "testing.defaultGutterClickAction": "run", // default
     "testing.defaultGutterClickAction": "debug",
-    "testing.defaultGutterClickAction": "contextMenu",
     "docs-visual-areas.gutterIndicatorHeight": 100,
     "docs-visual-areas.gutterIndicatorOpacity": 60,
     "docs-visual-areas.gutterIndicatorOffset": 12,
@@ -2954,6 +3003,7 @@
         "hex",
         "rgb"
     ],
+    /*
      ### Sect: theme: subtler error lens
 
            tags: Tag1, Tag2
@@ -2996,16 +3046,16 @@
     ],
     "errorLens.fontWeight": 200,
     "errorLens.delay": 2500,
-    "errorLens.fontFamily": "calibri",
+    "errorLens.fontFamily": "'cascadia code pl', 'calibri'",
     // "editor.fontWeight": "300",
     // "editor.fontWeight": "400",
     // "editor.fontWeight": "300",
     // "editor.fontWeight": "200",
     // "editor.fontWeight": "100",
     "errorLens.fontSize": "15",
-    "errorLens.fontSize": "80%",
+    "errorLens.fontSize": "80%", // was: [15, 80% ]
     "editor.overviewRulerBorder": true, // not sure what it does
-    "errorLens.borderRadius": 400,
+    // "errorLens.borderRadius": "10px",
     "errorLens.warningGutterIconColor": "#ff942f", // def: #ff942f
     "errorLens.warningGutterIconColor": "#ff932f6e", // dim: 1x
     "errorLens.warningGutterIconColor": "#ff932f3b", // dim: 2x
@@ -3016,10 +3066,16 @@
     "errorLens.infoGutterIconColor": "#00b7e4",
     "errorLens.errorGutterIconColor": "#e45454", // #def
     "errorLens.errorGutterIconPath": "",
+    "gitlens.advanced.abbreviatedShaLength": 7,
+    "gitlens.heatmap.hotColor": "#f66a0a1f",
+    "gitlens.heatmap.hotColor": "#f66a0acc", // 60%
+    "gitlens.heatmap.hotColor": "#f66a0a",
+    "gitlens.codeLens.authors.command": "gitlens.toggleFileHeatmap",
     "errorLens.gutterIconSize": "50%", // Change gutter icon size. Examples: auto, contain, cover, 50%, 150%
     // filters
     "editor.guides.highlightActiveIndentation": true,
     "errorLens.exclude": [
+        "cmdlet.*uses an unapproved verb"
         // "is an alias of"
     ],
     // For which languages indent-rainbow should be activated (if empty it means all).
@@ -3057,7 +3113,7 @@
     "indentRainbow.tabmixColor": "rgba(128,32,96,0.6)",
     "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
     "diffEditor.ignoreTrimWhitespace": false,
-    "powershell.codeFormatting.autoCorrectAliases": true,
+    // "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
     "powershell.codeFormatting.ignoreOneLineBlock": false,
@@ -3156,11 +3212,10 @@
         "outline.icons": false,
         "workbench.activityBar.visible": false,
     */
-    "editor.minimap.enabled": true,
     "editor.minimap.enabled": false, // for clean, default this off
+    "editor.minimap.enabled": true,
     "editor.minimap.size": "fill",
     "editor.minimap.size": "fit",
-    "editor.minimap.showSlider": "mouseover",
     "editor.inlineSuggest.enabled": true,
     "outline.icons": false,
     "outline.icons": true,
@@ -3175,7 +3230,16 @@
     "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekViewDuringAutoRun": false,
     "terminal.explorerKind": "integrated",
-    "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
+    "python.diagnostics.sourceMapsEnabled": true,
+    "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
+    "bookmarks.saveBookmarksInProject": true,
+    "typescript.format.insertSpaceAfterTypeAssertion": true,
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "javascript.inlayHints.parameterTypes.enabled": true,
+    "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
+    "javascript.inlayHints.variableTypes.enabled": true,
+    "window.zoomLevel": 1,
+    // "debug.console.acceptSuggestionOnEnter":
 }
