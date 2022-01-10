@@ -9,13 +9,18 @@
     todo:
         - [ ] autocollect -> dotfiles_github
 
-
     Refs:
+        snippet pattern examples:
+            <https://gist.github.com/ninmonkey/4fe8062d5ad1b2ad17e6f91a96984851>
+
+            transforming input: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples>
+            new: snippet variables: <https://code.visualstudio.com/updates/v1_53#_new-snippet-variables>
+            docs: <https://code.visualstudio.com/docs/editor/userdefinedsnippets>
         dotfiles:
             $Env:userprofile\Documents\2020\MyModules_Github\VSCode-ConfigSnippets\snippet\powershell.json
 
-        snippet pattern examples:
-            <https://gist.github.com/ninmonkey/4fe8062d5ad1b2ad17e6f91a96984851>
+
+        from: <https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/master/.vscode/snippets.code-snippets>
 
         extension dir:
             $Env:UserProfile\.vscode\extensions\ms-vscode.powershell[-preview]-<version>\snippets\PowerShell.json
@@ -23,7 +28,6 @@
             https://code.visualstudio.com/docs/editor/userdefinedsnippets#_choice
 
     see also:
-
         https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
 
     */
@@ -56,6 +60,58 @@
         ],
         "description": "inline definition to enumrate over '$_.PSObject.Properties' "
     },
+    // "🐒regex: ($␀)?.NullConditional": {
+    //     "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+    //     "prefix": "?.NullConditional : selection",
+    //     "description": "($␀) Transforms \" ⇒ \\\"",
+    //     "body": [
+    //         "(${1:$TM_SELECTED_TEXT})?{0}"
+    //     ]
+    // },
+    "Func ⇢ User $Options @{..} ⇢ 🐒": {
+        "prefix": "Function ⇢ Options 🐒",
+        "description": "nin func with $Config defaults plus user -Options @{..} 🐒",
+        "body": [
+            "function Verb-Noun {",
+            "    <#",
+            "        .synopsis",
+            "            .",
+            "        .notes",
+            "            .",
+            "        .example   ",
+            "            PS> Verb-Noun -Options @{ Title='Other' }",
+            "        #>",
+            "    # [outputtype( [string[]] )]",
+            "    # [Alias('x')]",
+            "    [cmdletbinding()]",
+            "    param(",
+            "        # docs",
+            "        # [Alias('y')]",
+            "        [parameter(Mandatory, Position = 0, ValueFromPipeline)]",
+            "        [object]\\$InputObject, ",
+            "    ",
+            "        # extra options",
+            "        [Parameter()][hashtable]\\$Options",
+            "    )",
+            "    begin {",
+            "        [hashtable]\\$ColorType = Join-Hashtable \\$ColorType (\\$Options.ColorType ?? @{})       ",
+            "        [hashtable]\\$Config = @{",
+            "            AlignKeyValuePairs = \\$true",
+            "            Title              = 'Default'",
+            "            DisplayTypeName    = \\$true",
+            "        }",
+            "        \\$Config = Join-Hashtable \\$Config (\\$Options ?? @{})        ",
+            "    }",
+            "    process {}",
+            "    end {}",
+            "}"
+        ]
+    },
+    "Requires Version 🐒 7": {
+        "prefix": "req7 requires-version | nin 🐒",
+        "body": "#Requires -Version ${1:7}\n$0",
+        "description": "Requires 🐒 a minimum version of PowerShell in order to execute the containing script file."
+    },
     "herestring variables": {
         "prefix": "hereStr : Variable 🐒",
         "body": [
@@ -65,6 +121,21 @@
             "${0}"
         ],
         "description": "Interpolated Here-string. Intended  to be hotkey only, when there's a selection to wrap "
+    },
+    "Exception ⇢ Basic Catch 🐒": {
+        "prefix": "Try Catch Exception ⇢ Basic 🐒",
+        "description": "minimal catch | Supports selected text.",
+        "body": [
+            // "",
+            "try {",
+            "    ${1:${TM_SELECTED_TEXT}}",
+            "    ${0}",
+            "}",
+            "catch {",
+            "    \\$PSCmdlet.WriteError(\\$_)",
+            "}",
+            // "",
+        ]
     },
     "herestring literal": {
         "prefix": "hereStr : Literal 🐒 Literal Herestring",
@@ -76,14 +147,49 @@
         ],
         "description": "Literals Here-String. Intended  to be hotkey only, when there's a selection to wrap"
     },
-    // "🐒regex: ($␀)?.NullConditional": {
-    //     "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-    //     "prefix": "?.NullConditional : selection",
-    //     "description": "($␀) Transforms \" ⇒ \\\"",
-    //     "body": [
-    //         "(${1:$TM_SELECTED_TEXT})?{0}"
-    //     ]
-    // },
+    "[from_insiders]Completer ⇢ PS6 ⇢ IArgumentCompleter Class🐒": {
+        "prefix": "[from_insiders]completer-nin-IArgumentCompleter",
+        "description": "PS6+ IArgumentCompleter class",
+        "body": [
+            "# requires PS6+ (verify): <https://gist.github.com/ninmonkey/dd90aa7a1641b6643cfd904557115909>",
+            "# snippet WIP",
+            "class ${1:ArgumentCompleter} : System.Management.Automation.IArgumentCompleter {",
+            "\t[System.Collections.Generic.IEnumerable[System.Management.Automation.CompletionResult]] CompleteArgument(",
+            "\t\t[string] \\$CommandName,",
+            "\t\t[string] \\$ParameterName,",
+            "\t\t[string] \\$WordToComplete,",
+            "\t\t[System.Management.Automation.Language.CommandAst] \\$CommandAst,",
+            "\t\t[System.Collections.IDictionary] \\$FakeBoundParameters",
+            "\t) {",
+            "\t\t\\$CompletionResults = [System.Collections.Generic.List[System.Management.Automation.CompletionResult]]::new()",
+            "\t\t",
+            "\t\t${0:$TM_SELECTED_TEXT}",
+            "\t\t",
+            "\t\treturn \\$CompletionResults",
+            "\t}",
+            "}"
+        ],
+    },
+    "[from_insiders]Parameter ⇢ Completion ⇢ Suggest": {
+        "description": "[from_insiders]🐒⁞ PS6 ArgumentCompletions() suggest without validation [Parameter()]",
+        "prefix": "completer-nin-suggest🐒",
+        "body": [
+            "[Parameter(Mandatory, Position = 0)]",
+            "[ArgumentCompletions(",
+            "    '${1:one}'",
+            "[string]\\$${2:InputName},",
+            "${0}",
+        ],
+    },
+    "[from_insiders]Parameter 2⇢ Basic": {
+        "description": "[from_insiders]nin 2⁞ A basic [Parameter()]",
+        "prefix": "Parameter 🐒 default",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position = 0})]",
+            "[${3:object}]$${4:ParameterName}${0}",
+        ],
+    },
     "$PSCommandlet ⇢ ThrowTerminatingError": {
         /*
             This doesn't have a fancy template choice
@@ -105,7 +211,6 @@
             This doesn't have a fancy template choice
             this gives you a cleaner experience than the choice-box
             */
-        "prefix": "Param nin",
         "prefix": "Parameter nin : 🐒",
         "body": [
             "# ${3} ",
@@ -114,6 +219,27 @@
             // "[${3:object}]$${4:ParameterName}$0",
         ],
         "description": "a quick Parameter()"
+    },
+    "Parameter 2⇢ Basic": {
+        "description": "nin 2⁞ A basic [Parameter()]",
+        "prefix": "Parameter 🐒 default",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position = 0})]",
+            "[${3:object}]$${4:ParameterName}${0}",
+        ],
+    },
+    "[fromInsiders] Parameter 3⇢ Basic": {
+        "description": "[fromInsiders]  MinimalParma: nin 2⁞ A basic [Parameter()]",
+        "prefix": "zparam", // paramznparam nin | Parameter 🐒",
+        "body": [
+            //     "# y",
+            // "[Parameter()]$x,"
+            //     ""
+            "#${4:Docstring}",
+            "[Parameter(${1:Mandatory, Position = 0})]",
+            "[${2:object}]\\$${3:ParameterName}${0:,}",
+        ],
     },
     "Dev.Nin ⇢ Template": {
         /*
@@ -137,84 +263,6 @@
             "if (! \\$experimentToExport) {",
             "    # ...",
             "}",
-        ],
-    },
-    // ⇢
-    "Parameter 3⇢ Basic": {
-        "description": "MinimalParma: nin 2⁞ A basic [Parameter()]",
-        "prefix": "zparam", // paramznparam nin | Parameter 🐒",
-        "body": [
-            //     "# y",
-            // "[Parameter()]$x,"
-            //     ""
-            "#${4:Docstring}",
-            "[Parameter(${1:Mandatory, Position = 0})]",
-            "[${2:object}]\\$${3:ParameterName}${0:,}",
-        ],
-    },
-    // "Parameter 4⇢ Basic": {
-    //     "description": "MinimalParma: nin 2⁞ A basic [Parameter()]",
-    //     "prefix": "zparam",// paramznparam nin | Parameter 🐒",
-    //     "body": [
-    //     //     "# y",
-    //     // "[Parameter()]$x,"
-    //     //     ""
-    //         "#${3:Docstring}",
-    //         "[Parameter()]",
-    //         "[${1:object}]\\$${2:ParameterName}${0:,}",
-    //     ],
-    // },
-    // ⇢
-    "Parameter 2⇢ Basic": {
-        "description": "nin 2⁞ A basic [Parameter()]",
-        "prefix": "Parameter 🐒 default",
-        "body": [
-            "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position = 0})]",
-            "[${3:object}]$${4:ParameterName}${0}",
-        ],
-    },
-    "Completer ⇢ PS6 ⇢ IArgumentCompleter Class🐒": {
-        "prefix": "completer-nin-IArgumentCompleter",
-        "description": "PS6+ IArgumentCompleter class",
-        "body": [
-            "# requires PS6+ (verify): <https://gist.github.com/ninmonkey/dd90aa7a1641b6643cfd904557115909>",
-            "# snippet WIP",
-            "class ${1:ArgumentCompleter} : System.Management.Automation.IArgumentCompleter {",
-            "\t[System.Collections.Generic.IEnumerable[System.Management.Automation.CompletionResult]] CompleteArgument(",
-            "\t\t[string] \\$CommandName,",
-            "\t\t[string] \\$ParameterName,",
-            "\t\t[string] \\$WordToComplete,",
-            "\t\t[System.Management.Automation.Language.CommandAst] \\$CommandAst,",
-            "\t\t[System.Collections.IDictionary] \\$FakeBoundParameters",
-            "\t) {",
-            "\t\t\\$CompletionResults = [System.Collections.Generic.List[System.Management.Automation.CompletionResult]]::new()",
-            "\t\t",
-            "\t\t${0:$TM_SELECTED_TEXT}",
-            "\t\t",
-            "\t\treturn \\$CompletionResults",
-            "\t}",
-            "}"
-        ],
-    },
-    "Parameter ⇢ Completion ⇢ Suggest": {
-        "description": "🐒⁞ PS6 ArgumentCompletions() suggest without validation [Parameter()]",
-        "prefix": "completer-nin-suggest🐒",
-        "body": [
-            "[Parameter(Mandatory, Position = 0)]",
-            "[ArgumentCompletions(",
-            "    '${1:one}'",
-            "[string]\\$${2:InputName},",
-            "${0}",
-        ],
-    },
-    "Parameter 2⇢ Basic": {
-        "description": "nin 2⁞ A basic [Parameter()]",
-        "prefix": "Parameter 🐒 default",
-        "body": [
-            "# ${1:Docstring}",
-            "[Parameter(${2:Mandatory, Position = 0})]",
-            "[${3:object}]$${4:ParameterName}${0}",
         ],
     },
     "Parameter ⇢ Simple (extra tabstop choices)": {
@@ -288,50 +336,6 @@
             "}"
         ]
     },
-    "Func ⇢ User $Options @{..} ⇢ 🐒": {
-        "prefix": "Function ⇢ Options 🐒",
-        "description": "nin func with $Config defaults plus user -Options @{..} 🐒",
-        "body": [
-            "function Verb-Noun {",
-            "    <#",
-            "        .synopsis",
-            "            .",
-            "        .notes",
-            "            .",
-            "        .example   ",
-            "            PS> Verb-Noun -Options @{ Title='Other' }",
-            "        #>",
-            "    # [outputtype( [string[]] )]",
-            "    # [Alias('x')]",
-            "    [cmdletbinding()]",
-            "    param(",
-            "        # docs",
-            "        # [Alias('y')]",
-            "        [parameter(Mandatory, Position = 0, ValueFromPipeline)]",
-            "        [object]\\$InputObject, ",
-            "    ",
-            "        # extra options",
-            "        [Parameter()][hashtable]\\$Options",
-            "    )",
-            "    begin {",
-            "        [hashtable]\\$ColorType = Join-Hashtable \\$ColorType (\\$Options.ColorType ?? @{})       ",
-            "        [hashtable]\\$Config = @{",
-            "            AlignKeyValuePairs = \\$true",
-            "            Title              = 'Default'",
-            "            DisplayTypeName    = \\$true",
-            "        }",
-            "        \\$Config = Join-Hashtable \\$Config (\\$Options ?? @{})        ",
-            "    }",
-            "    process {}",
-            "    end {}",
-            "}"
-        ]
-    },
-    "Requires Version 🐒 7": {
-        "prefix": "requires-version | nin 🐒",
-        "body": "#Requires -Version ${1:7}\n$0",
-        "description": "Requires 🐒 a minimum version of PowerShell in order to execute the containing script file."
-    },
     "Func ⇢ Pipeline ⇢ Collect All🐒": {
         "prefix": "Function ⇢ Collect All Pipeline 🐒",
         "description": "Collects all objects from the pipeline 🐒",
@@ -389,21 +393,6 @@
             "    )",
             "    ${4:${TM_SELECTED_TEXT}}", // works.. not sure whether I want to use selection
             "}"
-        ]
-    },
-    "Exception ⇢ Basic Catch 🐒": {
-        "prefix": "Try Catch Exception ⇢ Basic 🐒",
-        "description": "minimal catch | Supports selected text.",
-        "body": [
-            // "",
-            "try {",
-            "    ${1:${TM_SELECTED_TEXT}}",
-            "    ${0}",
-            "}",
-            "catch {",
-            "    \\$PSCmdlet.WriteError(\\$_)",
-            "}",
-            // "",
         ]
     },
     // "Label🐈": {
@@ -487,7 +476,7 @@
             "$0",
         ],
     },
-    "Parameter: Completer ⇢ ValidateSet": {
+    "Parameter: Completer 2 ⇢ ValidateSet": {
         "prefix": "Param 2⇢ Completer | [ValidateSet] 🐒",
         // "prefix": "Completer ⇢ ValidateSet",
         "description": "nin 2⁞ Autocompleter parameter from a static list using ValidateSet()",
