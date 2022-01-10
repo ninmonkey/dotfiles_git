@@ -1362,6 +1362,7 @@
     "files.associations": {
         // these have higher precendence than extensions
         "*.dax": "sql",
+        // "/Class/*.ps1": "csharp",
         "*.json": "jsonc",
         // powershell
         "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
@@ -3487,4 +3488,6 @@
     "powershell.enableProfileLoading": true,
     "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
     "markdown-preview-enhanced.enableExtendedTableSyntax": true,
+    "javascript.suggest.completeFunctionCalls": true,
+    "editor.suggest.shareSuggestSelections": true,
 }
