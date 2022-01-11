@@ -1038,11 +1038,10 @@
     "markdownlint.run": "onType",
     "markdownlint.run": "onSave",
     "markdownlint.config": {
-        // "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/master/schema/markdownlint-config-schema.json",
-        "ul-indent": true,
-        "ul-style": true
-        // "blank_lines":
-        // "no-bare-urls": true
+        "MD028": false,
+        "MD025": {
+            "front_matter_title": ""
+        }
     },
     // https: //github.com/eamodio/vscode-gitlens/wiki/Custom-Formatting#commit-tokens
     // "gitlens.hovers.detailsMarkdownFormat": "${avatar} &nbsp;__${author}__, ${ago} &nbsp; _(${date})_ \n\n${message}\n\n${commands}",
