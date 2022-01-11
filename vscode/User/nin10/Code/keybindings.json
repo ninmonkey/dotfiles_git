@@ -365,15 +365,6 @@
         "command": "-workbench.action.terminal.openNativeConsole",
         "when": "!terminalFocus"
     },
-    // {
-    //     "key": "ctrl+w",
-    //     "command": "-workbench.action.terminal.killEditor",
-    //     "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
-    // },
-    // {
-    //     "key": "ctrl+shift+k ctrl+shift+b",
-    //     "command": "editor.action.selectToBracket"
-    // },
     /*
 
     ### Sect: Start of optional 2022/01
@@ -536,11 +527,6 @@
         "command": "-workbench.action.terminal.openNativeConsole",
         "when": "!terminalFocus"
     },
-    // {
-    //     "key": "ctrl+w", //
-    //     "command": "-workbench.action.terminal.killEditor",
-    //     "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
-    // },
     {
         "key": "ctrl+shift+k ctrl+shift+b",
         "command": "editor.action.selectToBracket"
