@@ -12,6 +12,7 @@ function __Add-DocstringMemberInfo {
         $SomeDir.__doc__ | ConvertFrom-ScriptExtent | code
     .notes
         future:
+        
         - bug: currently '__doc__ | fw' is right, but '__doc__.toString()' is blank
 
         - auto-tag/link to related items?
@@ -60,6 +61,7 @@ function __Add-DocstringMemberInfo {
         PassThru          = $true
         Force             = $Force
     }
+    
 
     $addMember_splat | format-dict | Write-Information
     $addMember_splat | format-dict | Write-Debug

@@ -3490,4 +3490,5 @@
     "markdown-preview-enhanced.enableExtendedTableSyntax": true,
     "javascript.suggest.completeFunctionCalls": true,
     "editor.suggest.shareSuggestSelections": true,
+    "window.zoomLevel": 1,
 }

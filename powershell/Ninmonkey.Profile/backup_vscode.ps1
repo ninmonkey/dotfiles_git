@@ -84,6 +84,7 @@ function Backup-VSCode {
             $dest = "$dotfileRoot\code"
             $copyItemSplat = @{
                 # WhatIf      = $true
+                ErrorAction = 'continue' # incase in use profile
                 Path        = $src
                 Destination = $dest
                 # Verbose     = $true

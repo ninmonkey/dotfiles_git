@@ -1,3 +1,4 @@
+Write-Warning 'WARNING: ㏒ [CollectDotfiles.original.psm1]'
 <#
     section: Private
 #>

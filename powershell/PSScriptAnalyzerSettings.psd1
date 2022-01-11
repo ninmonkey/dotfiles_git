@@ -66,6 +66,7 @@ examples:
             IndentationSize     = 4
         }
 
+
         PSUseConsistentWhitespace  = @{
             Enable                          = $true
             CheckInnerBrace                 = $true

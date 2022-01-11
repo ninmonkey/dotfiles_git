@@ -150,6 +150,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     Set-Alias @splatIgnorePass -Name 'S' -Value 'Select-Object' -Description 'aggressive: to override other modules'
     New-Alias @splatIgnorePass -Name 'Wi' -Value 'Write-Information' -Description 'Write Information'
     Set-Alias @splatIgnorePass -Name 'Gpi' -Value 'ClassExplorer\Get-Parameter' -Description 'Write Information'
+    New-Alias @splatIgnorePass -Name 'dict' -Value 'New-HashtableFromObject' -desc 'my pipe constructor'
 
 
     ##
