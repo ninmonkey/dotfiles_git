@@ -122,6 +122,22 @@
         ],
         "description": "Interpolated Here-string. Intended  to be hotkey only, when there's a selection to wrap "
     },
+    "Expression -> null conditional": {
+        /*
+            input
+                $x[0]
+                $x[
+
+            goal:
+                ($x)?[0]
+
+        */
+        "description": "converts '($x)?[0]' to '($x)?[0]' using the 'null conditional operator'. see <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7#null-conditional-operators--and-> ",
+        "prefix": "? conditional ?[ null conditional",
+        "body": [
+            "(${1:$TM_SELECTED_TEXT})?${0:[0]}",
+        ],
+    },
     "Exception ⇢ Basic Catch 🐒": {
         "prefix": "Try Catch Exception ⇢ Basic 🐒",
         "description": "minimal catch | Supports selected text.",

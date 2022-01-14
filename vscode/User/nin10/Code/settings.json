@@ -2322,6 +2322,28 @@
     //       "sortJSONTypeReverse": true
     //   },
     "markdown.preview.doubleClickToSwitchToEditor": true,
+    "markdown.extension.preview.autoShowPreviewToSide": false,
+    "markdown.addFrontMatterTitle": true,
+    // maybeSee: https://github.com/dotnet/docs/blob/d34042d234a90d74df1baee17f664f89d5abd67f/docfx.json#L147
+    "markdown.docsetLanguages": [
+        ".NET Core CLI",
+        // "Azure CLI",
+        "C#",
+        "CSS",
+        // "Dockerfile",
+        "HTML",
+        "JSON",
+        "JavaScript",
+        "Markdown",
+        // "Nginx",
+        "PowerApps Formula",
+        "powerquery",
+        "DAX Power BI",
+        "PowerShell",
+        // "Protocol Buffers",
+        // "Razor CSHTML",
+        "TypeScript"
+    ],
     "markdown.preview.markEditorSelection": true,
     "markdown.preview.scrollEditorWithPreview": true,
     "markdown.preview.linkify": true,
