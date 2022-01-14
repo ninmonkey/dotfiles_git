@@ -402,7 +402,7 @@ aka
         details why: <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-7.1#changing-the-default-encoding>
 #>
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
-$PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'
+$PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'    # test it off
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
@@ -425,9 +425,9 @@ $PSDefaultParameterValues['help:detailed'] = $true
         - [ ] linter warn when parameter name isn't valid, like a code change, or datatype change
 #>
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
-$PSDefaultParameterValues['code-venv:ForceMode'] = 'code'
-$PSDefaultParameterValues['Dev.Nin\Invoke-VSCodeVenv:ForceMode'] = 'insiders'
-$PSDefaultParameterValues['Code-Venv:ForceMode'] = 'insiders' # < code | insiders >
+
+# $PSDefaultParameterValues['Dev.Nin\Invoke-VSCodeVenv:ForceMode'] = 'insiders' # < code | insiders >
+# $PSDefaultParameterValues['Code-Venv:ForceMode'] = 'insiders' # < code | insiders >
 # $PSDefaultParameterValues['Dev.Nin\Invoke-VSCodeVenv:infa']='ignore'
 # Dev.Nin\Invoke-VSCodeVenv
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
