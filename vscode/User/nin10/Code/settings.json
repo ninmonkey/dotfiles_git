@@ -2112,33 +2112,33 @@
         // per-theme
         "enabled": true,
         "rules": {
-            "parameter": {
-                "foreground": "#464545", // nintheme
-                "foreground": "#ea00ff",
-                "underline": true,
-                "bold": true,
-                "italic": true,
-                "fontStyle": "italic bold underline"
-            },
+            // "parameter": {
+            //     "foreground": "#464545", // nintheme
+            //     "foreground": "#ea00ff",
+            //     "underline": true,
+            //     "bold": true,
+            //     "italic": true,
+            //     "fontStyle": "italic bold underline"
+            // },
         },
         "[Default Dark+]": {
             "enabled": true,
             "rules": {
-                // single value
-                // vs many
-                "*.abstract": {
-                    "foreground": "#0000ff",
-                    "underline": true,
-                    "fontStyle": "bold"
-                },
-                "parameter": {
-                    "foreground": "#464545", // nintheme
-                    "foreground": "#ea00ff",
-                    "underline": true,
-                    "bold": true,
-                    "italic": true,
-                    "fontStyle": "italic bold underline"
-                },
+                // // single value
+                // // vs many
+                // "*.abstract": {
+                //     "foreground": "#0000ff",
+                //     "underline": true,
+                //     "fontStyle": "bold"
+                // },
+                // "parameter": {
+                //     "foreground": "#464545", // nintheme
+                //     "foreground": "#ea00ff",
+                //     "underline": true,
+                //     "bold": true,
+                //     "italic": true,
+                //     "fontStyle": "italic bold underline"
+                // },
             }
         },
     },
@@ -3489,5 +3489,4 @@
     "markdown-preview-enhanced.enableExtendedTableSyntax": true,
     "javascript.suggest.completeFunctionCalls": true,
     "editor.suggest.shareSuggestSelections": true,
-    "window.zoomLevel": 1,
 }
