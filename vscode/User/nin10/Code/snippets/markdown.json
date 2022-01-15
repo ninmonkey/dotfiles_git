@@ -1,5 +1,90 @@
 {
     /*
+    New: Snippet variables
+
+        https://code.visualstudio.com/updates/v1_53#_new-snippet-variables
+
+        docs:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets
+        regex transform:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples
+        extension snippets tutorial:
+            https://code.visualstudio.com/api/language-extensions/snippet-guide
+        vscode variables:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables
+
+    additional examples:
+        https://rkeithhill.wordpress.com/2016/02/17/creating-a-powershell-command-that-process-paths-using-visual-studio-code/
+    */
+    /*
+    Markdown Snippets (nin) 2022-01-22
+    */
+    "Markdown Filepath -> Map spaces to %20 for filepath urls": {
+        "prefix": "md. Spaces to Escape ⁞ template nin🐒",
+        "description": "fixes urls with spaces in them",
+        "body": [
+            "${TM_SELECTED_TEXT/ /%20/g}",
+        ],
+        /*
+        output:
+
+        */
+    },
+    /*
+    Markdown Snippets (nin) 2022-01-22
+    */
+    "Markdown Filepath -> Undo spaces to %20 for filepath urls": {
+        "prefix": "md.undo Spaces to Escape ⁞ template nin🐒",
+        "description": "🔴🚧Not yet working ' ' from '%20'",
+        "body": [
+            "${TM_SELECTED_TEXT/%20\\ /_/g}",
+        ],
+        /*
+        output:
+
+        */
+    },
+    /*
+    Markdown Snippets (nin) 2022-01-22
+    */
+    "EmptyFile -> Readme": {
+        "prefix": "readme.md ⁞ template nin🐒",
+        "description": "empty markdown files, needs improvement",
+        "body": [
+            "[Back ↑](..)",
+            "$TM",
+            "${1:another ${2:placeholder}}",
+            "## ${0}",
+        ],
+        /*
+        output:
+
+        */
+    },
+    /*
+    Markdown Snippets (nin) 2022-01-22
+    */
+    "HTML Table": {
+        "prefix": "table Html ⁞ nin",
+        "description": "nin🐒 ⁞ raw inline HTML tables",
+        "body": [
+            "<table>",
+            "    <tr>",
+            "        <th>${1:col1}</th>",
+            "        <th>${2:col2}</th>",
+            "    </tr>",
+            "    <tr>",
+            "        <td>${1:col1}</td>",
+            "        <td>${2:col2}</td>",
+            "    </tr>",
+            "</table>$0",
+        ],
+        /*
+        output:
+
+        */
+    },
+    /*
     Markdown Snippets (nin) 2021-06-20
     */
     "HTML Comment section": {

@@ -1,3 +1,4 @@
+- [Whats new](#whats-new)
 - [Snippets UI](#snippets-ui)
 - [Scope: Global, Multi-language, or disabled](#scope-global-multi-language-or-disabled)
   - [Personal Scopes](#personal-scopes)
@@ -11,6 +12,24 @@
   - [Docs](#docs)
   - [Reference](#reference)
 - [Cheat Sheet: Dates](#cheat-sheet-dates)
+
+
+# Whats new
+
+- [There is a new command Transform to Snake Case](https://code.visualstudio.com/updates/v1_53#_transform-to-snake-case) that will convert the selected text to snake case
+- new command `transform_snake_to_camel`
+-  add `RELATIVE_FILEPATH` snippet variable PR #114208
+-  `RANDOM_UUID` snippet variable PR #113826
+-  [snippet variables](https://code.visualstudio.com/updates/v1_53#_new-snippet-variables)
+-  [inline provider API](https://code.visualstudio.com/updates/v1_54#_inline-value-provider-api)
+- ["Implement a "toggle this item in some way"](https://code.visualstudio.com/updates/v1_63#_quick-pick-api-improvements) such as an "Insert Snippet" command."
+- [Addon arrow functions](https://marketplace.visualstudio.com/items?itemName=deinsoftware.arrow-function-snippets)
+- [detailed completion item labels](https://code.visualstudio.com/updates/v1_58#_detailed-completion-item-labels) this would be neat, to highlight my functions without 'corrupting' the names
+
+snake/camel/pascal?
+```json
+"${TM_FILENAME/(.*)/${1:/upcase}/}"
+```
 
 # Snippets UI
 
