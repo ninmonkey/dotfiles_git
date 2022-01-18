@@ -509,4 +509,8 @@
         },
         "when": "editorLangId == 'powershell'"
     },
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.toggleAuxiliaryBar"
+    },
 ]
