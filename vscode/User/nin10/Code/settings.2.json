@@ -792,7 +792,7 @@
   ### Sect: Clipboard: Copy Paste
 
       */
-    "terminal.integrated.copyOnSelection": true, // this might be the cause of the copy paste issues
+    "terminal.integrated.copyOnSelection": false, // this might be the cause of the copy paste issues
     // "editor.copyWithSyntaxHighlighting": true,
     "editor.emptySelectionClipboard": false,
     /*
@@ -1038,11 +1038,10 @@
     "markdownlint.run": "onType",
     "markdownlint.run": "onSave",
     "markdownlint.config": {
-        // "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/master/schema/markdownlint-config-schema.json",
-        "ul-indent": true,
-        "ul-style": true
-        // "blank_lines":
-        // "no-bare-urls": true
+        "MD028": false,
+        "MD025": {
+            "front_matter_title": ""
+        }
     },
     // https: //github.com/eamodio/vscode-gitlens/wiki/Custom-Formatting#commit-tokens
     // "gitlens.hovers.detailsMarkdownFormat": "${avatar} &nbsp;__${author}__, ${ago} &nbsp; _(${date})_ \n\n${message}\n\n${commands}",
@@ -1255,8 +1254,6 @@
     "powershell.codeFormatting.alignPropertyValuePairs": true,
     "powershell.codeFormatting.autoCorrectAliases": false,
     "powershell.codeFormatting.autoCorrectAliases": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
-    "powershell.codeFormatting.ignoreOneLineBlock": true,
     "powershell.codeFormatting.newLineAfterOpenBrace": false,
     "powershell.codeFormatting.newLineAfterOpenBrace": true,
     "powershell.codeFormatting.newLineAfterCloseBrace": false,
@@ -1364,6 +1361,7 @@
     "files.associations": {
         // these have higher precendence than extensions
         "*.dax": "sql",
+        // "/Class/*.ps1": "csharp",
         "*.json": "jsonc",
         // powershell
         "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
@@ -2114,33 +2112,33 @@
         // per-theme
         "enabled": true,
         "rules": {
-            "parameter": {
-                "foreground": "#464545", // nintheme
-                "foreground": "#ea00ff",
-                "underline": true,
-                "bold": true,
-                "italic": true,
-                "fontStyle": "italic bold underline"
-            },
+            // "parameter": {
+            //     "foreground": "#464545", // nintheme
+            //     "foreground": "#ea00ff",
+            //     "underline": true,
+            //     "bold": true,
+            //     "italic": true,
+            //     "fontStyle": "italic bold underline"
+            // },
         },
         "[Default Dark+]": {
             "enabled": true,
             "rules": {
-                // single value
-                // vs many
-                "*.abstract": {
-                    "foreground": "#0000ff",
-                    "underline": true,
-                    "fontStyle": "bold"
-                },
-                "parameter": {
-                    "foreground": "#464545", // nintheme
-                    "foreground": "#ea00ff",
-                    "underline": true,
-                    "bold": true,
-                    "italic": true,
-                    "fontStyle": "italic bold underline"
-                },
+                // // single value
+                // // vs many
+                // "*.abstract": {
+                //     "foreground": "#0000ff",
+                //     "underline": true,
+                //     "fontStyle": "bold"
+                // },
+                // "parameter": {
+                //     "foreground": "#464545", // nintheme
+                //     "foreground": "#ea00ff",
+                //     "underline": true,
+                //     "bold": true,
+                //     "italic": true,
+                //     "fontStyle": "italic bold underline"
+                // },
             }
         },
     },
@@ -2324,6 +2322,28 @@
     //       "sortJSONTypeReverse": true
     //   },
     "markdown.preview.doubleClickToSwitchToEditor": true,
+    "markdown.extension.preview.autoShowPreviewToSide": false,
+    "markdown.addFrontMatterTitle": true,
+    // maybeSee: https://github.com/dotnet/docs/blob/d34042d234a90d74df1baee17f664f89d5abd67f/docfx.json#L147
+    "markdown.docsetLanguages": [
+        ".NET Core CLI",
+        // "Azure CLI",
+        "C#",
+        "CSS",
+        // "Dockerfile",
+        "HTML",
+        "JSON",
+        "JavaScript",
+        "Markdown",
+        // "Nginx",
+        "PowerApps Formula",
+        "powerquery",
+        "DAX Power BI",
+        "PowerShell",
+        // "Protocol Buffers",
+        // "Razor CSHTML",
+        "TypeScript"
+    ],
     "markdown.preview.markEditorSelection": true,
     "markdown.preview.scrollEditorWithPreview": true,
     "markdown.preview.linkify": true,
@@ -2352,6 +2372,9 @@
     // "editor.suggest.snippetsPreventQuickSuggestions": true,
     // "editor.suggest.showSnippets": true,
     "editor.acceptSuggestionOnCommitCharacter": true,
+    "docs-build.debugMode.enable": false,
+    // "docfxLanguageServer.trace.server": "messages",
+    // "docfx"
     // "editor.acceptSuggestionOnEnter": "on",
     "editor.autoIndent": "advanced",
     "editor.suggest.showClasses": true,
@@ -2981,12 +3004,10 @@
         "function",
         "Commands.Reports"
     ],
-    "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
-    "diffEditor.ignoreTrimWhitespace": false,
+    "pesterExplorer.autoDiscoverOnOpen": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.lineNumbers": "relative", // weird
@@ -3154,12 +3175,10 @@
     // The indent color when there is a mix between spaces and tabs.
     // To be disabled this coloring set this to an empty string.
     "indentRainbow.tabmixColor": "rgba(128,32,96,0.6)",
-    "pesterExplorer.autoDiscoverOnOpen": true, // todo:  ask kwhat the multiple toggles should be
-    "diffEditor.ignoreTrimWhitespace": false,
+    "pesterExplorer.autoDiscoverOnOpen": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     /*
     Note: Some of these settings auto-delete when you toggle them off and on again.
@@ -3493,4 +3512,6 @@
     "powershell.enableProfileLoading": true,
     "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
     "markdown-preview-enhanced.enableExtendedTableSyntax": true,
+    "javascript.suggest.completeFunctionCalls": true,
+    "editor.suggest.shareSuggestSelections": true,
 }

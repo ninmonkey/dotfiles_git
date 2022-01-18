@@ -3240,6 +3240,5 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
-    "window.zoomLevel": -1,
     // "debug.console.acceptSuggestionOnEnter":
 }

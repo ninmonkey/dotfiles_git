@@ -252,7 +252,7 @@
             //     "# y",
             // "[Parameter()]$x,"
             //     ""
-            "#${4:Docstring}",
+            "# ${4:Docstring}",
             "[Parameter(${1:Mandatory, Position = 0})]",
             "[${2:object}]\\$${3:ParameterName}${0:,}",
         ],
