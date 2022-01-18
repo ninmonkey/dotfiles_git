@@ -129,7 +129,6 @@
       ### Sect: From JustinGrote
 
       tags: dotnet, launch.json, justinGrote
-        ref: https://gist.github.com/ninmonkey/b60e735760c78cc6b70443162d2bfa55
 
       */
             // [1] JustinGrote:
@@ -1824,7 +1823,7 @@
     "powershell.codeFormatting.pipelineIndentationStyle": "None",
     "redhat.telemetry.enabled": false,
     "snippets.viewer.sortSnippetsByName": true,
-    "python.defaultInterpreterPath": "C:\\Users\\cppmo_000\\AppData\\Local\\Microsoft\\WindowsApps\\python3.9.exe",
+    "python.defaultInterpreterPath": "c:\\Users\\cppmo_000\\Documents\\2020\\python\\one_offs\\Heroes of the Storm stats\\venv\\Scripts\\python.exe",
     "errorLens.enabledDiagnosticLevels": [
         "error",
         "warning",
@@ -3241,6 +3240,5 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
-    "window.zoomLevel": -1,
     // "debug.console.acceptSuggestionOnEnter":
 }
