@@ -117,7 +117,7 @@
     },
     {
         // opens a new term in the editor area, but in a side
-        "key": "ctrl+numpad4",
+        "key": "ctrl+pageup ctrl+shift",
         "command": "workbench.action.createTerminalEditor",
         "when": "editorTextFocus",
     },
@@ -178,6 +178,18 @@
         "when": "editorTextFocus && !editorReadonly"
         // "args": ""
     },
+    // {
+    // // "key": "ctrl+cmd+=",
+    // // "key": "ctrl+numpad2",
+    // "when": "false",
+    // "command": "workbench.action.quickOpen",
+    // "command": "workbench.action.quickOpenrecent",
+    // "command": "workbench.action.quickPickManyToggle",
+    // "command": "workbench.action.quickPickManyToggle",
+    // "command": "workbench.action.quickSwitchWindow",
+    // "command": "workbench.action.toggleZenMode",
+    // // "args": ""
+    // },
     /*
 
     [section]: Debugging
@@ -667,5 +679,17 @@
             "commandName": "ExpandMemberExpression"
         },
         "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+numpad4",
+        "command": "baincd.mini-command-palettes.cmds.my-palette-1"
+    },
+    {
+        "key": "ctrl+numpad7",
+        "command": "baincd.mini-command-palettes.cmds.my-palette-2"
+    },
+    {
+        "key": "ctrl+k ctrl+r",
+        "command": "-workbench.action.keybindingsReference"
     },
 ]

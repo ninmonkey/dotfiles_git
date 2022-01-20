@@ -3231,7 +3231,6 @@
     "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekViewDuringAutoRun": false,
     "terminal.explorerKind": "integrated",
-    "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
     "python.diagnostics.sourceMapsEnabled": true,
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
@@ -3241,6 +3240,56 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
-    "window.zoomLevel": -1,
+    "terminal.integrated.tabs.location": "left",
     // "debug.console.acceptSuggestionOnEnter":
+    "baincd.mini-command-palettes.paletteConfigs": {
+        "my-palette-1": {
+            "placeHolder": "placeholder text",
+            "commands": [
+                {
+                    "label": "openDeveloperTools ┐ workbench.action.webview",
+                    "command": "workbench.action.webview.openDeveloperTools"
+                },
+                {
+                    "label": "quickOpen ┐ workbench.action",
+                    "command": "workbench.action.quickOpen"
+                },
+                {
+                    "label": "quickOpenrecent ┐ workbench.action",
+                    "command": "workbench.action.quickOpenrecent"
+                },
+                {
+                    "label": "quickPickManyToggle ┐ workbench.action",
+                    "command": "workbench.action.quickPickManyToggle"
+                },
+                {
+                    "label": "quickSwitchWindow ┐ workbench.action",
+                    "command": "workbench.action.quickSwitchWindow"
+                },
+                {
+                    // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
+                    "label": "ZenMode  ┐ workbench.action",
+                    "command": "workbench.action.toggleZenMode",
+                }
+            ]
+        },
+        "my-palette-2": {
+            "placeHolder": "placeholder text",
+            "commands": [
+                {
+                    // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
+                    "label": "ZenMode  ┐ workbench.action",
+                    "command": "workbench.action.toggleZenMode",
+                },
+                {
+                    "label": "editor.action.inspectTMScopes",
+                    "command": "editor.action.inspectTMScopes"
+                },
+                {
+                    "label": "a",
+                    "command": "b"
+                }
+            ]
+        }
+    }
 }
