@@ -116,18 +116,6 @@
         "when": ""
     },
     {
-        // opens a new term in the editor area, but in a side
-        "key": "ctrl+pageup ctrl+shift",
-        "command": "workbench.action.createTerminalEditor",
-        "when": "editorTextFocus",
-    },
-    /*
-    See also:
-        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
-    New Commands
-        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
-    */
-    {
         // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
         "key": "ctrl+w",
         "command": "workbench.action.closeWindow",
@@ -681,15 +669,19 @@
         "when": "editorLangId == 'powershell'"
     },
     {
+        "key": "ctrl+k ctrl+r",
+        "command": "-workbench.action.keybindingsReference"
+    },
+    {
         "key": "ctrl+numpad4",
-        "command": "baincd.mini-command-palettes.cmds.my-palette-1"
+        "command": "baincd.mini-command-palettes.cmds.main-palette"
     },
     {
         "key": "ctrl+numpad7",
-        "command": "baincd.mini-command-palettes.cmds.my-palette-2"
+        "command": "baincd.mini-command-palettes.cmds.secondary-palette"
     },
     {
-        "key": "ctrl+k ctrl+r",
-        "command": "-workbench.action.keybindingsReference"
+        "key": "ctrl+numpad9",
+        "command": "baincd.mini-command-palettes.cmds.example-template-palette"
     },
 ]

@@ -3243,8 +3243,8 @@
     "terminal.integrated.tabs.location": "left",
     // "debug.console.acceptSuggestionOnEnter":
     "baincd.mini-command-palettes.paletteConfigs": {
-        "my-palette-1": {
-            "placeHolder": "placeholder text",
+        "main-palette": {
+            "placeHolder": "main palette",
             "commands": [
                 {
                     "label": "openDeveloperTools ┐ workbench.action.webview",
@@ -3273,8 +3273,8 @@
                 }
             ]
         },
-        "my-palette-2": {
-            "placeHolder": "placeholder text",
+        "secondary-palette": {
+            "placeHolder": "secondary Palette",
             "commands": [
                 {
                     // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
@@ -3288,8 +3288,149 @@
                 {
                     "label": "a",
                     "command": "b"
+                },
+                {
+                    "label": "$(explorer-view-icon) Show Explorer",
+                    "description": "     (Ctrl+Shift+E)",
+                    "command": "workbench.view.explorer"
+                },
+                {
+                    "label": "$(search-view-icon) Show Search",
+                    "description": "     (Ctrl+Shift+F)",
+                    "command": "workbench.action.findInFiles" // or workbench.view.search
+                },
+                {
+                    "label": "$(source-control-view-icon) Show Git (Source Control)",
+                    "description": "     (Ctrl+Shift+G)",
+                    "command": "workbench.view.scm"
+                },
+                {
+                    "label": "$(run-view-icon) Show Run and Debug",
+                    "description": "     (Ctrl+Shift+D)",
+                    "command": "workbench.view.debug"
+                },
+                {
+                    "label": "$(extensions-view-icon) Show Extensions",
+                    "description": "     (Ctrl+Shift+X)",
+                    "command": "workbench.view.extensions"
+                },
+                {
+                    "label": "$(test-view-icon) Show Testing",
+                    "command": "workbench.view.extension.test"
+                },
+                {
+                    "label": "$(references) Show References",
+                    "command": "workbench.view.extension.references-view"
+                },
+                {
+                    "label": "$(pass) Show Todos",
+                    "command": "workbench.view.extension.todo-tree-container",
+                    "showWhen": {
+                        "extensionEnabled": "gruntfuggly.todo-tree"
+                    }
+                },
+                {
+                    "label": "$(kebab-vertical) Toggle Activity Bar",
+                    "command": "workbench.action.toggleActivityBarVisibility"
+                },
+                {
+                    "label": "$(preview) Toggle Sidebar",
+                    "description": "     (Ctrl+B)",
+                    "command": "workbench.action.toggleSidebarVisibility"
+                },
+            ],
+        },
+        "example-template-palette": {
+            "placeHolder": "example templates",
+            "commands": [
+                {
+                    // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
+                    "label": "ZenMode  ┐ workbench.action",
+                    "command": "workbench.action.toggleZenMode",
+                },
+                {
+                    "label": "editor.action.inspectTMScopes",
+                    "command": "editor.action.inspectTMScopes"
+                },
+                {
+                    "label": "a",
+                    "command": "b"
+                },
+                {
+                    "label": "$(explorer-view-icon) Show Explorer",
+                    "description": "     (Ctrl+Shift+E)",
+                    "command": "workbench.view.explorer"
+                },
+                {
+                    "label": "$(search-view-icon) Show Search",
+                    "description": "     (Ctrl+Shift+F)",
+                    "command": "workbench.action.findInFiles" // or workbench.view.search
+                },
+                {
+                    "label": "$(source-control-view-icon) Show Git (Source Control)",
+                    "description": "     (Ctrl+Shift+G)",
+                    "command": "workbench.view.scm"
+                },
+                {
+                    "label": "$(run-view-icon) Show Run and Debug",
+                    "description": "     (Ctrl+Shift+D)",
+                    "command": "workbench.view.debug"
+                },
+                {
+                    "label": "$(extensions-view-icon) Show Extensions",
+                    "description": "     (Ctrl+Shift+X)",
+                    "command": "workbench.view.extensions"
+                },
+                {
+                    "label": "$(test-view-icon) Show Testing",
+                    "command": "workbench.view.extension.test"
+                },
+                {
+                    "label": "$(references) Show References",
+                    "command": "workbench.view.extension.references-view"
+                },
+                {
+                    "label": "$(pass) Show Todos",
+                    "command": "workbench.view.extension.todo-tree-container",
+                    "showWhen": {
+                        "extensionEnabled": "gruntfuggly.todo-tree"
+                    }
+                },
+                {
+                    "label": "$(kebab-vertical) Toggle Activity Bar",
+                    "command": "workbench.action.toggleActivityBarVisibility"
+                },
+                {
+                    "label": "$(preview) Toggle Sidebar",
+                    "description": "     (Ctrl+B)",
+                    "command": "workbench.action.toggleSidebarVisibility"
+                },
+                {
+                    "label": "openDeveloperTools ┐ workbench.action.webview",
+                    "command": "workbench.action.webview.openDeveloperTools"
+                },
+                {
+                    "label": "quickOpen ┐ workbench.action",
+                    "command": "workbench.action.quickOpen"
+                },
+                {
+                    "label": "quickOpenrecent ┐ workbench.action",
+                    "command": "workbench.action.quickOpenrecent"
+                },
+                {
+                    "label": "quickPickManyToggle ┐ workbench.action",
+                    "command": "workbench.action.quickPickManyToggle"
+                },
+                {
+                    "label": "quickSwitchWindow ┐ workbench.action",
+                    "command": "workbench.action.quickSwitchWindow"
+                },
+                {
+                    // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
+                    "label": "ZenMode  ┐ workbench.action",
+                    "command": "workbench.action.toggleZenMode",
                 }
-            ]
-        }
+            ],
+        },
     }
 }
