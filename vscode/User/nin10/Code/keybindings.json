@@ -116,6 +116,18 @@
         "when": ""
     },
     {
+        // opens a new term in the editor area, but in a side
+        "key": "ctrl+pageup ctrl+shift",
+        "command": "workbench.action.createTerminalEditor",
+        "when": "editorTextFocus",
+    },
+    /*
+    See also:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+    New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
+    */
+    {
         // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
         "key": "ctrl+w",
         "command": "workbench.action.closeWindow",
@@ -177,7 +189,6 @@
     // "command": "workbench.action.quickSwitchWindow",
     // "command": "workbench.action.toggleZenMode",
     // // "args": ""
-    // },
     /*
 
     [section]: Debugging
@@ -683,5 +694,18 @@
     {
         "key": "ctrl+numpad9",
         "command": "baincd.mini-command-palettes.cmds.example-template-palette"
+    },
+    // {
+    //     // https://powershell.github.io/PowerShellEditorServices/guide/extensions.html
+    //     // debug only
+    //     // "command": "PowerShell.ShowAdditionalCommands", "args": ""
+    // }
+    {
+        "key": "ctrl+numpad8",
+        "command": "PowerShell.ShowHelp"
+    },
+    {
+        "key": "ctrl+k ctrl+r",
+        "command": "-workbench.action.keybindingsReference"
     },
 ]

@@ -3243,9 +3243,77 @@
     "terminal.integrated.tabs.location": "left",
     // "debug.console.acceptSuggestionOnEnter":
     "baincd.mini-command-palettes.paletteConfigs": {
+        /*
+        properties :
+            'matchOnDescription', 'matchOnDetail', 'placeHolder', 'title'
+                https://code.visualstudio.com/api/references/vscode-api#QuickPickOptions
+                are from the  'QuickPickOptions' in the VS Code API.
+
+            'label', 'description', and 'detail'
+                https://code.visualstudio.com/api/references/vscode-api#QuickPickItem
+                correspond to 'QuickPickItems' in the VS Code API
+                icon support: These fields can all support rendering of theme icons via the $(<name>)-syntax.
+
+            'command' and 'commandArgs'
+                https://code.visualstudio.com/api/references/vscode-api#commands.executeCommand
+                correspond to arguments to the executeCommand API method.
+
+        to hide not installed commands:
+            When 'showWhen.extensionEnabled' is set
+            the command will only be displayed in the mini command palette when that extension is installed and enabled.
+
+        To configure an command that runs a specific task, use
+                {
+                    "command": "workbench.action.tasks.runTask",
+                    "commandArgs": ["{Task Label}"]
+                }
+
+            VS Code does not support a command to start a specific launch configuration.
+                https://stackoverflow.com/questions/48645098/vscode-keyboard-shortcut-for-launch-configuration/48650929#48650929
+
+                As a workaround, use the 'command id' =  'workbench.action.debug.selectandstart'
+                to display a popup to select the launch configuration to start.
+
+
+        links:
+            icons: https://code.visualstudio.com/api/references/icons-in-labels#icon-listing
+            examples are from: <https://github.com/baincd/vscode-mini-command-palettes/blob/main/Examples.md
+            optional attributes from: <https://github.com/baincd/vscode-mini-command-palettes#details>
+            which uses: <https://code.visualstudio.com/api/references/vscode-api#QuickPickOptions>
+
+            https://powershell.github.io/PowerShellEditorServices/guide/extensions.html
+
+
+
+        */
         "main-palette": {
             "placeHolder": "main palette",
             "commands": [
+                {
+                    "label": "$(console) Pwsh Commands",
+                    "description": "Supplied by PSEditorServices",
+                    // "detail": "$(console) details",
+                    "showWhen": {
+                        "extensionEnabled": "ms-vscode.powershell"
+                    }, // ms-vscode.powershell-preview
+                    "command": "PowerShell.ShowAdditionalCommands"
+                },
+                {
+                    "label": "$(console) Pwsh Help",
+                    "description": "$(question)  open help online",
+                    "showWhen": {
+                        "extensionEnabled": "ms-vscode.powershell"
+                    }, // ms-vscode.powershell-preview
+                    "command": "PowerShell.ShowHelp"
+                },
+                {
+                    "label": "PowerShell.InsertCommand",
+                    "command": "PowerShell.InsertCommand",
+                    // "description": "$(question)  open help online",
+                    "showWhen": {
+                        "extensionEnabled": "ms-vscode.powershell"
+                    }, // ms-vscode.powershell-preview
+                },
                 {
                     "label": "openDeveloperTools ┐ workbench.action.webview",
                     "command": "workbench.action.webview.openDeveloperTools"
@@ -3268,7 +3336,8 @@
                 },
                 {
                     // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
-                    "label": "ZenMode  ┐ workbench.action",
+                    "label": "Zen",
+                    "description": "toggle ZenMode",
                     "command": "workbench.action.toggleZenMode",
                 }
             ]
@@ -3432,5 +3501,124 @@
                 }
             ],
         },
+        "activity-bar-palette": {
+            "placeHolder": "Activity Bar",
+            "commands": [
+                {
+                    "label": "$(explorer-view-icon) Show Explorer",
+                    "description": "     (Ctrl+Shift+E)",
+                    "command": "workbench.view.explorer"
+                },
+                {
+                    "label": "$(search-view-icon) Show Search",
+                    "description": "     (Ctrl+Shift+F)",
+                    "command": "workbench.action.findInFiles" // or workbench.view.search
+                },
+                {
+                    "label": "$(source-control-view-icon) Show Git (Source Control)",
+                    "description": "     (Ctrl+Shift+G)",
+                    "command": "workbench.view.scm"
+                },
+                {
+                    "label": "$(run-view-icon) Show Run and Debug",
+                    "description": "     (Ctrl+Shift+D)",
+                    "command": "workbench.view.debug"
+                },
+                {
+                    "label": "$(extensions-view-icon) Show Extensions",
+                    "description": "     (Ctrl+Shift+X)",
+                    "command": "workbench.view.extensions"
+                },
+                {
+                    "label": "$(test-view-icon) Show Testing",
+                    "command": "workbench.view.extension.test"
+                },
+                {
+                    "label": "$(references) Show References",
+                    "command": "workbench.view.extension.references-view"
+                },
+                {
+                    "label": "$(pass) Show Todos",
+                    "command": "workbench.view.extension.todo-tree-container",
+                    "showWhen": {
+                        "extensionEnabled": "gruntfuggly.todo-tree"
+                    }
+                },
+                {
+                    "label": "$(kebab-vertical) Toggle Activity Bar",
+                    "command": "workbench.action.toggleActivityBarVisibility"
+                },
+                {
+                    "label": "$(preview) Toggle Sidebar",
+                    "description": "     (Ctrl+B)",
+                    "command": "workbench.action.toggleSidebarVisibility"
+                },
+            ]
+        },
+        "panel-palette": {
+            "placeHolder": "Panel",
+            "commands": [
+                {
+                    "label": "$(error) Show Problems",
+                    "description": "     (Ctrl+Shift+M)",
+                    "command": "workbench.actions.view.problems"
+                },
+                {
+                    "label": "$(output-view-icon) Show Output",
+                    "description": "     (Ctrl+K Ctrl+H)",
+                    "command": "workbench.action.output.toggleOutput"
+                },
+                {
+                    "label": "$(terminal-view-icon) Show Terminal",
+                    "description": "     (Ctrl+`)",
+                    "command": "workbench.action.quickOpenTerm" // or workbench.action.terminal.toggleTerminal
+                },
+                {
+                    "label": "$(debug-console) Show Debug Console",
+                    "description": "     (Ctrl+Shift+Y)",
+                    "command": "workbench.debug.action.toggleRepl"
+                },
+                {
+                    "label": "$(chevron-up) Toggle Panel",
+                    "description": "     (Ctrl+J)",
+                    "command": "workbench.action.togglePanel"
+                },
+            ]
+        },
+        "diff-palette": {
+            "placeHolder": "Diff",
+            "commands": [
+                {
+                    "label": "+  Stage Selected Changes",
+                    "description": "     (Ctrl+K Ctrl+Alt+S)",
+                    "command": "git.stageSelectedRanges"
+                },
+                {
+                    "label": "⧺  Stage File",
+                    "command": "git.stage"
+                },
+                {
+                    "label": "−  Unstage Selected Changes",
+                    "description": "     (Ctrl+K Ctrl+N)",
+                    "command": "git.unstageSelectedRanges"
+                },
+                {
+                    "label": "±  Open Diff (Working Copy)",
+                    "command": "git.openChange"
+                },
+                {
+                    "label": "$(go-to-file) Open File",
+                    "command": "git.openFile"
+                },
+                {
+                    "label": "$(diff) Toggle Inline / Side-By-Side",
+                    "command": "toggle.diff.renderSideBySide"
+                },
+                {
+                    "label": "␢  Toggle Show / Hide Whitespace Differences",
+                    "command": "toggle.diff.ignoreTrimWhitespace"
+                },
+            ]
+        }
     }
 }
