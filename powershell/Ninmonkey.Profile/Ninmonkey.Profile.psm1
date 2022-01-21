@@ -521,14 +521,15 @@ function _Write-ErrorSummaryPrompt {
     param(
         # print, even when newcount is false
         [Parameter()]
-        [switch]$AlwaysShow
-        # #
-        # [Parameter(Position = 0)]
-        # [string]$Name
+        [switch]$AlwaysShow,
+
+
+        # extra options
+        [Parameter()][hashtable]$Options
     )
 
     begin {
-        $colors = @{
+        [hashtable]$colors = @{
             ErrorDim    = [PoshCode.Pansies.RgbColor]'#8B0000' # darkred'
             ErrorBright = [PoshCode.Pansies.RgbColor]'#FF82AB'
             ErrorPale   = [PoshCode.Pansies.RgbColor]'#CD5C5C'
@@ -542,16 +543,30 @@ function _Write-ErrorSummaryPrompt {
             FgBright2   = [PoshCode.Pansies.RgbColor]'gray100'
 
         }
-        $c = $colors
 
-        $Option = @{
-            'ErrResetOnFirstPrompt' = $true
+        $Colors = Join-Hashtable $Colors ($Options.Colors ?? @{})
+        [hashtable]$Config = @{
+            'ErrResetOnFirstPrompt' = $false # future:mode make a time-delayed one in the future
+            'PrintRecentError'      = $true
+            'AlwaysShowPrompt'      = $AlwaysShow.IsPresent -and $alwaysShow
+            # 'AlwaysShow'            = ${Options}?.AlwaysShow ?? $AlwaysShow
         }
+
+        @(
+            hr
+            $Config | Format-Dict
+            hr
+
+            $Config = Join-Hashtable $Config ($Options ?? @{})
+            $Config | format-dict
+            hr
+        ) | Write-Information
+        $c = $colors
     }
     end {
         # or quit early skipping render?
         if (! (Dev.Nin\Test-HasNewError)) {
-            if (! $AlwaysShow ) {
+            if (! $AlwaysShowPrompt ) {
                 return
             }
         }
@@ -562,6 +577,7 @@ function _Write-ErrorSummaryPrompt {
 
         if ($Config.PrintRecentError) {
             Dev.Nin\showErr -Recent
+
         }
 
 
