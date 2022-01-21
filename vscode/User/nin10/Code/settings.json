@@ -1821,7 +1821,6 @@
     "oneDarkPro.bold": true,
     "pesterExplorer.autoDiscoverOnOpen": true,
     "editor.renderWhitespace": "none",
-    "powershell.codeFormatting.pipelineIndentationStyle": "None",
     "redhat.telemetry.enabled": false,
     "snippets.viewer.sortSnippetsByName": true,
     "python.defaultInterpreterPath": "C:\\Users\\cppmo_000\\AppData\\Local\\Microsoft\\WindowsApps\\python3.9.exe",
@@ -3620,5 +3619,6 @@
                 },
             ]
         }
-    }
+    },
+    "powershell.codeFormatting.pipelineIndentationStyle": "None"
 }

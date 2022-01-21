@@ -59,8 +59,10 @@ examples:
         # PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
         # IndentationSize     = 4
         # }
+
         PSUseConsistentIndentation = @{
-            Enable              = $true
+            # this one does not work well with 7+ pipes
+            Enable              = $false
             Kind                = 'space'
             PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
             IndentationSize     = 4

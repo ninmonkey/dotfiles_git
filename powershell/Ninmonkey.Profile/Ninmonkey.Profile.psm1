@@ -446,7 +446,8 @@ function _Write-PromptDynamicCrumbs {
     .notes
         future:
         #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '',
+        Justification = 'Personal Profiles may break rules')]
     [cmdletbinding()]
     param(
 
@@ -525,6 +526,7 @@ function _Write-ErrorSummaryPrompt {
         # [Parameter(Position = 0)]
         # [string]$Name
     )
+
     begin {
         $colors = @{
             ErrorDim    = [PoshCode.Pansies.RgbColor]'#8B0000' # darkred'
@@ -532,6 +534,8 @@ function _Write-ErrorSummaryPrompt {
             ErrorPale   = [PoshCode.Pansies.RgbColor]'#CD5C5C'
             Error       = [PoshCode.Pansies.RgbColor]'#CD3700'
             FgVeryDim   = [PoshCode.Pansies.RgbColor]'gray40'
+            FgDim3      = [PoshCode.Pansies.RgbColor]'gray20'
+            FgDim2      = [PoshCode.Pansies.RgbColor]'gray40'
             FgDim       = [PoshCode.Pansies.RgbColor]'gray60'
             Fg          = [PoshCode.Pansies.RgbColor]'gray80'
             FgBright    = [PoshCode.Pansies.RgbColor]'gray90'
@@ -539,6 +543,10 @@ function _Write-ErrorSummaryPrompt {
 
         }
         $c = $colors
+
+        $Option = @{
+            'ErrResetOnFirstPrompt' = $true
+        }
     }
     end {
         # or quit early skipping render?
@@ -548,7 +556,15 @@ function _Write-ErrorSummaryPrompt {
             }
         }
         $FormatMode = 'SimpleColor'
+        $FormatMode = 'MedColor'
+        $FormatMode = 'CleanColor'
         $errStat = Dev.Nin\Test-HasNewError -PassThru
+
+        if ($Config.PrintRecentError) {
+            Dev.Nin\showErr -Recent
+        }
+
+
         switch ($FormatMode) {
             'SimpleColor' {
                 $cDef = $c.fg
@@ -590,6 +606,21 @@ function _Write-ErrorSummaryPrompt {
                 # $errStat.
                 break
             }
+            'CleanColor' {
+                # 'e[0] of [y]'
+                @(
+                    '{0}' -f @(
+                        ($errStat.DeltaCount | Write-Color $c.ErrorPale)
+                    )
+                    ' of ' | write-color $c.FgDim
+                    '{0}' -f @(
+                        ($errStat.CurCount | Write-Color $c.FgDim2)
+                    )
+                ) | Join-String -sep ''
+
+                # $errStat.
+
+            }
             default {
                 if ($errStat.DeltaCount -eq 0) {
 
@@ -597,6 +628,10 @@ function _Write-ErrorSummaryPrompt {
                     '{0} new' -f @( $errStat.DeltaCount)
                 }
             }
+        }
+
+        if ($Config.ErrResetOnFirstPrompt) {
+            Dev.Nin\Test-HasNewError -Reset
         }
 
         return
@@ -690,11 +725,12 @@ function _Write-PromptForBugReport {
         'is PSIT? ' #| Write-Color 'gray60'
         if ($isPwshDebugTerm) {
             'yes' | Write-Color green
-        }
-        else {
+        } else {
             'no ' | Write-Color darkred
         }
         ' '
+
+
         $query_addonVersion = & $codeBin @('--list-extensions', '--show-versions')
         | Where-Object { $_ -match 'ms-vscode.powershell-preview' }
         | ForEach-Object {
@@ -723,7 +759,7 @@ function _Write-PromptForBugReport {
 }
 
 function _Write-Predent {
-     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
     param(
         # Number of newlines
         [Parameter(Position = 0)]
@@ -889,8 +925,7 @@ if (Test-Path $src) {
 if ( $false -and $OneDrive.Enable_MyDocsBugMapping) {
     'Skipping Backup-VSCode' | Write-Host -ForegroundColor 'green'
     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
-}
-else {
+} else {
     'temp toggle backup is off'
     # Backup-VSCode
 }
