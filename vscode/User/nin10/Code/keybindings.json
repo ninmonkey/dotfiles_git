@@ -708,4 +708,13 @@
         "key": "ctrl+k ctrl+r",
         "command": "-workbench.action.keybindingsReference"
     },
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.showCommands",
+        "args": {
+            "MatchOnDetail": false,
+            "title": "monkey",
+            "placeHolder": "monkey",
+        }
+    },
 ]
