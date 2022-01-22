@@ -1596,6 +1596,7 @@
         "errorLens.warningBackground": "#ff942f00",
         "errorLens.warningForeground": "#fa973a00",
         "errorLens.warningMessageBackground": "#fff00000",
+        "debugConsole.sourceForeground": "#ff0000",
         // highlight 'active' window, without being too bold
         "window.activeBorder": "#a75715e3", // pretty bright
         "window.activeBorder": "#a857ff85", // pretty bright
@@ -3620,5 +3621,6 @@
             ]
         }
     },
-    "powershell.codeFormatting.pipelineIndentationStyle": "None"
+    "powershell.codeFormatting.pipelineIndentationStyle": "None",
+    "window.zoomLevel": -1
 }
