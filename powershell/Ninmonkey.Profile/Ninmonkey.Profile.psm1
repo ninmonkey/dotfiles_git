@@ -136,6 +136,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     # New-Alias @splatIgnorePass   -Name 'GetNinCfg' -Value 'nyi'                 -Description '<todo> Ninmonkey.Console\Get-NinConfiguration'
     New-Alias @splatIgnoreGlobal -Name 'Cd' -Value 'Set-NinLocation' -Description 'A modern "cd"'
     Set-Alias @splatIgnorePass -Name 'Cl' -Value 'Set-Clipboard' -Description 'aggressive: set clip'
+    Set-Alias @splatIgnorePass -Name 'gcl' -Value 'Get-Clipboard' -Description 'aggressive: get clip'
     New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'quicker cli toggling whether to use insiders or not'
     New-Alias @splatIgnorePass -Name 'CodeI' -Value 'code-insiders' -Description 'VS Code insiders version'
     New-Alias @splatIgnorePass -Name 'CtrlChar' -Value 'Format-ControlChar' -Description 'Converts ANSI escapes to safe-to-print text'
@@ -558,6 +559,7 @@ function _Write-ErrorSummaryPrompt {
             'ErrResetOnFirstPrompt' = $false # future:mode make a time-delayed one in the future
             'PrintRecentError'      = $true
             'AlwaysShowPrompt'      = $AlwaysShow.IsPresent -and $alwaysShow
+            'FormatMode'            = 'CleanColor'
             # 'AlwaysShow'            = ${Options}?.AlwaysShow ?? $AlwaysShow
         }
 
@@ -579,14 +581,14 @@ function _Write-ErrorSummaryPrompt {
                 return
             }
         }
-        $FormatMode = 'SimpleColor'
-        $FormatMode = 'MedColor'
-        $FormatMode = 'CleanColor'
+        # $FormatMode = 'SimpleColor'
+        # $FormatMode = 'MedColor'
+        # $FormatMode = 'CleanColor'
         $errStat = Dev.Nin\Test-HasNewError -PassThru
 
         if ($Config.PrintRecentError) {
             Dev.Nin\showErr -Recent
-            br 3
+            # br 3
 
         }
 
@@ -793,6 +795,7 @@ function _Write-Predent {
         [Parameter()][switch]$IncludeHorizontalLine
     )
     @(
+        # write-indent
         "`n" * $NewlineCount -join ''
         if ($IncludeHorizontalLine) {
             New-Text -fg 'gray30' '___________' # extra pre-dent
@@ -881,11 +884,7 @@ function Write-NinProfilePrompt {
             break
         }
 
-        default {
-
-            # __doc__: 'main' prompt with breadcrumbs
-
-
+        'previousDefault' {
             $segments = @(
                 $splatPredent = @{
                     NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
@@ -912,6 +911,91 @@ function Write-NinProfilePrompt {
                     "`n"
                 }
                 _Write-ErrorSummaryPrompt -AlwaysShow:$false
+                # if ($false -and $__ninConfig.Prompt.IncludeDynamicCrumbs) {
+                #     "`n"
+                #     _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
+                # }
+                "`n"
+                _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+
+                $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
+                # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
+                'default:nin⚙' | write-color @splatdimGlow | Join-String -op "`n"
+
+                "`n🐒> "
+            )
+            $segments | Join-String
+        }
+
+        default {
+
+            # __doc__: 'main' prompt with breadcrumbs
+            # logic
+            # this almost works, but, it fails if the prompt is too fast
+            # maybe I can get last error time, by saving only if -recent count changed since last
+            $dbg ??= [ordered]@{}
+
+            # $whenLastError = Get-History | Where-Object ExecutionStatus -Match 'failed' # does not toggle with errors
+            # | ForEach-Object EndExecutionTime | Sort-Object -Descending | Select-Object -First 1
+
+            #longest among both options
+
+
+            $whenLastCommand = Get-History -Count 1 | s * | ForEach-Object EndExecutionTime
+            $whenLastError, $whenLastCommand | ?NotBlank | Write-Debug
+            $now = Get-Date
+
+            $LastCommandSecs = if ($whenLastCommand) {
+                ($now - $whenLastCommand) | ForEach-Object TotalSeconds
+            }
+            # $LastErrorSecs = ($now - $whenLastError) | ForEach-Object TotalSeconds
+            # $lastErrorSecs =
+            # $lastCommandSecs, $lastErrorSecs | Write-Debug
+
+            $longestDeltaSecs = [math]::max( $LastErrorSecs, $LastCommandSecs )
+            if ($longestDeltaSecs -gt 4.0) {
+                'Reset!' | write-color 'orange'
+            }
+
+            $dbg += @{
+                'lastError'        = $whenLastError
+                'LastCommand'      = $whenLastCommand
+                'Now'              = $now
+                'LastCommandSecs'  = $LastCommandSecs
+                'LastErrorSecs'    = $LastErrorSecs
+                'longestDeltaSecs' = $LastErrorSecs
+                'Delta >= 4'       = $longestDeltaSecs -gt 4.0
+            }
+
+            $dbg | Out-Default | Out-String | Write-Debug
+
+            $segments = @(
+                $splatPredent = @{
+                    NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
+                    IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
+                }
+                <#
+                    $EnablePromptDetectError = $false
+                    if ($EnablePromptDetectError) {
+                        function _Write-PromptDetectError {
+                            if ($global:Error.count -gt 0 -and $configErrorLinesLimit -gt 0) {
+                                Dev.Nin\Test-DidErrorOccur -Limit $configErrorLinesLimit
+                                "`n"
+                            }
+                        }
+                        _Write-PromptDetectError
+                    }
+                    #>
+
+                _Write-Predent @splatPredent
+                # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
+                _Write-PromptIsAdminStatus
+                if ($__ninConfig.Prompt.IncludeGitStatus) {
+                    _Write-PromptGitStatus # todo: better git status line
+                    "`n"
+                }
+                # _Write-ErrorSummaryPrompt -AlwaysShow:$false
+
                 # if ($false -and $__ninConfig.Prompt.IncludeDynamicCrumbs) {
                 #     "`n"
                 #     _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'

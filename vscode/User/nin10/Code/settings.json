@@ -3644,6 +3644,5 @@
             ]
         }
     },
-    "powershell.codeFormatting.pipelineIndentationStyle": "None",
-    "window.zoomLevel": -1
+    "powershell.codeFormatting.pipelineIndentationStyle": "None"
 }
