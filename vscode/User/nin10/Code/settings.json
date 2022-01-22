@@ -1597,6 +1597,29 @@
         "errorLens.warningForeground": "#fa973a00",
         "errorLens.warningMessageBackground": "#fff00000",
         "debugConsole.sourceForeground": "#ff0000",
+        /*
+        Section: [workbench.colorCustomizations]
+            git
+
+        */
+        // "gitDecoration.addedResourceForeground": "#ff00cc",
+        // "gitDecoration.conflictingResourceForeground": "#ff00cc",
+        // "gitDecoration.deletedResourceForeground": "#ff00cc",
+        // "gitDecoration.ignoredResourceForeground": "#ff00cc",
+        // "gitDecoration.modifiedResourceForeground": "#ed9230",
+        // "gitDecoration.renamedResourceForeground": "#ff00cc",
+        // "gitDecoration.stageDeletedResourceForeground": "#ff00cc",
+        // "gitDecoration.stageModifiedResourceForeground": "#ed923074", //modifies [tab] colors
+        // "gitDecoration.submoduleResourceForeground": "#ff00cc",
+        // "gitDecoration.untrackedResourceForeground": "#f97fe0a3", // [tab]
+        /*
+        Section: [workbench.colorCustomizations]
+            addon: gitlens
+
+        */
+        // "gitlens.gutterBackgroundColor": "#ff0000",
+        // "gitlens.trailingLineBackgroundColor": "#ff000072",
+        // "gitlens.lineHighlightBackgroundColor": "#ff000072",
         // highlight 'active' window, without being too bold
         "window.activeBorder": "#a75715e3", // pretty bright
         "window.activeBorder": "#a857ff85", // pretty bright
