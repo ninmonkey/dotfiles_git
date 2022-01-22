@@ -346,6 +346,7 @@ function _Write-PromptPathToBreadCrumbs {
     .notes
         future:
 
+        -[ ] add $Config = @Options  - param
         -[ ] abbrevate mode
 
             in:
@@ -516,6 +517,7 @@ function _Write-ErrorSummaryPrompt {
     <#
     .synopsis
         can't access global scope?
+        todo: need to refactor, it's a mess now.
         summarize errors briefly, for screenshots / interactive animation
     .notes
         first: - [ ] make format error thingy print more lines
@@ -523,6 +525,9 @@ function _Write-ErrorSummaryPrompt {
         need to require the error's times.
     .example
         PS> _Write-ErrorSummaryPrompt
+    .example
+        PS> _Write-ErrorSummaryPrompt -AlwaysShow -Options @{'FormatMode' = 'medcolor'}
+
     .example
         PS> # how to pass Customized colors
         _Write-ErrorSummaryPrompt -Options @{Colors = @{ 'ErrorPale'='cyan' }; }
@@ -591,22 +596,22 @@ function _Write-ErrorSummaryPrompt {
             # br 3
 
         }
+        # $Config.FormatMode = 'SimpleColor', 'MedColor'
 
-        switch ($FormatMode) {
+        switch ($Config.FormatMode) {
             'SimpleColor' {
-                $cDef = $c.fg
                 @(
                     $cStatus = if ($errStat.DeltaCount -ne 0) {
-                        'red'
+                        [rgbcolor]'red'
                     } else {
-                        'green'
+                        [rgbcolor]'green'
                     }
-                    'e [' | Write-Color $cDef
-                    'errΔ [' | Write-Color $cDef
+                    'e [' | Write-Color $c.Fg
+                    'errΔ [' | Write-Color $c.Fg
                     '{0}' -f @(
                         $errStat.DeltaCount | Write-Color $cStatus
                     )
-                    ']' | Write-Color $cDef
+                    ']' | Write-Color $c.Fg
                     ' of ['
                     '{0}' -f @(
                         $errStat.CurCount | Write-Color $cStatus
@@ -646,6 +651,7 @@ function _Write-ErrorSummaryPrompt {
                 ) | Join-String -sep ''
 
                 # $errStat.
+                break
 
             }
             default {
@@ -654,6 +660,7 @@ function _Write-ErrorSummaryPrompt {
                 } else {
                     '{0} new' -f @( $errStat.DeltaCount)
                 }
+                break
             }
         }
 
@@ -928,53 +935,53 @@ function Write-NinProfilePrompt {
         }
 
         default {
+            & {
+                # __doc__: 'main' prompt with breadcrumbs
+                # logic
+                # this almost works, but, it fails if the prompt is too fast
+                # maybe I can get last error time, by saving only if -recent count changed since last
+                $dbg ??= [ordered]@{}
 
-            # __doc__: 'main' prompt with breadcrumbs
-            # logic
-            # this almost works, but, it fails if the prompt is too fast
-            # maybe I can get last error time, by saving only if -recent count changed since last
-            $dbg ??= [ordered]@{}
+                # $whenLastError = Get-History | Where-Object ExecutionStatus -Match 'failed' # does not toggle with errors
+                # | ForEach-Object EndExecutionTime | Sort-Object -Descending | Select-Object -First 1
 
-            # $whenLastError = Get-History | Where-Object ExecutionStatus -Match 'failed' # does not toggle with errors
-            # | ForEach-Object EndExecutionTime | Sort-Object -Descending | Select-Object -First 1
-
-            #longest among both options
+                #longest among both options
 
 
-            $whenLastCommand = Get-History -Count 1 | s * | ForEach-Object EndExecutionTime
-            $whenLastError, $whenLastCommand | ?NotBlank | Write-Debug
-            $now = Get-Date
+                $whenLastCommand = Get-History -Count 1 | s * | ForEach-Object EndExecutionTime
+                $whenLastError, $whenLastCommand | ?NotBlank | Write-Debug
+                $now = Get-Date
 
-            $LastCommandSecs = if ($whenLastCommand) {
+                $LastCommandSecs = if ($whenLastCommand) {
                 ($now - $whenLastCommand) | ForEach-Object TotalSeconds
-            }
-            # $LastErrorSecs = ($now - $whenLastError) | ForEach-Object TotalSeconds
-            # $lastErrorSecs =
-            # $lastCommandSecs, $lastErrorSecs | Write-Debug
-
-            $longestDeltaSecs = [math]::max( $LastErrorSecs, $LastCommandSecs )
-            if ($longestDeltaSecs -gt 4.0) {
-                'Reset!' | write-color 'orange'
-            }
-
-            $dbg += @{
-                'lastError'        = $whenLastError
-                'LastCommand'      = $whenLastCommand
-                'Now'              = $now
-                'LastCommandSecs'  = $LastCommandSecs
-                'LastErrorSecs'    = $LastErrorSecs
-                'longestDeltaSecs' = $LastErrorSecs
-                'Delta >= 4'       = $longestDeltaSecs -gt 4.0
-            }
-
-            $dbg | Out-Default | Out-String | Write-Debug
-
-            $segments = @(
-                $splatPredent = @{
-                    NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
-                    IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
                 }
-                <#
+                # $LastErrorSecs = ($now - $whenLastError) | ForEach-Object TotalSeconds
+                # $lastErrorSecs =
+                # $lastCommandSecs, $lastErrorSecs | Write-Debug
+
+                $longestDeltaSecs = [math]::max( $LastErrorSecs, $LastCommandSecs )
+                if ($longestDeltaSecs -gt 4.0) {
+                    "`nReset Errors!: Err -Reset`n" | write-color 'orange'
+                }
+
+                $dbg += @{
+                    'lastError'        = $whenLastError
+                    'LastCommand'      = $whenLastCommand
+                    'Now'              = $now
+                    'LastCommandSecs'  = $LastCommandSecs
+                    'LastErrorSecs'    = $LastErrorSecs
+                    'longestDeltaSecs' = $LastErrorSecs
+                    'Delta >= 4'       = $longestDeltaSecs -gt 4.0
+                }
+
+                $dbg | Format-Default | Out-String | Write-Debug
+
+                $segments = @(
+                    $splatPredent = @{
+                        NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
+                        IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
+                    }
+                    <#
                     $EnablePromptDetectError = $false
                     if ($EnablePromptDetectError) {
                         function _Write-PromptDetectError {
@@ -987,29 +994,30 @@ function Write-NinProfilePrompt {
                     }
                     #>
 
-                _Write-Predent @splatPredent
-                # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
-                _Write-PromptIsAdminStatus
-                if ($__ninConfig.Prompt.IncludeGitStatus) {
-                    _Write-PromptGitStatus # todo: better git status line
+                    _Write-Predent @splatPredent
+                    # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
+                    _Write-PromptIsAdminStatus
+                    if ($__ninConfig.Prompt.IncludeGitStatus) {
+                        _Write-PromptGitStatus # todo: better git status line
+                        "`n"
+                    }
+                    # _Write-ErrorSummaryPrompt -AlwaysShow:$false
+
+                    # if ($false -and $__ninConfig.Prompt.IncludeDynamicCrumbs) {
+                    #     "`n"
+                    #     _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
+                    # }
                     "`n"
-                }
-                # _Write-ErrorSummaryPrompt -AlwaysShow:$false
+                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
 
-                # if ($false -and $__ninConfig.Prompt.IncludeDynamicCrumbs) {
-                #     "`n"
-                #     _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
-                # }
-                "`n"
-                _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                    $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
+                    # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
+                    'default:nin⚙' | write-color @splatdimGlow | Join-String -op "`n"
 
-                $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
-                # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
-                'default:nin⚙' | write-color @splatdimGlow | Join-String -op "`n"
-
-                "`n🐒> "
-            )
-            $segments | Join-String
+                    "`n🐒> "
+                )
+                $segments | Join-String
+            }
         }
 
     }
@@ -1047,7 +1055,16 @@ if (Test-Path $src) {
 # }
 # # & {
 
-
+if ($false) {
+    # testing air-quote
+    hr -fg orange
+    _Write-ErrorSummaryPrompt -AlwaysShow -Options @{'FormatMode' = 'cleanColor' }
+    hr -fg magenta
+    _Write-ErrorSummaryPrompt -AlwaysShow -Options @{'FormatMode' = 'medColor' }
+    hr
+    _Write-ErrorSummaryPrompt -AlwaysShow
+    hr -fg orange
+}
 @(
     'Profile: 🏠 <-- End'
     hr 1
