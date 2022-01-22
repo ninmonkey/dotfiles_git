@@ -491,7 +491,7 @@ function _Write-PromptDynamicCrumbs {
             $curMapping = $_
             # $curFull = [regex]::escape( (gi . | % FullName))
             $curFull = Get-Item . | ForEach-Object FUllName
-            Test-IsCh
+            Write-Warning 'left off here'
 
             # $compareFull = [regex]::escape( $curMapping.Root )
 
@@ -516,6 +516,15 @@ function _Write-ErrorSummaryPrompt {
     .synopsis
         can't access global scope?
         summarize errors briefly, for screenshots / interactive animation
+    .notes
+        first: - [ ] make format error thingy print more lines
+        future: - [ ] make error reset if previous prompt was >x time. don't even
+        need to require the error's times.
+    .example
+        PS> _Write-ErrorSummaryPrompt
+    .example
+        PS> # how to pass Customized colors
+        _Write-ErrorSummaryPrompt -Options @{Colors = @{ 'ErrorPale'='cyan' }; }
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Personal Profiles may break rules')]
     param(
@@ -577,9 +586,9 @@ function _Write-ErrorSummaryPrompt {
 
         if ($Config.PrintRecentError) {
             Dev.Nin\showErr -Recent
+            br 3
 
         }
-
 
         switch ($FormatMode) {
             'SimpleColor' {
@@ -814,6 +823,7 @@ function Write-NinProfilePrompt {
     $configErrorLinesLimit = $__ninConfig.Prompt.NumberOfPromptErrors ?? 2
 
     # do not use extra newlines on missing segments
+
     switch ($__ninConfig.Prompt.Profile) {
         'errorSummary' {
             @(
@@ -902,16 +912,22 @@ function Write-NinProfilePrompt {
                     "`n"
                 }
                 _Write-ErrorSummaryPrompt -AlwaysShow:$false
-                if ($__ninConfig.Prompt.IncludeDynamicCrumbs) {
-                    "`n"
-                    _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
-                }
+                # if ($false -and $__ninConfig.Prompt.IncludeDynamicCrumbs) {
+                #     "`n"
+                #     _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
+                # }
                 "`n"
                 _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+
+                $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
+                # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
+                'default:nin⚙' | write-color @splatdimGlow | Join-String -op "`n"
+
                 "`n🐒> "
             )
             $segments | Join-String
         }
+
     }
     # } catch {
     # $PSCmdlet.WriteError( $_ )
@@ -938,14 +954,14 @@ if (Test-Path $src) {
     . $src
     Export-ModuleMember -Function 'Backup-VSCode'
 }
-if ( $false -and $OneDrive.Enable_MyDocsBugMapping) {
-    'Skipping Backup-VSCode' | Write-Host -ForegroundColor 'green'
-    | Join-String -op 'OneDriveBugFix: ' | Write-Warning
-} else {
-    'temp toggle backup is off'
-    # Backup-VSCode
-}
-# & {
+# if ( $false -and $OneDrive.Enable_MyDocsBugMapping) {
+#     'Skipping Backup-VSCode' | Write-Host -ForegroundColor 'green'
+#     | Join-String -op 'OneDriveBugFix: ' | Write-Warning
+# } else {
+#     'temp toggle backup is off'
+#     # Backup-VSCode
+# }
+# # & {
 
 
 @(
