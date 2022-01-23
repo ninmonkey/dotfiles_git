@@ -556,8 +556,9 @@ function _Write-ErrorSummaryPrompt {
             Fg          = [PoshCode.Pansies.RgbColor]'gray80'
             FgBright    = [PoshCode.Pansies.RgbColor]'gray90'
             FgBright2   = [PoshCode.Pansies.RgbColor]'gray100'
-
+            DimGlow     = @{bg = 'gray15'; fg = 'gray30' }
         }
+        #"'⇩▼▽🠯'"
 
         $Colors = Join-Hashtable $Colors ($Options.Colors ?? @{})
         [hashtable]$Config = @{
@@ -935,19 +936,25 @@ function Write-NinProfilePrompt {
         }
 
         default {
-            & {
-                # __doc__: 'main' prompt with breadcrumbs
-                # logic
-                # this almost works, but, it fails if the prompt is too fast
-                # maybe I can get last error time, by saving only if -recent count changed since last
-                $dbg ??= [ordered]@{}
+            # 'new default'
+            # todo:
+            #   - [ ] fade out filepath if you haven't moved recently
+            #   - [ ] mode to only show filepath delta, not the full page
+            #       until asked using 'pwd'
 
-                # $whenLastError = Get-History | Where-Object ExecutionStatus -Match 'failed' # does not toggle with errors
-                # | ForEach-Object EndExecutionTime | Sort-Object -Descending | Select-Object -First 1
+            # __doc__: 'main' prompt with breadcrumbs
+            # logic
+            # this almost works, but, it fails if the prompt is too fast
+            # maybe I can get last error time, by saving only if -recent count changed since last
+            $dbg ??= [ordered]@{}
 
-                #longest among both options
+            # $whenLastError = Get-History | Where-Object ExecutionStatus -Match 'failed' # does not toggle with errors
+            # | ForEach-Object EndExecutionTime | Sort-Object -Descending | Select-Object -First 1
 
+            #longest among both options
 
+            if ($true) {
+                # messing with automatic calls to 'Err -Reset'
                 $whenLastCommand = Get-History -Count 1 | s * | ForEach-Object EndExecutionTime
                 $whenLastError, $whenLastCommand | ?NotBlank | Write-Debug
                 $now = Get-Date
@@ -959,11 +966,12 @@ function Write-NinProfilePrompt {
                 # $lastErrorSecs =
                 # $lastCommandSecs, $lastErrorSecs | Write-Debug
 
-                $longestDeltaSecs = [math]::max( $LastErrorSecs, $LastCommandSecs )
+                $longestDeltaSecs = [math]::max(
+                    ($LastErrorSecs ?? 0), ($LastCommandSecs ?? 0 )
+                )
                 if ($longestDeltaSecs -gt 4.0) {
                     "`nReset Errors!: Err -Reset`n" | write-color 'orange'
                 }
-
                 $dbg += @{
                     'lastError'        = $whenLastError
                     'LastCommand'      = $whenLastCommand
@@ -973,15 +981,15 @@ function Write-NinProfilePrompt {
                     'longestDeltaSecs' = $LastErrorSecs
                     'Delta >= 4'       = $longestDeltaSecs -gt 4.0
                 }
+            }
+            $dbg | Format-Default | Out-String | Write-Debug
 
-                $dbg | Format-Default | Out-String | Write-Debug
-
-                $segments = @(
-                    $splatPredent = @{
-                        NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
-                        IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
-                    }
-                    <#
+            $segments = @(
+                $splatPredent = @{
+                    NewlineCount          = ($__ninConfig.Prompt)?.PredentLineCount ?? 2
+                    IncludeHorizontalLine = ($__ninConfig.Prompt)?.IncludePredentHorizontalLine ?? $false
+                }
+                <#
                     $EnablePromptDetectError = $false
                     if ($EnablePromptDetectError) {
                         function _Write-PromptDetectError {
@@ -994,37 +1002,116 @@ function Write-NinProfilePrompt {
                     }
                     #>
 
-                    _Write-Predent @splatPredent
-                    # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
-                    _Write-PromptIsAdminStatus
-                    if ($__ninConfig.Prompt.IncludeGitStatus) {
-                        _Write-PromptGitStatus # todo: better git status line
-                        "`n"
-                    }
-                    # _Write-ErrorSummaryPrompt -AlwaysShow:$false
 
-                    # if ($false -and $__ninConfig.Prompt.IncludeDynamicCrumbs) {
-                    #     "`n"
-                    #     _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
-                    # }
+
+
+
+
+
+
+
+
+                _Write-Predent @splatPredent
+                # _Write-Predent -NewlineCount 2 -IncludeHorizontalLine:$false
+                _Write-PromptIsAdminStatus
+                if ($__ninConfig.Prompt.IncludeGitStatus) {
+                    _Write-PromptGitStatus # todo: better git status line
                     "`n"
-                    _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                }
 
+                $splatWriteError = @{
+                    # AlwaysShow = $true
+                    Options = @{
+                        'FormatMode'       = 'cleanColor'
+                        'PrintRecentError' = $false
+                    }
+                }
+
+                _Write-ErrorSummaryPrompt @splatWriteError
+                # _Write-ErrorSummaryPrompt -AlwaysShow:$false
+
+                # if ($false -and $__ninConfig.Prompt.IncludeDynamicCrumbs) {
+                #     "`n"
+                #     _Write-PromptDynamicCrumbs #-FormatMode 'Segmentsdfdsf'
+                # }
+
+                $false ? "`n" : ''
+
+                # if ($false) {
+                #     "`n"
+                # } else {
+                #     ' '
+                # }
+                function _writeCleanerPath_iter0 {
+                    $prefix = $Env:USERPROFILE -replace '\\', '/'
+                    $relPath = $pwd.ToString() -replace (ReLit $Env:USERPROFILE), '' -replace '\\', '/'
+                    $render = @(
+                        "${fg:gray30}"
+                        $Prefix
+                        "${fg:gray70}"
+                        $Relpath
+                        # ${fg:gray30}${prefix}"
+                    ) | Join-String
+                }
+                function _writeCleanerPath_iter1 {
+                    # as 1 line
                     $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
-                    # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
-                    'default:nin⚙' | write-color @splatdimGlow | Join-String -op "`n"
+                    $prefix = (ReLit "${Env:UserProfile}\SkyDrive\Documents\2021" )
+                    $shortP = ($pwd) -replace $prefix, '/docs' -replace '\\', '/'
+                    $finalShortPath = ($shortP)
+                    $finalShortPath
+                    | write-color @splatdimGlow
+                }
+                function _writeCleanerPath_iter2 {
+                    # as 2 lines
+                    $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
+                    $prefix = (ReLit "${Env:UserProfile}\SkyDrive\Documents\2021" )
+                    $shortP = ($pwd) -replace $prefix, '/docs' -replace '\\', '/'
+                    $finalShortPath = ($shortP)
+                    $finalShortPath
+                    | write-color @splatdimGlow
+                }
+                function _writeCleanerPath_iter3 {
+                    # as 2 lines
+                    $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
+                    $splatGlow = @{  fg = 'gray70' }
+                    $prefix = (ReLit "${Env:UserProfile}\SkyDrive\Documents\2021" )
+                    $shortP = ($pwd) -replace $prefix, '/docs' -replace '\\', '/'
+                    $finalShortBasePath = $shortP -split '/' | Select-Object -SkipLast 2 | Join-String -sep '/'
+                    $finalActivePath = $shortP -split '/' | Select-Object -Last 2 | Join-String -sep '/'
 
-                    "`n🐒> "
-                )
-                $segments | Join-String
-            }
+                    @(
+                        $finalShortBasePath | write-color @splatdimGlow
+                        $finalActivePath | Write-Color @splatGlow
+                    ) -join '/' #| Join-String -sep "`n"
+                }
+                # _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                # _Write-PromptPathToBreadCrumbs #-FormatMode 'Segmentsdfdsf'
+                @(
+                    ' '
+                    _writeCleanerPath_iter3
+                    # _writeCleanerPath_iter2
+                    # _writeCleanerPath_iter1
+                    # _writeCleanerPath_iter0
+
+                ) -join '' # "`n`n"
+
+
+                $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
+                # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
+                # 'default:nin⚙' | write-color @splatdimGlow | Join-String -op "`n"
+
+                "`n🐒> "
+            ) | Join-String
+            $segments | Join-String
         }
-
     }
-    # } catch {
-    # $PSCmdlet.WriteError( $_ )
-    # }
+
 }
+# } catch {
+# $PSCmdlet.WriteError( $_ )
+# }
+# }
 
 Export-ModuleMember -Function Write-NinProfilePrompt
 # if debug mode
