@@ -219,9 +219,9 @@
                     "group": "",
                     "order": 1
                 },
-                "args": [
-                    "-Nop"
-                ],
+                // "args": [
+                //     "-Nop"
+                // ],
                 // "cwd": "${workspaceFolder}"
                 "cwd": "${file}" // else workspace
                 // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
@@ -2970,7 +2970,6 @@
     "testExplorer.useNativeTesting": true,
     "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
-    "editor.bracketPairColorization.enabled": true,
     "editor.lineNumbers": "relative", // weird
     "editor.lineNumbers": "interval", // cleaner
     // "editor.lineHeight": 25, // 0-8 are multipliers, > 8 are literal px sizes
@@ -3644,6 +3643,5 @@
             ]
         }
     },
-    "powershell.codeFormatting.pipelineIndentationStyle": "None",
-    "window.zoomLevel": 1
+    "powershell.codeFormatting.pipelineIndentationStyle": "None"
 }

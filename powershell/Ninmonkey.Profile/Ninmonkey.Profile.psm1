@@ -3,7 +3,7 @@ Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1]'
 $script:_state = @{}
 Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 
-Import-Module Dev.Nin -ea stop
+Import-Module Dev.Nin #-ea stop
 [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
 
 function _nyi {
@@ -18,14 +18,15 @@ function _nyi {
         ) | ForEach-Object tostring)
 }
 
-@(
-    'Profile: 🏠 --> Start'
-    hr 1
-)
-| Write-Warning
+# @(
+#     'Profile: 🏠 --> Start'
+#     hr 1
+# )
+# | Write-Warning
 function __globalStat {
     <#
     .description
+        # todo:
         the idea is that I can easily tap into this global stat tracker, without manually writing code to log
 
         this isn't config, its more like
@@ -35,6 +36,7 @@ function __globalStat {
         - [ ] metrics on cache command
     #>
     Write-Warning 'NYI'
+
 }
 
 
@@ -369,78 +371,174 @@ function _Write-PromptPathToBreadCrumbs {
         [string]$FormatMode = 'LimitSegmentCount'
     )
 
-    try {
-        $FinalOutputString = switch ($FormatMode) {
-            'a' {
-                'Ps> '
-                break
-            }
-            'Reverse' {
-                'Todo> '
-                # todo: like 'default' but reverse, so brightest path is left
-                break
-            }
-            'LimitSegmentCount' {
-                # size is currently disabled being used
-                $maxSize = ($__ninConfig.Prompt.BreadCrumb)?.MaxCrumbCount ?? 3 # __doc__: default is 3. Negative means no limit
-                $crumbJoinText = ($__ninConfig.Prompt.BreadCrumb)?.CrumbJoinText ?? ' ' # __doc__: default is ' ' . Join String.
-                $crumbJoinReverse = ($__ninConfig.Prompt.BreadCrumb)?.CrumbJoinReverse ?? $true # __doc__: default is $false ' right to left
-                # todo: config: after config wrapper, also setup these:
-                # 'gray40'
+    # try {
+    $FinalOutputString = switch ($FormatMode) {
+        'a' {
+            'Ps> '
+            break
+        }
+        'Reverse' {
+            'Todo> '
+            # todo: like 'default' but reverse, so brightest path is left
+            break
+        }
+        'LimitSegmentCount' {
+            # size is currently disabled being used
+            $maxSize = ($__ninConfig.Prompt.BreadCrumb)?.MaxCrumbCount ?? 3 # __doc__: default is 3. Negative means no limit
+            $crumbJoinText = ($__ninConfig.Prompt.BreadCrumb)?.CrumbJoinText ?? ' ' # __doc__: default is ' ' . Join String.
+            $crumbJoinReverse = ($__ninConfig.Prompt.BreadCrumb)?.CrumbJoinReverse ?? $true # __doc__: default is $false ' right to left
+            # todo: config: after config wrapper, also setup these:
+            # 'gray40'
 
-                $gradientStart = ($__ninConfig.Prompt.BreadCrumb)?.ColorStart
-                $gradientStart ??= Get-RandomPerSession -Name 'prompt.crumb.colorBreadStart' { Get-ChildItem fg: }
-                $gradientEnd = ($__ninConfig.Prompt.BreadCrumb)?.ColorEnd
-                $gradientEnd ??= Get-RandomPerSession -Name 'prompt.crumb.colorBreadEnd' { Get-ChildItem fg: }
+            $gradientStart = ($__ninConfig.Prompt.BreadCrumb)?.ColorStart
+            $gradientStart ??= Get-RandomPerSession -Name 'prompt.crumb.colorBreadStart' { Get-ChildItem fg: }
+            $gradientEnd = ($__ninConfig.Prompt.BreadCrumb)?.ColorEnd
+            $gradientEnd ??= Get-RandomPerSession -Name 'prompt.crumb.colorBreadEnd' { Get-ChildItem fg: }
 
-                $crumbs = (Get-Location | ForEach-Object Path) -split '\\'
-                $numCrumbs = $crumbs.count
-                $getGradientSplat = @{
-                    StartColor = $gradientStart
-                    EndColor   = $gradientEnd
-                    Width      = [math]::Clamp( $numCrumbs, 3, [int]::MaxValue )
+            $crumbs = (Get-Location | ForEach-Object Path) -split '\\'
+            $numCrumbs = $crumbs.count
+            $getGradientSplat = @{
+                StartColor = $gradientStart
+                EndColor   = $gradientEnd
+                Width      = [math]::Clamp( $numCrumbs, 3, [int]::MaxValue )
+            }
+            # if ($true) {
+            #     $colorsFg = Get-ChildItem fg:
+            #     $getGradientSplat.StartColor = $colorsFg | Get-Random -Count 1
+            #     $getGradientSplat.EndColor = $colorsFg | Get-Random -Count 1
+            # }
+
+            $gradient = Get-Gradient @getGradientSplat
+            $finalSegments = $crumbs | ForEach-Object -Begin { $i = 0 } {
+                $curLine = $_
+                if ($i -ge $numCrumbs) {
+                    Write-Error "OutofBoundException:`$i '$i' >= `$numCrumbs!"
                 }
-                # if ($true) {
-                #     $colorsFg = Get-ChildItem fg:
-                #     $getGradientSplat.StartColor = $colorsFg | Get-Random -Count 1
-                #     $getGradientSplat.EndColor = $colorsFg | Get-Random -Count 1
-                # }
-
-                $gradient = Get-Gradient @getGradientSplat
-                $finalSegments = $crumbs | ForEach-Object -Begin { $i = 0 } {
-                    $curLine = $_
-                    if ($i -ge $numCrumbs) {
-                        Write-Error "OutofBoundException:`$i '$i' >= `$numCrumbs!"
-                    }
-                    New-Text -Object $curLine -ForegroundColor $gradient[$i]
-                    $i++
-                }
-                if ($crumbJoinReverse) {
-                    # $finalSegments.reverse() | Out-null
-                    $FinalSegments | Out-ReversePipeline
-                    | Join-String -sep $crumbJoinText
-                } else {
-                    $finalSegments
-                    | Join-String -sep $crumbJoinText
-                }
-
-                # no removal for now, just show all segments
-                break
+                New-Text -Object $curLine -ForegroundColor $gradient[$i]
+                $i++
+            }
+            if ($crumbJoinReverse) {
+                # $finalSegments.reverse() | Out-null
+                $FinalSegments | Out-ReversePipeline
+                | Join-String -sep $crumbJoinText
+            } else {
+                $finalSegments
+                | Join-String -sep $crumbJoinText
             }
 
-            default {
-            }
-
+            # no removal for now, just show all segments
+            break
         }
 
-        $FinalOutputString | Join-String -sep ''
-    } catch {
-        $PSCmdlet.WriteError( $_ )
+        default {
+        }
+
     }
+
+    $FinalOutputString | Join-String -sep ''
+    # } catch {
+    #     $PSCmdlet.WriteError( $_ )
+    # }
 }
 $script:__temp ??= @{} #??= @{}
 $script:__temp.IncludeDebugPrompt ??= $true
 
+if (!  $script:__ninConfig.Prompt.SegmentChildCountFormat ) {
+    'Bad bad bad ' | Write-Warning
+}
+$script:__ninConfig.Prompt.SegmentChildCountFormat ??= 'Icons' # ??= should have worked, unless config doesn't exist
+$script:__ninConfig.Prompt.SegmentExtensionType ??= $true
+function _Write-SegmentExtensionType {
+    <#
+    .synopsis
+        Summarizes extension types in path
+    .notes
+        future:
+            - [ ] color heatmap based on distribution
+            - [ ] color heatmap based on fuzzy last modified
+            - [ ] sort order based on lastmodified
+            - [ ] sort order based on distribution count
+        #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '',
+        Justification = 'Personal Profiles may break rules')]
+    [cmdletbinding()]
+    param(
+        # [Parameter(Position = 0)]
+        # [ValidateSet('Icons', 'Simple')]
+        # [string]$FormatMode
+
+    )
+    process {
+        $splat_FileType = @{
+            MaxDepth = 0
+        }
+
+        Completion->FileExtensionType @splat_FileType | Sort-Object -Unique
+        | ForEach-Object { $_ -replace '^\.', '' }
+        | str str ' ' | Write-Color -fg gray35
+    }
+    # 🗄, 📃, 📄
+    # $Rune = @{
+    #     Directory = '📁'
+    #     File      = '📄'
+    # }
+    # $numFiles = Get-ChildItem . -File | len
+    # $numDirs = Get-ChildItem . -Directory | len
+    # switch ($FormatMode) {
+    #     'Icons' {
+    #     }
+    #     default {
+    #     }
+    # }
+}
+function _Write-SegmentChildCount {
+    <#
+    .synopsis
+        write current directory as crumbs
+    .notes
+        future:
+        #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '',
+        Justification = 'Personal Profiles may break rules')]
+    [cmdletbinding()]
+    param(
+        [Parameter(Position = 0)]
+        [ValidateSet('Icons', 'Simple')]
+        [string]$FormatMode
+
+    )
+    # 🗄, 📃, 📄
+    $Rune = @{
+        Directory = '📁'
+        File      = '📄'
+    }
+    $numFiles = Get-ChildItem . -File | len
+    $numDirs = Get-ChildItem . -Directory | len
+    switch ($FormatMode) {
+        'Icons' {
+
+            @(
+                ' '
+                $rune.Directory
+                ' '
+                "${numFiles}"
+                ' '
+                $RUne.File
+                ' '
+                "${numDirs}"
+            ) -join '' | Write-Color -fg 'gray50'
+        }
+        Default {
+            @(
+                ' d: '
+                "${numFiles}"
+                ' f: '
+                "${numDirs}"
+            ) -join '' | Write-Color -fg 'gray50'
+
+        }
+    }
+}
 function _Write-PromptDynamicCrumbs {
     <#
     .synopsis
@@ -645,7 +743,7 @@ function _Write-ErrorSummaryPrompt {
                     '{0}' -f @(
                         ($errStat.DeltaCount | Write-Color $c.ErrorPale)
                     )
-                    ' of ' | write-color $c.FgDim
+                    ' of ' | Write-Color $c.FgDim
                     '{0}' -f @(
                         ($errStat.CurCount | Write-Color $c.FgDim2)
                     )
@@ -829,9 +927,19 @@ function Write-NinProfilePrompt {
     [cmdletbinding(PositionalBinding = $false)]
     param (
     )
+
+    if ($__ninConfig.Prompt.ForceSafeMode) {
+        @(
+            Get-Location
+            "`nsafe>"
+        ) -join ''
+        return
+    }
+
     # try {
-    $__ninConfig.Prompt.NumberOfPromptErrors ??= 2
-    $configErrorLinesLimit = $__ninConfig.Prompt.NumberOfPromptErrors ?? 2
+    $script:__ninConfig.Prompt.NumberOfPromptErrors ??= 2
+    $configErrorLinesLimit = $script:__ninConfig.Prompt.NumberOfPromptErrors ?? 2
+    $script:__ninConfig.Prompt.Profile = 'spartan'
 
     # do not use extra newlines on missing segments
 
@@ -928,7 +1036,7 @@ function Write-NinProfilePrompt {
 
                 $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
                 # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
-                'default:nin⚙' | write-color @splatdimGlow | Join-String -op "`n"
+                'default:nin⚙' | Write-Color @splatdimGlow | Join-String -op "`n"
 
                 "`n🐒> "
             )
@@ -970,7 +1078,7 @@ function Write-NinProfilePrompt {
                     ($LastErrorSecs ?? 0), ($LastCommandSecs ?? 0 )
                 )
                 if ($longestDeltaSecs -gt 4.0) {
-                    "`nReset Errors!: Err -Reset`n" | write-color 'orange'
+                    "`nReset Errors!: Err -Reset`n" | Write-Color 'orange'
                 }
                 $dbg += @{
                     'lastError'        = $whenLastError
@@ -1060,7 +1168,7 @@ function Write-NinProfilePrompt {
                     $shortP = ($pwd) -replace $prefix, '/docs' -replace '\\', '/'
                     $finalShortPath = ($shortP)
                     $finalShortPath
-                    | write-color @splatdimGlow
+                    | Write-Color @splatdimGlow
                 }
                 function _writeCleanerPath_iter2 {
                     # as 2 lines
@@ -1069,7 +1177,7 @@ function Write-NinProfilePrompt {
                     $shortP = ($pwd) -replace $prefix, '/docs' -replace '\\', '/'
                     $finalShortPath = ($shortP)
                     $finalShortPath
-                    | write-color @splatdimGlow
+                    | Write-Color @splatdimGlow
                 }
                 function _writeCleanerPath_iter3 {
                     # as 2 lines
@@ -1081,7 +1189,7 @@ function Write-NinProfilePrompt {
                     $finalActivePath = $shortP -split '/' | Select-Object -Last 2 | Join-String -sep '/'
 
                     @(
-                        $finalShortBasePath | write-color @splatdimGlow
+                        $finalShortBasePath | Write-Color @splatdimGlow
                         $finalActivePath | Write-Color @splatGlow
                     ) -join '/' #| Join-String -sep "`n"
                 }
@@ -1096,6 +1204,25 @@ function Write-NinProfilePrompt {
 
                 ) -join '' # "`n`n"
 
+                # ($__ninConfig.Prompt)?.
+
+                function _otherSegmentsTodo {
+                    # quick hack to show what to add
+                    @(
+                        'lastwritetime'
+                        'fileExtSummary'
+                        'filenameSummary (see new LS formats)'
+                        'easy way to change segment ordering'
+                    ) | Out-Null
+                }
+
+                # _otherSegmentsTodo
+
+
+                $ChildCountFormat = ($__ninConfig.Prompt)?.SegmentChildCountFormat ?? 'Icons'
+                if ($ChildCountFormat) {
+                    _Write-SegmentChildCount -FormatMode $ChildCountFormat
+                }
 
                 $splatdimGlow = @{bg = 'gray15'; fg = 'gray30' }
                 # "default:nin⚙" | write-color @splatdimGlow | join-str -op "`n"
@@ -1152,10 +1279,10 @@ if ($false) {
     _Write-ErrorSummaryPrompt -AlwaysShow
     hr -fg orange
 }
-@(
-    'Profile: 🏠 <-- End'
-    hr 1
-) | Warn🛑
+# @(
+#     'Profile: 🏠 <-- End'
+#     hr 1
+# ) | Warn🛑
 # 'Profile Aliases: ' | Write-TExtColor orange
 # | Join-String -op 'Profile Aliases: ' | Write-Warning
 # }

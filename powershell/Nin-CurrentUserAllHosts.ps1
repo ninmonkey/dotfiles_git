@@ -3,59 +3,70 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
-Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]'
+Import-Module Dev.Nin -Force
+
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
+
 
 <#
     [section]: Seemingly Sci imports
 #>
-if ($true) {
+if ($true -and $__ninConfig.LogFileEntries) {
+    $strToLog = "{0}`n{1}" -f @(
+        # "㏒ `naka $($PSCommandPath)""
+        #  "㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]`naka $($PSCommandPath)''
+        '㏒ => [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]'
+        '   aka: {0} ' -f @(
+            $PSCommandPath | To->RelativePath -BasePath $Env:Nin_Dotfiles
+        )
+    )
+
+
+
     #$__ninConfig.Import.SeeminglyScience) {
     # refactor: temp test to see if it loads right
-
-    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
-    if ($true) {
-        # some reason import for sci's module requires full path, even with psmodule path
-        $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-        if ($pathSeem) {
-            Import-Module pslambda
-            Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
-            Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-            Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-            Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
-        }
-    } else {
-        $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-        $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell') -join ''
-        $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience') -join ''
-        # Import-Module pslambda
-        Import-Module Utility
-        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+    if ($__ninConfig.LogFileEntries) {
+        $strToLog | Write-Warning
+        Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
     }
-
-
-
 }
 
-Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
-Import-Module Dev.Nin #-Force
+if ($true) {
+    # some reason import for sci's module requires full path, even with psmodule path
+    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+    if ($pathSeem) {
+        Import-Module pslambda
+        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
+    }
+} else {
+    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+    $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell') -join ''
+    $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience') -join ''
+    # Import-Module pslambda
+    Import-Module Utility
+    Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+    Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+}
 
-Write-Warning @'
+if ($__ninConfig.LogFileEntries) {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
+}
 
+<#
 first: 🚀
     - [ ] ask about how to namespace enums?
 
     - [ ] step pipepline
         do { Set-Content @someExistingVar }.GetSteppablePipeline() and play with it
 
-    - [ ] fix iprop
     - [ ] edit sci's bits to a _colorizeBits
 
-    - [ ] PQ markkdown patch
+#>
 
-'@
 
 # Get-Command __doc__ | Join-String -op ' loaded?'
 # see also: C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10\AddDocstring-Sketch\Add-Docstring-sketch-iter3.ps1
@@ -97,6 +108,10 @@ function Warn {
         [object]$InputObject
     )
     process {
+        if (! $__ninConfig.LogFileEntries) {
+            return
+        }
+
         # if (! $__ninConfig.debug.GlobalWarn) {
         if ($null -eq $InputObject) {
             return
@@ -117,6 +132,8 @@ if ($false) {
     Remove-Module 'psfzf', 'psscripttools', 'zlocation' -ea silentlycontinue
     'psfzf', 'psscripttools', 'zlocation' | Join-String -sep ', ' -op 'Removing: ' | Warn🛑
 }
+
+# next: refactor as 'ThrottledTask's
 
 if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Generate "complete_gh.ps1"'
@@ -159,6 +176,25 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
     ) -join ';'
 }
 
+<#
+    - initalizes '$__ninConfig'
+#>
+if ($false -and 'future') {
+    $__rConfigf ??= @{} | __doc__ "`$__ninConfig initializes here '$PSCommandPath'"
+    # fn __doc__ will auto-collect filepaths automatically
+
+    @'
+    $__ninConfig.LogFileEntries
+    later I can run
+
+        help($__ninConfig)  | __doc__ "`$__ninConfig initializes here: '$PSCommandPath'"
+        help($__ninConfig)  | __doc__ "`$__ninConfig initializes'"
+
+        help($__ninConfig.SomeFeature)
+'@
+}
+
+
 $__ninConfig ??= @{
     # HackSkipLoadCompleters     = $true
     EnableGreetingOnLoad       = $true
@@ -181,6 +217,7 @@ $__ninConfig ??= @{
         # __uri__: Terminal
         Profile                      = 'default' # __doc__: errorSummary | debugPrompt | bugReport | oneLine | twoLine | spartan | default
         # Profile = 'default' #
+        ForceSafeMode                = $false
         IncludeGitStatus             = $false # __doc__: Enables Posh-Git status
         PredentLineCount             = 1 # __doc__: number of newlines befefore prompt
         IncludePredentHorizontalLine = $false
@@ -215,6 +252,11 @@ $__ninConfig ??= @{
     }
     IsFirstLoad                = $true
 } #| __doc__ 'root to user-facing configuration options, see files and __doc__ for more'
+
+if ($env:NINProfileForceSafeMode) {
+    $__ninConfig.Prompt.ForceSafeMode = $true
+}
+# $__ninConfig.Prompt.ForceSafeMode = $true
 
 Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> main body start'
 if ($OneDrive.Enable_MyDocsBugMapping) {
@@ -445,6 +487,10 @@ $PSDefaultParameterValues['Dev.Nin\Pipe->Error:infa'] = 'Continue'
 # Import-Module Ninmonkey.Console
 
 function _profileEventOnFinalLoad {
+    <#
+    minimal final function ran on end
+    #>
+    Write-Debug '$__ninConfig.EnableGreetingOnLoad'
     function _writeTodoGreeting {
         Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
         | Join-String
@@ -498,9 +544,14 @@ function Get-ProfileAggressiveItem {
     [PSCustomObject]$meta
 }
 
-Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final body'
+if ($__ninConfig.LogFileEntries) {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final body'
+}
+
+
 
 if ($true) {
+    # todo: now it should fully run in profile
     # $__innerStartAliases = Get-Alias # -Scope local
     $splatAlias = @{
         Scope       = 'global'
@@ -727,6 +778,7 @@ $OptionalImports
 
 $OptionalImports | ForEach-Object {
     Write-Debug "[v] Import-Module: $_"
+    Write-Warning "[v] Import-Module: $_"
     # Import-Module $_ @splatMaybeWarn -DisableNameChecking
     Import-Module $_ -wa continue -ea continue # -DisableNameChecking
 }
@@ -737,7 +789,11 @@ Import-Module posh-git
 # finally "profile"
 Import-Module Ninmonkey.Profile -DisableNameChecking
 
-Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Backup-VSCode() start'
+if ($__ninConfig.LogFileEntries) {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Backup-VSCode() start'
+}
+
+# todo: ThrottledTask
 Backup-VSCode -infa Continue
 # & {
 
@@ -749,7 +805,9 @@ if (!(Test-UserIsAdmin)) {
 }
 # }
 
-Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Choco start'
+if ($__ninConfig.LogFileEntries) {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Choco start'
+}
 <#
     [section]: Chocolately
 #>
@@ -785,8 +843,10 @@ function Prompt {
 # $prompt2}}
 # New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
 # New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
-New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan'
-| ForEach-Object ToString | Warn🛑
+if ($__ninConfig.LogFileEntries) {
+    New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan'
+    | ForEach-Object ToString | Warn🛑
+}
 
 if (! $OneDrive.Enable_MyDocsBugMapping) {
     _profileEventOnFinalLoad
@@ -823,7 +883,9 @@ if (Get-Command Set-PsFzfOption -ea ignore) {
 
     hr 1
 }
-Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final invokevscode dotsource, should not exist '
+if ($__ninConfig.LogFileEntries) {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final invokevscode dotsource, should not exist '
+}
 
 # temp hack
 if (! (Get-Command 'code-venv' -ea ignore) ) {
@@ -855,4 +917,6 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
 
 # New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
 
-Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] <-- end of file'
+if ($__ninConfig.LogFileEntries) {
+    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] <-- end of file'
+}

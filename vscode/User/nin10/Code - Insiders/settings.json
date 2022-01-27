@@ -834,7 +834,8 @@
         "editor.fontSize": 11,
     },
     "[javascript]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features",
+        // "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         // "editor.formatOnType": true,
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false
@@ -1057,8 +1058,8 @@
         "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
-        "editor.semanticHighlighting.enabled": false,
         "editor.semanticHighlighting.enabled": true,
+        // "editor.semanticHighlighting.enabled": false,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
         "editor.suggest.showFunctions": true,
@@ -1786,18 +1787,28 @@
     "editor.semanticTokenColorCustomizations": {
         // per-theme
         "[Default Dark+]": {
-            "enabled": true,
+            "enabled": false,
             "rules": {
                 // single value
-                "parameter": "#d4d4d4",
                 // vs many
-                "parameter": {
-                    "foreground": "#ff0000",
-                    "foreground": "#464545", // nintheme
-                    "underline": true,
-                    "bold": true,
-                    "italic": true,
-                    "fontStyle": "italic bold underline"
+                // "parameter": {
+                // "fontStyle": ""
+                // "bold": true,
+                // "foreground": "#464545", // nintheme
+                // "underline": true,
+                // "bold": true,
+                // "italic": true,
+                // "fontStyle": "italic bold underline"
+                // },
+                "parameter": "#d4d4d4",
+                "parameter": "#9CDCFE", // default
+                "parameter": "#aeaeae",
+                "string": {
+                    "foreground": "#1E1E1E", // default BG color
+                    "foreground": "#D4D4D4",
+                    "background": "orange",
+                    "foreground": "#9CDCFE",
+                    "fontStyle": "underline"
                 }
             }
         },
