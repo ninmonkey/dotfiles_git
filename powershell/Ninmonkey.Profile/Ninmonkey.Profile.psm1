@@ -1,7 +1,10 @@
 Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1]'
 
 $script:_state = @{}
-Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
+# Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
+
+
+
 
 Import-Module Dev.Nin #-ea stop
 [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
@@ -77,25 +80,27 @@ $script:NinProfile_Dotfiles = @{
 
     }
 }
-
-# $profile | Add-Member
-$PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile/*' -NotePropertyValue (Get-Item $PSScriptRoot)
-$PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSCommandPath)
-$PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_Dotfiles' -NotePropertyValue ((Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
-$PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_PSModules' -NotePropertyValue ((Get-Item $Env:Nin_PSModulePath -ea ignore) ?? $null )
-
 $ignoreSplat = @{
     Ea = 'Ignore'
 }
-$dictMembers = @{
-    'Ninmonkey.Profile.psm1' = Get-Item @ignoreSplat $PSSCriptRoot
-    # | __doc__ 'location of Profile'
-    'NinDotfiles'            = Get-Item @ignoreSplat $Env:Nin_Dotfiles
-    # | __doc__ 'root of all dotfiles for the current year'
-    'NinPSModules'           = Get-Item @ignoreSplat $Env:Nin_PSModulePath
-    # | __doc__ 'personal module paths'
+
+if ($true) {
+    # $profile | Entry point for mutating $Profile
+    $PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile/*' -NotePropertyValue (Get-Item $PSScriptRoot)
+    $PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSCommandPath)
+    $PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_Dotfiles' -NotePropertyValue ((Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
+    $PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_PSModules' -NotePropertyValue ((Get-Item $Env:Nin_PSModulePath -ea ignore) ?? $null )
+} else {
+    $dictMembers = @{
+        'Ninmonkey.Profile.psm1' = Get-Item @ignoreSplat $PSSCriptRoot
+        # | __doc__ 'location of Profile'
+        'NinDotfiles'            = Get-Item @ignoreSplat $Env:Nin_Dotfiles
+        # | __doc__ 'root of all dotfiles for the current year'
+        'NinPSModules'           = Get-Item @ignoreSplat $Env:Nin_PSModulePath
+        # | __doc__ 'personal module paths'
+    }
+    $PROFILE | Add-Member -ea ignore -NotePropertyMembers $dictMembers -PassThru -Force
 }
-# $PROFILE | Add-Member -ea ignore -NotePropertyMembers $dictMembers -PassThru -Force
 
 
 
@@ -373,14 +378,14 @@ function _Write-PromptPathToBreadCrumbs {
 
     # try {
     $FinalOutputString = switch ($FormatMode) {
-        'a' {
-            'Ps> '
-            break
-        }
+        # 'a' {
+        #     'Ps> '
+        #     break
+        # }
         'Reverse' {
             'Todo> '
             # todo: like 'default' but reverse, so brightest path is left
-            break
+            return
         }
         'LimitSegmentCount' {
             # size is currently disabled being used
@@ -427,10 +432,11 @@ function _Write-PromptPathToBreadCrumbs {
             }
 
             # no removal for now, just show all segments
-            break
+            return
         }
 
         default {
+            "`ndefault> "
         }
 
     }
@@ -446,8 +452,10 @@ $script:__temp.IncludeDebugPrompt ??= $true
 if (!  $script:__ninConfig.Prompt.SegmentChildCountFormat ) {
     'Bad bad bad ' | Write-Warning
 }
-$script:__ninConfig.Prompt.SegmentChildCountFormat ??= 'Icons' # ??= should have worked, unless config doesn't exist
-$script:__ninConfig.Prompt.SegmentExtensionType ??= $true
+if ($script:__ninConfig.Prompt) {
+    $script:__ninConfig.Prompt.SegmentChildCountFormat ??= 'Icons' # ??= should have worked, unless config doesn't exist
+    $script:__ninConfig.Prompt.SegmentExtensionType ??= $true
+}
 function _Write-SegmentExtensionType {
     <#
     .synopsis
@@ -928,7 +936,9 @@ function Write-NinProfilePrompt {
     param (
     )
 
-    if ($__ninConfig.Prompt.ForceSafeMode) {
+    if ( ( $__ninConfig.Prompt) -and
+        ($__ninConfig.Prompt.ForceSafeMode) ) {
+
         @(
             Get-Location
             "`nsafe>"
@@ -936,10 +946,20 @@ function Write-NinProfilePrompt {
         return
     }
 
+    if ($null -eq $__ninConfig.Prompt.ForceSafeMode) {
+
+        '🚧> $null -eq SafeMode'
+        | Write-Host
+    }
+
+    $__ninConfig.Prompt.NumberOfPromptErrors ??= 2
+    $configErrorLinesLimit = $__ninConfig.Prompt.NumberOfPromptErrors ?? 2
+    # $__ninConfig.Prompt.Profile = 'spartan'
     # try {
-    $script:__ninConfig.Prompt.NumberOfPromptErrors ??= 2
-    $configErrorLinesLimit = $script:__ninConfig.Prompt.NumberOfPromptErrors ?? 2
-    $script:__ninConfig.Prompt.Profile = 'spartan'
+    # was
+    # $script:__ninConfig.Prompt.NumberOfPromptErrors ??= 2
+    # $configErrorLinesLimit = $script:__ninConfig.Prompt.NumberOfPromptErrors ?? 2
+    # $script:__ninConfig.Prompt.Profile = 'spartan'
 
     # do not use extra newlines on missing segments
 

@@ -195,7 +195,7 @@ if ($false -and 'future') {
 }
 
 
-$__ninConfig ??= @{
+$script:__ninConfig ??= @{
     # HackSkipLoadCompleters     = $true
     EnableGreetingOnLoad       = $true
     UseAggressiveAlias         = $true

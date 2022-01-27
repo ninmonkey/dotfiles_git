@@ -1059,7 +1059,7 @@
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
         "editor.semanticHighlighting.enabled": true,
-        // "editor.semanticHighlighting.enabled": false,
+        "editor.semanticHighlighting.enabled": false,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
         "editor.suggest.showFunctions": true,
@@ -3251,5 +3251,6 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
+    "window.zoomLevel": 1,
     // "debug.console.acceptSuggestionOnEnter":
 }
