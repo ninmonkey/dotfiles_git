@@ -58,7 +58,7 @@
             "   ${2:$$_.TypeNameOfValue, $$_.Name, $$_.value -join ' = '}",
             "}"
         ],
-        "description": "inline definition to enumrate over '$_.PSObject.Properties' "
+        "description": "inline definition to enumerate over '$_.PSObject.Properties' "
     },
     // "🐒regex: ($␀)?.NullConditional": {
     //     "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
@@ -303,6 +303,26 @@
     // "CmdletBinding()": {
     //     "prefix": "WIP -- [CmdletBinding()]",
     //     "description": "nin ⁞ CmdletBinding with initial params",
+    // "Func ⇢ User $Options @{..} ⇢ 🐒": {
+    // "prefix": "Function ⇢ Options 🐒",
+    // "description": "nin func with $Config defaults plus user -Options @{..} 🐒",
+    // nin ⁞ The important
+    "Generics ⇢ List<T> ⇢ 🐒": {
+        "prefix": "list [List<T>] 🐒",
+        "description": "nin ⁞ Generics List",
+        "body": [
+            "[list[${1:object}]]\\$${2:items} = [list[${1:object}]]::new()",
+        ],
+    },
+    "basic ⇢ [Hashtable] ⇢ 🐒": {
+        "prefix": "dict.hash [hashtable] 🐒",
+        "description": "nin ⁞ hashtable",
+        "body": [
+            "[hashtable]\\$${1:meta} = @{",
+            "   ${2:key} = ${3:value}",
+            "}",
+        ],
+    },
     "Func ⇢ Pipeline 🐒": {
         "prefix": "Function ⇢ Pipeline 🐒",
         "description": "Defaults for a  new function🐒",

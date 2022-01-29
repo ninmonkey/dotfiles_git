@@ -1834,7 +1834,7 @@
     "powershell.codeFormatting.pipelineIndentationStyle": "None",
     "redhat.telemetry.enabled": false,
     "snippets.viewer.sortSnippetsByName": true,
-    "python.defaultInterpreterPath": "c:\\Users\\cppmo_000\\Documents\\2020\\python\\one_offs\\Heroes of the Storm stats\\venv\\Scripts\\python.exe",
+    "python.defaultInterpreterPath": "C:\\Users\\cppmo_000\\.virtualenvs\\1-offs-ErlZkEu9\\Scripts\\python.exe",
     "errorLens.enabledDiagnosticLevels": [
         "error",
         "warning",
@@ -2025,12 +2025,11 @@
     "editor.suggest.showSnippets": true,
     "editor.suggest.snippetsPreventQuickSuggestions": true,
     "editor.tabCompletion": "off",
-    "snippets.viewer.combineLanguageSnippets": false,
+    "snippets.viewer.combineLanguageSnippets": true,
     // "snippets.viewer.skipLanguageSnippets": "",
     "snippets.viewer.expandSnippetFiles": true,
     "snippets.viewer.focusOnActiveEditorSnippets": true, // will merge extension and your custom snippets
     "snippets.viewer.showBuiltInExtensionSnippets": true,
-    "snippets.viewer.showOnlyActiveEditorLanguageSnippets": true,
     "workbench.list.automaticKeyboardNavigation": true, // false means only show your snippets
     // "python.autoComplete.addBrackets": false,
     // "terminal.integrated.automationShell.linux": null,
@@ -3251,6 +3250,8 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
-    "window.zoomLevel": 1,
+    "gitlens.advanced.abbreviateShaOnCopy": true,
+    "terminal.integrated.copyOnSelection": true,
+    "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
     // "debug.console.acceptSuggestionOnEnter":
 }
