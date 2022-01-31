@@ -3253,5 +3253,6 @@
     "gitlens.advanced.abbreviateShaOnCopy": true,
     "terminal.integrated.copyOnSelection": true,
     "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
+    "gitlens.mode.active": "zen",
     // "debug.console.acceptSuggestionOnEnter":
 }
