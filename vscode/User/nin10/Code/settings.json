@@ -835,6 +835,7 @@
         "editor.fontSize": 11,
     },
     "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.defaultFormatter": "vscode.typescript-language-features",
         // "editor.formatOnType": true,
         "editor.formatOnSave": true,
@@ -1058,7 +1059,6 @@
         // "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
-        "editor.semanticHighlighting.enabled": false,
         "editor.semanticHighlighting.enabled": true,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
@@ -1068,6 +1068,8 @@
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?", // causes splat-expression etc to break
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
+        "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
+        "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.formatOnSave": true,
         "editor.snippetSuggestions": "bottom",
         "editor.snippetSuggestions": "none",
@@ -1596,7 +1598,9 @@
         "errorLens.warningBackground": "#ff942f00",
         "errorLens.warningForeground": "#fa973a00",
         "errorLens.warningMessageBackground": "#fff00000",
-        "debugConsole.sourceForeground": "#ff0000",
+        "debugConsole.sourceForeground": "#7bff00", // # where is this?
+        "statusBar.debuggingForeground": "#ff00ff",
+        "editor.inlineValuesBackground": "#ff0000",
         /*
         Section: [workbench.colorCustomizations]
             git
@@ -1814,7 +1818,19 @@
             "enabled": true,
             "rules": {
                 // single value
+                // vs many
+                // "parameter": {
+                // "fontStyle": ""
+                // "bold": true,
+                // "foreground": "#464545", // nintheme
+                // "underline": true,
+                // "bold": true,
+                // "italic": true,
+                // "fontStyle": "italic bold underline"
+                // },
                 "parameter": "#d4d4d4",
+                "parameter": "#9CDCFE", // default
+                "parameter": "#aeaeae",
                 // vs many
                 "parameter": {
                     "foreground": "#ff0000",
@@ -1823,6 +1839,13 @@
                     "bold": true,
                     "italic": true,
                     "fontStyle": "italic bold underline"
+                },
+                "string": {
+                    "foreground": "#1E1E1E", // default BG color
+                    "foreground": "#D4D4D4",
+                    "background": "orange",
+                    "foreground": "#9CDCFE",
+                    "fontStyle": "underline"
                 }
             }
         },
@@ -1845,9 +1868,11 @@
     "oneDarkPro.bold": true,
     "pesterExplorer.autoDiscoverOnOpen": true,
     "editor.renderWhitespace": "none",
+    // "powershell.codeFormatting.pipelineIndentationStyle": "NoIndentation",
     "redhat.telemetry.enabled": false,
     "snippets.viewer.sortSnippetsByName": true,
-    "python.defaultInterpreterPath": "C:\\Users\\cppmo_000\\AppData\\Local\\Microsoft\\WindowsApps\\python3.9.exe",
+    "python.defaultInterpreterPath": "C:/Users/cppmo_000/.virtualenvs/1-offs-ErlZkEu9/Scripts/python.exe",
+    "python.defaultInterpreterPath": "C:/Users/cppmo_000/AppData/Local/Microsoft/WindowsApps/python3.9.exe",
     "errorLens.enabledDiagnosticLevels": [
         "error",
         "warning",
@@ -2038,7 +2063,7 @@
     "editor.suggest.showSnippets": true,
     "editor.suggest.snippetsPreventQuickSuggestions": true,
     "editor.tabCompletion": "off",
-    "snippets.viewer.combineLanguageSnippets": false,
+    "snippets.viewer.combineLanguageSnippets": true,
     // "snippets.viewer.skipLanguageSnippets": "",
     "snippets.viewer.expandSnippetFiles": true,
     "snippets.viewer.focusOnActiveEditorSnippets": true, // will merge extension and your custom snippets
@@ -2970,6 +2995,7 @@
     "testExplorer.useNativeTesting": true,
     "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
+    "editor.bracketPairColorization.enabled": true,
     "editor.lineNumbers": "relative", // weird
     "editor.lineNumbers": "interval", // cleaner
     // "editor.lineHeight": 25, // 0-8 are multipliers, > 8 are literal px sizes
@@ -3253,6 +3279,7 @@
     "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekViewDuringAutoRun": false,
     "terminal.explorerKind": "integrated",
+    "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
     "python.diagnostics.sourceMapsEnabled": true,
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
@@ -3262,6 +3289,23 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
+    "gitlens.advanced.abbreviateShaOnCopy": true,
+    "terminal.integrated.copyOnSelection": true,
+    "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
+    "gitlens.mode.active": "zen",
+    // "debug.console.acceptSuggestionOnEnter":,
+    // List of tags, comma separated, that shouldn't be reformatted. `null` defaults to all tags listed at https://www.w3.org/TR/html5/dom.html#phrasing-content.
+    "html.format.unformatted": "wbr",
+    // Wrap attributes.
+    //  - auto: Wrap attributes only when line length is exceeded.
+    //  - force: Wrap each attribute except first.
+    //  - force-aligned: Wrap each attribute except first and keep aligned.
+    //  - force-expand-multiline: Wrap each attribute.
+    //  - aligned-multiple: Wrap when line length is exceeded, align attributes vertically.
+    //  - preserve: Preserve wrapping of attributes.
+    //  - preserve-aligned: Preserve wrapping of attributes but align.
+    "html.format.wrapAttributes": "auto",
+    "ruby.useLanguageServer": true,
     "terminal.integrated.tabs.location": "left",
     // "debug.console.acceptSuggestionOnEnter":
     "baincd.mini-command-palettes.paletteConfigs": {
@@ -3643,5 +3687,4 @@
             ]
         }
     },
-    "powershell.codeFormatting.pipelineIndentationStyle": "None"
 }
