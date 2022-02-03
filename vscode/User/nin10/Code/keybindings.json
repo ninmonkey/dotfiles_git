@@ -115,7 +115,7 @@
     },
     {
         // opens a new term in the editor area, but in a side
-        "key": "ctrl+pageup ctrl+shift",
+        "key": "ctrl+numpad4", // "ctrl+pageup ctrl+shift",
         "command": "workbench.action.createTerminalEditor",
         "when": "editorTextFocus",
     },
@@ -123,10 +123,9 @@
     See also:
         - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
     New Commands
-        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
-    */
-    {
-        // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)    {
+        // don't close window when there's no editors left
+        // [whatsNew]: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
         "key": "ctrl+w",
         "command": "workbench.action.closeWindow",
         "when": "!editorIsOpen && !multipleEditorGroups"
@@ -145,6 +144,11 @@
         },
         "when": "editorLangId == 'powershell'",
     },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeActiveEditor",
+    //     "when": "resourceScheme == 'vscode-terminal'"
+    // },
     /*
 
     ### Sect: Better Align
@@ -165,13 +169,6 @@
     {
         // "key": "ctrl+cmd+=",
         "key": "ctrl+numpad1",
-        "command": "editor.action.duplicateSelection",
-        "when": "editorTextFocus && !editorReadonly",
-        // "args": []
-    },
-    {
-        // "key": "ctrl+cmd+=",
-        "key": "ctrl+numpad2",
         "command": "wwm.aligncode",
         "when": "editorTextFocus && !editorReadonly"
         // "args": ""
@@ -272,6 +269,11 @@
     {
         "key": "ctrl+alt+l",
         "command": "editor.action.joinLines"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-md-shortcut.toggleBold",
+        "when": "editorTextFocus && markdownShortcuts:enabled"
     },
     /*
 
@@ -532,9 +534,10 @@
         "when": "terminalFocus"
     },
     {
-        "key": "ctrl+shift+c",
-        "command": "-workbench.action.terminal.openNativeConsole",
-        "when": "!terminalFocus"
+        "key": "ctrl+w",
+        "command": "-workbench.action.terminal.killEditor",
+        // "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
+        "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
     },
     {
         "key": "ctrl+shift+k ctrl+shift+b",
@@ -649,7 +652,6 @@
     /*
 
     ### Sect: from SeeminglySci's profile
-
         tags: SeeminlySci, Powershell, PSEditorServices
 
     */
@@ -709,6 +711,7 @@
     {
         "key": "ctrl+numpad3",
         "command": "workbench.action.showCommands",
+        "command": "workbench.action.toggleAuxiliaryBar",
         "args": {
             "MatchOnDetail": false,
             "title": "monkey",

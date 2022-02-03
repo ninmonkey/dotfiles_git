@@ -15,8 +15,6 @@
 
         - ctrl+shift+p : inspec0t contexts at runtime
         - 'Developer: Toggle Keyboard Shortcuts Troubleshooting'
-
-
     ## Docs:
         - your own addon: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
 
@@ -117,35 +115,15 @@
     },
     {
         // opens a new term in the editor area, but in a side
-        "key": "ctrl+numpad4",
+        "key": "ctrl+numpad4", // "ctrl+pageup ctrl+shift",
         "command": "workbench.action.createTerminalEditor",
         "when": "editorTextFocus",
     },
     /*
-        experiment: prevent ctrl+w when editor is a terminal tab
-
-            !editorIsOpen
-
-        line2.2k
-        involoved commands:
-            { "key": "ctrl+w", "command": "workbench.action.closeActiveEditor" },
-            { "key": "ctrl+w",  "command": "workbench.action.terminal.killEditor",
-                "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'" },
-    */
-    // {
-    //     "key": "ctrl+w",
-    //     "command": "workbench.action.closeActiveEditor",
-    //     "when": "resourceScheme == 'vscode-terminal'"
-    //     // "when": "activeEditor ==  'terminalEditor'"
-    // },
-    // "when": "!editorIsOpen && !multipleEditorGroups"
-    // {
-    //     // Temp override: disable it
-    //     "key": "ctrl+w",
-    //     "command": "-workbench.action.closeWindow",
-    //     // "when": "!editorIsOpen && !multipleEditorGroups"
-    // },
-    {
+    See also:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+    New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)    {
         // don't close window when there's no editors left
         // [whatsNew]: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
         "key": "ctrl+w",
@@ -195,6 +173,17 @@
         "when": "editorTextFocus && !editorReadonly"
         // "args": ""
     },
+    // {
+    // // "key": "ctrl+cmd+=",
+    // // "key": "ctrl+numpad2",
+    // "when": "false",
+    // "command": "workbench.action.quickOpen",
+    // "command": "workbench.action.quickOpenrecent",
+    // "command": "workbench.action.quickPickManyToggle",
+    // "command": "workbench.action.quickPickManyToggle",
+    // "command": "workbench.action.quickSwitchWindow",
+    // "command": "workbench.action.toggleZenMode",
+    // // "args": ""
     /*
 
     [section]: Debugging
@@ -251,6 +240,12 @@
         //jump to breakpoints (only in the text editor)
         "key": "ctrl+alt+numpad2",
         "command": "editor.debug.action.goToNextBreakpoint",
+        "when": "editorTextFocus"
+    },
+    // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.createTerminalEditorSided",
         "when": "editorTextFocus"
     },
     {
@@ -364,9 +359,7 @@
         (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
     */
     /*
-
     [section]: Debugging
-
     */
     {
         "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
@@ -383,6 +376,163 @@
         "command": "-workbench.action.terminal.openNativeConsole",
         "when": "!terminalFocus"
     },
+    /*
+
+    ### Sect: Start of optional 2022/01
+
+       tags: optional
+       carries over from 2021
+
+
+    */
+    /* this bind/hotkey is what breaks multiline pasting */
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "workbench.action.problems.focus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorLangId == 'json' || editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-bookmarks.jumpToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "bookmarks.toggleLabeled",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "-bookmarks.toggle",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "-bookmarks.jumpToNext",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+numpad5",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorTextFocus"
+    },
+    // {
+    //     "key": "ctrl+alt+l",
+    //     "command": "bookmarks.list"
+    // },
+    /*
+
+    ### Sect: Optional diff bookmark config from above
+
+           tags: 2021
+
+    */
+    /* this bind/hotkey is what breaks multiline pasting */
+    /*
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "workbench.action.problems.focus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorLangId == 'json' || editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-bookmarks.jumpToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "-bookmarks.jumpToNext",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+numpad5",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "bookmarks.list"
+    },
+    {
+        "key": "shift+alt+j",
+        "command": "-bookmarks.expandSelectionToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+l",
+        "command": "-bookmarks.expandSelectionToNext",
+        "when": "editorTextFocus"
+    },
+    */
+    /*
+
+    ### Sect: Everything above is 2021-12 or older
+
+    */
+    /*
+
+    ### Sect: Regex keybing
+
+           tags: regex
+
+
+    [ex] Quick fix uses a regex
+    {
+        "key": "shift+alt+.",
+        "command": "editor.action.autoFix",
+        "when": "editorTextFocus && !editorReadonly && supportedCodeAction =~ /(\\s|^)quickfix\\b/"
+    },
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>)
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>:<otherwise>)
+
+
+        (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
+    */
+    /*
+    [section]: Debugging
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
     {
         "key": "ctrl+w",
         "command": "-workbench.action.terminal.killEditor",
@@ -393,6 +543,18 @@
         "key": "ctrl+shift+k ctrl+shift+b",
         "command": "editor.action.selectToBracket"
     },
+    // {
+    //     "key": "ctrl+alt+l",
+    //     "command": "bookmarks.list"
+    // },
+    /*
+
+    ### Sect: Start of optional 2022/01
+       tags: optional
+
+       carries over from 2021
+
+    */
     /*
     added new from the data dir configs
     */
@@ -445,6 +607,13 @@
         "command": "-bookmarks.expandSelectionToNext",
         "when": "editorTextFocus"
     },
+    /*
+
+    ### Sect: Start of 2022/01
+
+        - contains Correct 'ctr+w' fix
+
+    */
     // test: don't close terminal consoles
     {
         "key": "ctrl+w",
@@ -483,6 +652,7 @@
     /*
 
     ### Sect: from SeeminglySci's profile
+        tags: SeeminlySci, Powershell, PSEditorServices
 
     */
     {
@@ -510,7 +680,42 @@
         "when": "editorLangId == 'powershell'"
     },
     {
+        "key": "ctrl+k ctrl+r",
+        "command": "-workbench.action.keybindingsReference"
+    },
+    {
+        "key": "ctrl+numpad4",
+        "command": "baincd.mini-command-palettes.cmds.main-palette"
+    },
+    {
+        "key": "ctrl+numpad7",
+        "command": "baincd.mini-command-palettes.cmds.secondary-palette"
+    },
+    {
+        "key": "ctrl+numpad9",
+        "command": "baincd.mini-command-palettes.cmds.example-template-palette"
+    },
+    // {
+    //     // https://powershell.github.io/PowerShellEditorServices/guide/extensions.html
+    //     // debug only
+    //     // "command": "PowerShell.ShowAdditionalCommands", "args": ""
+    // }
+    {
+        "key": "ctrl+numpad8",
+        "command": "PowerShell.ShowHelp"
+    },
+    {
+        "key": "ctrl+k ctrl+r",
+        "command": "-workbench.action.keybindingsReference"
+    },
+    {
         "key": "ctrl+numpad3",
-        "command": "workbench.action.toggleAuxiliaryBar"
+        "command": "workbench.action.showCommands",
+        "command": "workbench.action.toggleAuxiliaryBar",
+        "args": {
+            "MatchOnDetail": false,
+            "title": "monkey",
+            "placeHolder": "monkey",
+        }
     },
 ]
