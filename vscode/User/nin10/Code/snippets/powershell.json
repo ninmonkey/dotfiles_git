@@ -267,10 +267,10 @@
             "",
             "if ( \\$experimentToExport ) {",
             "    \\$experimentToExport.function += @(",
-            "        'F'",
+            "        ${1:# ''}",
             "    )",
             "    \\$experimentToExport.alias += @(",
-            "        # 'A'",
+            "        ${2:# ''}",
             "    )",
             "}",
             "",
@@ -319,7 +319,7 @@
     // "CmdletBinding()": {
     //     "prefix": "WIP -- [CmdletBinding()]",
     //     "description": "nin ⁞ CmdletBinding with initial params",
-     // "Func ⇢ User $Options @{..} ⇢ 🐒": {
+    // "Func ⇢ User $Options @{..} ⇢ 🐒": {
     // "prefix": "Function ⇢ Options 🐒",
     // "description": "nin func with $Config defaults plus user -Options @{..} 🐒",
     // nin ⁞ The important

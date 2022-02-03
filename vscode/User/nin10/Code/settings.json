@@ -1599,6 +1599,8 @@
         "errorLens.warningForeground": "#fa973a00",
         "errorLens.warningMessageBackground": "#fff00000",
         "debugConsole.sourceForeground": "#7bff00", // # where is this?
+        "statusBar.debuggingBackground": "#ff000021", // fav: very darkred # while debug
+        // "debugConsole.errorForeground": "#ff0000",
         /*
         Section: [workbench.colorCustomizations]
             git
@@ -1876,6 +1878,50 @@
         "warning",
         "hint",
         "info"
+    ],
+    /*
+
+    ### Sect: Addon 'kamikillerto.vscode-colorize'
+
+           tags: Tag1, Tag2
+
+    */
+    // "editor.language.colorizedBracketPairs": true,
+    "colorize.decoration_type": "underline", // fav
+    "colorize.colorized_colors": [
+        "BROWSERS_COLORS",
+        "HEXA",
+        "RGB",
+        "HSL"
+    ],
+    "colorize.exclude": [
+        "**/venv",
+        "**/.venv",
+        "**/env",
+        "**/.svn",
+        "**/.hg",
+        "**/CVS",
+        "**/.DS_Store",
+        "**/.git",
+        "**/node_modules",
+        "**/bower_components",
+        "**/tmp",
+        "**/dist",
+        "**/tests"
+    ],
+    "colorize.languages": [
+        "json",
+        "jsonc",
+        "powershell",
+        "css",
+        "sass",
+        "scss",
+        "less",
+        "postcss",
+        "sss",
+        "stylus",
+        "xml",
+        "svg"
     ],
     "workbench.iconTheme": "vscode-icons",
     // "editor.rulers": [
