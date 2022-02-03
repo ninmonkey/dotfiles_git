@@ -3254,5 +3254,18 @@
     "terminal.integrated.copyOnSelection": true,
     "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
     "gitlens.mode.active": "zen",
-    // "debug.console.acceptSuggestionOnEnter":
+    // "debug.console.acceptSuggestionOnEnter":,
+    // List of tags, comma separated, that shouldn't be reformatted. `null` defaults to all tags listed at https://www.w3.org/TR/html5/dom.html#phrasing-content.
+    "html.format.unformatted": "wbr",
+    // Wrap attributes.
+    //  - auto: Wrap attributes only when line length is exceeded.
+    //  - force: Wrap each attribute except first.
+    //  - force-aligned: Wrap each attribute except first and keep aligned.
+    //  - force-expand-multiline: Wrap each attribute.
+    //  - aligned-multiple: Wrap when line length is exceeded, align attributes vertically.
+    //  - preserve: Preserve wrapping of attributes.
+    //  - preserve-aligned: Preserve wrapping of attributes but align.
+    "html.format.wrapAttributes": "auto",
+    "window.zoomLevel": 1,
+    "ruby.useLanguageServer": true,
 }
