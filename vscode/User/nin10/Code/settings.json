@@ -1599,8 +1599,6 @@
         "errorLens.warningForeground": "#fa973a00",
         "errorLens.warningMessageBackground": "#fff00000",
         "debugConsole.sourceForeground": "#7bff00", // # where is this?
-        "statusBar.debuggingForeground": "#ff00ff",
-        "editor.inlineValuesBackground": "#ff0000",
         /*
         Section: [workbench.colorCustomizations]
             git

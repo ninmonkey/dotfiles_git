@@ -1,11 +1,94 @@
 // Place your key bindings in this file to override the defaults
 [
     /*
-    See also:
+        Rules are evaluated bottom to top, choosing the first binding that matches the 'when' expression. (ie: )
 
+
+    ## Top level cheatsheet pages, ie: best root links only
+
+        - Contexts and operators: https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+            - list of contexts
+            - list of operators
+            - custom 'in' conditions
+
+        - defaults + rich commands: https://code.visualstudio.com/docs/getstarted/keybindings#_rich-languages-editing
+
+        - ctrl+shift+p : inspec0t contexts at runtime
+        - 'Developer: Toggle Keyboard Shortcuts Troubleshooting'
     ## Docs:
-        https://code.visualstudio.com/api/references/commands
-        https://code.visualstudio.com/api/references/when-clause-contexts
+        - your own addon: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
+
+
+        - schema of keybindings.json: https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-rules
+
+        - built-ins: https://code.visualstudio.com/api/references/commands
+        - when filtering: https://code.visualstudio.com/api/references/when-clause-contexts
+        - virtual key codes: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
+        - build-in contexts
+            https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+
+        - dev tool: https://code.visualstudio.com/docs/getstarted/keybindings#_troubleshooting-keybindings
+        - inspect enumerates all valid keys, to get contexts dynamically at runtime
+            ctrl+shift+P
+            https://code.visualstudio.com/api/references/when-clause-contexts#inspect-context-keys-utility
+
+        - more contexts and quote
+            https://code.visualstudio.com/api/references/when-clause-contexts#activefocused-view-or-panel-when-clause-context
+            https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+            > The list here isn't exhaustive and you can find other when clause contexts by searching and filtering in the Keyboard Shortcuts editor (Preferences: Open Keyboard Shortcuts) or reviewing the Default Keybindings JSON file (Preferences: Open Default Keyboard Shortcuts (JSON)).
+
+        - new: don't quit if no editors are open <https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened>
+
+    ## Refactoring Keybind actions
+        - custom binding to refactor https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions
+
+            ex:
+
+                {
+                    "key": "ctrl+shift+r ctrl+e",
+                    "command": "editor.action.codeAction",
+                    "args": {
+                        "kind": "refactor.extract.function"
+                        "apply": "first" // [ ifSingle | first | never]
+                    }
+                }
+
+            > When a Code Action keybinding is configured with "preferred": true, only preferred Quick Fixes and refactorings are shown. A preferred Quick Fix addresses the underlying error, while a preferred refactoring is the most common refactoring choice. For example, while multiple refactor.extract.constant refactorings may exist, each extracting to a different scope in the file, the preferred refactor.extract.constant refactoring is the one that extracts to a local variable.
+
+            > This keybinding uses "preferred": true to create a refactoring that always tries to extract the selected source code to a constant in the local scope:
+
+                {
+                    "key": "shift+ctrl+e",
+                    "command": "editor.action.codeAction",
+                    "args": {
+                        "kind": "refactor.extract.constant",
+                        "preferred": true,
+                        "apply": "ifsingle"
+                    }
+                }
+
+    - rich commands https://code.visualstudio.com/docs/getstarted/keybindings#_rich-languages-editing
+
+
+    ## Operators
+
+        'in' operator: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
+            Why?
+            >  if you wanted to add a context menu command to folders that contain a certain type of file (or something that can't be statically known), you can now use the in operator to achieve it.
+            ex:
+                "command": "ext.doSpecial",
+                "when": "explorerResourceIsFolder && resourceFilename in ext.supportedFolders"
+
+        regex match operator:
+            https://code.visualstudio.com/docs/getstarted/keybindings#_conditional-operators
+            standard ops, and
+
+        ex:
+            "when": "resourceFilename =~ /docker/"
+
+    | operator | symbol | Example                                 |
+    | -------- | ------ | --------------------------------------- |
+    | Matches  | =~     | "resourceScheme =~ /^untitled$|^file$/" |
 
 
     ## Examples:
@@ -37,6 +120,10 @@
         "when": "editorTextFocus",
     },
     /*
+    See also:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+    New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
         experiment: prevent ctrl+w when editor is a terminal tab
 
             !editorIsOpen

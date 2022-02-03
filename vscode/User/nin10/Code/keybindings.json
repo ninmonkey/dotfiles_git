@@ -15,8 +15,6 @@
 
         - ctrl+shift+p : inspec0t contexts at runtime
         - 'Developer: Toggle Keyboard Shortcuts Troubleshooting'
-
-
     ## Docs:
         - your own addon: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
 
