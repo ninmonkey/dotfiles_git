@@ -920,3 +920,26 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
 if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] <-- end of file'
 }
+
+
+if ($false) {
+    Get-PSDrive -PSProvider FileSystem
+    | ForEach-Object {
+        @(
+            $l = @(
+                Lookup -InputObject $_ -LiteralPropertyName Name
+                Lookup -InputObject $_ -LiteralPropertyName Free
+            ) | Merge-HashtableList
+            $l
+
+        )
+    }
+} else {
+    Get-PSDrive -PSProvider FileSystem
+    | ForEach-Object {
+        [pscustomobject]@{
+            Free = '{0,-6:n0}GB' -f ($_.Free / 1gb)
+            Name = $_.Name
+        }
+    }
+}
