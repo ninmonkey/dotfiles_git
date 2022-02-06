@@ -19,6 +19,14 @@ if ($experimentToExport) {
     )
 }
 
+'single vs double'
+"double quote $(ls . | sort)"
+'multi-line
+    single quote'
+"multi-line
+    $(get-date)
+    single quote"
+
 if ($ResumeSession) {
     Write-Color -t 'ResumeSession' $Color.FgBold | Write-Information
 } else {
@@ -34,18 +42,6 @@ $metaInfo = @{
     BoundParams = $PSBoundParameters
 
 
-    $script:__venv = @{
-        # ForceMode = 'insiders' # $null | 'code' | 'insiders'
-        ForceMode = 'code' # default code, because of alias ivy   <$null | 'code' | 'insiders'>
-        Color = @{
-            Fg = '#66CCFF'
-            FgBold = 'green'
-            FgBold2 = 'yellow'
-            FgDim = 'gray60'
-            FgDim2 = 'gray40'
-            H1 = 'orange'
-        }
-    }
 
     $varName = "${hi} world $($PSCommandPath | Format-List *)"
     @{
@@ -54,31 +50,48 @@ $metaInfo = @{
         'Key3'     = $x
     }
 }
-    function __findVSCodeBinaryPath {
-        <#
+
+## Test Case [4] : multi line quotes in pwsh -- only colors the first line
+Write-Debug 'checklist:
+    - [ ] and from pipeline'
+
+$script:__venv = @{
+    # ForceMode = 'insiders' # $null | 'code' | 'insiders'
+    ForceMode = 'code' # default code, because of alias ivy   <$null | 'code' | 'insiders'>
+    Color     = @{
+        Fg      = '#66CCFF'
+        FgBold  = 'green'
+        FgBold2 = 'yellow'
+        FgDim   = 'gray60'
+        FgDim2  = 'gray40'
+        H1      = 'orange'
+    }
+}
+function __findVSCodeBinaryPath {
+    <#
     .synopsis
         internal. Find versions of vscode
     .outputs
         [IO.FileInfo]
     #>
-        $fdArgs = @(
-            # '-d', 5
-            '--max-depth', '5'
-            # '-e', 'cmd',
-            '--extension', 'cmd'
-            'code' # regex
-            'j:\'  # root path
-            '--color=never'
-        )
+    $fdArgs = @(
+        # '-d', 5
+        '--max-depth', '5'
+        # '-e', 'cmd',
+        '--extension', 'cmd'
+        'code' # regex
+        'j:\'  # root path
+        '--color=never'
+    )
 
-        $binFd = Get-NativeCommand fd
-        [object[]]$results = & $BinFd @fdArgs
+    $binFd = Get-NativeCommand fd
+    [object[]]$results = & $BinFd @fdArgs
 
-        $results | Get-Item | Sort-Object LastWriteTime -desc
-    }
+    $results | Get-Item | Sort-Object LastWriteTime -desc
+}
 
-    function Invoke-VSCodeVenv {
-        <#
+function Invoke-VSCodeVenv {
+    <#
     .synopsis
         quick hack to work around one drive bug
     .description
@@ -122,34 +135,34 @@ $metaInfo = @{
 
     # [Alias('Code-vEnv', 'Out-CodeVEnv', 'Out-VSCodeEnv')]
     #>
-        [outputtype([string])]
-        [Alias(
-            # 'Code', 'CodeI',
-            'Code-vEnv', 'CodeI-vEnv',
-            'Out-CodevEnv', 'Out-CodeIvEnv',
-            'Ivy' # pronounced from the 'i venv'
-        )]
-        [cmdletbinding(
-            PositionalBinding = $false,
-            DefaultParameterSetName = 'OpenItem',
-            # DefaultParameterSetName = 'ResumeSession',
-            SupportsShouldProcess, ConfirmImpact = 'High'
-        )]
-        param()
-        'fooasdf'
-        'sadf
+    [outputtype([string])]
+    [Alias(
+        # 'Code', 'CodeI',
+        'Code-vEnv', 'CodeI-vEnv',
+        'Out-CodevEnv', 'Out-CodeIvEnv',
+        'Ivy' # pronounced from the 'i venv'
+    )]
+    [cmdletbinding(
+        PositionalBinding = $false,
+        DefaultParameterSetName = 'OpenItem',
+        # DefaultParameterSetName = 'ResumeSession',
+        SupportsShouldProcess, ConfirmImpact = 'High'
+    )]
+    param()
+    'fooasdf'
+    'sadf
         dsfssdsf
     dsf'
-        # which venv
-        # [Alias('VEnv')]
+    # which venv
+    # [Alias('VEnv')]
 
-        # this single-quote multi line string colors wrong
-        # even though the scope is 'singlequote'
-        Write-Debug 'checklist:
+    # this single-quote multi line string colors wrong
+    # even though the scope is 'singlequote'
+    Write-Debug 'checklist:
     - [ ] and from pipeline
     - [ ] --verbose'
 
-        $metaInfo | Format-Table | Out-String | Write-Debug
-        $metaInfo | Format-Dict | Out-String | Write-Debug
+    $metaInfo | Format-Table | Out-String | Write-Debug
+    $metaInfo | Format-Dict | Out-String | Write-Debug
 
-    }
+}

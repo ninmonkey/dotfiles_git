@@ -836,7 +836,9 @@ function Prompt {
     Write-NinProfilePrompt
     # IsAdmin = Test-UserIsAdmin
 }
-
+function SafePrompt {
+    "`nSafe> "
+}
 
 # ie: Lets you set aw breakpoint that fires only once on prompt
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once

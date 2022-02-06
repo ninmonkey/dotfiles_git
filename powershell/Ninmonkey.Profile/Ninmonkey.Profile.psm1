@@ -936,6 +936,15 @@ function Write-NinProfilePrompt {
     param (
     )
 
+    if ($null -eq (Get-Module dev.nin -ea ignore)) {
+        @(
+            "`nNo Dev.Nin`n"
+            Get-Location
+            "`nsafe>"
+        ) -join ''
+
+        #required fallback if required dev.nin module didn't load
+    }
     if ( ( $__ninConfig.Prompt) -and
         ($__ninConfig.Prompt.ForceSafeMode) ) {
 
