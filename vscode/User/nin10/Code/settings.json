@@ -57,7 +57,12 @@
             {
                 "name": "[1] .NET Core Attach ▂ 🐛+💻▂",
                 "type": "coreclr",
-                "request": "attach"
+                "request": "attach",
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                }
             },
             ///
             // [2] Attach -> [🐛debugger] to [Remote🖧] dotnet core [Console💻] app
@@ -71,11 +76,21 @@
                     "pipeProgram": "enter the fully qualified path for the pipe program name, for example '/usr/bin/ssh'",
                     "pipeArgs": [],
                     "debuggerPath": "enter the path for the debugger on the target machine, for example ~/vsdbg/vsdbg"
+                },
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
                 }
             },
             // Launch a .NET Core Console App with a debugger.
             // [3] Launch -> [🐛debugger] to dotnet core [Console💻] app
             {
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                },
                 "name": "[3] .NET Core 🏃‍♀️Launch ▂ 🐛+💻▂",
                 "type": "coreclr",
                 "request": "launch",
@@ -89,6 +104,11 @@
             // [4] launch -> [🌍Browser] + [🐛debugger] a .NET Core [🌍Web] App
             // Launch a .NET Core Web App with both a browser and a debugger.
             {
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                },
                 "name": "[4] .NET Core 🏃‍♀️Launch ▂ 🐛+[🌍Browser]▂(🌍Web)▂",
                 "type": "coreclr",
                 "request": "launch",
@@ -111,6 +131,11 @@
             // [5] Launch -> .NET Core [Console💻] App on a [Remote🖧] machine.
             // Launch a .NET Core Console App on a remote machine.
             {
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                },
                 "name": "[5] .NET Core 🏃‍♀️Launch (💻console) ▂on (🖧Remote)▂",
                 "type": "coreclr",
                 "request": "launch",
@@ -139,7 +164,7 @@
             {
                 "name": "[1] JG Pwsh: Interactive Pwsh (💻Console)",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "type": "PowerShell"
@@ -149,7 +174,7 @@
                 "cwd": "${file}",
                 "name": "[2] JG Pwsh: Run",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "script": "${file}",
@@ -163,7 +188,7 @@
                 "cwd": "${file}",
                 "name": "[3] JG Pwsh: Run w/ Args",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "script": "${file}",
@@ -176,7 +201,7 @@
                 ],
                 "name": "[4] JG Pwsh: Pester",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "script": "Invoke-Pester",
@@ -186,7 +211,7 @@
             {
                 "name": "[5] JG Pwsh: Attach",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "processId": "${command:PickPSHostProcess}",
                 "request": "attach",
@@ -208,7 +233,7 @@
                 "cwd": "${workspaceFolder}",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-Run",
                     "order": 1
                 }
             },
@@ -219,7 +244,7 @@
                 "script": "${file}",
                 "presentation": {
                     "hidden": false,
-                    "group": "",
+                    "group": "Invoke-Run",
                     "order": 1
                 },
                 // "args": [
@@ -232,7 +257,7 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "VisualTest"
+                    "group": "visual-test",
                     // "order": 1
                 },
                 "name": "🐛🎨 cur: Invoke-GithubInfo visualTest ",
@@ -251,7 +276,7 @@
                     "group": "",
                     "order": 1
                 },
-                "script": "Invoke-pester",
+                "script": "Invoke-Pester",
                 "args": [
                     "-Path 'public\\ConvertFrom-LiteralPath.tests.ps1'"
                 ],
@@ -269,7 +294,7 @@
                 "type": "PowerShell",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-File",
                     "order": 1
                 },
                 "request": "launch",
@@ -282,7 +307,7 @@
                 "request": "launch",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-File",
                     "order": 1
                 },
                 "script": "${workspaceFolder}/private/temp_cur_test.ps1",
@@ -291,7 +316,7 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "VisualTest"
+                    "group": "Visual-Test",
                     // "order": 1
                 },
                 "name": "🐛🎨 cur: Format-Dict visualTest ",
@@ -304,7 +329,7 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "VisualTest"
+                    "group": "Visual-Test"
                     // "order": 1
                 },
                 "name": "🐛🎨 cur: visualTest ",
@@ -320,7 +345,7 @@
                 "request": "launch",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-File",
                     "order": 1
                 },
                 "script": "${workspaceFolder}/test/private/_import_error_test.ps1",
@@ -333,7 +358,7 @@
                 "request": "launch",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-Pester",
                     "order": 1
                 },
                 "script": "Invoke-Pester",
@@ -348,7 +373,7 @@
                 "type": "PowerShell",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-Pester",
                     "order": 1
                 },
                 "request": "launch",
