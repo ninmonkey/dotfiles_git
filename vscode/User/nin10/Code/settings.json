@@ -1,4 +1,7 @@
 {
+    /*
+    nord token customizations: <https://www.nordtheme.com/docs/ports/visual-studio-code/customization#ui>
+    */
     "launch": {
         "configurations": [
             {
@@ -1548,7 +1551,6 @@
     // output: NinMonkey.Console ⁞ settings.json ⁞ c:\foo\bar
     "window.title": "${dirty}${rootName}${separator}${activeEditorShort}|${separator}${activeFolderMedium}",
     // output: NinMonkey.Console ⁞ settings.json ⁞ bar
-    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
     // output: settings.json <- bar
     "window.title": "${activeEditorShort}$ <- ${activeFolderShort}",
     // output: Format-FileSize.ps1 ⇽ [public]
@@ -1556,13 +1558,14 @@
     // output: Invoke-IPython.ps1 [native_wrapper] ⁞ NinMonkey.Console (Workspace)
     "window.title": "${dirty}${activeEditorShort}$ [${activeFolderShort}]${separator}${rootName}",
     // output: NinMonkey.Console (Workspace) ⁞ Invoke-IPython.ps1 ⁞ public\native_wrapper
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
+    "window.title": "${dirty}${activeEditorShort} 📄 ${rootName} 📁 ${activeEditorShort}",
     "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderMedium}",
     // "window.title": "${dirty}${rootName} ┐ ${activeEditorShort}$ ⇽ ${folderName}",
-    "window.titleSeparator": " ⁞ ", // or: ┐ ⇽
     "window.titleSeparator": " ┐ ",
+    "window.titleSeparator": " ⁞ ", // or: ┐ ⇽
     // "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
     // this is a decent compromise to make both workspace and non-workspace titles short-ish and readable
-    "window.title": "${dirty}${activeEditorShort} 📄 ${rootName} 📁 ${activeEditorShort}",
     // 📄📁⁞ ┐⇽
     /*
 
@@ -1600,6 +1603,7 @@
         "errorLens.warningMessageBackground": "#fff00000",
         "debugConsole.sourceForeground": "#7bff00", // # where is this?
         "statusBar.debuggingBackground": "#ff000021", // fav: very darkred # while debug
+        ""
         // "debugConsole.errorForeground": "#ff0000",
         /*
         Section: [workbench.colorCustomizations]
@@ -1807,15 +1811,52 @@
     "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
     /*
 
+  ###### SubSect:  TM highlight
+
+      */
+    /*
+
   ###### SubSect: Semantic highlighting
 
       */
+    "editor.tokenColorCustomizations": {
+        "[Visual Studio 2019 Dark]": {
+            // example test
+            "textMateRules": [],
+            /*
+                {
+                    "name": "dev test",
+                    "scope": "keyword.operator",
+                    "settings": {
+                        "foreground": "#aa53bbcc",
+                        // "fontStyle": "bold underline",
+                        "fontStyle": "underline",
+                    }
+                }
+            #>
+            */
+            "keywords": {
+                "foreground": "#1e4a7cf3",
+                "foreground": "#4278b4f3",
+                "fontStyle": "bold underline"
+            }
+        }
+    },
     "csharp.semanticHighlighting.enabled": true,
     "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
     "editor.semanticTokenColorCustomizations": {
         // per-theme
-        "[Default Dark+]": {
+        "[Visual Studio 2019 Dark]": {
             "enabled": true,
+            "rules": {
+                "*.readonly": {
+                    "foreground": "#00ff80",
+                    "fontStyle": "bold underline",
+                }
+            }
+        },
+        "[Default Dark+]": {
+            "enabled": false,
             "rules": {
                 // single value
                 // vs many
@@ -1841,10 +1882,10 @@
                     "fontStyle": "italic bold underline"
                 },
                 "string": {
+                    "foreground": "#9CDCFE",
                     "foreground": "#1E1E1E", // default BG color
                     "foreground": "#D4D4D4",
                     "background": "orange",
-                    "foreground": "#9CDCFE",
                     "fontStyle": "underline"
                 }
             }
@@ -1854,6 +1895,7 @@
         // or global
         "enabled": true,
         "rules": {
+            // "comment": "# "
             /*
               "parameter": "#d4d4d4",
               "variable": "#9dccfe"
@@ -3681,9 +3723,8 @@
             ]
         }
     },
-
     "redhat.telemetry.enabled": false,
     "editor.suggestSelection": "first",
-    
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue"
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "workbench.colorTheme": "Visual Studio 2019 Dark"
 }
