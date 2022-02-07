@@ -1628,7 +1628,6 @@
         "errorLens.warningMessageBackground": "#fff00000",
         "debugConsole.sourceForeground": "#7bff00", // # where is this?
         "statusBar.debuggingBackground": "#ff000021", // fav: very darkred # while debug
-        ""
         // "debugConsole.errorForeground": "#ff0000",
         /*
         Section: [workbench.colorCustomizations]
