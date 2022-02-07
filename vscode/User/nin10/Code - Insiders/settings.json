@@ -1,4 +1,7 @@
 {
+    /*
+    nord token customizations: <https://www.nordtheme.com/docs/ports/visual-studio-code/customization#ui>
+    */
     "launch": {
         "configurations": [
             {
@@ -38,7 +41,7 @@
             },
             /*
 
-      ### Sect: Build in-Dotnet launchers
+    ### Sect: Build in-Dotnet launchers
 
              tags: dotnet, defaults, launch.json
 
@@ -54,7 +57,12 @@
             {
                 "name": "[1] .NET Core Attach ▂ 🐛+💻▂",
                 "type": "coreclr",
-                "request": "attach"
+                "request": "attach",
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                }
             },
             ///
             // [2] Attach -> [🐛debugger] to [Remote🖧] dotnet core [Console💻] app
@@ -68,11 +76,21 @@
                     "pipeProgram": "enter the fully qualified path for the pipe program name, for example '/usr/bin/ssh'",
                     "pipeArgs": [],
                     "debuggerPath": "enter the path for the debugger on the target machine, for example ~/vsdbg/vsdbg"
+                },
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
                 }
             },
             // Launch a .NET Core Console App with a debugger.
             // [3] Launch -> [🐛debugger] to dotnet core [Console💻] app
             {
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                },
                 "name": "[3] .NET Core 🏃‍♀️Launch ▂ 🐛+💻▂",
                 "type": "coreclr",
                 "request": "launch",
@@ -86,6 +104,11 @@
             // [4] launch -> [🌍Browser] + [🐛debugger] a .NET Core [🌍Web] App
             // Launch a .NET Core Web App with both a browser and a debugger.
             {
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                },
                 "name": "[4] .NET Core 🏃‍♀️Launch ▂ 🐛+[🌍Browser]▂(🌍Web)▂",
                 "type": "coreclr",
                 "request": "launch",
@@ -108,6 +131,11 @@
             // [5] Launch -> .NET Core [Console💻] App on a [Remote🖧] machine.
             // Launch a .NET Core Console App on a remote machine.
             {
+                "presentation": {
+                    "hidden": false,
+                    "group": "invoke-dotnet-fromOther",
+                    "order": 1
+                },
                 "name": "[5] .NET Core 🏃‍♀️Launch (💻console) ▂on (🖧Remote)▂",
                 "type": "coreclr",
                 "request": "launch",
@@ -136,7 +164,7 @@
             {
                 "name": "[1] JG Pwsh: Interactive Pwsh (💻Console)",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "type": "PowerShell"
@@ -146,7 +174,7 @@
                 "cwd": "${file}",
                 "name": "[2] JG Pwsh: Run",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "script": "${file}",
@@ -160,7 +188,7 @@
                 "cwd": "${file}",
                 "name": "[3] JG Pwsh: Run w/ Args",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "script": "${file}",
@@ -173,7 +201,7 @@
                 ],
                 "name": "[4] JG Pwsh: Pester",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "request": "launch",
                 "script": "Invoke-Pester",
@@ -183,7 +211,7 @@
             {
                 "name": "[5] JG Pwsh: Attach",
                 "presentation": {
-                    "group": "Powershell"
+                    "group": "JG.Powershell"
                 },
                 "processId": "${command:PickPSHostProcess}",
                 "request": "attach",
@@ -205,7 +233,7 @@
                 "cwd": "${workspaceFolder}",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-Run",
                     "order": 1
                 }
             },
@@ -216,7 +244,7 @@
                 "script": "${file}",
                 "presentation": {
                     "hidden": false,
-                    "group": "",
+                    "group": "Invoke-Run",
                     "order": 1
                 },
                 // "args": [
@@ -229,7 +257,7 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "VisualTest"
+                    "group": "visual-test",
                     // "order": 1
                 },
                 "name": "🐛🎨 cur: Invoke-GithubInfo visualTest ",
@@ -248,7 +276,7 @@
                     "group": "",
                     "order": 1
                 },
-                "script": "Invoke-pester",
+                "script": "Invoke-Pester",
                 "args": [
                     "-Path 'public\\ConvertFrom-LiteralPath.tests.ps1'"
                 ],
@@ -266,7 +294,7 @@
                 "type": "PowerShell",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-File",
                     "order": 1
                 },
                 "request": "launch",
@@ -279,7 +307,7 @@
                 "request": "launch",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-File",
                     "order": 1
                 },
                 "script": "${workspaceFolder}/private/temp_cur_test.ps1",
@@ -288,7 +316,7 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "VisualTest"
+                    "group": "Visual-Test",
                     // "order": 1
                 },
                 "name": "🐛🎨 cur: Format-Dict visualTest ",
@@ -301,7 +329,7 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "VisualTest"
+                    "group": "Visual-Test"
                     // "order": 1
                 },
                 "name": "🐛🎨 cur: visualTest ",
@@ -317,7 +345,7 @@
                 "request": "launch",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-File",
                     "order": 1
                 },
                 "script": "${workspaceFolder}/test/private/_import_error_test.ps1",
@@ -330,7 +358,7 @@
                 "request": "launch",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-Pester",
                     "order": 1
                 },
                 "script": "Invoke-Pester",
@@ -345,7 +373,7 @@
                 "type": "PowerShell",
                 "presentation": {
                     "hidden": true,
-                    "group": "",
+                    "group": "Invoke-Pester",
                     "order": 1
                 },
                 "request": "launch",
@@ -1056,7 +1084,7 @@
     "editor.find.autoFindInSelection": "multiline",
     "[powershell]": {
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
-        "editor.fontSize": 15,
+        // "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
         "editor.semanticHighlighting.enabled": true,
@@ -1556,13 +1584,15 @@
     // output: Invoke-IPython.ps1 [native_wrapper] ⁞ NinMonkey.Console (Workspace)
     "window.title": "${dirty}${activeEditorShort}$ [${activeFolderShort}]${separator}${rootName}",
     // output: NinMonkey.Console (Workspace) ⁞ Invoke-IPython.ps1 ⁞ public\native_wrapper
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
+    "window.title": "${dirty}${activeEditorShort} 📄 ${rootName} 📁 ${activeEditorShort}",
+    "window.title": "${dirty}${activeEditorShort} 📄 ${rootName} 📁 ${activeEditorShort}",
     "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderMedium}",
     // "window.title": "${dirty}${rootName} ┐ ${activeEditorShort}$ ⇽ ${folderName}",
-    "window.titleSeparator": " ⁞ ", // or: ┐ ⇽
     "window.titleSeparator": " ┐ ",
+    "window.titleSeparator": " ⁞ ", // or: ┐ ⇽
     // "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
     // this is a decent compromise to make both workspace and non-workspace titles short-ish and readable
-    "window.title": "${dirty}${activeEditorShort} 📄 ${rootName} 📁 ${activeEditorShort}",
     // 📄📁⁞ ┐⇽
     /*
 
@@ -1599,6 +1629,8 @@
         "errorLens.warningForeground": "#fa973a00",
         "errorLens.warningMessageBackground": "#fff00000",
         "debugConsole.sourceForeground": "#7bff00", // # where is this?
+        "statusBar.debuggingBackground": "#ff000021", // fav: very darkred # while debug
+        // "debugConsole.errorForeground": "#ff0000",
         /* some defaults
 
                 //"editor.hoverHighlightBackground": "#264f7840",
@@ -1817,15 +1849,52 @@
     "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
     /*
 
+  ###### SubSect:  TM highlight
+
+      */
+    /*
+
   ###### SubSect: Semantic highlighting
 
       */
+    "editor.tokenColorCustomizations": {
+        "[Visual Studio 2019 Dark]": {
+            // example test
+            "textMateRules": [],
+            /*
+                {
+                    "name": "dev test",
+                    "scope": "keyword.operator",
+                    "settings": {
+                        "foreground": "#aa53bbcc",
+                        // "fontStyle": "bold underline",
+                        "fontStyle": "underline",
+                    }
+                }
+            #>
+            */
+            "keywords": {
+                "foreground": "#1e4a7cf3",
+                "foreground": "#4278b4f3",
+                "fontStyle": "bold underline"
+            }
+        }
+    },
     "csharp.semanticHighlighting.enabled": true,
     "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
     "editor.semanticTokenColorCustomizations": {
         // per-theme
-        "[Default Dark+]": {
+        "[Visual Studio 2019 Dark]": {
             "enabled": true,
+            "rules": {
+                "*.readonly": {
+                    "foreground": "#00ff80",
+                    "fontStyle": "bold underline",
+                }
+            }
+        },
+        "[Default Dark+]": {
+            "enabled": false,
             "rules": {
                 // single value
                 // vs many
@@ -1851,6 +1920,8 @@
                     "fontStyle": "italic bold underline"
                 },
                 "string": {
+                    "foreground": "#9CDCFE",
+                    "foreground": "#9CDCFE",
                     "foreground": "#1E1E1E", // default BG color
                     "foreground": "#D4D4D4",
                     "background": "orange",
@@ -1864,6 +1935,7 @@
         // or global
         "enabled": true,
         "rules": {
+            // "comment": "# "
             /*
               "parameter": "#d4d4d4",
               "variable": "#9dccfe"
@@ -1888,6 +1960,50 @@
         "warning",
         "hint",
         "info"
+    ],
+    /*
+
+    ### Sect: Addon 'kamikillerto.vscode-colorize'
+
+           tags: Tag1, Tag2
+
+    */
+    // "editor.language.colorizedBracketPairs": true,
+    "colorize.decoration_type": "underline", // fav
+    "colorize.colorized_colors": [
+        "BROWSERS_COLORS",
+        "HEXA",
+        "RGB",
+        "HSL"
+    ],
+    "colorize.exclude": [
+        "**/venv",
+        "**/.venv",
+        "**/env",
+        "**/.svn",
+        "**/.hg",
+        "**/CVS",
+        "**/.DS_Store",
+        "**/.git",
+        "**/node_modules",
+        "**/bower_components",
+        "**/tmp",
+        "**/dist",
+        "**/tests"
+    ],
+    "colorize.languages": [
+        "json",
+        "jsonc",
+        "powershell",
+        "css",
+        "sass",
+        "scss",
+        "less",
+        "postcss",
+        "sss",
+        "stylus",
+        "xml",
+        "svg"
     ],
     "workbench.iconTheme": "vscode-icons",
     // "editor.rulers": [
@@ -3647,4 +3763,8 @@
             ]
         }
     },
+    "redhat.telemetry.enabled": false,
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "workbench.colorTheme": "Visual Studio 2019 Dark"
 }
