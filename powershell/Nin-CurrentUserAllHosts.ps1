@@ -3,11 +3,11 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
-Import-Module Dev.Nin -Force
+Import-Module Dev.Nin -Force -ea stop
 
+# wip dev,nin: todo:2022-03
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
-
 
 <#
     [section]: Seemingly Sci imports

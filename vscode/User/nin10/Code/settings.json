@@ -3766,5 +3766,23 @@
     "redhat.telemetry.enabled": false,
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "workbench.colorTheme": "Visual Studio 2019 Dark"
+    "workbench.colorTheme": "Visual Studio 2019 Dark",
+    "githubIssues.queries": [
+        {
+            "label": "My Issues",
+            "query": "default"
+        },
+        {
+            "label": "Created Issues",
+            "query": "author:${user} state:open repo:${owner}/${repository} sort:created-desc"
+        },
+        {
+            "label": "Recent Issues",
+            "query": "state:open repo:${owner}/${repository} sort:updated-desc"
+        }
+    ],
+    "workbench.sideBar.location": "right",
+    "vsicons.presets.hideFolders": true,
+    // "workbench.statusBar.visible": false, // [toggle:ninzen]
+    // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
 }
