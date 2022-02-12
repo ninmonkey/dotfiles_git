@@ -966,6 +966,8 @@
     // // Controls the line height used in the markdown preview. This number is relative to the font size.
     // "markdown.preview.lineHeight": 1.6,
     "markdown-preview-enhanced.codeBlockTheme": "auto.css",
+    // "markdown-preview-enhanced.configPath": "a",
+    "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": false,
     "markdown-preview-enhanced.enableEmojiSyntax": true,
     // "markdown-preview-enhanced.enableExtendedTableSyntax": false,
     // "markdown-preview-enhanced.frontMatterRenderingOption": "table",
@@ -1990,7 +1992,6 @@
         "**/tests"
     ],
     "colorize.languages": [
-        "markdown",
         "json",
         "jsonc",
         "powershell",
@@ -2004,26 +2005,6 @@
         "xml",
         "svg"
     ],
-    /*
-
-    ### Sect: Emmet
-
-           tags: emmet, addon, experiment
-
-    */
-    // // "emmet.includeLanguages": {},
-    // "emmet.showAbbreviationSuggestions": true,
-    // "emmet.preferences": {
-    //     // "output.selfClosingStyle":
-    //     "css.color.short": true
-    // },
-    // "emmet.triggerExpansionOnTab": true,
-    "editor.guides.bracketPairsHorizontal": "active",
-    "editor.language.colorizedBracketPairs": true,
-    // "colorize.colorized_variables": [
-    //     "CSS"
-    // ],
-    "colorize.enable_search_variables": false,
     "workbench.iconTheme": "vscode-icons",
     // "editor.rulers": [
     //     120,
@@ -2544,7 +2525,7 @@
     // new: jupyter layout and sytels
     // https://code.visualstudio.com/updates/v1_59#_notebook-layout-improvements
     // new: automatic language detection
-    // "workbench.editor.untitled.experimentalLanguageDetection": true,
+    "workbench.editor.untitled.experimentalLanguageDetection": true,
     // then filter specific languages to not use
     // "[markdown]": { "workbench.editor.untitled.experimentalLanguageDetection": false }
     //new: native testing: https://code.visualstudio.com/updates/v1_59#_testing-apis
@@ -3027,8 +3008,8 @@
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
     "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 12,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
     // "terminal.integrated.fontWeight": "normal", // maybe too bold
@@ -3785,23 +3766,5 @@
     "redhat.telemetry.enabled": false,
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "workbench.colorTheme": "Visual Studio 2019 Dark",
-    "githubIssues.queries": [
-        {
-            "label": "My Issues",
-            "query": "default"
-        },
-        {
-            "label": "Created Issues",
-            "query": "author:${user} state:open repo:${owner}/${repository} sort:created-desc"
-        },
-        {
-            "label": "Recent Issues",
-            "query": "state:open repo:${owner}/${repository} sort:updated-desc"
-        }
-    ],
-    "vsicons.presets.hideFolders": true,
-    "window.zoomLevel": -1,
-    // "workbench.statusBar.visible": false, // [toggle:ninzen]
-    // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
+    "workbench.colorTheme": "Visual Studio 2019 Dark"
 }
