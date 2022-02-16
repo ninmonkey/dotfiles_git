@@ -5,8 +5,9 @@ $script:_state = @{}
 
 
 
-
-Import-Module Dev.Nin #-ea stop
+# wip dev,nin: todo:2022-03
+Import-Module Dev.Nin -Force #-ea stop # bad perf
+# Import-Module Dev.Nin #-ea stop
 [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
 
 function _nyi {

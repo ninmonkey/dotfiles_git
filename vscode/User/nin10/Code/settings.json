@@ -1968,6 +1968,7 @@
     */
     // "editor.language.colorizedBracketPairs": true,
     "colorize.decoration_type": "underline", // fav
+    "colorize.decoration_type": "background", // fav
     "colorize.colorized_colors": [
         "BROWSERS_COLORS",
         "HEXA",
@@ -1990,6 +1991,7 @@
         "**/tests"
     ],
     "colorize.languages": [
+        "html",
         "markdown",
         "json",
         "jsonc",
@@ -3460,6 +3462,19 @@
                     "command": "PowerShell.ShowAdditionalCommands"
                 },
                 {
+                    "label": "$(extension) Align",
+                    "description": "text alignment addon. wwm.better-align.",
+                    "detail": "details",
+                    // "showWhen": {
+                    //     "extensionEnabled": "wwm.aligncode", // this isn't detecting it
+                    // },
+                    "command": "wwm.aligncode",
+                },
+                /*
+                { "key": "ctrl+cmd+=",  "command": "wwm.aligncode",
+                        "when": "editorTextFocus && !editorReadonly" }
+                */
+                {
                     "label": "$(console) Pwsh Help",
                     "description": "$(question)  open help online",
                     "showWhen": {
@@ -3801,7 +3816,7 @@
         }
     ],
     "vsicons.presets.hideFolders": true,
-    "window.zoomLevel": -1,
+    "terminal.integrated.enablePersistentSessions": false,
     // "workbench.statusBar.visible": false, // [toggle:ninzen]
     // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
 }
