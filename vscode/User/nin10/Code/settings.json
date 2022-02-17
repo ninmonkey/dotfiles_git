@@ -771,7 +771,7 @@
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true,
         "editor.suggest.showSnippets": false,
-        "editor.fontSize": 13,
+        // "editor.fontSize": 13,
         // "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
@@ -786,8 +786,11 @@
         // "editor.fontWeight": "400",
     },
     // "json.maxItemsComputed": 10000,
-    "[json][jsonc][markdown]": {
+    "[powershell][json][jsonc][markdown]": {
         // "editor.fontSize": 13,
+        "editor.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
+        "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+        "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', 'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
     },
     "[markdown-math][markdown_latex_combined]": {},
     "[dotnet-interactive.markdown]": {},
@@ -855,12 +858,12 @@
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
     },
-    "editor.fontSize": 13,
+    "editor.fontSize": 16,
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
         "editor.wrappingStrategy": "simple",
-        "editor.fontSize": 11,
+        "editor.fontSize": 12,
     },
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -992,7 +995,8 @@
   ###### SubSect: Extension: ⇢ mypy ( todo: sort / cleanup / test these)
 
       */
-    "editor.inlineHints.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+    "editor.inlineHints.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.inlineHints.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
     "editor.codeLensFontFamily": "'cascadia code pl', 'cascadia code', arial, 'cascadia code', 'monospace'", // this changes "run tests" inside .ps1 pester blocks
     "editor.codeLensFontSize": 14,
     "debug.openDebug": "openOnDebugBreak",
@@ -1967,8 +1971,8 @@
 
     */
     // "editor.language.colorizedBracketPairs": true,
-    "colorize.decoration_type": "underline", // fav
     "colorize.decoration_type": "background", // fav
+    "colorize.decoration_type": "underline", // fav
     "colorize.colorized_colors": [
         "BROWSERS_COLORS",
         "HEXA",
@@ -2999,13 +3003,16 @@
     "editor.fontFamily": "'fira code', Consolas, monospace",
     "editor.fontFamily": "'FiraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
-    "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'FiraCode Nerd Font', 'Fira code Retina', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
     "editor.fontFamily": "'fira code', 'cascadia code', consolas, monospace", // retina seems bolder
     "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
+    "editor.fontFamily": "'cascadia code', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'arial','cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
     // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
     // "editor.fontSize": 18,
@@ -3453,6 +3460,12 @@
             "placeHolder": "main palette",
             "commands": [
                 {
+                    "label": "Move Views",
+                    "description": "move between: main <-> panel <-> Secondary panel",
+                    // "detail": "$(console) details",
+                    "command": "workbench.action.moveView"
+                },
+                {
                     "label": "$(console) Pwsh Commands",
                     "description": "Supplied by PSEditorServices",
                     // "detail": "$(console) details",
@@ -3733,6 +3746,9 @@
         },
         "panel-palette": {
             "placeHolder": "Panel",
+            // "matchOnDescription": true,
+            // "matchOnDetail": true,
+            // "title": "nin tritle",
             "commands": [
                 {
                     "label": "$(error) Show Problems",

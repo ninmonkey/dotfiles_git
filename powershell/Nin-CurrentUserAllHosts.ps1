@@ -3,11 +3,12 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
-Import-Module Dev.Nin -Force -ea stop
-
 # wip dev,nin: todo:2022-03
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
+
+Import-Module Dev.Nin -DisableNameChecking  # -Force #-ea stop
+
 
 <#
     [section]: Seemingly Sci imports
@@ -33,7 +34,7 @@ if ($true -and $__ninConfig.LogFileEntries) {
 }
 
 if ($true) {
-    # some reason import for sci's module requires full path, even with psmodule path
+    # for sci's module requires full path, becaus there's no parent named pattern
     $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
     if ($pathSeem) {
         Import-Module pslambda
@@ -47,7 +48,7 @@ if ($true) {
     $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell') -join ''
     $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience') -join ''
     # Import-Module pslambda
-    Import-Module Utility
+    Import-Module Utility -DisableNameChecking
     Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
 }
@@ -300,8 +301,9 @@ function _reloadModule {
     # quickly reload my modules for dev
     $importModuleSplat = @{
         # Name = 'Ninmonkey.Console', 'Dev.nin'
-        Name  = _enumerateMyModule # 'Dev.Nin', 'Ninmonkey.Console', 'Ninmonkey.Powershell', 'Ninmonkey.Profile'
-        Force = $true
+        Name                = _enumerateMyModule # 'Dev.Nin', 'Ninmonkey.Console', 'Ninmonkey.Powershell', 'Ninmonkey.Profile'
+        Force               = $true
+        DisableNameChecking = $true
     }
 
     # Ignore warnings, allow errors
@@ -623,6 +625,73 @@ Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> start PS
 $eaIgnore = @{
     ErrorAction = 'ignore'
 }
+
+if ($true) {
+
+    function Test-CommandHasParameterNamed {
+        <#
+    .synopsis
+        Quick test if a parameter exists, without throwing
+    .description
+        sugar for:
+            (Get-Command 'Set-PSReadLineOption'
+            | ForEach-Object Parameters | ForEach-Object keys) -contains 'PredictionViewStyle'
+    .notes
+        future: move to ninmonkey/Testning
+
+    .example
+        Test-CommandHasParameterNamed -Command 'Microsoft.PowerShell.Management\Get-ChildItem' -Param 'Path'
+    .example
+        Test-CommandHasParameterNamed 'ls' -Param 'Path'
+    #>
+        [outputType([System.Boolean])]
+        [CmdletBinding(DefaultParameterSetName = 'TestNamed')]
+        param(
+            # Which command ? # future: complete command names
+            [ALias('Name')]
+            [Parameter(Mandatory, Position = 0, ParameterSetName = 'TestNamed')]
+            [Parameter(Mandatory, Position = 0, ParameterSetName = 'ListNames')]
+            [string]$CommandName,
+
+            # Give the parameter name
+            [Parameter(
+                Mandatory, Position = 1, ValueFromPipeline,
+                ParameterSetName = 'TestNamed'
+            )]
+            [string]$ParameterName,
+
+            # enumerate possible parameters
+            [Parameter(Mandatory, ParameterSetName = 'ListNames')]
+            [switch]$List
+        )
+        process {
+            # sugar for:
+            #     (Get-Command 'Set-PSReadLineOption'
+            #     | ForEach-Object Parameters | ForEach-Object keys) -contains 'PredictionViewStyle'
+            switch ($PSCmdlet.ParameterSetName) {
+                'TestNamed' {
+                    $cmd = rescmd $CommandName
+                    $cmd.Parameters.Keys -contains $ParameterName
+
+                }
+                'ListNames' {
+                    $cmd = rescmd $CommandName
+                    $cmd.Parameters.Keys | Sort-Object -Unique
+
+                }
+
+                default {
+                    Write-Error -Message "Unhandled ParameterSet: $($PSCmdlet.ParameterSetName) at '$($PSCommandPath)'" #-TargetObject $PSCmdlet
+                }
+            }
+
+        }
+        end {
+            Write-Warning "Remove this inline hack: '$PSCommandPath'"
+        }
+    }
+}
+
 if ($__ninConfig.UsePSReadLinePredict) {
     try {
         if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionSource') {
@@ -777,15 +846,22 @@ $OptionalImports
 
 
 $OptionalImports | ForEach-Object {
-    Write-Debug "[v] Import-Module: $_"
-    Write-Warning "[v] Import-Module: $_"
+    Write-Debug "[v] Optional: Import-Module: $_"
+    Write-Warning "[v] Optional: Import-Module: $_"
     # Import-Module $_ @splatMaybeWarn -DisableNameChecking
-    Import-Module $_ -wa continue -ea continue # -DisableNameChecking
+    $importSplat = @{
+        # WarningAction = 'continue'
+        # ErrorAction = 'continue'
+        DisableNameChecking = $true
+        Name                = $_
+    }
+
+    Import-Module @importSplat
 }
 # }
 
 Import-Module Dev.Nin -DisableNameChecking
-Import-Module posh-git
+Import-Module posh-git -DisableNameChecking
 # finally "profile"
 Import-Module Ninmonkey.Profile -DisableNameChecking
 
@@ -865,51 +941,56 @@ if (! $OneDrive.Enable_MyDocsBugMapping) {
 #     }
 # }
 
-Import-Module PsFzf
-if (Get-Command Set-PsFzfOption -ea ignore) {
-    # Set reverse hist fzf
+if ($false) {
+    Import-Module PsFzf
 
-    # Really needs filtering
-    Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+shift+r'
-    # 'Ctrl+r' | write-blue
-    # | str prefix 'PsFzf: History set to '
+    if (Get-Command Set-PsFzfOption -ea ignore) {
+        # Set reverse hist fzf
 
-    hr 1
-    'keybind ↳ History set to ↳ '
+        # Really needs filtering
+        Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+shift+r'
+        # 'Ctrl+r' | write-blue
+        # | str prefix 'PsFzf: History set to '
 
-    # 'Ctrl+r' | Write-Color blue
-    # | str prefix ([string]@(
-    #         'PsFzf:' | Write-Color gray60
-    #         'keybind ↳ History set to ↳ '
-    #     ))
+        hr 1
+        'keybind ↳ History set to ↳ '
 
-    hr 1
+        # 'Ctrl+r' | Write-Color blue
+        # | str prefix ([string]@(
+        #         'PsFzf:' | Write-Color gray60
+        #         'keybind ↳ History set to ↳ '
+        #     ))
+
+        hr 1
+    }
 }
 if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final invokevscode dotsource, should not exist '
 }
 
 # temp hack
-if (! (Get-Command 'code-venv' -ea ignore) ) {
-    Set-Alias 'code' 'code-insiders.cmd'
-    # somehow didn't load, so do it now
-    $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
-    if ($src) {
-        . $src
+if ($false -and 'probably obsolete') {
+    if (! (Get-Command 'code-venv' -ea ignore) ) {
+        Set-Alias 'code' 'code-insiders.cmd'
+        # somehow didn't load, so do it now
+        $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
+        if ($src) {
+            . $src
+        }
+        Set-Alias 'code' -Value 'Invoke-VSCodeVenv'
+        $Value = (@(
+                Get-Command -ea ignore -CommandType Application code-insiders.cmd
+                Get-Command -ea ignore -CommandType Alias code.cmd
+                Get-Command -ea ignore 'venv-code'
+            ) | Select-Object -First 1)
+        New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value $Value
+        # try {
+        #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
+        # }
+        # catch {
+        #     Warn🛑 'Failed parsing: Out-VSCodeVenv.ps1'
+        # }
     }
-    Set-Alias 'code' -Value 'Invoke-VSCodeVenv'
-    $Value = (@(
-            Get-Command -ea ignore -CommandType Application code-insiders.cmd
-            Get-Command -ea ignore -CommandType Alias code.cmd
-            Get-Command -ea ignore 'venv-code'
-        ) | Select-Object -First 1)
-    New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value $Value
-    # try {
-    #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
-    # }
-    # catch {
-    #     Warn🛑 'Failed parsing: Out-VSCodeVenv.ps1'
-    # }
 }
 if ($OneDrive.Enable_MyDocsBugMapping) {
     Remove-Module 'psfzf', 'psscripttools', 'zlocation'

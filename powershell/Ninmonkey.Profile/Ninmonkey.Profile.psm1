@@ -60,17 +60,17 @@ $script:NinProfile_Dotfiles = @{
     Bat                    = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\bat\.batrc"
     RipGrep                = Get-Item @s_optionalItem "$env:Nin_Dotfiles\cli\ripgrep\.ripgreprc"
     BashProfile            = Get-Item @s_optionalItem "$env:Nin_Dotfiles\wsl\home\.bash_profile"
-    WindowsTerminalPreview = "$env:LocalAppData\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
-    WindowsTerminal        = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+    WindowsTerminalPreview = "${env:LocalAppData}\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+    WindowsTerminal        = "${env:LocalAppData}\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
     vscode                 = @{
-        ExtensionDir = Get-Item "$env:UserProfile\.vscode\extensions"
-        User         = Get-Item "$env:appdata\Code\User\settings.json"
+        ExtensionDir = Get-Item "${env:UserProfile}\.vscode\extensions"
+        User         = Get-Item "${env:appdata}\Code\User\settings.json"
     }
     Git                    = @{
         GlobalIgnore = Get-Item @s_optionalItem "$env:Nin_Dotfiles\git\global_ignore.gitignore"
         Config       = @(
             Get-Item @s_optionalItem '~\.gitconfig' # symlink or to dotfile?
-            Get-Item @s_optionalItem "$env:Nin_Dotfiles\git\homedir\.gitconfig"
+            Get-Item @s_optionalItem "${env:Nin_Dotfiles}\git\homedir\.gitconfig"
         ) | Sort-Object -Unique FullName
 
         PowerBI      = @{
@@ -569,7 +569,7 @@ function _Write-PromptDynamicCrumbs {
             'C:\Users\cppmo_000\SkyDrive\Documents'
             'G:\2021-github-downloads\'
             "$Env:AppData"
-            "$Env:LocalAppData"
+            "${env:LocalAppData}"
             'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Splat.nin'
         )
         $PathMapping = @(
