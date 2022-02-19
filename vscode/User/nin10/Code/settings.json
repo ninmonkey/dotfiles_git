@@ -3031,6 +3031,7 @@
     "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'Consolas', 'Courier New', monospace",
     "editor.fontSize": 20, // 17,
+    "editor.fontSize": 14, // 17,
     "editor.fontFamily": "'cascadia code pl', 'Consolas', 'Courier New', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
     // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
@@ -3484,6 +3485,15 @@
                     "command": "workbench.action.moveView"
                 },
                 {
+                    "label": "$(extension) Align",
+                    "description": "text alignment addon. wwm.better-align.",
+                    "detail": "details",
+                    // "showWhen": {
+                    //     "extensionEnabled": "wwm.aligncode", // this isn't detecting it
+                    // },
+                    "command": "wwm.aligncode",
+                },
+                {
                     "label": "New Search",
                     "description": "In the side bar",
                     "command": "search.action.openNewEditorToSide"
@@ -3501,15 +3511,6 @@
                         "extensionEnabled": "ms-vscode.powershell"
                     }, // ms-vscode.powershell-preview
                     "command": "PowerShell.ShowAdditionalCommands"
-                },
-                {
-                    "label": "$(extension) Align",
-                    "description": "text alignment addon. wwm.better-align.",
-                    "detail": "details",
-                    // "showWhen": {
-                    //     "extensionEnabled": "wwm.aligncode", // this isn't detecting it
-                    // },
-                    "command": "wwm.aligncode",
                 },
                 /*
                 { "key": "ctrl+cmd+=",  "command": "wwm.aligncode",
@@ -3563,6 +3564,46 @@
             "placeHolder": "secondary Palette",
             "commands": [
                 {
+                    "label": "Live Preview: Open Automatically on Server Start",
+                    "command": "livePreview.setDefaultOpenFile",
+                    // "commandArgs": [],
+                },
+                {
+                    "label": "Live Preview: Show Debug Preview",
+                    "command": "livePreview.start.debugPreview.atFile",
+                    // "commandArgs": [],
+                },
+                {
+                    "label": "Live Preview: Show Debug Preview (External Browser)",
+                    "command": "livePreview.start.externalDebugPreview.atFile",
+                    // "commandArgs": [],
+                },
+                {
+                    "label": "Live Preview: Show Preview",
+                    "command": "livePreview.start.preview.atFile",
+                    // "commandArgs": [],
+                },
+                {
+                    "label": "Live Preview: Show Preview (External Browser)",
+                    "command": "livePreview.start.externalPreview.atFile",
+                    // "commandArgs": [],
+                },
+                {
+                    "label": "Live Preview: Show Preview (Internal Browser)",
+                    "command": "livePreview.start.internalPreview.atFile",
+                    // "commandArgs": [],
+                },
+                {
+                    "label": "Live Preview: Start Server",
+                    "command": "livePreview.start",
+                    // "commandArgs": [],
+                },
+                {
+                    "label": "Live Preview: Stop Server",
+                    "command": "livePreview.end",
+                    // "commandArgs": [],
+                },
+                {
                     // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
                     "label": "ZenMode  ┐ workbench.action",
                     "command": "workbench.action.toggleZenMode",
@@ -3570,10 +3611,6 @@
                 {
                     "label": "editor.action.inspectTMScopes",
                     "command": "editor.action.inspectTMScopes"
-                },
-                {
-                    "label": "a",
-                    "command": "b"
                 },
                 {
                     "label": "$(explorer-view-icon) Show Explorer",
@@ -3861,7 +3898,6 @@
     ],
     "vsicons.presets.hideFolders": true,
     "terminal.integrated.enablePersistentSessions": false,
-    "window.zoomLevel": -1,
     // "workbench.statusBar.visible": false, // [toggle:ninzen]
     // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
 }
