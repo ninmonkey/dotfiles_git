@@ -1002,6 +1002,23 @@
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
     // "terminal.integrated.fontFamily": "corbel, 'cascadia code', fira code retina, cascadia code, consolas",
+    "explorer.experimental.fileNesting.enabled": true,
+    "explorer.experimental.fileNesting.expand": true,
+    "explorer.experimental.fileNesting.patterns": {
+        // "*-PivotTable.ps1": "$(capture)-PivotTable.ps1, Add-PivotTable.ps1",
+        // "*.ps1": "$(capture)-PivotTable.ps1",
+        // "*-PivotTable.ps1": "$(capture)-PivotTable.ps1",
+        // "*.pbix": "$(capture).png, $(capture).pq",
+        // "__init__.*.ps1": "__init__.$(capture).ps1",
+        // "*.ps1": "$(capture).tests.ps1",
+        // "*.psd1": "$(capture).psm1",
+        // "*.ts": "$(capture).js, $(capture).d.ts",
+        // "*.js": "$(capture).js.map, $(capture).min.js, $(capture).d.ts",
+        // "*.jsx": "$(capture).js",
+        // "*.tsx": "$(capture).ts",
+        // "tsconfig.json": "tsconfig.*.json",
+        // "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc"
+    },
     "zenMode.centerLayout": true,
     "zenMode.hideActivityBar": true,
     "zenMode.hideTabs": true,
@@ -1099,7 +1116,7 @@
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?", // causes splat-expression etc to break
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
-        "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
+        "editor.wordSeparators": "$`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.formatOnSave": true,
         "editor.snippetSuggestions": "bottom",
         "editor.snippetSuggestions": "none",
@@ -3462,8 +3479,17 @@
                 {
                     "label": "Move Views",
                     "description": "move between: main <-> panel <-> Secondary panel",
-                    // "detail": "$(console) details",
                     "command": "workbench.action.moveView"
+                },
+                {
+                    "label": "New Search",
+                    "description": "In the side bar",
+                    "command": "search.action.openNewEditorToSide"
+                },
+                {
+                    "label": "Open Definition",
+                    "description": "In the side bar",
+                    "command": "editor.action.revealDefinitionAside"
                 },
                 {
                     "label": "$(console) Pwsh Commands",
@@ -3833,6 +3859,7 @@
     ],
     "vsicons.presets.hideFolders": true,
     "terminal.integrated.enablePersistentSessions": false,
+    "window.zoomLevel": -1,
     // "workbench.statusBar.visible": false, // [toggle:ninzen]
     // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
 }

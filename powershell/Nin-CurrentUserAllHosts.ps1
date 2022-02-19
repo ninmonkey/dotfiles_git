@@ -446,7 +446,7 @@ aka
         details why: <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-7.1#changing-the-default-encoding>
 #>
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
-$PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'    # test it off
+# $PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'    # test it off
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
@@ -870,7 +870,8 @@ if ($__ninConfig.LogFileEntries) {
 }
 
 # todo: ThrottledTask
-Backup-VSCode -infa Continue
+Write-Warning 'Nyi: Throttle VSCode-Backup'
+Backup-VSCode -infa SilentlyContinue
 # & {
 
 # currently, all profiles use utf8

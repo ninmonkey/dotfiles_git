@@ -789,6 +789,7 @@
     "[powershell][json][jsonc][markdown]": {
         // "editor.fontSize": 13,
         "editor.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
+        "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
         "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', 'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
     },
     "[markdown-math][markdown_latex_combined]": {},
@@ -857,7 +858,7 @@
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
     },
-    "editor.fontSize": 15,
+    "editor.fontSize": 16,
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
@@ -1001,6 +1002,21 @@
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
     // "terminal.integrated.fontFamily": "corbel, 'cascadia code', fira code retina, cascadia code, consolas",
+    "explorer.experimental.fileNesting.enabled": true,
+    "explorer.experimental.fileNesting.expand": true,
+    "explorer.experimental.fileNesting.patterns": {
+        "*.pbix": "$(capture).pq",
+        "*.pbix": "$(capture).png",
+        "__init__.*.ps1": "__init__.$(capture).ps1",
+        "*.ps1": "$(capture).tests.ps1",
+        "*.psd1": "$(capture).psm1",
+        "*.ts": "$(capture).js, $(capture).d.ts",
+        "*.js": "$(capture).js.map, $(capture).min.js, $(capture).d.ts",
+        "*.jsx": "$(capture).js",
+        "*.tsx": "$(capture).ts",
+        "tsconfig.json": "tsconfig.*.json",
+        "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc"
+    },
     "zenMode.centerLayout": true,
     "zenMode.hideActivityBar": true,
     "zenMode.hideTabs": true,
@@ -3009,7 +3025,9 @@
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code', monospace",
-    "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'arial','cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
     // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
     // "editor.fontSize": 18,
