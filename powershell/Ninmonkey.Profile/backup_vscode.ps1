@@ -100,6 +100,16 @@ function Backup-VSCode {
                 # instead, just hardcode subdirs
                 $copied = Copy-Item @copyItemSplat -Exclude '*storage*' -PassThru
 
+                <#
+                Fix accidental race condition / move code to 'ThrottledInvokeCommand wrapper.
+                    it might have a non-negligable slowdown on profile import
+                example error:
+                    System.IO.IOException: The process cannot access the file '${Env:UserProfile}\Documents\2021\dotfiles_git\vscode\User\nin10\Code\snippets\powerquery.json' because it is being used by another process.
+                        at System.IO.FileSystem.CopyFile(String sourceFullPath, String destFullPath, Boolean overwrite)
+                        at System.IO.FileInfo.CopyTo(String destFileName, Boolean overwrite)
+                        at Microsoft.PowerShell.Commands.FileSystemProvider.CopyFileInfoItem(FileInfo file, String destinationPath, Boolean force, PowerShell ps)
+                #>
+
                 # 1 / 0
                 $newTextSplat = $ColorStyle.dim
 

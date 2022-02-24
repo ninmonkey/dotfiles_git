@@ -226,6 +226,18 @@
 
       */
             {
+                "name": "Main.ps1 🏃‍♂️🌎 Global Buffer",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell/My_Github/temp.scratch.ps1",
+                // "cwd": "${workspaceFolder}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                }
+            },
+            {
                 "name": "Main.ps1 🏃‍♂️",
                 "type": "PowerShell",
                 "request": "launch",
@@ -1798,7 +1810,6 @@
       */
     // "powershell.pester.outputVerbosity": "Minimal", //"Diagnostic",
     "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
-    "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
     "powershell.pester.debugOutputVerbosity": "Detailed", // "Detailed", //Diagnostic",
     "terminal.integrated.environmentChangesRelaunch": true,
     // "terminal.integrated.fontWeight": "500",
@@ -3031,7 +3042,7 @@
     "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'Consolas', 'Courier New', monospace",
     "editor.fontSize": 20, // 17,
-    "editor.fontSize": 14, // 17,
+    "editor.fontSize": 15, // 17,
     "editor.fontFamily": "'cascadia code pl', 'Consolas', 'Courier New', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
     // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
@@ -3150,6 +3161,9 @@
     "powershell.integratedConsole.suppressStartupBanner": true,
     "powershell.pester.debugOutputVerbosity": "Detailed",
     "powershell.pester.outputVerbosity": "Detailed",
+    // "testExplorer.codeLens": true,
+    // "pester": true,
+    // "pester.suppressCodeLensNotice": false,
     "powershell.pester.useLegacyCodeLens": false,
     "powershell.promptToUpdatePowerShell": false,
     /*
@@ -3483,6 +3497,10 @@
                     "label": "Move Views",
                     "description": "move between: main <-> panel <-> Secondary panel",
                     "command": "workbench.action.moveView"
+                },
+                {
+                    "label": "Inspect TM Tokens",
+                    "command": "editor.action.inspectTMScopes"
                 },
                 {
                     "label": "$(extension) Align",
