@@ -1,0 +1,99 @@
+{
+    "workbench.enablePreviewFeatures": true,
+    "powershell.promptToUpdatePowerShell": false,
+    "datasource.connectionGroups": [
+        {
+            "name": "localhost.dev",
+            "id": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+            "parentId": "C777F06B-202E-4480-B475-FA416154D458",
+            "color": "#98AFC7",
+            "description": ""
+        },
+        {
+            "name": "ROOT",
+            "id": "C777F06B-202E-4480-B475-FA416154D458",
+            "color": "#98AFC7",
+            "description": ""
+        }
+    ],
+    "datasource.connections": [
+        {
+            "options": {
+                "connectionName": "localhost",
+                "server": "NIN8\\SQL2019",
+                "database": "",
+                "authenticationType": "Integrated",
+                "user": "",
+                "password": "",
+                "applicationIntent": "ReadWrite",
+                "connectTimeout": "10",
+                "connectRetryCount": "1",
+                "connectRetryInterval": "10",
+                "applicationName": "azdata",
+                "groupId": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+                "databaseDisplayName": ""
+            },
+            "groupId": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+            "providerName": "MSSQL",
+            "savePassword": true,
+            "id": "a1c888f1-42ac-48ea-854f-8bbbed9a35bb"
+        }
+    ],
+    "editor.autoClosingBrackets": "always",
+    /*
+
+    section: fonts
+
+        want bolder?
+            'cascadia code pl'
+                is darker than the base one
+                
+
+        don't like bold?
+            'fira code'
+
+        if too light use
+            'fira code' 500
+
+        
+    */
+    "editor.fontFamily": "'cascadia code pl', 'fira code', 'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'fira code', 'cascadia code','fira code', 'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.fontSize": 14,
+    // "editor.fontWeight": "500",
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.pester.debugOutputVerbosity": "Detailed",
+    "powershell.codeFormatting.alignPropertyValuePairs": false,
+    "markdown.links.openLocation": "beside",
+    "markdown.preview.fontSize": 12,
+    "markdown.preview.openMarkdownLinks": "inEditor",
+    "editor.matchBrackets": "always",
+    "editor.fontLigatures": true,
+    "editor.formatOnSave": true,
+    /*
+
+    section: ipynb / notebooks
+
+        "notebook.enableIncrementalGridRendering": false,
+        
+    */
+    "notebook.enableIncrementalGridRendering": true,
+    "editor.autoClosingOvertype": "always",
+    "mssql.format.alignColumnDefinitionsInColumns": true,
+    "mssql.format.datatypeCasing": "lowercase",
+    "mssql.format.keywordCasing": "lowercase",
+    "mssql.format.placeCommasBeforeNextStatement": true,
+    "[powershell]": {
+        "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
+        "editor.semanticHighlighting.enabled": true,
+        "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
+    },
+    "[jsonc][json]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace"
+    }
+}
