@@ -250,6 +250,23 @@
                 }
             },
             {
+                "name": "Cur.rb 💎🏃‍♂️",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${file}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                // "args": [
+                //     "-Nop"
+                // ],
+                // "cwd": "${workspaceFolder}"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            },
+            {
                 "name": "Cur.ps1 🏃‍♂️",
                 "type": "PowerShell",
                 "request": "launch",
@@ -2052,6 +2069,7 @@
     // },
     // "emmet.triggerExpansionOnTab": true,
     "editor.guides.bracketPairsHorizontal": "active",
+    "editor.guides.bracketPairsHorizontal": false,
     "editor.language.colorizedBracketPairs": true,
     // "colorize.colorized_variables": [
     //     "CSS"
@@ -2557,6 +2575,7 @@
     //  - countDescending: Results are sorted by count per file, in descending order.
     //  - countAscending: Results are sorted by count per file, in ascending order.
     "search.sortOrder": "default",
+    "search.sortOrder": "modified",
     // Controls whether to use global `.gitignore` and `.ignore` files when searching for files.
     "search.useGlobalIgnoreFiles": false,
     // Controls whether to use `.gitignore` and `.ignore` files when searching for files.
@@ -3042,8 +3061,11 @@
     "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'Consolas', 'Courier New', monospace",
     "editor.fontSize": 20, // 17,
-    "editor.fontSize": 15, // 17,
-    "editor.fontFamily": "'cascadia code pl', 'Consolas', 'Courier New', monospace",
+    "editor.fontSize": 18, // 17,
+    "editor.fontSize": 16, // 17,
+    "editor.fontFamily": "cascadia code pl', 'Consolas', 'Courier New', monospace",
+    "editor.fontFamily": "'fira code retina', 'cascadia code pl', 'Consolas', 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code pl', 'Consolas', 'Courier New', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
     // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
     // "editor.fontSize": 18,
@@ -3058,7 +3080,8 @@
     "terminal.integrated.fontFamily": "'fira code', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontSize": 16,
+    // "notebook.markup.fontSize": 0,
+    // "terminal.integrated.fontSize": 18,
     "errorLens.fontSize": "12px",
     // "editor.fontWeight": "350", // for cascadia code
     // fira: retina is more bold (on nin8)
@@ -3066,9 +3089,9 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 16,
     "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 16,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
     // "terminal.integrated.fontWeight": "normal", // maybe too bold
@@ -3916,6 +3939,11 @@
     ],
     "vsicons.presets.hideFolders": true,
     "terminal.integrated.enablePersistentSessions": false,
+    "[ruby]": {
+        "editor.fontFamily": "'cascadia code pl'",
+        "editor.fontSize": 20
+        // https://ruby-doc.org/core-3.0.2/Regexp.html
+    }
     // "workbench.statusBar.visible": false, // [toggle:ninzen]
     // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
 }
