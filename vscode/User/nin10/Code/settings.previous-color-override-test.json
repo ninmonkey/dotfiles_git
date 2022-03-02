@@ -1905,135 +1905,134 @@
 
       */
     "editor.tokenColorCustomizations": {
-        "[Visual Studio 2019 Dark]": {
-            // example test
-            // "textMateRules": [
-            //     {
-            //         "name": "mabyesingle",
-            //         // "scope": "variable",
-            //         "scope": "meta.hashtable.powershell",
-            //         "settings": {
-            //             "foreground": "#4278b4f3",
-            //             // "fontStyle": "bold underline strikethrough"
-            //         }
-            //     }
-            // ],
-            // "strings": {
-            //     "foreground": "magenta",
-            //     // "fontStyle": "bold strikethrough",
-            // },
-            /*
-                {
-                    "name": "dev test",
-                    "scope": "keyword.operator",
-                    "settings": {
-                        "foreground": "#aa53bbcc",
-                        // "fontStyle": "bold underline",
-                        "fontStyle": "underline",
-                    }
-                }
-            #>
-            */
-            // "keywords": {
-            //     "foreground": "#1e4a7cf3",
-            //     "foreground": "#4278b4f3",
-            //     // "fontStyle": "",
-            // }
-        }
+        // "[Visual Studio 2019 Dark]": {
+        //     // example test
+        //     "textMateRules": [
+        //         {
+        //             "name": "mabyesingle",
+        //             // "scope": "variable",
+        //             "scope": "meta.hashtable.powershell",
+        //             "settings": {
+        //                 "foreground": "#4278b4f3",
+        //                 // "fontStyle": "bold underline strikethrough"
+        //             }
+        //         }
+        //     ],
+        //     "strings": {
+        //         "foreground": "magenta",
+        //         // "fontStyle": "bold strikethrough",
+        //     },
+        //     /*
+        //         {
+        //             "name": "dev test",
+        //             "scope": "keyword.operator",
+        //             "settings": {
+        //                 "foreground": "#aa53bbcc",
+        //                 // "fontStyle": "bold underline",
+        //                 "fontStyle": "underline",
+        //             }
+        //         }
+        //     #>
+        //     */
+        //     "keywords": {
+        //         "foreground": "#1e4a7cf3",
+        //         "foreground": "#4278b4f3",
+        //         "fontStyle": "",
+        //     }
+        // }
     },
-    "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
     "csharp.semanticHighlighting.enabled": true,
-    // "editor.semanticTokenColorCustomizations": {
-    //     // per-theme
-    //     "[Visual Studio 2019 Dark]": {
-    //         "enabled": true,
-    //         "rules": {
-    //             "*.readonly": {
-    //                 "foreground": "#00ff80",
-    //                 "fontStyle": "bold underline",
-    //             }
-    //         }
-    //     },
-    //     // "[Default Dark+]
-    //     // "[Visual Studio 2019 Dark]": {
-    //     //     "enabled": false,
-    //     //     "rules": {
-    //     //         // "*single*quote*": {
-    //     //         "string.quoted.single.powershell": {
-    //     //             "foreground": "green",
-    //     //             "fontStyle": "bold underline"
-    //     //         }
-    //     //         // single value
-    //     //         // vs many
-    //     //         // "parameter": {
-    //     //         // "fontStyle": ""
-    //     //         // "bold": true,
-    //     //         // "foreground": "#464545", // nintheme
-    //     //         // "underline": true,
-    //     //         // "bold": true,
-    //     //         // "italic": true,
-    //     //         // "fontStyle": "italic bold underline"
-    //     //         // },
-    //     //         // "parameter": "#d4d4d4",
-    //     //         // "parameter": "#9CDCFE", // default
-    //     //         // "parameter": "#aeaeae",
-    //     //         // // vs many
-    //     //         // "parameter": {
-    //     //         //     "foreground": "#ff0000",
-    //     //         //     "foreground": "#464545", // nintheme
-    //     //         //     "underline": true,
-    //     //         //     "bold": true,
-    //     //         //     "italic": true,
-    //     //         //     "fontStyle": "italic bold underline"
-    //     //         // },
-    //     //         // "string": {
-    //     //         //     "foreground": "#9CDCFE",
-    //     //         //     "foreground": "#9CDCFE",
-    //     //         //     "foreground": "#1E1E1E", // default BG color
-    //     //         //     "foreground": "#D4D4D4",
-    //     //         //     "background": "orange",
-    //     //         //     "foreground": "#9CDCFE",
-    //     //         //     "fontStyle": "underline"
-    //     //         // }
-    //     //     },
-    //     // },
-    //     // "variable": "#fae",
-    //     // "variable": "#9dccfe",
-    //     // or global
-    //     "enabled": false,
-    //     "rules": {
-    //         "property": {
-    //             "foreground": "magenta",
-    //             "fontStyle": "italic bold underline",
-    //         },
-    //         "*hashtable*": {
-    //             "foreground": "magenta",
-    //             "fontStyle": "italic bold underline",
-    //         },
-    //         "meta.hashtable.assignment.powershell": {
-    //             "foreground": "magenta",
-    //             "fontStyle": "bold"
-    //         },
-    //         "meta.hashtable.powershell": {
-    //             "foreground": "orange",
-    //             "fontStyle": "bold"
-    //         },
-    //         "variable.other.readwrite.powershell": {
-    //             "foreground": "green",
-    //             "fontStyle": "bold"
-    //         }
-    //         // "comment": "# "
-    //         /*
-    //           "parameter": "#d4d4d4",
-    //           "variable": "#9dccfe"
-    //           "xmlDocCommentAttributeQuotes": "#ff0000",
-    //           "*.builtin": {
-    //               "foreground": "#FF0000",
-    //               "fontStyle": "bold"
-    //           }
-    //           */
-    //     }
-    // },
+    "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
+    "editor.semanticTokenColorCustomizations": {
+        // per-theme
+        // "[Visual Studio 2019 Dark]": {
+        //     "enabled": false,
+        //     "rules": {
+        //         "*.readonly": {
+        //             "foreground": "#00ff80",
+        //             "fontStyle": "bold underline",
+        //         }
+        //     }
+        // },
+        // "[Default Dark+][Visual Studio 2019 Dark]": {
+        //     "enabled": false,
+        //     "rules": {
+        //         // "*single*quote*": {
+        //         "string.quoted.single.powershell": {
+        //             "foreground": "green",
+        //             "fontStyle": "bold underline"
+        //         }
+        //         // single value
+        //         // vs many
+        //         // "parameter": {
+        //         // "fontStyle": ""
+        //         // "bold": true,
+        //         // "foreground": "#464545", // nintheme
+        //         // "underline": true,
+        //         // "bold": true,
+        //         // "italic": true,
+        //         // "fontStyle": "italic bold underline"
+        //         // },
+        //         // "parameter": "#d4d4d4",
+        //         // "parameter": "#9CDCFE", // default
+        //         // "parameter": "#aeaeae",
+        //         // // vs many
+        //         // "parameter": {
+        //         //     "foreground": "#ff0000",
+        //         //     "foreground": "#464545", // nintheme
+        //         //     "underline": true,
+        //         //     "bold": true,
+        //         //     "italic": true,
+        //         //     "fontStyle": "italic bold underline"
+        //         // },
+        //         // "string": {
+        //         //     "foreground": "#9CDCFE",
+        //         //     "foreground": "#9CDCFE",
+        //         //     "foreground": "#1E1E1E", // default BG color
+        //         //     "foreground": "#D4D4D4",
+        //         //     "background": "orange",
+        //         //     "foreground": "#9CDCFE",
+        //         //     "fontStyle": "underline"
+        //         // }
+        //     },
+        // },
+        // // "variable": "#fae",
+        // // "variable": "#9dccfe",
+        // // or global
+        // "enabled": false,
+        // "rules": {
+        //     "property": {
+        //         "foreground": "magenta",
+        //         "fontStyle": "italic bold underline",
+        //     },
+        //     "*hashtable*": {
+        //         "foreground": "magenta",
+        //         "fontStyle": "italic bold underline",
+        //     },
+        //     "meta.hashtable.assignment.powershell": {
+        //         "foreground": "magenta",
+        //         "fontStyle": "bold"
+        //     },
+        //     "meta.hashtable.powershell": {
+        //         "foreground": "orange",
+        //         "fontStyle": "bold"
+        //     },
+        //     "variable.other.readwrite.powershell": {
+        //         "foreground": "green",
+        //         "fontStyle": "bold"
+        //     }
+        //     // "comment": "# "
+        //     /*
+        //       "parameter": "#d4d4d4",
+        //       "variable": "#9dccfe"
+        //       "xmlDocCommentAttributeQuotes": "#ff0000",
+        //       "*.builtin": {
+        //           "foreground": "#FF0000",
+        //           "fontStyle": "bold"
+        //       }
+        //       */
+        // }
+    },
     "oneDarkPro.bold": true,
     "pesterExplorer.autoDiscoverOnOpen": true,
     "editor.renderWhitespace": "none",
@@ -2056,6 +2055,7 @@
 
     */
     // "editor.language.colorizedBracketPairs": true,
+    "colorize.decoration_type": "background", // fav
     "colorize.decoration_type": "underline", // fav
     "colorize.colorized_colors": [
         "BROWSERS_COLORS",
@@ -3983,7 +3983,8 @@
         "editor.fontFamily": "'cascadia code pl'",
         "editor.fontSize": 20
         // https://ruby-doc.org/core-3.0.2/Regexp.html
-    }
+    },
+    "window.zoomLevel": -1
     // "workbench.statusBar.visible": false, // [toggle:ninzen]
     // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
 }
