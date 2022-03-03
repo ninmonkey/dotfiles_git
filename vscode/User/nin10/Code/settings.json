@@ -3983,7 +3983,10 @@
         "editor.fontFamily": "'cascadia code pl'",
         "editor.fontSize": 20
         // https://ruby-doc.org/core-3.0.2/Regexp.html
-    }
+    },
     // "workbench.statusBar.visible": false, // [toggle:ninzen]
     // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
+    "editor.semanticTokenColorCustomizations": {
+        "enabled": true
+    }
 }

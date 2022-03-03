@@ -9,6 +9,8 @@ $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 
 Import-Module Dev.Nin -DisableNameChecking  # -Force #-ea stop
 
+$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\')
+$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\')
 
 <#
     [section]: Seemingly Sci imports
@@ -57,6 +59,7 @@ if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
 }
 
+Import-Module dev.nin
 <#
 first: 🚀
     - [ ] ask about how to namespace enums?
@@ -475,7 +478,9 @@ $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
 # $PSDefaultParameterValues['Dev.Nin\Invoke-VSCodeVenv:infa']='ignore'
 # Dev.Nin\Invoke-VSCodeVenv
 $PSDefaultParameterValues['Select-NinProperty:OutVariable'] = 'SelProp'
-$PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true # Was this a typo?
+# $PSDefaultParameterValues['Ninmonkey.Console\Get-:TitleHeader'] = $true # Was this a typo?
+
+
 $PSDefaultParameterValues['Get-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Reset-RandomPerSession:Verbose'] = $true
 $PSDefaultParameterValues['Invoke-GHRepoList:Infa'] = 'Continue'
@@ -627,7 +632,7 @@ $eaIgnore = @{
 }
 
 if ($true) {
-
+    Write-Warning "remove temp inline definition: '$PSCommandPath'"
     function Test-CommandHasParameterNamed {
         <#
     .synopsis
