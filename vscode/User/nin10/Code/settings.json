@@ -3849,7 +3849,12 @@
 
      ###### SubSect:  TM highlight
 
+        docs:
+            for TextMate Grammar vs unit testing:
+                https://github.com/PanAeon/vscode-tmgrammar-test
 
+            vscode's TM Grammar parser
+                https://github.com/microsoft/vscode-textmate
       */
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -3878,23 +3883,68 @@
                 meta.group.array-expression.powershell
             */
             {
-                "name": "yellow-ize most Operators",
-                "scope": "punctuation.section.group.end.powershell",
+                "name": "dim: const inst",
+                "scope": "constant.numeric.integer.powershell",
                 "settings": {
-                    "foreground": "#be85c500",
-                    "foreground": "#be85c59f",
-                    "foreground": "#c6d63a",
-                    "fontStyle": "underline"
+                    // "foreground": "#be85c59f", // this is kidn fo nice
+                    // "foreground": "#B5CEA8",
+                    // "foreground": "#c6d63a",
+                    // "fontStyle": "underline"
                 }
             },
             {
-                "name": "test or operator",
+                "name": "yellow-ize most Operators",
                 "scope": "keyword.operator.assignment.powershell",
                 "settings": {
                     "foreground": "#be85c500",
+                    "foreground": "#be85c59f", // this is kind of nice
+                    // "foreground": "#c6d63a",
+                    // "fontStyle": "underline"
+                }
+            },
+            {
+                "name": "dim variables all",
+                // "scope": "punctuation.section.group.end.powershell",
+                "scope": "variable.other.readwrite.powershell",
+                "settings": {
+                    "foreground": "#be85c500",
+                    "foreground": "#d63a3a",
                     "foreground": "#be85c59f",
-                    "foreground": "#c6d63a",
-                    "fontStyle": "underline"
+                    "foreground": "#9CDCFE", // orig: 	#9CDCFE
+                    "foreground": "#9cdcfe94", // orig: 	#9CDCFE
+                    "foreground": "#9cb6fe", // orig: 	#9cb6fe
+                    "foreground": "#9cb6fec7", // orig: 	#9CDCFE
+                    "foreground": "#6381d3c7", // orig: 	#9CDCFE
+                    // "fontStyle": "underline"
+                }
+            },
+            {
+                "name": "dim variables",
+                // "scope": "punctuation.section.group.end.powershell",
+                "scope": "meta.group.array-expression.powershell",
+                "settings": {
+                    // "background": "#ff00ff",
+                    "foreground": "#be85c500",
+                    "foreground": "#d63a3a",
+                    "foreground": "#be85c5ce",
+                    "foreground": "#be85c59f",
+                    "fontStyle": "italic bold underline strikethrough",
+                    // "fontStyle": "underline"
+                }
+            },
+            {
+                "name": "dim variables",
+                // "scope": "punctuation.section.group.begin.powershell | punctuation.section.group.end.powershell",
+                // "scope": "(punctuation.section.group.begin.powershell | punctuation.section.group.end.powershell)",
+                "scope": "punctuation.section.group.begin.powershell", // works
+                "settings": {
+                    // "background": "#ff00ff",
+                    "foreground": "#be85c500",
+                    "foreground": "#be85c5ce",
+                    "foreground": "#be85c59f",
+                    "foreground": "#d63a3a",
+                    "fontStyle": "",
+                    // "fontStyle": "underline"
                 }
             },
             // {
@@ -3906,36 +3956,36 @@
             //         "foreground": "#00ff00",
             //         "fontStyle": "underline"
             //     }
-        },
-        // {
-        //     "name": "test1",
-        //     "scope": "keyword.*",
-        //     "settings": {
-        //         "foreground": "#c6d63a",
-        //         "foreground": "#be85c500",
-        //         "foreground": "#be85c59f",
-        //         "fontStyle": "underline"
-        //     }
-        // },
-    ],
-    "[Visual Studio 2019 Dark]": {
-        // example test
-        // "textMateRules": [
-        //     {
-        //         "name": "mabyesingle",
-        //         // "scope": "variable",
-        //         "scope": "meta.hashtable.powershell",
-        //         "settings": {
-        //             "foreground": "#4278b4f3",
-        //             // "fontStyle": "bold underline strikethrough"
-        //         }
-        //     }
-        // ],
-        // "strings": {
-        //     "foreground": "magenta",
-        //     // "fontStyle": "bold strikethrough",
-        // },
-        /*
+            // },
+            // {
+            //     "name": "test1",
+            //     "scope": "keyword.*",
+            //     "settings": {
+            //         "foreground": "#c6d63a",
+            //         "foreground": "#be85c500",
+            //         "foreground": "#be85c59f",
+            //         "fontStyle": "underline"
+            //     }
+            // },
+        ],
+        "[Visual Studio 2019 Dark]": {
+            // example test
+            // "textMateRules": [
+            //     {
+            //         "name": "mabyesingle",
+            //         // "scope": "variable",
+            //         "scope": "meta.hashtable.powershell",
+            //         "settings": {
+            //             "foreground": "#4278b4f3",
+            //             // "fontStyle": "bold underline strikethrough"
+            //         }
+            //     }
+            // ],
+            // "strings": {
+            //     "foreground": "magenta",
+            //     // "fontStyle": "bold strikethrough",
+            // },
+            /*
                 {
                     "name": "dev test",
                     "scope": "keyword.operator",
@@ -3947,124 +3997,124 @@
                 }
             #>
             */
-        // "keywords": {
-        //     "foreground": "#1e4a7cf3",
-        //     "foreground": "#4278b4f3",
-        //     // "fontStyle": "",
-        // }
-    }
-},
-"oneDarkPro.bold": true,
-"editor.semanticTokenColorCustomizations": {
-    "enabled": true,
-    "rules": {
-        // "typeAlias": "#ff0000",
-        // "attribute": "#ff00ff",
-        // "number": "#ff0000"
-        // "Other": {
-        //     "foreground": "#FF0000",
-        //     "fontStyle": "bold"
-        // }
-    }
-},
-"csharp.semanticHighlightidng.enabled": true,
-"editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
-/*
+            // "keywords": {
+            //     "foreground": "#1e4a7cf3",
+            //     "foreground": "#4278b4f3",
+            //     // "fontStyle": "",
+            // }
+        }
+    },
+    "oneDarkPro.bold": true,
+    "editor.semanticTokenColorCustomizations": {
+        "enabled": true,
+        "rules": {
+            // "typeAlias": "#ff0000",
+            // "attribute": "#ff00ff",
+            // "number": "#ff0000"
+            // "Other": {
+            //     "foreground": "#FF0000",
+            //     "fontStyle": "bold"
+            // }
+        }
+    },
+    "csharp.semanticHighlightidng.enabled": true,
+    "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
+    /*
 
     ### Sect: SemanticColorCustomizations
 
            tags: syntax, highlight, semantic, color
 
     */
-// "editor.semanticTokenColorCustomizations": {
-//     // per-theme
-//     "[Visual Studio 2019 Dark]": {
-//         "enabled": true,
-//         "rules": {
-//             "*.readonly": {
-//                 "foreground": "#00ff80",
-//                 "fontStyle": "bold underline",
-//             }
-//         }
-//     },
-//     // "[Default Dark+]
-//     // "[Visual Studio 2019 Dark]": {
-//     //     "enabled": false,
-//     //     "rules": {
-//     //         // "*single*quote*": {
-//     //         "string.quoted.single.powershell": {
-//     //             "foreground": "green",
-//     //             "fontStyle": "bold underline"
-//     //         }
-//     //         // single value
-//     //         // vs many
-//     //         // "parameter": {
-//     //         // "fontStyle": ""
-//     //         // "bold": true,
-//     //         // "foreground": "#464545", // nintheme
-//     //         // "underline": true,
-//     //         // "bold": true,
-//     //         // "italic": true,
-//     //         // "fontStyle": "italic bold underline"
-//     //         // },
-//     //         // "parameter": "#d4d4d4",
-//     //         // "parameter": "#9CDCFE", // default
-//     //         // "parameter": "#aeaeae",
-//     //         // // vs many
-//     //         // "parameter": {
-//     //         //     "foreground": "#ff0000",
-//     //         //     "foreground": "#464545", // nintheme
-//     //         //     "underline": true,
-//     //         //     "bold": true,
-//     //         //     "italic": true,
-//     //         //     "fontStyle": "italic bold underline"
-//     //         // },
-//     //         // "string": {
-//     //         //     "foreground": "#9CDCFE",
-//     //         //     "foreground": "#9CDCFE",
-//     //         //     "foreground": "#1E1E1E", // default BG color
-//     //         //     "foreground": "#D4D4D4",
-//     //         //     "background": "orange",
-//     //         //     "foreground": "#9CDCFE",
-//     //         //     "fontStyle": "underline"
-//     //         // }
-//     //     },
-//     // },
-//     // "variable": "#fae",
-//     // "variable": "#9dccfe",
-//     // or global
-//     "enabled": false,
-//     "rules": {
-//         "property": {
-//             "foreground": "magenta",
-//             "fontStyle": "italic bold underline",
-//         },
-//         "*hashtable*": {
-//             "foreground": "magenta",
-//             "fontStyle": "italic bold underline",
-//         },
-//         "meta.hashtable.assignment.powershell": {
-//             "foreground": "magenta",
-//             "fontStyle": "bold"
-//         },
-//         "meta.hashtable.powershell": {
-//             "foreground": "orange",
-//             "fontStyle": "bold"
-//         },
-//         "variable.other.readwrite.powershell": {
-//             "foreground": "green",
-//             "fontStyle": "bold"
-//         }
-//         // "comment": "# "
-//         /*
-//           "parameter": "#d4d4d4",
-//           "variable": "#9dccfe"
-//           "xmlDocCommentAttributeQuotes": "#ff0000",
-//           "*.builtin": {
-//               "foreground": "#FF0000",
-//               "fontStyle": "bold"
-//           }
-//           */
-//     }
-// },
+    // "editor.semanticTokenColorCustomizations": {
+    //     // per-theme
+    //     "[Visual Studio 2019 Dark]": {
+    //         "enabled": true,
+    //         "rules": {
+    //             "*.readonly": {
+    //                 "foreground": "#00ff80",
+    //                 "fontStyle": "bold underline",
+    //             }
+    //         }
+    //     },
+    //     // "[Default Dark+]
+    //     // "[Visual Studio 2019 Dark]": {
+    //     //     "enabled": false,
+    //     //     "rules": {
+    //     //         // "*single*quote*": {
+    //     //         "string.quoted.single.powershell": {
+    //     //             "foreground": "green",
+    //     //             "fontStyle": "bold underline"
+    //     //         }
+    //     //         // single value
+    //     //         // vs many
+    //     //         // "parameter": {
+    //     //         // "fontStyle": ""
+    //     //         // "bold": true,
+    //     //         // "foreground": "#464545", // nintheme
+    //     //         // "underline": true,
+    //     //         // "bold": true,
+    //     //         // "italic": true,
+    //     //         // "fontStyle": "italic bold underline"
+    //     //         // },
+    //     //         // "parameter": "#d4d4d4",
+    //     //         // "parameter": "#9CDCFE", // default
+    //     //         // "parameter": "#aeaeae",
+    //     //         // // vs many
+    //     //         // "parameter": {
+    //     //         //     "foreground": "#ff0000",
+    //     //         //     "foreground": "#464545", // nintheme
+    //     //         //     "underline": true,
+    //     //         //     "bold": true,
+    //     //         //     "italic": true,
+    //     //         //     "fontStyle": "italic bold underline"
+    //     //         // },
+    //     //         // "string": {
+    //     //         //     "foreground": "#9CDCFE",
+    //     //         //     "foreground": "#9CDCFE",
+    //     //         //     "foreground": "#1E1E1E", // default BG color
+    //     //         //     "foreground": "#D4D4D4",
+    //     //         //     "background": "orange",
+    //     //         //     "foreground": "#9CDCFE",
+    //     //         //     "fontStyle": "underline"
+    //     //         // }
+    //     //     },
+    //     // },
+    //     // "variable": "#fae",
+    //     // "variable": "#9dccfe",
+    //     // or global
+    //     "enabled": false,
+    //     "rules": {
+    //         "property": {
+    //             "foreground": "magenta",
+    //             "fontStyle": "italic bold underline",
+    //         },
+    //         "*hashtable*": {
+    //             "foreground": "magenta",
+    //             "fontStyle": "italic bold underline",
+    //         },
+    //         "meta.hashtable.assignment.powershell": {
+    //             "foreground": "magenta",
+    //             "fontStyle": "bold"
+    //         },
+    //         "meta.hashtable.powershell": {
+    //             "foreground": "orange",
+    //             "fontStyle": "bold"
+    //         },
+    //         "variable.other.readwrite.powershell": {
+    //             "foreground": "green",
+    //             "fontStyle": "bold"
+    //         }
+    //         // "comment": "# "
+    //         /*
+    //           "parameter": "#d4d4d4",
+    //           "variable": "#9dccfe"
+    //           "xmlDocCommentAttributeQuotes": "#ff0000",
+    //           "*.builtin": {
+    //               "foreground": "#FF0000",
+    //               "fontStyle": "bold"
+    //           }
+    //           */
+    //     }
+    // },
 }
