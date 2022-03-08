@@ -3,6 +3,8 @@
 #Requires -Module Pansies
 #Requires -Module Dev.Nin
 
+__countDuplicateLoad -key 'Backup-VSCode'
+
 Write-Warning 'WARNING: ㏒ [backup_vscode.ps1]'
 
 function Backup-VSCode {

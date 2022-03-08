@@ -3,7 +3,7 @@ Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1]'
 $script:_state = @{}
 # Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 
-
+__countDuplicateLoad -key '$Nin.Profile.psm1'
 
 # wip dev,nin: todo:2022-03
 Import-Module Dev.Nin -Force #-ea stop # bad perf

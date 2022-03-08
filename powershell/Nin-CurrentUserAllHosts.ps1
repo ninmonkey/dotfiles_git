@@ -6,7 +6,8 @@ using namespace System.Management.Automation # [ErrorRecord]
 # wip dev,nin: todo:2022-03
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
-
+'🐧'
+__countDuplicateLoad -key 'AllUserCurrentHost'
 Import-Module Dev.Nin -Force -DisableNameChecking -ea stop  # -Force #-ea stop
 
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\')
