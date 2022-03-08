@@ -632,7 +632,6 @@
 
       */
     "search.experimental.searchInOpenEditors": true,
-    "python.insidersChannel": "weekly",
     /*
 
   ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
@@ -1034,20 +1033,29 @@
     "explorer.experimental.fileNesting.enabled": true,
     "explorer.experimental.fileNesting.expand": true,
     "explorer.experimental.fileNesting.patterns": {
-        // "*-PivotTable.ps1": "$(capture)-PivotTable.ps1, Add-PivotTable.ps1",
-        // "*.ps1": "$(capture)-PivotTable.ps1",
-        // "*-PivotTable.ps1": "$(capture)-PivotTable.ps1",
-        // "*.pbix": "$(capture).png, $(capture).pq",
-        // "__init__.*.ps1": "__init__.$(capture).ps1",
-        // "*.ps1": "$(capture).tests.ps1",
-        // "*.psd1": "$(capture).psm1",
-        // "*.ts": "$(capture).js, $(capture).d.ts",
-        // "*.js": "$(capture).js.map, $(capture).min.js, $(capture).d.ts",
-        // "*.jsx": "$(capture).js",
-        // "*.tsx": "$(capture).ts",
-        // "tsconfig.json": "tsconfig.*.json",
-        // "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc"
+        "*.ts": "$(capture).js, $(capture).d.ts",
+        "*.pq": "$(capture).pbit, $(capture).pbix",
+        "*.js": "$(capture).js.map, $(capture).min.js, $(capture).d.ts",
+        "*.jsx": "$(capture).js",
+        "*.tsx": "$(capture).ts",
+        "tsconfig.json": "tsconfig.*.json",
+        "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc"
     },
+    // {
+    //     // "*-PivotTable.ps1": "$(capture)-PivotTable.ps1, Add-PivotTable.ps1",
+    //     // "*.ps1": "$(capture)-PivotTable.ps1",
+    //     // "*-PivotTable.ps1": "$(capture)-PivotTable.ps1",
+    //     // "*.pbix": "$(capture).png, $(capture).pq",
+    //     // "__init__.*.ps1": "__init__.$(capture).ps1",
+    //     // "*.ps1": "$(capture).tests.ps1",
+    //     // "*.psd1": "$(capture).psm1",
+    //     // "*.ts": "$(capture).js, $(capture).d.ts",
+    //     // "*.js": "$(capture).js.map, $(capture).min.js, $(capture).d.ts",
+    //     // "*.jsx": "$(capture).js",
+    //     // "*.tsx": "$(capture).ts",
+    //     // "tsconfig.json": "tsconfig.*.json",
+    //     // "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc"
+    // },
     "zenMode.centerLayout": true,
     "zenMode.hideActivityBar": true,
     "zenMode.hideTabs": true,
@@ -2962,6 +2970,8 @@
     "editor.fontSize": 20, // 17,
     "editor.fontSize": 18, // 17,
     "editor.fontSize": 16, // 17,
+    "editor.fontSize": 15, // 17,
+    "editor.fontSize": 17, // 17,
     "editor.fontFamily": "cascadia code pl', 'Consolas', 'Courier New', monospace",
     "editor.fontFamily": "'fira code retina', 'cascadia code pl', 'Consolas', 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl', 'Consolas', 'Courier New', monospace",
@@ -3918,35 +3928,35 @@
                     // "fontStyle": "underline"
                 }
             },
-            {
-                "name": "dim variables",
-                // "scope": "punctuation.section.group.end.powershell",
-                "scope": "meta.group.array-expression.powershell",
-                "settings": {
-                    // "background": "#ff00ff",
-                    "foreground": "#be85c500",
-                    "foreground": "#d63a3a",
-                    "foreground": "#be85c5ce",
-                    "foreground": "#be85c59f",
-                    "fontStyle": "italic bold underline strikethrough",
-                    // "fontStyle": "underline"
-                }
-            },
-            {
-                "name": "dim variables",
-                // "scope": "punctuation.section.group.begin.powershell | punctuation.section.group.end.powershell",
-                // "scope": "(punctuation.section.group.begin.powershell | punctuation.section.group.end.powershell)",
-                "scope": "punctuation.section.group.begin.powershell", // works
-                "settings": {
-                    // "background": "#ff00ff",
-                    "foreground": "#be85c500",
-                    "foreground": "#be85c5ce",
-                    "foreground": "#be85c59f",
-                    "foreground": "#d63a3a",
-                    "fontStyle": "",
-                    // "fontStyle": "underline"
-                }
-            },
+            // {
+            //     "name": "dim variables",
+            //     // "scope": "punctuation.section.group.end.powershell",
+            //     "scope": "meta.group.array-expression.powershell",
+            //     "settings": {
+            //         // "background": "#ff00ff",
+            //         "foreground": "#be85c500",
+            //         "foreground": "#d63a3a",
+            //         "foreground": "#be85c5ce",
+            //         "foreground": "#be85c59f",
+            //         // "fontStyle": "italic bold underline strikethrough",
+            //         // "fontStyle": "underline"
+            //     }
+            // },
+            // {
+            //     "name": "dim variables",
+            //     // "scope": "punctuation.section.group.begin.powershell | punctuation.section.group.end.powershell",
+            //     // "scope": "(punctuation.section.group.begin.powershell | punctuation.section.group.end.powershell)",
+            //     "scope": "punctuation.section.group.begin.powershell", // works
+            //     "settings": {
+            //         // "background": "#ff00ff",
+            //         "foreground": "#be85c500",
+            //         "foreground": "#be85c5ce",
+            //         "foreground": "#be85c59f",
+            //         "foreground": "#d63a3a",
+            //         "fontStyle": "",
+            //         // "fontStyle": "underline"
+            //     }
+            // },
             // {
             //     "name": "test1",
             //     "scope": "punctuation.terminator.",

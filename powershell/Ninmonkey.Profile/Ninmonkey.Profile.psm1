@@ -10,6 +10,23 @@ Import-Module Dev.Nin -Force #-ea stop # bad perf
 # Import-Module Dev.Nin #-ea stop
 [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
 
+function _silentReload {
+    <#
+    .synopsis
+        Silent force reload, unless errors
+    #>
+    param(
+        [Parameter()]
+        [string[]]$ModuleName = @('ninmonkey.console', 'dev.nin')
+    )
+    $ModuleName | ForEach-Object {
+        Import-Module $_ -Force -DisableNameChecking -wa Ignore *>&1 | Out-Null } | Out-Null
+
+    if (Test-HasNewError) {
+        'Something went wrong' | write-color 'orange'
+
+    }
+}
 function _nyi {
     <#
     .synopsis

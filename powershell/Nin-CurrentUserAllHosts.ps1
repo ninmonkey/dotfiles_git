@@ -7,7 +7,7 @@ using namespace System.Management.Automation # [ErrorRecord]
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 
-Import-Module Dev.Nin -DisableNameChecking  # -Force #-ea stop
+Import-Module Dev.Nin -Force -DisableNameChecking -ea stop  # -Force #-ea stop
 
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\')
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\')
@@ -59,7 +59,7 @@ if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
 }
 
-Import-Module dev.nin
+Import-Module dev.nin -DisableNameChecking
 <#
 first: 🚀
     - [ ] ask about how to namespace enums?
@@ -313,7 +313,7 @@ function _reloadModule {
     if (!$AllowWarn) {
         Import-Module @importModuleSplat 3>$null
     } else {
-        Import-Module @importModuleSplat
+        Import-Module @importModuleSplat -DisableNameChecking
     }
 }
 
@@ -343,7 +343,7 @@ New-Alias -ea ignore -Name 'Dev->SBtoDismExpression' -Value 'ScriptBlockDisassem
     }
     if ($psEditor) {
         Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> EditorServicesCommandSuite'
-        $escs = Import-Module EditorServicesCommandSuite -PassThru
+        $escs = Import-Module EditorServicesCommandSuite -PassThru -DisableNameChecking
         if ($null -ne $escs -and $escs.Version.Major -lt 0.5.0) {
             Import-EditorCommand -Module EditorServicesCommandSuite
         }
@@ -833,10 +833,10 @@ if ($__ninConfig.Module.IgnoreImportWarning) {
 # Soft/Optional Requirements
 $OptionalImports = @(
     # 'Utility' # loaded above
-    'ClassExplorer'
     'Pansies'
-    # 'Dev.Nin'
+    'ClassExplorer'
     'Ninmonkey.Console'
+    'Dev.Nin'
     'Ninmonkey.Powershell'
     # 'Posh-Git'
 
