@@ -4028,7 +4028,8 @@
         }
     },
     "csharp.semanticHighlightidng.enabled": true,
-    "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
+    "editor.semanticHighlighting.enabled": true,
+    "window.zoomLevel": -1, // or "ConfiguredByTheme"
     /*
 
     ### Sect: SemanticColorCustomizations
