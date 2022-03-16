@@ -206,6 +206,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass -Name 'To->Json' -Value ConvertTo-Json
     New-Alias @splatIgnorePass -Name 'To->RelativePath' -Value Ninmonkey.Console\ConvertTo-RelativePath
 
+    New-Alias @splatIgnorePass -Name 'impo' -Value Import-Module
 
 
     <#

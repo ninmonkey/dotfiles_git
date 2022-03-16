@@ -671,4 +671,9 @@
         // "when": "editorLangId == 'powershell'"
         "when": "editorTextFocus && editorLangId == 'powershell'"
     },
+    {
+        "key": "ctrl+alt+u",
+        "command": "cursorRedo",
+        "when": "textInputFocus"
+    }
 ]

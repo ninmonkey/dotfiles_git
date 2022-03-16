@@ -3,6 +3,8 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+$env:PATH += ';', 'G:\programs_nin_bin' -join ''
+
 # wip dev,nin: todo:2022-03
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
@@ -461,6 +463,7 @@ $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
 $PSDefaultParameterValues['Microsoft.PowerShell.Core\Get-Help:detailed'] = $true
 $PSDefaultParameterValues['Get-Help:detailed'] = $true
 $PSDefaultParameterValues['help:detailed'] = $true
+$PSDefaultParameterValues['Dev.Nin\Measure-ObjectCount:Infa'] = 'Continue'
 
 
 <#
