@@ -656,7 +656,7 @@
         "command": "-workbench.action.keybindingsReference"
     },
     {
-        "key": "ctrl+numpad3",
+        "key": "ctrl+numpad1",
         "command": "workbench.action.showCommands",
         "command": "workbench.action.toggleAuxiliaryBar",
         "args": {

@@ -733,6 +733,7 @@ if ($true) {
     AddLineBelow
         Adds and moves to next line, leaving text where it was.
     #>
+    # what ?
     Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
     Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
     Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove

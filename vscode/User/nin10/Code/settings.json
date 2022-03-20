@@ -284,6 +284,38 @@
                 // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
             },
             {
+                "name": "Cur.ps1 🏃‍♂️ -NoP",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${file}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                "args": [
+                    // "-CustomPipeName", "myDebugPipe"
+                    // "-NoExit",
+                    // "-SSHServerMode",
+                    // "-WorkingDirectory",
+                    "-NoProfile",
+                    "-"
+                    // "-Command",
+                    // "-File",
+                    // "-File", "-", # redirect STDIN
+                    // "-ConfigurationName",
+                    // "-SettingsFile",
+                    // "-Interactive",
+                    // "-NonInteractive",
+                    // "-ExecutionPolicy,
+                    // "-EncodedCommand,
+                    // "-Login",
+                ],
+                // "cwd": "${workspaceFolder}"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            },
+            {
                 "presentation": {
                     "hidden": false,
                     "group": "visual-test",
@@ -1984,7 +2016,6 @@
     // "colorize.colorized_variables": [
     //     "CSS"
     // ],
-    "colorize.enable_search_variables": false,
     "workbench.iconTheme": "vscode-icons",
     // "editor.rulers": [
     //     120,
@@ -2001,6 +2032,44 @@
 
           https://code.visualstudio.com/docs/editor/variables-reference
       */
+    "colorize.enable_search_variables": false,
+    // Here list only the languages you use
+    "colorize.languages": [
+        "css",
+        "scss",
+        "less"
+    ],
+    // You can specified the type of variables that should be colorized by the extension.
+    "colorize.colorized_variables": [
+        "CSS",
+        "SASS",
+        "LESS"
+    ],
+    // Configure glob patterns for excluding files and folders. Colorize will not colorized colors in these files and folders and it'll also not search for variables inside. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options).
+    "colorize.exclude": [
+        "**/.git",
+        "**/*.log",
+        "**/*.exe",
+        "**/*.pbix",
+        "**/*.pbit",
+        "**/*.xlsx",
+        "**/*.docx",
+        "**/*.xls",
+        "**/.svn",
+        "**/.hg",
+        "**/CVS",
+        "**/.DS_Store",
+        "**/.git",
+        "**/node_modules",
+        "**/bower_components",
+        "**/.output",
+        "**/.export",
+        "**/venv",
+        "**/tmp",
+        "**/dist",
+        "**/tests"
+        // you can add more here to reduce the number of files that might be opened
+    ],
     "terminal.integrated.profiles.windows": {
         "Pwsh🐒": {
             "color": "terminal.ansiMagenta",
@@ -4028,8 +4097,7 @@
         }
     },
     "csharp.semanticHighlightidng.enabled": true,
-    "editor.semanticHighlighting.enabled": true,
-    "window.zoomLevel": -1, // or "ConfiguredByTheme"
+    "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
     /*
 
     ### Sect: SemanticColorCustomizations
