@@ -3,10 +3,14 @@
 #Requires -Module Pansies
 #Requires -Module Dev.Nin
 
-__countDuplicateLoad -key 'Backup-VSCode'
+# __countDuplicateLoad -key 'Backup-VSCode'
 
-Write-Warning 'WARNING: ㏒ [backup_vscode.ps1]'
+Write-Verbose 'WARNING: ㏒ [backup_vscode.ps1]'
 
+if (! (Get-Command -ea ignore Dev.Nin\str)) {
+    'appear to be missing dev.nin' | Write-Warning
+    return
+}
 function Backup-VSCode {
     <#
     .synopsis
@@ -74,7 +78,7 @@ function Backup-VSCode {
         # $dest = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10\Code'
         $dotfileRoot = Get-Item -ea stop "$Env:UserProfile\SkyDrive\Documents\2021\dotfiles_git\vscode\User\nin10"
         $dotfileRoot | to->RelativePath -BasePath $env:Nin_Dotfiles
-        | str prefix '$dotfileRoot = '
+        | Join-String -op '$dotfileRoot = '
         | wi
 
         function _processOneProfile {

@@ -10,10 +10,10 @@ $env:PATH += ';', 'G:\programs_nin_bin' -join ''
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 '🐧'
 __countDuplicateLoad -key 'AllUserCurrentHost'
-Import-Module Dev.Nin -Force -DisableNameChecking -ea stop  # -Force #-ea stop
+Import-Module 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
 
-$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\')
-$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\')
+$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
+$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
 
 <#
     [section]: Seemingly Sci imports
@@ -300,33 +300,112 @@ env vars to check
 #>
 function _reloadModule {
     # reload all dev modules in my profile's scope
+    [cmdletBinding()]
     param(
+        [cmdletbinding()]
+        [parameter(Position = 0)]
+        [ArgumentCompletions('BasicModuleTemplate', 'CollectDotfiles', 'Dev.Nin', 'Jake.Pwsh.AwsCli', 'ModuleData', 'ninLog', 'Ninmonkey.Console', 'Ninmonkey.Factorio', 'Ninmonkey.Powershell', 'Ninmonkey.Profile', 'Ninmonkey.TemplateText', 'Portal.Powershell', 'Powershell.Cv', 'Powershell.Jake', 'Template.Autocomplete')]
+        [string[]]$Name,
         # Temporarily enable warnings
-        [parameter()][switch]$AllowWarn
+        [parameter()][switch]$AllowWarn,
+
+        # normally _enumerateMyModule is used, verses this hard coded value
+        [parameter()][switch]$ForceDefault
+    )
+    $hardCodedNames = @(
+        # 'Ninmonkey.Profile'
+        'Dev.Nin'
+        'Ninmonkey.Console'
+        'Ninmonkey.Powershell'
+        'ninLog'
+        # 'BasicModuleTemplate'
+        # 'CollectDotfiles'
+        # 'Jake.Pwsh.AwsCli'
+        # 'Ninmonkey.Factorio'
+        # 'Ninmonkey.TemplateText'
+        'ModuleData'
+        # 'Portal.Powershell'
+        # 'Powershell.Cv'
+        # 'Powershell.Jake'
+        # 'Template.Autocomplete'
     )
     # quickly reload my modules for dev
     $importModuleSplat = @{
         # Name = 'Ninmonkey.Console', 'Dev.nin'
-        Name                = _enumerateMyModule # 'Dev.Nin', 'Ninmonkey.Console', 'Ninmonkey.Powershell', 'Ninmonkey.Profile'
+        Name                = _enumerateMyModule
         Force               = $true
         DisableNameChecking = $true
+        Scope               = 'Global'
     }
 
-    # Ignore warnings, allow errors
-    if (!$AllowWarn) {
-        Import-Module @importModuleSplat 3>$null
-    } else {
-        Import-Module @importModuleSplat -DisableNameChecking
+    if ($ForceDefault ) {
+        $importModuleSplat = $hardCodedNames
+    }
+
+    $importModuleSplat | Format-Table -AutoSize -Wrap | Out-String | Write-Debug
+
+    Write-Warning 'todo: Stopwatch here for full-time and per-module timings'
+    function _tryImportSingle {
+        param( [string]$ModuleName, [hashtable]$importSplat ) {
+
+        }
+        $importSplat['Scope'] = 'global'
+        $importSplat | Format-Table | Out-String | Write-Debug
+        try {
+            # Ignore warnings, allow errors
+            if (!$AllowWarn) {
+                Import-Module @importSplat 3>$null
+            } else {
+                Import-Module @importSplat
+            }
+        } catch {
+            Write-Error -ea continue -m (
+                'Failed loading: {0}{1}{2}' -f @(
+                    $ModuleName
+                    "`n"
+                    "Exception: $_"
+                )
+            )
+
+        }
+    }
+    $names = @($importModuleSplat.Name)
+    $importModuleSplat.Remove('Name')
+    $names | ForEach-Object {
+        # to ask: where is [PSScriptCmdlet] in docs, it's not, it's sealed?
+
+        Write-Information 'infa part is wip'
+        # $PSCmdlet.WriteInformation(
+        #     <# messageData: #> $_, $null
+        #     <# tags: #> )
+        [console]::Write('.')
+        _tryImportSingle -ea continue -ModuleName $_ -ImportSplat $importModuleSplat
     }
 }
+<#
+    $wil = Find-Member -MemberType Method 'writeinformation'
+    $wil | ft
+    $PSCmdlet.WriteInformation
+    [InformationRecord]::New('bob', 'text')
+    $ir = [InformationRecord]::New('bob', 'text')
+    $ir | fl *
+    $ir | % gettype
+    $ir | % gettype()
+    $ir | jProp
+    $ir | jProp | sort type
+    $ExecutionContext
+    $ExecutionContext | Jprop
+#>
 
-New-Alias 'Repl->PtPy' -Value 'ptpython' -Description 'repl from: <https://github.com/prompt-toolkit/ptpython>'
-New-Alias 'rel' -Value '_reloadModule' -ea ignore
-New-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
-New-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Description 'to prevent shadowing by PSSCriptTools'
-New-Alias -ea ignore -Name 'DismSB' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'sci''s SB to Expressions module'
-New-Alias -ea ignore -Name 'Sci->Dism' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
-New-Alias -ea ignore -Name 'Dev->SBtoDismExpression' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
+@(
+    New-Alias 'Repl->PtPy' -Value 'ptpython' -Description 'repl from: <https://github.com/prompt-toolkit/ptpython>'
+    Set-Alias 'rel' -Value '_reloadModule' -ea ignore
+    Set-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
+    Set-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Description 'to prevent shadowing by PSSCriptTools'
+    New-Alias -ea ignore -Name 'DismSB' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'sci''s SB to Expressions module'
+    New-Alias -ea ignore -Name 'Sci->Dism' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
+    New-Alias -ea ignore -Name 'Dev->SBtoDismExpression' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
+)
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
     if ($parent -eq 'code') {
@@ -454,6 +533,8 @@ aka
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 # $PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'    # test it off
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
+$PSDefaultParameterValues['Ninmonkey.Console\Out-Fzf:OutVariable'] = 'fzf'
+
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
@@ -1036,4 +1117,8 @@ if ($false) {
             Name = $_.Name
         }
     }
+}
+
+if (!(Get-Module dev.nin)) {
+    Import-Module Dev.Nin
 }

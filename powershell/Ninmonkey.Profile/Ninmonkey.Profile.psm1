@@ -1,3 +1,6 @@
+#Requires -Module Dev.Nin
+#Requires -Module Ninmonkey.Console
+
 Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1]'
 
 $script:_state = @{}
@@ -957,7 +960,7 @@ function Write-NinProfilePrompt {
 
     if ($null -eq (Get-Module dev.nin -ea ignore)) {
         @(
-            "`nNo Dev.Nin`n"
+            "`nMissingModule: Dev.Nin`n"
             Get-Location
             "`nsafe>"
         ) -join ''

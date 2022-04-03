@@ -84,6 +84,24 @@
 
         */
     },
+    "HTMLPair  Row Markdown": {
+        "prefix": "pairs row mdTable Html ⁞ nin",
+        "description": "pairs nin🐒 ⁞ mdTable row Html Table. no-indentation because md prefers",
+        "body": [
+            "",
+            "<tr>", // *maybe* insert comments too?
+            "<td>${1:Key}</td>",
+            "<td>${2:Value}</td>",
+            "</tr>",
+            "<tr>",
+            "",
+            "$0",
+        ],
+        /*
+        output:
+
+        */
+    },
     /*
     Markdown Snippets (nin) 2021-06-20
     */

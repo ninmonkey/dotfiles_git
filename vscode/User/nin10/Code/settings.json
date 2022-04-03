@@ -914,7 +914,8 @@
     },
     "[powerquery]": {
         "editor.formatOnSave": false,
-        "editor.fontSize": 14,
+        "editor.fontSize": 16,
+        // "editor.fontSize": 14,
         // "editor.semanticHighlighting.enabled": true
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
@@ -1175,7 +1176,7 @@
         // "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
-        // "editor.semanticHighlighting.enabled": true,
+        "editor.semanticHighlighting.enabled": true,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
         "editor.suggest.showFunctions": true,
@@ -1880,7 +1881,7 @@
     "terminal.integrated.localEchoStyle": "dim", // ?
     "terminal.integrated.localEchoStyle": "underlined", // ?
     "terminal.integrated.experimentalLinkProvider": true,
-    "terminal.integrated.rightClickBehavior": "copyPaste",
+    "terminal.integrated.rightClickBehavior": "selectWord",
     "terminal.integrated.sendKseybindingsToShell": false,
     "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default changes per-language
     "terminal.integrated.tabs.focusMode": "doubleClick",
@@ -2012,7 +2013,7 @@
     // "emmet.triggerExpansionOnTab": true,
     "editor.guides.bracketPairsHorizontal": "active",
     "editor.guides.bracketPairsHorizontal": false,
-    "editor.language.colorizedBracketPairs": true,
+    // "editor.language.colorizedBracketPairs": true,
     // "colorize.colorized_variables": [
     //     "CSS"
     // ],
@@ -3039,8 +3040,9 @@
     "editor.fontSize": 20, // 17,
     "editor.fontSize": 18, // 17,
     "editor.fontSize": 16, // 17,
-    "editor.fontSize": 15, // 17,
     "editor.fontSize": 17, // 17,
+    "editor.fontSize": 15, // 17,
+    "editor.fontSize": 14, // 17,
     "editor.fontFamily": "cascadia code pl', 'Consolas', 'Courier New', monospace",
     "editor.fontFamily": "'fira code retina', 'cascadia code pl', 'Consolas', 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl', 'Consolas', 'Courier New', monospace",
@@ -3067,9 +3069,10 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 12,
-    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontSize": 14,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
     // "terminal.integrated.fontWeight": "normal", // maybe too bold
@@ -3429,7 +3432,6 @@
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
     "gitlens.advanced.abbreviateShaOnCopy": true,
-    "terminal.integrated.copyOnSelection": true,
     "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
     "gitlens.mode.active": "zen",
     // "debug.console.acceptSuggestionOnEnter":,
@@ -3962,6 +3964,12 @@
                 meta.group.array-expression.powershell
             */
             {
+                "scope": "storage.modifier.scope.powershell",
+                "settings": {
+                    "foreground": "#8fc1d8"
+                }
+            },
+            {
                 "name": "dim: const inst",
                 "scope": "constant.numeric.integer.powershell",
                 "settings": {
@@ -4087,6 +4095,10 @@
     "editor.semanticTokenColorCustomizations": {
         "enabled": true,
         "rules": {
+            "storage.modifier.scope.powershell": {
+                "foreground": "#FF0000",
+                "fontStyle": "bold"
+            }
             // "typeAlias": "#ff0000",
             // "attribute": "#ff00ff",
             // "number": "#ff0000"
@@ -4097,7 +4109,8 @@
         }
     },
     "csharp.semanticHighlightidng.enabled": true,
-    "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
+    "editor.semanticHighlighting.enabled": true,
+    "gitlens.hovers.currentLine.over": "line", // or "ConfiguredByTheme"
     /*
 
     ### Sect: SemanticColorCustomizations
