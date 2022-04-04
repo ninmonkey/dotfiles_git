@@ -12,7 +12,7 @@
     RootModule        = 'Ninmonkey.Profile.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.0.15'
+    ModuleVersion     = '0.0.16'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -52,10 +52,10 @@
 
     # Modules that must be imported into the global environment prior to importing this module
     RequiredModules   = @(
+        'Dev.Nin'
         'Ninmonkey.Console'
         'ClassExplorer'
         'Pansies'
-        'Dev.Nin'
         # 'dev.nin' # temporarily depends on dev.nin
     )
 
