@@ -4110,7 +4110,8 @@
     },
     "csharp.semanticHighlightidng.enabled": true,
     "editor.semanticHighlighting.enabled": true,
-    "gitlens.hovers.currentLine.over": "line", // or "ConfiguredByTheme"
+    "gitlens.hovers.currentLine.over": "line",
+    "window.zoomLevel": -1, // or "ConfiguredByTheme"
     /*
 
     ### Sect: SemanticColorCustomizations

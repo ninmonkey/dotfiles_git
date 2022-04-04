@@ -1115,7 +1115,7 @@ function Write-NinProfilePrompt {
             if ($true) {
                 # messing with automatic calls to 'Err -Reset'
                 $whenLastCommand = Get-History -Count 1 | s * | ForEach-Object EndExecutionTime
-                $whenLastError, $whenLastCommand | ?NotBlank | Write-Debug
+                $whenLastError, $whenLastCommand | Where-Object { $null -ne $_ } # was breaking import ?NotBlank | Write-Debug
                 $now = Get-Date
 
                 $LastCommandSecs = if ($whenLastCommand) {
