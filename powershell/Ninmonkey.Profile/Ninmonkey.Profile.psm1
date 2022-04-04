@@ -6,10 +6,10 @@ Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1]'
 $script:_state = @{}
 # Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
 
-__countDuplicateLoad -key '$Nin.Profile.psm1'
+# __countDuplicateLoad -key '$Nin.Profile.psm1'
 
 # wip dev,nin: todo:2022-03
-Import-Module Dev.Nin -Force #-ea stop # bad perf
+# Import-Module Dev.Nin -Force #-ea stop # bad perf
 # Import-Module Dev.Nin #-ea stop
 [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
 
@@ -172,7 +172,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
     New-Alias @splatIgnorePass -Name 'jPath' -Value 'Microsoft.PowerShell.Management\Join-Path' -Description 'Alias to the built-in'
     # New-Alias @splatIgnorePass      -Name 'jP'          -Value 'Microsoft.PowerShell.Management\Join-Path'  -Description 'Alias to the built-in'
     New-Alias @splatIgnorePass -Name 'sc' -Value 'Microsoft.PowerShell.Management\Set-Content' -Description 'Alias to the built-in'
-    New-Alias @splatIgnorePass -Name 'jStr' -Value 'Microsoft.PowerShell.Utility\Join-String' -Description 'Alias to the built-in'
+    Set-Alias @splatIgnorePass -Name 'jStr' -Value 'Microsoft.PowerShell.Utility\Join-String' -Description 'Alias to the built-in'
     New-Alias @splatIgnorePass -Name 'Len' -Value 'Ninmonkey.Console\Measure-ObjectCount' -Description 'A quick count of objects in the pipeline'
     Set-Alias @splatIgnorePass -Name 'fzf' -Value 'Ninmonkey.Console\Out-Fzf' -Description 'nin'
 
