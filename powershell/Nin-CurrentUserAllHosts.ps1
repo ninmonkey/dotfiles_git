@@ -3,14 +3,41 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+# Import-Module 'Ninmonkey.Console', 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
+Import-Module 'Ninmonkey.Console', 'Dev.Nin' -Force -DisableNameChecking -ea 'stop'
+
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
 
 # wip dev,nin: todo:2022-03
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 '🐧'
-__countDuplicateLoad -key 'AllUserCurrentHost'
-Import-Module 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
+# __countDuplicateLoad -key 'AllUserCurrentHost'
+# Import-Module 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
+
+function gocode {
+    <#
+    .synopsis
+        open file in vs code: similar to __safePrompt, minimal, always works
+    .example
+        PS> gi foo.ps1 | gocode
+    .example
+        PS> gocode (~/foo/bar.ps1
+    .link
+        __safePrompt
+
+    #>
+    param(
+        [Parameter(ValueFromPipeline, Position = 0, Mandatory)]
+        $Path
+    )
+    if ( Test-Path $Path ) {
+        & code.cmd @(
+            '--goto'
+            Get-Item -ea stop $Path | Join-String -DoubleQuote
+        )
+    }
+}
 
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
@@ -36,6 +63,95 @@ if ($true -and $__ninConfig.LogFileEntries) {
         $strToLog | Write-Warning
         Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
     }
+}
+
+function __safePrompt {
+    <#
+    .synopsis
+        zero dependency prompt, that includes errors
+    .link
+        __safePrompt_sorta
+    #>
+    param(
+        # [switch]$Enable
+    )
+    # if ($Enable) {
+    #     $global:prompt = $script:__safePrompt
+    # }
+    @(
+        "`n", ($Error.Count ?? 0),
+        "`nPS> "
+    ) -join ''
+}
+function __safePrompt_sorta {
+    <#
+    .synopsis
+        slightly added depedencies but mostly not
+    .link
+        __safePrompt
+    #>
+    [cmdletbinding()]
+    param(
+        # [switch]$Enable
+    )
+
+
+    # if ($Enable) {
+    #     $global:prompt = $script:__safePrompt
+    # }
+
+    $colorPrefix = New-Text -fg gray50 'nin'
+
+    $renderPath = Get-Location
+    | _fmt_FilepathWithoutUsernamePrefix -ReplaceWith $colorPrefix
+    | _fmt_FilepathForwardSlash
+
+    $errorCount = $Error.count ?? 0
+    # $errorString = ($Error.count ?? 0)
+    $errorColor = switch ($errorCount) {
+        { $_ -ge 1 -and $_ -lt 5 } {
+            'orange' ; break;
+        }
+        { $_ -ge 5 -and $_ -lt 12 } {
+            'darkorange'; break;
+        }
+        { $_ -gt 12 -and $_ -lt 20 } {
+            'orangered'; break;
+        }
+        { $_ -ge 20 } {
+            'red'; break;
+        }
+        0 {
+            'gray50'
+        }
+        default {
+            'magenta'
+        }
+    }
+    Write-Debug "Count: '$ErrorColor', '$errorCount'"
+    # $renderError = $errorColor, $errorCount -join ''
+    $renderError = New-Text -fg $errorColor $errorCount
+    $renderError | Write-Debug
+
+    @(
+        "`n"
+        "`n"
+        # ($Error.Count ?? 0)
+        $renderPath
+        ' '
+        $RenderError
+        ' PS> '
+    ) -join ''
+}
+function Enable-SafePrompt {
+    param(
+        [ValidateSet('__safePrompt', '__safePrompt_Sorta')]
+        [Parameter()]
+        [string]$ConfigName = '__safePrompt'
+    )
+    # $global:prompt = __safePrompt
+    # Set-Item -Path 'function:\prompt' -Value __safePrompt
+    Set-Item -Path 'function:\prompt' -Value $ConfigName
 }
 
 if ($true) {
@@ -533,11 +649,11 @@ aka
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 # $PSDefaultParameterValues['Code-Venv:Infa'] = 'continue'    # test it off
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
-$PSDefaultParameterValues['Ninmonkey.Console\Out-Fzf:OutVariable'] = 'fzf'
 
 $PSDefaultParameterValues['New-Alias:ErrorAction'] = 'SilentlyContinue' # mainly for re-running profile in the same session
 $PSDefaultParameterValues['Ninmonkey.Console\Get-ObjectProperty:TitleHeader'] = $true
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+$PSDefaultParameterValues['Ninmonkey.Console\Out-Fzf:OutVariable'] = 'fzf'
 $PSDefaultParameterValues['Ninmonkey.Console\Out-Fzf:OutVariable'] = 'fzf'
 $PSDefaultParameterValues['Ninmonkey.Console\Out-Fzf:MultiSelect'] = $true
 $PSDefaultParameterValues['Set-NinLocation:AlwaysLsAfter'] = $true
@@ -954,7 +1070,7 @@ $OptionalImports | ForEach-Object {
 Import-Module Dev.Nin -DisableNameChecking
 Import-Module posh-git -DisableNameChecking
 # finally "profile"
-Import-Module Ninmonkey.Profile -DisableNameChecking
+# Import-Module Ninmonkey.Profile -DisableNameChecking
 
 if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Backup-VSCode() start'
@@ -962,7 +1078,7 @@ if ($__ninConfig.LogFileEntries) {
 
 # todo: ThrottledTask
 Write-Warning 'Nyi: Throttle VSCode-Backup'
-Backup-VSCode -infa SilentlyContinue
+# Backup-VSCode -infa SilentlyContinue
 # & {
 
 # currently, all profiles use utf8
@@ -995,7 +1111,7 @@ if ($__ninConfig.LogFileEntries) {
 
 $env:NinEnableToastDebug = $True
 
-function Prompt {
+function Prompt_Nin {
     <#
     .synopsis
         directly redirect to real prompt. not profiled for performance at all
@@ -1004,9 +1120,7 @@ function Prompt {
     Write-NinProfilePrompt
     # IsAdmin = Test-UserIsAdmin
 }
-function SafePrompt {
-    "`nSafe> "
-}
+
 
 # ie: Lets you set aw breakpoint that fires only once on prompt
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
@@ -1044,7 +1158,7 @@ if ($false) {
         # 'Ctrl+r' | write-blue
         # | str prefix 'PsFzf: History set to '
 
-        hr 1
+        Hr 1
         'keybind ↳ History set to ↳ '
 
         # 'Ctrl+r' | Write-Color blue
@@ -1053,7 +1167,7 @@ if ($false) {
         #         'keybind ↳ History set to ↳ '
         #     ))
 
-        hr 1
+        Hr 1
     }
 }
 if ($__ninConfig.LogFileEntries) {
