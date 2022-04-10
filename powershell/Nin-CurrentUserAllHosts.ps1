@@ -4,7 +4,7 @@ using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
 # Import-Module 'Ninmonkey.Console', 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
-Import-Module 'Ninmonkey.Console', 'Dev.Nin' -Force -DisableNameChecking -ea 'stop'
+# Import-Module 'Ninmonkey.Console', 'Dev.Nin' -Force -DisableNameChecking -ea 'stop'
 
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
 
@@ -15,35 +15,8 @@ $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 # __countDuplicateLoad -key 'AllUserCurrentHost'
 # Import-Module 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
 
-Import-Module Ninmonkey.Console -DisableNameChecking
-
-Enable-NinCoreAliases
-Enable-SafePrompt __safePrompt
 
 
-function gocode {
-    <#
-    .synopsis
-        open file in vs code: similar to __safePrompt, minimal, always works
-    .example
-        PS> gi foo.ps1 | gocode
-    .example
-        PS> gocode (~/foo/bar.ps1
-    .link
-        __safePrompt
-
-    #>
-    param(
-        [Parameter(ValueFromPipeline, Position = 0, Mandatory)]
-        $Path
-    )
-    if ( Test-Path $Path ) {
-        & code.cmd @(
-            '--goto'
-            Get-Item -ea stop $Path | Join-String -DoubleQuote
-        )
-    }
-}
 
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
@@ -51,52 +24,72 @@ $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerSh
 <#
     [section]: Seemingly Sci imports
 #>
-if ($true -and $__ninConfig.LogFileEntries) {
-    $strToLog = "{0}`n{1}" -f @(
-        # "㏒ `naka $($PSCommandPath)""
-        #  "㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]`naka $($PSCommandPath)''
-        '㏒ => [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]'
-        '   aka: {0} ' -f @(
-            $PSCommandPath | To->RelativePath -BasePath $Env:Nin_Dotfiles
-        )
-    )
+# if ($true -and $__ninConfig.LogFileEntries) {
+#     $strToLog = "{0}`n{1}" -f @(
+#         # "㏒ `naka $($PSCommandPath)""
+#         #  "㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]`naka $($PSCommandPath)''
+#         '㏒ => [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]'
+#         '   aka: {0} ' -f @(
+#             $PSCommandPath | To->RelativePath -BasePath $Env:Nin_Dotfiles
+#         )
+#     )
 
 
 
-    #$__ninConfig.Import.SeeminglyScience) {
-    # refactor: temp test to see if it loads right
-    if ($__ninConfig.LogFileEntries) {
-        $strToLog | Write-Warning
-        Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
-    }
-}
+#$__ninConfig.Import.SeeminglyScience) {
+# # refactor: temp test to see if it loads right
+# if ($__ninConfig.LogFileEntries) {
+#     # to remove
+#     $strToLog | Write-Warning
+#     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
+# }
+# }
 # moved to nin.console
 
-if ($true) {
-    # for sci's module requires full path, becaus there's no parent named pattern
-    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-    if ($pathSeem) {
-        Import-Module pslambda
-        Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
-        Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-        Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-        Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
-    }
+$pathSeem = Get-Item -ea continue 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+if (! $PathSeem) {
+    Write-Warning "Attempted to import SeeminglySci failed: 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'"
 } else {
-    $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-    $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell') -join ''
-    $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience') -join ''
-    # Import-Module pslambda
-    Import-Module Utility -DisableNameChecking
+    Import-Module pslambda -DisableNameChecking
+    Import-Module -DisableNameChecking (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
     Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+    Write-Verbose 'SeeminglySci: Imported'
 }
 
-if ($__ninConfig.LogFileEntries) {
-    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
-}
+# if ($true) {
+#     # for sci's module requires full path, becaus there's no parent named pattern
+#     $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+#     if ($pathSeem) {
+#         # package distribute, copy to local path
+#         Import-Module pslambda
+#         Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+#         Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+#         Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+#         Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
+#     }
+# } else {
+#     $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+#     $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell') -join ''
+#     $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience') -join ''
+#     # Import-Module pslambda
+#     Import-Module Utility -DisableNameChecking
+#     Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+#     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+# }
 
-Import-Module dev.nin -DisableNameChecking
+# if ($__ninConfig.LogFileEntries) {
+#     # to remove
+#     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
+# }
+
+Import-Module Ninmonkey.Console -DisableNameChecking
+Import-Module Dev.Nin -DisableNameChecking
+
+Enable-NinCoreAlias
+Enable-SafePrompt __safePrompt
+
+
 <#
 first: 🚀
     - [ ] ask about how to namespace enums?
