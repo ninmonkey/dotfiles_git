@@ -3,49 +3,15 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
-# Import-Module 'Ninmonkey.Console', 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
-# Import-Module 'Ninmonkey.Console', 'Dev.Nin' -Force -DisableNameChecking -ea 'stop'
-
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
 
 # wip dev,nin: todo:2022-03
 # Keep colors when piping Pwsh in 7.2
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
-'🐧'
-# __countDuplicateLoad -key 'AllUserCurrentHost'
-# Import-Module 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
-
-
-
-
-$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
-$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
 
 <#
     [section]: Seemingly Sci imports
 #>
-# if ($true -and $__ninConfig.LogFileEntries) {
-#     $strToLog = "{0}`n{1}" -f @(
-#         # "㏒ `naka $($PSCommandPath)""
-#         #  "㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]`naka $($PSCommandPath)''
-#         '㏒ => [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1]'
-#         '   aka: {0} ' -f @(
-#             $PSCommandPath | To->RelativePath -BasePath $Env:Nin_Dotfiles
-#         )
-#     )
-
-
-
-#$__ninConfig.Import.SeeminglyScience) {
-# # refactor: temp test to see if it loads right
-# if ($__ninConfig.LogFileEntries) {
-#     # to remove
-#     $strToLog | Write-Warning
-#     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
-# }
-# }
-# moved to nin.console
-
 $pathSeem = Get-Item -ea continue 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
 if (! $PathSeem) {
     Write-Warning "Attempted to import SeeminglySci failed: 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'"
@@ -57,37 +23,22 @@ if (! $PathSeem) {
     Write-Verbose 'SeeminglySci: Imported'
 }
 
-# if ($true) {
-#     # for sci's module requires full path, becaus there's no parent named pattern
-#     $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-#     if ($pathSeem) {
-#         # package distribute, copy to local path
-#         Import-Module pslambda
-#         Import-Module (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
-#         Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-#         Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-#         Import-Module (Join-Path $PathSeem 'Utility.psm1') #-Force
-#     }
-# } else {
-#     $pathSeem = Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-#     $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell') -join ''
-#     $Env:PSModulePath = $Env:PSModulePath, ';', (Get-Item 'G:\2021-github-downloads\dotfiles\SeeminglyScience') -join ''
-#     # Import-Module pslambda
-#     Import-Module Utility -DisableNameChecking
-#     Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-#     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-# }
-
-# if ($__ninConfig.LogFileEntries) {
-#     # to remove
-#     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Dev.Nin'
-# }
-
+<#
+    [section]: essential imports
+#>
 Import-Module Ninmonkey.Console -DisableNameChecking
 Import-Module Dev.Nin -DisableNameChecking
 
 Enable-NinCoreAlias
 Enable-SafePrompt __safePrompt
+
+<#
+    [section]: secondary imports
+#>
+
+
+$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
+$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
 
 
 <#
@@ -100,22 +51,9 @@ first: 🚀
     - [ ] edit sci's bits to a _colorizeBits
 
 #>
-
-
 # Get-Command __doc__ | Join-String -op ' loaded?'
 # see also: C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10\AddDocstring-Sketch\Add-Docstring-sketch-iter3.ps1
-# try {
-#     . Get-Item -ea stop (Join-Path $PSScriptRoot 'Add-DocstringMemberInfo.ps1')
-# }
-# catch {
-#     Write-Host '♥ :('
-#     Write-Host '♥ :( Failed to import __doc__'
-#     Warn🛑 '♥ :( Failed to import __doc__, falling back on no-op polyfill'
-#     # Set-Alias '__doc__' -Value '__noop__' -Description 'failback for silent errors on documentation, as an experiment' -ea silentlyignore -Force
-# }
-# Get-Command __doc__ | Join-String -op ' loaded?'
-# . Get-Item -ea stop (Join-Path $PSScriptRoot 'Add-DocstringMemberInfo.ps1')
-# Get-Command __doc__ | Join-String -op ' loaded?'
+
 function __noop__ {
     <#
     .synopsis
@@ -130,7 +68,6 @@ function __noop__ {
     param()
 }
 
-$__warn = $false
 function Warn {
     [cmdletbinding()]
     [Alias('Warn🛑')]
@@ -173,29 +110,9 @@ if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Generate "complete_gh.ps1"'
     gh completion --shell powershell | Set-Content -Path temp:\complete_gh.ps1
 } else {
-    Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> complete_gh.ps1'
+    Write-Verbose '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> complete_gh.ps1'
     . (Get-Item Temp:\complete_gh.ps1)
 }
-
-
-# Measure-Command { & {
-#   gh completion --shell powershell | Set-Content -Path temp:\complete_gh.ps1
-#   . (gi Temp:\complete_gh.ps1)
-# } }
-# Measure-Command { & {
-#   Invoke-Expression -Command $(gh completion -s powershell | Out-String)
-# } }
-
-# try {
-#     . Get-Item (Join-Path $PSScriptRoot 'Nin-OneDriveFix.ps1')
-# } catch {
-#     Warn🛑 'Failed parsing: Nin-OneDriveFix.ps1'
-# }
-# $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true # temp dev hack
-# $PSDefaultParameterValues['Import-Module:ErrorAction'] = 'continue'
-# $ErrorActionPreference = 'continue'
-
-# Warn🛑 "run --->>>> '$PSCommandPath'"
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
@@ -214,7 +131,7 @@ if ($OneDrive.Enable_MyDocsBugMapping) {
     - initalizes '$__ninConfig'
 #>
 if ($false -and 'future') {
-    $__rConfigf ??= @{} | __doc__ "`$__ninConfig initializes here '$PSCommandPath'"
+    #     $__rConfigf ??= @{} | __doc__ "`$__ninConfig initializes here '$PSCommandPath'"
     # fn __doc__ will auto-collect filepaths automatically
 
     @'
@@ -424,14 +341,20 @@ function _reloadModule {
     $ExecutionContext | Jprop
 #>
 
+$eaIgnore = @{
+    'ErrorAction' = 'Ignore'
+    'PassThru'    = $True
+}
 @(
-    Set-Alias 'Repl->PtPy' -Value 'ptpython' -Description 'repl from: <https://github.com/prompt-toolkit/ptpython>'
-    Set-Alias 'rel' -Value '_reloadModule' -ea ignore
-    Set-Alias 'resolveCmd' -Value 'Resolve-CommandName' -ea ignore
-    Set-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Description 'to prevent shadowing by PSSCriptTools'
-    Set-Alias -ea ignore -Name 'DismSB' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'sci''s SB to Expressions module'
-    Set-Alias -ea ignore -Name 'Sci->Dism' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
-    Set-Alias -ea ignore -Name 'Dev->SBtoDismExpression' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
+
+    Set-Alias 'Repl->Pt
+    Py' -Value 'ptpython' -Description 'repl from: <https://github.com/prompt-toolkit/ptpython>'
+    Set-Alias @eaIgnore 'rel' -Value '_reloadModule'
+
+    # Set-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable' -Description 'to prevent shadowing by PSSCriptTools'
+    Set-Alias @eaIgnore -Name 'DismSB' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'sci''s SB to Expressions module'
+    Set-Alias @eaIgnore -Name 'Sci->Dism' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
+    Set-Alias @eaIgnore -Name 'Dev->SBtoDismExpression' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
 )
 & {
     $parent = (Get-Process -Id $pid).Parent.Name
