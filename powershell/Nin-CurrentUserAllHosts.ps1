@@ -15,6 +15,12 @@ $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
 # __countDuplicateLoad -key 'AllUserCurrentHost'
 # Import-Module 'Dev.Nin' -Force -DisableNameChecking #-ea 'stop'  # -Force #-ea stop
 
+Import-Module Ninmonkey.Console -DisableNameChecking
+
+Enable-NinCoreAliases
+Enable-SafePrompt __safePrompt
+
+
 function gocode {
     <#
     .synopsis
@@ -64,95 +70,7 @@ if ($true -and $__ninConfig.LogFileEntries) {
         Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> seemSci'
     }
 }
-
-function __safePrompt {
-    <#
-    .synopsis
-        zero dependency prompt, that includes errors
-    .link
-        __safePrompt_sorta
-    #>
-    param(
-        # [switch]$Enable
-    )
-    # if ($Enable) {
-    #     $global:prompt = $script:__safePrompt
-    # }
-    @(
-        "`n", ($Error.Count ?? 0),
-        "`nPS> "
-    ) -join ''
-}
-function __safePrompt_sorta {
-    <#
-    .synopsis
-        slightly added depedencies but mostly not
-    .link
-        __safePrompt
-    #>
-    [cmdletbinding()]
-    param(
-        # [switch]$Enable
-    )
-
-
-    # if ($Enable) {
-    #     $global:prompt = $script:__safePrompt
-    # }
-
-    $colorPrefix = New-Text -fg gray50 'nin'
-
-    $renderPath = Get-Location
-    | _fmt_FilepathWithoutUsernamePrefix -ReplaceWith $colorPrefix
-    | _fmt_FilepathForwardSlash
-
-    $errorCount = $Error.count ?? 0
-    # $errorString = ($Error.count ?? 0)
-    $errorColor = switch ($errorCount) {
-        { $_ -ge 1 -and $_ -lt 5 } {
-            'orange' ; break;
-        }
-        { $_ -ge 5 -and $_ -lt 12 } {
-            'darkorange'; break;
-        }
-        { $_ -gt 12 -and $_ -lt 20 } {
-            'orangered'; break;
-        }
-        { $_ -ge 20 } {
-            'red'; break;
-        }
-        0 {
-            'gray50'
-        }
-        default {
-            'magenta'
-        }
-    }
-    Write-Debug "Count: '$ErrorColor', '$errorCount'"
-    # $renderError = $errorColor, $errorCount -join ''
-    $renderError = New-Text -fg $errorColor $errorCount
-    $renderError | Write-Debug
-
-    @(
-        "`n"
-        "`n"
-        # ($Error.Count ?? 0)
-        $renderPath
-        ' '
-        $RenderError
-        ' PS> '
-    ) -join ''
-}
-function Enable-SafePrompt {
-    param(
-        [ValidateSet('__safePrompt', '__safePrompt_Sorta')]
-        [Parameter()]
-        [string]$ConfigName = '__safePrompt'
-    )
-    # $global:prompt = __safePrompt
-    # Set-Item -Path 'function:\prompt' -Value __safePrompt
-    Set-Item -Path 'function:\prompt' -Value $ConfigName
-}
+# moved to nin.console
 
 if ($true) {
     # for sci's module requires full path, becaus there's no parent named pattern

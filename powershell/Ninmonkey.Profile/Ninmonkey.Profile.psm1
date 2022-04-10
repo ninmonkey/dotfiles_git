@@ -1,7 +1,12 @@
 #Requires -Module Dev.Nin
 #Requires -Module Ninmonkey.Console
 
-Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1]'
+# Import-Module dev.nin -Force
+# Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1] -> Before Importing "dev.nin"'
+
+Import-Module dev.nin -Force -wa continue -ea continue
+Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1] <- finished importing "dev.nin"'
+Write-Warning 'WARNING: finished import [dev.nin.psm1]'
 
 $script:_state = @{}
 # Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
@@ -23,7 +28,9 @@ function _silentReload {
         [string[]]$ModuleName = @('ninmonkey.console', 'dev.nin')
     )
     $ModuleName | ForEach-Object {
-        Import-Module $_ -Force -DisableNameChecking -wa Ignore *>&1 | Out-Null } | Out-Null
+        Import-Module $_ -Scope Global -Force -DisableNameChecking -wa Ignore *>&1 | Out-Null
+    }
+    | Out-Null
 
     if (Test-HasNewError) {
         'Something went wrong' | write-color 'orange'
@@ -284,6 +291,7 @@ $newAliasList
 # | Write-Debug
 
 
+
 function _reRollPrompt {
     # Re-randomizes the breadcrumb key names
     Reset-RandomPerSession -Name 'prompt.crumb.colorBreadEnd', 'prompt.crumb.colorBreadStart'
@@ -471,9 +479,10 @@ function _Write-PromptPathToBreadCrumbs {
 $script:__temp ??= @{} #??= @{}
 $script:__temp.IncludeDebugPrompt ??= $true
 
-if (!  $script:__ninConfig.Prompt.SegmentChildCountFormat ) {
-    'Bad bad bad ' | Write-Warning
-}
+# retire:
+# if (!  $script:__ninConfig.Prompt.SegmentChildCountFormat ) {
+#     'Bad bad bad ' | Write-Warning
+# }
 if ($script:__ninConfig.Prompt) {
     $script:__ninConfig.Prompt.SegmentChildCountFormat ??= 'Icons' # ??= should have worked, unless config doesn't exist
     $script:__ninConfig.Prompt.SegmentExtensionType ??= $true
@@ -542,8 +551,8 @@ function _Write-SegmentChildCount {
         Directory = '📁'
         File      = '📄'
     }
-    $numFiles = Get-ChildItem . -File | len
-    $numDirs = Get-ChildItem . -Directory | len
+    $numFiles = Get-ChildItem . -File | Len
+    $numDirs = Get-ChildItem . -Directory | Len
     switch ($FormatMode) {
         'Icons' {
 
@@ -698,13 +707,13 @@ function _Write-ErrorSummaryPrompt {
         }
 
         @(
-            hr
+            Hr
             $Config | Format-Dict
-            hr
+            Hr
 
             $Config = Join-Hashtable $Config ($Options ?? @{})
             $Config | format-dict
-            hr
+            Hr
         ) | Write-Information
         $c = $colors
     }
@@ -1322,13 +1331,13 @@ if (Test-Path $src) {
 
 if ($false) {
     # testing air-quote
-    hr -fg orange
+    Hr -fg orange
     _Write-ErrorSummaryPrompt -AlwaysShow -Options @{'FormatMode' = 'cleanColor' }
-    hr -fg magenta
+    Hr -fg magenta
     _Write-ErrorSummaryPrompt -AlwaysShow -Options @{'FormatMode' = 'medColor' }
-    hr
+    Hr
     _Write-ErrorSummaryPrompt -AlwaysShow
-    hr -fg orange
+    Hr -fg orange
 }
 # @(
 #     'Profile: 🏠 <-- End'
