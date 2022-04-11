@@ -86,6 +86,7 @@ es_FindDuplicateMacro $Config
 
 $violations = [list[BestPracticeRuleViolation]]::new()
 
+
 function _testSingleConfigEntry {
     [cmdletbinding()]
     param(
@@ -98,8 +99,8 @@ function _testSingleConfigEntry {
 
     $resultSummary = @{
         TargetConfig    = $TargetConfig
-        RuleViolations  = [RuleParseResult[]]::new()
-        RuleParseResult = [RuleParseResult[]]::new()
+        RuleViolations  = [list[RuleParseResult]]::new()
+        RuleParseResult = [list[RuleParseResult]]::new()
     }
 
     Write-Debug "Testing: '$TargetConfig'"
@@ -117,8 +118,11 @@ function _testSingleConfigEntry {
         }
     }
 
+    return $resultSummary
 
 }
 
 
-_testSingleConfigEntry -TargetConfig $config[4] -debug -BestPracticeRules $BestPracticeRules
+$entryResult = _testSingleConfigEntry -TargetConfig $config[4] -debug -BestPracticeRules $BestPracticeRules
+H1 'single result summary'
+$entryResult
