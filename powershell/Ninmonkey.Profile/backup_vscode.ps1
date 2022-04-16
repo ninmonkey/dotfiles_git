@@ -9,6 +9,7 @@ Write-Verbose 'WARNING: ㏒ [backup_vscode.ps1]'
 
 if (! (Get-Command -ea ignore Dev.Nin\str)) {
     'appear to be missing dev.nin' | Write-Warning
+    Import-Module dev.nin -Force -ea stop
     return
 }
 function Backup-VSCode {

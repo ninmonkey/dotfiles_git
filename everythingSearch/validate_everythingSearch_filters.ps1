@@ -1,14 +1,35 @@
 class BestPracticeRule {
+    # to be a GUID across rule definitions
     [int]$Id
+
+    # Short Name
     [string]$Name
+    # Extra information
     [string]$Description
+
+    <#
+    function to parse,
+        passed the config to validate,
+        and the list of all rules (if needed)
+    inputs:
+        param( $curConfig, $AllConfig )
+    # outputs:
+        [RuleParseResult]
+    #>
     [ScriptBlock]$Script
 }
 
 class RuleParseResult {
+    # state for a single rule
     [bool]$Success
     [string]$Message
     [hashtable]$Detail
+}
+
+class BestPracticeRuleViolation {
+    # What failed, with custom payloads
+    [BestPracticeRule]$RuleDefinition
+    [object]$ConfigViolated
 }
 
 [BestPracticeRule[]]$BestPracticeRules = @(
@@ -61,10 +82,6 @@ class RuleParseResult {
     }
 )
 
-class BestPracticeRuleViolation {
-    [BestPracticeRule]$RuleDefinition
-    [object]$ConfigViolated
-}
 
 $AppConf = @{ Root = Get-Item $PSScriptRoot }
 $AppConf += @{
