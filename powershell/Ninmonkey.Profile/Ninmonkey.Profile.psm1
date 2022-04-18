@@ -233,7 +233,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
         Ninmonkey.Console\ConvertTo-PropertyList
         Ninmonkey.Console\ConvertTo-RegexLiteral
         Ninmonkey.Console\ConvertTo-Timespan
-        Ninmonkey.Powershell\ConvertTo-Culture
+
     #>
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
 
