@@ -250,7 +250,7 @@ function _reloadModule {
     param(
         [cmdletbinding()]
         [parameter(Position = 0)]
-        [ArgumentCompletions('BasicModuleTemplate', 'CollectDotfiles', 'Dev.Nin', 'Jake.Pwsh.AwsCli', 'ModuleData', 'ninLog', 'Ninmonkey.Console', 'Ninmonkey.Factorio', 'Ninmonkey.Powershell', 'Ninmonkey.Profile', 'Ninmonkey.TemplateText', 'Portal.Powershell', 'Powershell.Cv', 'Powershell.Jake', 'Template.Autocomplete')]
+        [ArgumentCompletions('BasicModuleTemplate', 'CollectDotfiles', 'Dev.Nin', 'Jake.Pwsh.AwsCli', 'ModuleData', 'ninLog', 'Ninmonkey.Console', 'Ninmonkey.Factorio', 'Ninmonkey.Profile', 'Ninmonkey.TemplateText', 'Portal.Powershell', 'Powershell.Cv', 'Powershell.Jake', 'Template.Autocomplete')]
         [string[]]$Name,
         # Temporarily enable warnings
         [parameter()][switch]$AllowWarn,
@@ -262,7 +262,6 @@ function _reloadModule {
         # 'Ninmonkey.Profile'
         'Dev.Nin'
         'Ninmonkey.Console'
-        'Ninmonkey.Powershell'
         'ninLog'
         # 'BasicModuleTemplate'
         # 'CollectDotfiles'
@@ -875,7 +874,6 @@ $OptionalImports = @(
     'ClassExplorer'
     'Ninmonkey.Console'
     'Dev.Nin'
-    'Ninmonkey.Powershell'
     # 'Posh-Git'
 
     # 'PSFzf'
@@ -1069,6 +1067,6 @@ if ($false) {
     }
 }
 
-if (!(Get-Module dev.nin)) {
-    Import-Module Dev.Nin
-}
+# if (!(Get-Module dev.nin)) {
+#     Import-Module Dev.Nin
+# }
