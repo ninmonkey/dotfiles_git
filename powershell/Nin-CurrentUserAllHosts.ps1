@@ -3,6 +3,7 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+
 Set-Alias 'sc' -Value 'Set-Content'
 
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
@@ -32,7 +33,6 @@ Import-Module Ninmonkey.Console -DisableNameChecking
 Import-Module Dev.Nin -DisableNameChecking
 
 Enable-NinCoreAlias
-Enable-SafePrompt __safePrompt
 
 <#
     [section]: secondary imports
@@ -41,6 +41,8 @@ Enable-SafePrompt __safePrompt
 
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
 $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
+$Env:RIPGREP_CONFIG_PATH = (Get-Item 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\cli\ripgrep\.ripgreprc')
+
 
 
 <#
@@ -433,6 +435,14 @@ $Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
 
 $ENV:PAGER = 'bat'
 $ENV:PYTHONSTARTUP = Get-Item -ea continue "${Env:Nin_Dotfiles}/cli/python/nin-py3-x-profile.py"
+
+# if (! (Test-Path $Env:BAT_CONFIG_PATH)) {
+#     $maybeRelative = Get-Item $Env:Nin_Dotfiles\cli\bat\.batrc #@eaIgnore
+#     if ($maybeRelative) {
+#         $Env:BAT_CONFIG_PATH = $MaybeRelativePath
+#     }
+# }
+$Env:BAT_CONFIG_PATH = Get-Item $Env:Nin_Dotfiles\cli\bat\.batrc #@eaIgnore
 <#
 bat
     --force-colorization --pager <command>
@@ -901,8 +911,8 @@ $OptionalImports | ForEach-Object {
 }
 # }
 
-Import-Module Dev.Nin -DisableNameChecking
-Import-Module posh-git -DisableNameChecking
+# Import-Module Dev.Nin -DisableNameChecking
+# Import-Module posh-git -DisableNameChecking
 # finally "profile"
 # Import-Module Ninmonkey.Profile -DisableNameChecking
 
@@ -955,6 +965,10 @@ function Prompt_Nin {
     # IsAdmin = Test-UserIsAdmin
 }
 
+function prompt {
+    # wrapper, prevents gitbash autolading on default prompt
+    Prompt_Nin
+}
 
 # ie: Lets you set aw breakpoint that fires only once on prompt
 # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once

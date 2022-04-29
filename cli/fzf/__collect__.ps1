@@ -9,6 +9,15 @@ $meta = @{
             # Path        = Get-Item   "$Env:AppData\bat"
         }
     )
+    Notes        = @'
+
+# preview mode with bat
+
+    fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'
+
+        first N lines for speed
+
+'@
 }
 # ls $Env:AppData\fd -Force -Depth 3 -Name
 $meta

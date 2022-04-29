@@ -1,6 +1,32 @@
 $eaIgnore = @{
     ErrorAction = 'Ignore' #'silentlyContinue'
 }
+$maybeFile = Invoke-NativeCommand 'bat' -args @('--config-file')
+
+Write-Warning 'this is a sketch, not a real file'
+
+if (! (Test-Path $MaybeFile )) {
+    '<nyi>Prompt user -> Generate Template using "bat --generate-config-file'
+
+}
+
+& {
+    Write-Warning "'$PSCommandPath' : this whole Env Var blcok is untested, and should use wrappers for consistant state tests"
+    $SetEnvVars = $true
+    if ($SetEnvVars) {
+        $ENV:BAT_CONFIG_PATH = Get-Item @eaIgnore (Join-Path $PSSCriptRoot '.batrc')
+
+    }
+    if (! (Test-Path $Env:BAT_CONFIG_PATH)) {
+        $maybeRelative = Get-Item $Env:Nin_Dotfiles\cli\bat\.batrc @eaIgnore
+        if ($maybeRelative) {
+            $Env:BAT_CONFIG_PATH = $MaybeRelativePath
+        }
+    }
+}
+
+
+
 $meta = @{
     WhoAmI       = 'bat'
     Urls         = @(
@@ -47,7 +73,6 @@ Note: By default, if the pager is set to less (and no command-line options are s
     CollectItems = @(
 
         Path =Invoke-NativeCommand @eaIgnore 'bat' @('--config-dir') | Get-Item @eaIgnore
-        Destination = gi (Join-Path $PSSCriptRoot '.batrc')
 
     )
     CollectPaths = @(
@@ -58,59 +83,3 @@ Note: By default, if the pager is set to less (and no command-line options are s
     )
 
 }
-
-$meta
-
-Write-Warning "Invoke->LogCollect '$PSCommandPath'"
-
-Write-Verbose "Invoke->LogCollect '$PSCommandPath'"
-
-return
-# refactor to unified build
-
-# $meta = @{
-#     WhoAmI       = 'fd find'
-#     Urls         = @(
-#         'https://www.voidtools.com/support/everything/command_line_options/'
-#         'https://www.voidtools.com/support/everything/searching/#search_commands' # exports config
-#         'https://www.voidtools.com/support/everything/command_line_interface/'
-#         'https://www.voidtools.com/support/everything/file_lists/'
-#         'https://www.voidtools.com/support/everything/searching/#functions'
-#     )
-#     CollectPaths = @(
-#         @{
-#             Path = Get-Item "$Env:AppData\fd"
-#             # Path        = Get-Item   "$Env:AppData\bat"
-#         }
-#     )
-# # }
-
-# & {
-#     $InformationPreference = 'continue'
-#     # $VerbosePreference = 'silentlyContinue'
-#     $meta | Format-Table -AutoSize -Wrap
-
-#     # Write-Warning "Invoke->LogCollect '$PSCommandPath'"
-#     # Write-Verbose "Invoke->LogCollect '$PSCommandPath'"
-#     @"
-# "Invoke->LogCollect '$PSCommandPath'"
-#     Context
-# "@
-#     | Write-Information
-
-
-#     $Meta.CollectItems | ForEach-Object {
-#         $item = $_
-#         Copy-Item $item.Path -Destination $item.Destination #-Verbose
-#         @"
-# CopyItem ->
-#     from: $($item.Path)
-#     dest: $($item.Destination)
-# "@ | Write-Information
-#     } -infa continue
-
-# }
-
-# # Get-ChildItem .
-# # refactor to unified build
-

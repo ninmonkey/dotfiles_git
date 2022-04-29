@@ -1,12 +1,12 @@
-#Requires -Module Dev.Nin
 #Requires -Module Ninmonkey.Console
+#Requires -Module Dev.Nin
 
 # Import-Module dev.nin -Force
 # Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1] -> Before Importing "dev.nin"'
 
-Import-Module dev.nin -Force -wa continue -ea continue
-Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1] <- finished importing "dev.nin"'
-Write-Warning 'WARNING: finished import [dev.nin.psm1]'
+# Import-Module dev.nin -Force -wa continue -ea stop #continue
+# Write-Warning 'WARNING: ㏒ [Ninmonkey.Profile.psm1] <- finished importing "dev.nin"'
+# Write-Warning 'WARNING: finished import [dev.nin.psm1]'
 
 $script:_state = @{}
 # Set-Alias -Name 'code' -Value 'code-insiders' -Scope Global -Force -ea ignore -Description 'Overwrite like PSKoans opening the wrong app'
@@ -1004,6 +1004,24 @@ function Write-NinProfilePrompt {
     # do not use extra newlines on missing segments
 
     switch ($__ninConfig.Prompt.Profile) {
+        'dim' {
+            # __doc__: dim, simple prompt. shows full path
+            @(
+                _Write-Predent -IncludeHorizontalLine:$false -NewlineCount 2
+
+                "${fg:gray40}"
+                Get-Location
+
+                "`n $($Error.Count) "
+
+                'PS> '
+                "$($PSStyle.Reset)"
+
+
+            ) | Join-String
+
+        }
+
         'errorSummary' {
             @(
                 "`n"
