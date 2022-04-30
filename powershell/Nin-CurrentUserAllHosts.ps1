@@ -961,7 +961,31 @@ function Prompt_Nin {
         directly redirect to real prompt. not profiled for performance at all
     .description
     #>
-    Write-NinProfilePrompt
+
+    $profile_isLoaded = $false
+
+    if (Get-Module Ninmonkey.Profile -ea ignore) {
+        $profile_isLoaded = $true
+    }
+
+    $devNin_isLoaded = $false
+    if (Get-Command Dev.Nin\Test-HasNewError -ea ignore) {
+        $devNin_isLoaded = $true
+    }
+
+    if ($profile_isLoaded -and $devNin_isLoaded) {
+        Write-NinProfilePrompt
+        return
+    }
+
+    @(
+        "`n"
+        ($error.count -gt 0) ? $error.Count : $null
+        Get-Location
+        'safe> '
+    ) | Join-String -sep "`n"
+
+    # ) | Join-String -sep "`nPS> "
     # IsAdmin = Test-UserIsAdmin
 }
 
