@@ -1,37 +1,31 @@
 // THIS IS AN AUTO-GENERATED FILE! Changes to this file will be ignored.
 {
     "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-
     // Launch Settings
     "initialCols": 120,
     "initialRows": 30,
     "launchMode": "default",
     "alwaysOnTop": false,
-
     // Selection
     "copyOnSelect": false,
     "copyFormatting": true,
     "trimBlockSelection": false,
     "wordDelimiters": " /\\()\"'-.,:;<>~!@#$%^&*|+=[]{}~?\u2502",
-
     // Tab UI
     "alwaysShowTabs": true,
     "showTabsInTitlebar": true,
     "showTerminalTitleInTitlebar": true,
     "tabWidthMode": "equal",
     "tabSwitcherMode": "inOrder",
-
     // Miscellaneous
     "confirmCloseAllTabs": true,
-    "startOnUserLogin":  false,
+    "startOnUserLogin": false,
     "theme": "system",
     "snapToGridOnResize": true,
     "disableAnimations": false,
     "startupActions": "",
     "focusFollowMouse": false,
-
-    "profiles":
-    [
+    "profiles": [
         {
             "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
             "name": "Windows PowerShell",
@@ -71,8 +65,7 @@
             "useAcrylic": false
         }
     ],
-    "schemes":
-    [
+    "schemes": [
         // A profile can override the following color scheme values:
         //   - "foreground"
         //   - "background"
@@ -276,125 +269,468 @@
             "brightWhite": "#EEEEEC"
         }
     ],
-    "actions":
-    [
+    "actions": [
         // Application-level Keys
-        { "command": "closeWindow", "keys": "alt+f4" },
-        { "command": "toggleFullscreen", "keys": "alt+enter" },
-        { "command": "toggleFullscreen", "keys": "f11" },
-        { "command": "toggleFocusMode" },
-        { "command": "toggleAlwaysOnTop" },
-        { "command": "openNewTabDropdown", "keys": "ctrl+shift+space" },
-        { "command": { "action": "openSettings", "target": "settingsUI" }, "keys": "ctrl+," },
-        { "command": { "action": "openSettings", "target": "settingsFile" }, "keys": "ctrl+shift+," },
-        { "command": { "action": "openSettings", "target": "defaultsFile" }, "keys": "ctrl+alt+," },
-        { "command": "find", "keys": "ctrl+shift+f" },
-        { "command": { "action": "findMatch", "direction": "next" } },
-        { "command": { "action": "findMatch", "direction": "prev" } },
-        { "command": "toggleShaderEffects" },
-        { "command": "openTabColorPicker" },
-        { "command": "renameTab" },
-        { "command": "openTabRenamer" },
-        { "command": "commandPalette", "keys":"ctrl+shift+p" },
-        { "command": "identifyWindow" },
-        { "command": "openWindowRenamer" },
-        { "command": "quakeMode", "keys":"win+`" },
-
+        {
+            "command": "closeWindow",
+            "keys": "alt+f4"
+        },
+        {
+            "command": "toggleFullscreen",
+            "keys": "alt+enter"
+        },
+        {
+            "command": "toggleFullscreen",
+            "keys": "f11"
+        },
+        {
+            "command": "toggleFocusMode"
+        },
+        {
+            "command": "toggleAlwaysOnTop"
+        },
+        {
+            "command": "openNewTabDropdown",
+            "keys": "ctrl+shift+space"
+        },
+        {
+            "command": {
+                "action": "openSettings",
+                "target": "settingsUI"
+            },
+            "keys": "ctrl+,"
+        },
+        {
+            "command": {
+                "action": "openSettings",
+                "target": "settingsFile"
+            },
+            "keys": "ctrl+shift+,"
+        },
+        {
+            "command": {
+                "action": "openSettings",
+                "target": "defaultsFile"
+            },
+            "keys": "ctrl+alt+,"
+        },
+        {
+            "command": "find",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "command": {
+                "action": "findMatch",
+                "direction": "next"
+            }
+        },
+        {
+            "command": {
+                "action": "findMatch",
+                "direction": "prev"
+            }
+        },
+        {
+            "command": "toggleShaderEffects"
+        },
+        {
+            "command": "openTabColorPicker"
+        },
+        {
+            "command": "renameTab"
+        },
+        {
+            "command": "openTabRenamer"
+        },
+        {
+            "command": "commandPalette",
+            "keys": "ctrl+shift+p"
+        },
+        {
+            "command": "identifyWindow"
+        },
+        {
+            "command": "openWindowRenamer"
+        },
+        {
+            "command": "quakeMode",
+            "keys": "win+`"
+        },
         // Tab Management
         // "command": "closeTab" is unbound by default.
         //   The closeTab command closes a tab without confirmation, even if it has multiple panes.
-        { "command": "closeOtherTabs" },
-        { "command": "closeTabsAfter" },
-        { "command": { "action" : "moveTab", "direction": "forward" }},
-        { "command": { "action" : "moveTab", "direction": "backward" }},
-        { "command": "newTab", "keys": "ctrl+shift+t" },
-        { "command": "newWindow", "keys": "ctrl+shift+n" },
-        { "command": { "action": "newTab", "index": 0 }, "keys": "ctrl+shift+1" },
-        { "command": { "action": "newTab", "index": 1 }, "keys": "ctrl+shift+2" },
-        { "command": { "action": "newTab", "index": 2 }, "keys": "ctrl+shift+3" },
-        { "command": { "action": "newTab", "index": 3 }, "keys": "ctrl+shift+4" },
-        { "command": { "action": "newTab", "index": 4 }, "keys": "ctrl+shift+5" },
-        { "command": { "action": "newTab", "index": 5 }, "keys": "ctrl+shift+6" },
-        { "command": { "action": "newTab", "index": 6 }, "keys": "ctrl+shift+7" },
-        { "command": { "action": "newTab", "index": 7 }, "keys": "ctrl+shift+8" },
-        { "command": { "action": "newTab", "index": 8 }, "keys": "ctrl+shift+9" },
-        { "command": "duplicateTab", "keys": "ctrl+shift+d" },
-        { "command": "nextTab", "keys": "ctrl+tab" },
-        { "command": "prevTab", "keys": "ctrl+shift+tab" },
-        { "command": { "action": "switchToTab", "index": 0 }, "keys": "ctrl+alt+1" },
-        { "command": { "action": "switchToTab", "index": 1 }, "keys": "ctrl+alt+2" },
-        { "command": { "action": "switchToTab", "index": 2 }, "keys": "ctrl+alt+3" },
-        { "command": { "action": "switchToTab", "index": 3 }, "keys": "ctrl+alt+4" },
-        { "command": { "action": "switchToTab", "index": 4 }, "keys": "ctrl+alt+5" },
-        { "command": { "action": "switchToTab", "index": 5 }, "keys": "ctrl+alt+6" },
-        { "command": { "action": "switchToTab", "index": 6 }, "keys": "ctrl+alt+7" },
-        { "command": { "action": "switchToTab", "index": 7 }, "keys": "ctrl+alt+8" },
-        { "command": { "action": "switchToTab", "index": 8 }, "keys": "ctrl+alt+9" },
-
+        {
+            "command": "closeOtherTabs"
+        },
+        {
+            "command": "closeTabsAfter"
+        },
+        {
+            "command": {
+                "action": "moveTab",
+                "direction": "forward"
+            }
+        },
+        {
+            "command": {
+                "action": "moveTab",
+                "direction": "backward"
+            }
+        },
+        {
+            "command": "newTab",
+            "keys": "ctrl+shift+t"
+        },
+        {
+            "command": "newWindow",
+            "keys": "ctrl+shift+n"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 0
+            },
+            "keys": "ctrl+shift+1"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 1
+            },
+            "keys": "ctrl+shift+2"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 2
+            },
+            "keys": "ctrl+shift+3"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 3
+            },
+            "keys": "ctrl+shift+4"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 4
+            },
+            "keys": "ctrl+shift+5"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 5
+            },
+            "keys": "ctrl+shift+6"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 6
+            },
+            "keys": "ctrl+shift+7"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 7
+            },
+            "keys": "ctrl+shift+8"
+        },
+        {
+            "command": {
+                "action": "newTab",
+                "index": 8
+            },
+            "keys": "ctrl+shift+9"
+        },
+        {
+            "command": "duplicateTab",
+            "keys": "ctrl+shift+d"
+        },
+        {
+            "command": "nextTab",
+            "keys": "ctrl+tab"
+        },
+        {
+            "command": "prevTab",
+            "keys": "ctrl+shift+tab"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 0
+            },
+            "keys": "ctrl+alt+1"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 1
+            },
+            "keys": "ctrl+alt+2"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 2
+            },
+            "keys": "ctrl+alt+3"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 3
+            },
+            "keys": "ctrl+alt+4"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 4
+            },
+            "keys": "ctrl+alt+5"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 5
+            },
+            "keys": "ctrl+alt+6"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 6
+            },
+            "keys": "ctrl+alt+7"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 7
+            },
+            "keys": "ctrl+alt+8"
+        },
+        {
+            "command": {
+                "action": "switchToTab",
+                "index": 8
+            },
+            "keys": "ctrl+alt+9"
+        },
         // Pane Management
-        { "command": "closePane", "keys": "ctrl+shift+w" },
-        { "command": { "action": "splitPane", "split": "horizontal" }, "keys": "alt+shift+-" },
-        { "command": { "action": "splitPane", "split": "vertical" }, "keys": "alt+shift+plus" },
-        { "command": { "action": "resizePane", "direction": "down" }, "keys": "alt+shift+down" },
-        { "command": { "action": "resizePane", "direction": "left" }, "keys": "alt+shift+left" },
-        { "command": { "action": "resizePane", "direction": "right" }, "keys": "alt+shift+right" },
-        { "command": { "action": "resizePane", "direction": "up" }, "keys": "alt+shift+up" },
-        { "command": { "action": "moveFocus", "direction": "down" }, "keys": "alt+down" },
-        { "command": { "action": "moveFocus", "direction": "left" }, "keys": "alt+left" },
-        { "command": { "action": "moveFocus", "direction": "right" }, "keys": "alt+right" },
-        { "command": { "action": "moveFocus", "direction": "up" }, "keys": "alt+up" },
-        { "command": { "action": "moveFocus", "direction": "previous" }, "keys": "ctrl+alt+left" },
-        { "command": "togglePaneZoom" },
-        { "command": "toggleReadOnlyMode" },
-
+        {
+            "command": "closePane",
+            "keys": "ctrl+shift+w"
+        },
+        {
+            "command": {
+                "action": "splitPane",
+                "split": "horizontal"
+            },
+            "keys": "alt+shift+-"
+        },
+        {
+            "command": {
+                "action": "splitPane",
+                "split": "vertical"
+            },
+            "keys": "alt+shift+plus"
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "down"
+            },
+            "keys": "alt+shift+down"
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "left"
+            },
+            "keys": "alt+shift+left"
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "right"
+            },
+            "keys": "alt+shift+right"
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "up"
+            },
+            "keys": "alt+shift+up"
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "down"
+            },
+            "keys": "alt+down"
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "left"
+            },
+            "keys": "alt+left"
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "right"
+            },
+            "keys": "alt+right"
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "up"
+            },
+            "keys": "alt+up"
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "previous"
+            },
+            "keys": "ctrl+alt+left"
+        },
+        {
+            "command": "togglePaneZoom"
+        },
+        {
+            "command": "toggleReadOnlyMode"
+        },
         // Clipboard Integration
-        { "command": { "action": "copy", "singleLine": false }, "keys": "ctrl+shift+c" },
-        { "command": { "action": "copy", "singleLine": false }, "keys": "ctrl+insert" },
-        { "command": "paste", "keys": "ctrl+shift+v" },
-        { "command": "paste", "keys": "shift+insert" },
-
+        {
+            "command": {
+                "action": "copy",
+                "singleLine": false
+            },
+            "keys": "ctrl+shift+c"
+        },
+        {
+            "command": {
+                "action": "copy",
+                "singleLine": false
+            },
+            "keys": "ctrl+insert"
+        },
+        {
+            "command": "paste",
+            "keys": "ctrl+shift+v"
+        },
+        {
+            "command": "paste",
+            "keys": "shift+insert"
+        },
         // Scrollback
-        { "command": "scrollDown", "keys": "ctrl+shift+down" },
-        { "command": "scrollDownPage", "keys": "ctrl+shift+pgdn" },
-        { "command": "scrollUp", "keys": "ctrl+shift+up" },
-        { "command": "scrollUpPage", "keys": "ctrl+shift+pgup" },
-        { "command": "scrollToTop", "keys": "ctrl+shift+home" },
-        { "command": "scrollToBottom", "keys": "ctrl+shift+end" },
-
+        {
+            "command": "scrollDown",
+            "keys": "ctrl+shift+down"
+        },
+        {
+            "command": "scrollDownPage",
+            "keys": "ctrl+shift+pgdn"
+        },
+        {
+            "command": "scrollUp",
+            "keys": "ctrl+shift+up"
+        },
+        {
+            "command": "scrollUpPage",
+            "keys": "ctrl+shift+pgup"
+        },
+        {
+            "command": "scrollToTop",
+            "keys": "ctrl+shift+home"
+        },
+        {
+            "command": "scrollToBottom",
+            "keys": "ctrl+shift+end"
+        },
         // Visual Adjustments
-        { "command": { "action": "adjustFontSize", "delta": 1 }, "keys": "ctrl+=" },
-        { "command": { "action": "adjustFontSize", "delta": -1 }, "keys": "ctrl+-" },
-        { "command": { "action": "adjustFontSize", "delta": 1 }, "keys": "ctrl+numpad_plus" },
-        { "command": { "action": "adjustFontSize", "delta": -1 }, "keys": "ctrl+numpad_minus" },
-        { "command": "resetFontSize", "keys": "ctrl+0" },
-
+        {
+            "command": {
+                "action": "adjustFontSize",
+                "delta": 1
+            },
+            "keys": "ctrl+="
+        },
+        {
+            "command": {
+                "action": "adjustFontSize",
+                "delta": -1
+            },
+            "keys": "ctrl+-"
+        },
+        {
+            "command": {
+                "action": "adjustFontSize",
+                "delta": 1
+            },
+            "keys": "ctrl+numpad_plus"
+        },
+        {
+            "command": {
+                "action": "adjustFontSize",
+                "delta": -1
+            },
+            "keys": "ctrl+numpad_minus"
+        },
+        {
+            "command": "resetFontSize",
+            "keys": "ctrl+0"
+        },
         // Other commands
         {
             // Select color scheme...
-            "name": { "key": "SetColorSchemeParentCommandName" },
+            "name": {
+                "key": "SetColorSchemeParentCommandName"
+            },
             "commands": [
                 {
                     "iterateOn": "schemes",
                     "name": "${scheme.name}",
-                    "command": { "action": "setColorScheme", "colorScheme": "${scheme.name}" }
+                    "command": {
+                        "action": "setColorScheme",
+                        "colorScheme": "${scheme.name}"
+                    }
                 }
             ]
         },
         {
             // New tab...
-            "name": { "key": "NewTabParentCommandName" },
+            "name": {
+                "key": "NewTabParentCommandName"
+            },
             "commands": [
                 {
                     "iterateOn": "profiles",
                     "icon": "${profile.icon}",
                     "name": "${profile.name}",
-                    "command": { "action": "newTab", "profile": "${profile.name}" }
+                    "command": {
+                        "action": "newTab",
+                        "profile": "${profile.name}"
+                    }
                 }
             ]
         },
         {
             // Split pane...
-            "name": { "key": "SplitPaneParentCommandName" },
+            "name": {
+                "key": "SplitPaneParentCommandName"
+            },
             "commands": [
                 {
                     "iterateOn": "profiles",
@@ -402,13 +738,25 @@
                     "name": "${profile.name}...",
                     "commands": [
                         {
-                            "command": { "action": "splitPane", "profile": "${profile.name}", "split": "auto" }
+                            "command": {
+                                "action": "splitPane",
+                                "profile": "${profile.name}",
+                                "split": "auto"
+                            }
                         },
                         {
-                            "command": { "action": "splitPane", "profile": "${profile.name}", "split": "vertical" }
+                            "command": {
+                                "action": "splitPane",
+                                "profile": "${profile.name}",
+                                "split": "vertical"
+                            }
                         },
                         {
-                            "command": { "action": "splitPane", "profile": "${profile.name}", "split": "horizontal" }
+                            "command": {
+                                "action": "splitPane",
+                                "profile": "${profile.name}",
+                                "split": "horizontal"
+                            }
                         }
                     ]
                 }
