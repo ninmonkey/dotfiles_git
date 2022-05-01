@@ -41,7 +41,7 @@
             },
             /*
 
-    ### Sect: Build in-Dotnet launchers
+      ### Sect: Build in-Dotnet launchers
 
              tags: dotnet, defaults, launch.json
 
@@ -603,7 +603,6 @@
 
       */
     "search.experimental.searchInOpenEditors": true,
-    "python.insidersChannel": "weekly",
     /*
 
   ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
@@ -772,6 +771,7 @@
         "editor.formatOnSave": true,
         "editor.suggest.showSnippets": false,
         // "editor.fontSize": 13,
+        // "editor.fontSize": 18,
         // "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
@@ -786,11 +786,8 @@
         // "editor.fontWeight": "400",
     },
     // "json.maxItemsComputed": 10000,
-    "[powershell][json][jsonc][markdown]": {
+    "[json][jsonc][markdown]": {
         // "editor.fontSize": 13,
-        "editor.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
-        "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
-        "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', 'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
     },
     "[markdown-math][markdown_latex_combined]": {},
     "[dotnet-interactive.markdown]": {},
@@ -858,12 +855,11 @@
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
     },
-    "editor.fontSize": 16,
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
         "editor.wrappingStrategy": "simple",
-        "editor.fontSize": 12,
+        "editor.fontSize": 11,
     },
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -969,6 +965,8 @@
     // // Controls the line height used in the markdown preview. This number is relative to the font size.
     // "markdown.preview.lineHeight": 1.6,
     "markdown-preview-enhanced.codeBlockTheme": "auto.css",
+    // "markdown-preview-enhanced.configPath": "a",
+    "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": false,
     "markdown-preview-enhanced.enableEmojiSyntax": true,
     // "markdown-preview-enhanced.enableExtendedTableSyntax": false,
     // "markdown-preview-enhanced.frontMatterRenderingOption": "table",
@@ -995,28 +993,12 @@
   ###### SubSect: Extension: ⇢ mypy ( todo: sort / cleanup / test these)
 
       */
-    "editor.inlineHints.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
-    "editor.inlineHints.fontFamily": "'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.inlineHints.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
     "editor.codeLensFontFamily": "'cascadia code pl', 'cascadia code', arial, 'cascadia code', 'monospace'", // this changes "run tests" inside .ps1 pester blocks
     "editor.codeLensFontSize": 14,
     "debug.openDebug": "openOnDebugBreak",
     "editor.wordWrapColumn": 140,
     // "terminal.integrated.fontFamily": "corbel, 'cascadia code', fira code retina, cascadia code, consolas",
-    "explorer.experimental.fileNesting.enabled": true,
-    "explorer.experimental.fileNesting.expand": true,
-    "explorer.experimental.fileNesting.patterns": {
-        "*.pbix": "$(capture).pq",
-        "*.pbix": "$(capture).png",
-        "__init__.*.ps1": "__init__.$(capture).ps1",
-        "*.ps1": "$(capture).tests.ps1",
-        "*.psd1": "$(capture).psm1",
-        "*.ts": "$(capture).js, $(capture).d.ts",
-        "*.js": "$(capture).js.map, $(capture).min.js, $(capture).d.ts",
-        "*.jsx": "$(capture).js",
-        "*.tsx": "$(capture).ts",
-        "tsconfig.json": "tsconfig.*.json",
-        "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc"
-    },
     "zenMode.centerLayout": true,
     "zenMode.hideActivityBar": true,
     "zenMode.hideTabs": true,
@@ -1593,7 +1575,6 @@
     // output: NinMonkey.Console ⁞ settings.json ⁞ c:\foo\bar
     "window.title": "${dirty}${rootName}${separator}${activeEditorShort}|${separator}${activeFolderMedium}",
     // output: NinMonkey.Console ⁞ settings.json ⁞ bar
-    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
     // output: settings.json <- bar
     "window.title": "${activeEditorShort}$ <- ${activeFolderShort}",
     // output: Format-FileSize.ps1 ⇽ [public]
@@ -1602,7 +1583,6 @@
     "window.title": "${dirty}${activeEditorShort}$ [${activeFolderShort}]${separator}${rootName}",
     // output: NinMonkey.Console (Workspace) ⁞ Invoke-IPython.ps1 ⁞ public\native_wrapper
     "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
-    "window.title": "${dirty}${activeEditorShort} 📄 ${rootName} 📁 ${activeEditorShort}",
     "window.title": "${dirty}${activeEditorShort} 📄 ${rootName} 📁 ${activeEditorShort}",
     "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderMedium}",
     // "window.title": "${dirty}${rootName} ┐ ${activeEditorShort}$ ⇽ ${folderName}",
@@ -1648,18 +1628,6 @@
         "debugConsole.sourceForeground": "#7bff00", // # where is this?
         "statusBar.debuggingBackground": "#ff000021", // fav: very darkred # while debug
         // "debugConsole.errorForeground": "#ff0000",
-        /* some defaults
-
-                //"editor.hoverHighlightBackground": "#264f7840",
-                //"editor.inlineValuesBackground": "#ffc80033",
-                //"editor.inlineValuesForeground": "#ffffff80",
-        */
-        //"editor.hoverHighlightBackground": "#264f7840",
-        // "statusBar.debuggingForeground": "#ff00ff",
-        // "editor.inlineValuesBackground": "#ff0000",
-        "editor.inlineValuesBackground": "#ff0000", // this is pwsh inline values
-        "editor.inlineValuesBackground": "#ffc80033",
-        //"editor.inlineValuesForeground": "#ffffff80",
         /*
         Section: [workbench.colorCustomizations]
             git
@@ -1938,11 +1906,9 @@
                 },
                 "string": {
                     "foreground": "#9CDCFE",
-                    "foreground": "#9CDCFE",
                     "foreground": "#1E1E1E", // default BG color
                     "foreground": "#D4D4D4",
                     "background": "orange",
-                    "foreground": "#9CDCFE",
                     "fontStyle": "underline"
                 }
             }
@@ -1986,7 +1952,6 @@
 
     */
     // "editor.language.colorizedBracketPairs": true,
-    "colorize.decoration_type": "background", // fav
     "colorize.decoration_type": "underline", // fav
     "colorize.colorized_colors": [
         "BROWSERS_COLORS",
@@ -2010,8 +1975,6 @@
         "**/tests"
     ],
     "colorize.languages": [
-        "html",
-        "markdown",
         "json",
         "jsonc",
         "powershell",
@@ -2025,26 +1988,6 @@
         "xml",
         "svg"
     ],
-    /*
-
-    ### Sect: Emmet
-
-           tags: emmet, addon, experiment
-
-    */
-    // // "emmet.includeLanguages": {},
-    // "emmet.showAbbreviationSuggestions": true,
-    // "emmet.preferences": {
-    //     // "output.selfClosingStyle":
-    //     "css.color.short": true
-    // },
-    // "emmet.triggerExpansionOnTab": true,
-    "editor.guides.bracketPairsHorizontal": "active",
-    "editor.language.colorizedBracketPairs": true,
-    // "colorize.colorized_variables": [
-    //     "CSS"
-    // ],
-    "colorize.enable_search_variables": false,
     "workbench.iconTheme": "vscode-icons",
     // "editor.rulers": [
     //     120,
@@ -2565,7 +2508,7 @@
     // new: jupyter layout and sytels
     // https://code.visualstudio.com/updates/v1_59#_notebook-layout-improvements
     // new: automatic language detection
-    // "workbench.editor.untitled.experimentalLanguageDetection": true,
+    "workbench.editor.untitled.experimentalLanguageDetection": true,
     // then filter specific languages to not use
     // "[markdown]": { "workbench.editor.untitled.experimentalLanguageDetection": false }
     //new: native testing: https://code.visualstudio.com/updates/v1_59#_testing-apis
@@ -3005,32 +2948,30 @@
     "editor.suggestLineHeight": 0,
     // Controls whether suggestions should automatically show up when typing trigger characters.
     "debug.console.fontFamily": "'cascadia code pl', fira code', 'cascadia code', consolas",
-    "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'cascadia code retina', consolas, monospace",
-    "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code', consolas, monospace",
     "editor.fontFamily": "'cascadia code', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'fira code retina', 'cascadia code', Consolas, 'fira code', 'Courier New', monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'fira code', Consolas, monospace",
     "editor.fontFamily": "'FiraCode Nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
     "editor.fontFamily": "'FiraCode Nerd Font', 'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
     "editor.fontFamily": "'fira code', 'cascadia code', consolas, monospace", // retina seems bolder
     "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code', monospace",
-    "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
-    "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
-    "editor.fontFamily": "'cascadia code', monospace",
-    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'cascadia code pl', 'CaskaydiaCove Nerd Font', 'arial','cascadia code pl', 'CaskaydiaCove Nerd Font', 'FuraCode Nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
+    "editor.fontFamily": "'cascadia code retina', consolas, monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
+    "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'cascadia code', monospace",
+    "editor.fontSize": 16,
     // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
-    // "editor.fontSize": 18,
+    "editor.fontSize": 18,
     // "editor.fontSize": 14,
     // "editor.fontWeight": "600",
     "debug.console.fontSize": 14,
@@ -3051,8 +2992,8 @@
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
     "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 12,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
     // "terminal.integrated.fontWeight": "normal", // maybe too bold
@@ -3475,12 +3416,6 @@
             "placeHolder": "main palette",
             "commands": [
                 {
-                    "label": "Move Views",
-                    "description": "move between: main <-> panel <-> Secondary panel",
-                    // "detail": "$(console) details",
-                    "command": "workbench.action.moveView"
-                },
-                {
                     "label": "$(console) Pwsh Commands",
                     "description": "Supplied by PSEditorServices",
                     // "detail": "$(console) details",
@@ -3489,19 +3424,6 @@
                     }, // ms-vscode.powershell-preview
                     "command": "PowerShell.ShowAdditionalCommands"
                 },
-                {
-                    "label": "$(extension) Align",
-                    "description": "text alignment addon. wwm.better-align.",
-                    "detail": "details",
-                    // "showWhen": {
-                    //     "extensionEnabled": "wwm.aligncode", // this isn't detecting it
-                    // },
-                    "command": "wwm.aligncode",
-                },
-                /*
-                { "key": "ctrl+cmd+=",  "command": "wwm.aligncode",
-                        "when": "editorTextFocus && !editorReadonly" }
-                */
                 {
                     "label": "$(console) Pwsh Help",
                     "description": "$(question)  open help online",
@@ -3761,9 +3683,6 @@
         },
         "panel-palette": {
             "placeHolder": "Panel",
-            // "matchOnDescription": true,
-            // "matchOnDetail": true,
-            // "title": "nin tritle",
             "commands": [
                 {
                     "label": "$(error) Show Problems",
@@ -3832,22 +3751,5 @@
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "workbench.colorTheme": "Visual Studio 2019 Dark",
-    "githubIssues.queries": [
-        {
-            "label": "My Issues",
-            "query": "default"
-        },
-        {
-            "label": "Created Issues",
-            "query": "author:${user} state:open repo:${owner}/${repository} sort:created-desc"
-        },
-        {
-            "label": "Recent Issues",
-            "query": "state:open repo:${owner}/${repository} sort:updated-desc"
-        }
-    ],
-    "vsicons.presets.hideFolders": true,
-    "terminal.integrated.enablePersistentSessions": false,
-    // "workbench.statusBar.visible": false, // [toggle:ninzen]
-    // "vsicons.presets.hideFolders": true, // [toggle:ninzen] actually
+    "window.zoomLevel": 1
 }

@@ -1,0 +1,108 @@
+{
+    "workbench.settings.editor": "json", // good for editing, [ctrl+,] should open global settings
+    "editor.fontSize": 14,
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'fira code retina', 'fira code','consolas', monospace",
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.whitespaceAroundPipe": true,
+    "powershell.codeFormatting.whitespaceBetweenParameters": false,
+    "powershell.integratedConsole.suppressStartupBanner": true,
+    "powershell.powerShellDefaultVersion": "PowerShell (x64)",
+    "powershell.codeFormatting.alignPropertyValuePairs": true,
+    "powershell.codeFormatting.newLineAfterOpenBrace": false,
+    "powershell.promptToUpdatePowerShell": false,
+    // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
+    "powershell.scriptAnalysis.settingsPath": "C:/Users/monkey/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.enable": true,
+    // variants of styles based on the community
+    // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
+    "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?", // causes splat-expression etc to break
+    "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
+    "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
+    "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "editor.formatOnSave": true,
+    "editor.semanticHighlighting.enabled": true,
+    "[powershell]": {
+        // "editor.semanticHighlighting.enabled": false,
+        "editor.snippetSuggestions": "bottom",
+        "editor.snippetSuggestions": "none",
+        "files.encoding": "utf8bom",
+        "files.trimTrailingWhitespace": true,
+    },
+    /*
+        Add autocompletion to any .Format.ps1xml and .Types.ps1xml files.
+        It uses the addon: 'redhat.vscode-xml'
+    */
+    "editor.suggest.preview": true, // interesting but can be jarring
+    "xml.fileAssociations": [
+        {
+            "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd",
+            "pattern": "**/*.Format.ps1xml"
+        },
+        {
+            "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Types.xsd",
+            "pattern": "**/*.Types.ps1xml"
+        }
+    ],
+    "vsicons.associations.files": [
+        // justin grote's config: <https://discord.com/channels/180528040881815552/447476910499299358/801102446209794088>
+        {
+            "extensions": [
+                "arm.json"
+            ],
+            "format": "svg",
+            "icon": "azure"
+        },
+        {
+            "icon": "text", // or any other icon from vscode-icons
+            "extensions": [
+                "ans",
+                "ansi"
+            ],
+            "format": "svg"
+        },
+        {
+            "extensions": [
+                "parameters.json"
+            ],
+            "format": "svg",
+            "icon": "config"
+        },
+        {
+            "extensions": [
+                "tests.ps1"
+            ],
+            "format": "svg",
+            "icon": "test"
+        },
+        {
+            "extensions": [
+                "clixml"
+            ],
+            "format": "svg",
+            "icon": "xml"
+        }
+    ],
+    "vsicons.associations.folders": [
+        {
+            "extends": "dist",
+            "extensions": [
+                "BuildOutput",
+                "Output"
+            ],
+            "format": "svg",
+            "icon": "dist"
+        },
+        {
+            "extends": "helper",
+            "extensions": [
+                "BuildHelpers"
+            ],
+            "format": "svg",
+            "icon": "helper"
+        }
+    ],
+}

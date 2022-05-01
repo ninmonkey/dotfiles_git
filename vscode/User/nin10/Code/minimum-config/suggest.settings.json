@@ -1,0 +1,92 @@
+{
+    /*
+    ### Sect: Suggestions, Intellisence, Autocomplete, Completers
+
+
+        search for:
+
+
+
+            "editor.quickSuggest*":
+            "editor.suggest.*":
+            "editor.wordBasedSuggest*"
+            "vsintellicode.*,
+
+        a bunch of notes on customizing suggestions and intellisense:
+            https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
+
+
+
+
+      */
+    "editor.rename.enablePreview": true,
+    "editor.suggest.insertMode": "insert",
+    // "editor.quickSuggestionsDelay": 10,
+    "editor.quickSuggestionsDelay": 800,
+    "editor.wordBasedSuggestionsMode": "allDocuments",
+    "editor.wordBasedSuggestionsMode": "matchingDocuments", // "allDocuments" "currentDocuments", "matchingDocuments"
+    /*
+
+      editor: suggest
+          https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
+
+      */
+    "editor.wordBasedSuggestions": true,
+    "editor.suggest.showWords": false, // first test
+    "editor.suggest.showKeywords": true,
+    // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
+    // "editor.suggestSelection": "recentlyUsedByPrefix",
+    // "editor.suggestSelection": "first",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "choseToUpdateConfiguration",
+    "editor.suggest.showStatusBar": true, // https://code.visualstudio.com/updates/v1_51#_status-bar-for-suggestions
+    // "editor.suggest.insertMode":"insert", // https://code.visualstudio.com/updates/v1_51#_move-cursor-to-select-suggestions
+    // "editor.colorDecorators": true,
+    "editor.suggest.filterGraceful": true,
+    "editor.suggest.localityBonus": false,
+    // "editor.acceptSuggestionOnEnter": "smart",
+    "editor.suggest.showFields": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.links": true, // this might be the cause of the copy paste issues
+    // "editor.copyWithSyntaxHighlighting": true,
+    "editor.emptySelectionClipboard": false,
+    "editor.hover.delay": 300, // 10, 710,
+    "editor.hover.enabled": true, // false,
+    // "editor.hover.sticky": false,
+    "editor.inlineHints.enabled": true, // does what? doesn't seem to be "run tests" or
+    "editor.lightbulb.enabled": true,
+    "editor.inlineSuggest.enabled": false,
+    // "editor.inlayHints.enabled": false, // error lens, debugger, etc
+    // "editor.suggest.localityBonus": false,
+    "editor.suggest.localityBonus": false, // seems worse if you enable it.
+    "editor.suggest.showIcons": true,
+    "editor.suggest.shareSuggestSelections": false,
+    "editor.suggest.showStatusBar": true,
+    "editor.suggestFontSize": 12, // was < 12 | 14 >
+    "editor.codeLensFontSize": 12,
+    "editor.inlayHints.fontSize": 12,
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.suggestSelection": "recentlyUsedByPrefix",
+    "editor.acceptSuggestionOnCommitCharacter": true,
+    "editor.acceptSuggestionOnEnter": "smart",
+    "editor.autoClosingBrackets": "languageDefined",
+    "editor.autoClosingDelete": "auto",
+    "editor.autoClosingOvertype": "auto",
+    "editor.autoClosingQuotes": "languageDefined",
+    "editor.find.autoFindInSelection": "multiline",
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.preview": true,
+    "editor.autoSurround": "languageDefined",
+    "editor.colorDecorators": true,
+    "editor.columnSelection": false,
+    "editor.copyWithSyntaxHighlighting": true,
+    // "editor.cursorSurroundingLines": 0,
+    "editor.quickSuggestionsDelay": 800,
+    "editor.quickSuggestionsDelay": 400,
+    "editor.quickSuggestionsDelay": 800,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.wordBasedSuggestions": true,
+    // "editor.wordBasedSuggestionsMode": "matchingDocuments",
+    "editor.wordBasedSuggestionsMode": "matchingDocuments",
+    "workbench.editor.languageDetection": true,
+}
