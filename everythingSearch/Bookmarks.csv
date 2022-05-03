@@ -139,6 +139,7 @@ Name,Case,Whole Word,Path,Diacritic,Regex,Sort,Descending,Filter,Search,Index,Fi
 "temp -- find REPL code",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: ext:md;py ipython|repl|debug",0,"","",1,,,0
 "Python (last 3 days)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: dm:last3days ext:py",0,"","",1,,,0
 "Desktop/downloads: recent items",0,0,0,0,0,"Date Modified",1,"EVERYTHING","shell:downloads|shell:desktop no_venv: dm:last2weeks",0,"","",1,,,0
+"[1] ext:code-workspace ""G:\2021-github-downloads\""",0,0,0,0,0,"Date Accessed",1,"∅ ┐ Empty, Literally","ext:code-workspace ""G:\2021-github-downloads\""",0,"","",1,,,0
 "recent screenshots",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: screenshots: no_venv: dm:last2weeks",0,"","",1,,,0
 "epic games : listinglauncher",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\""|""d:\""|""F:\""|""g:\"" path:ww:Epic|path:ww:""Epic Games""|path:ww:""UT4 Epic Games"" ext:exe",0,"","",1,,,0
 "ninmonkeys.com: ",0,0,0,0,0,"Date Modified",1,"EVERYTHING","ninmonkeys.com: ",0,"","",1,,,0
@@ -174,3 +175,15 @@ Name,Case,Whole Word,Path,Diacritic,Regex,Sort,Descending,Filter,Search,Index,Fi
 "export_filelist:       "".git""  folders",0,0,0,0,0,"Path",0,"EVERYTHING","folder:ww:"".git"" folder: !path:""$Recycle.Bin""",0,"","",1,,,0
 "find decent images -- ext:png;jpg;gif (width:>300 | height:>300)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Documents\2021\"" ext:png;jpg;gif (width:>300 | height:>300)",0,"","",1,,,256
 "bookmark:",0,0,0,0,0,"Date Modified",1,"📌 Everything (almost, with filters)     def:","( bookmark: )",0,"","",1,,,0
+"recent 2021-12",0,0,0,0,0,"Date Modified",1,"📌 Everything (almost, with filters)     def:","(ext:ps1m;ps1d;ps1;code-workspace;pq;md;ps1xml;py  ) me: dm:last7months  dm:last72hours ",0,"","",1,,,0
+"[2] ext:code-workspace ""me:""",0,0,0,0,0,"Date Accessed",1,"∅ ┐ Empty, Literally","ext:code-workspace me:",0,"","",1,,,0
+"fav1:    {ninmonkeys.com}",0,0,0,0,0,"Date Modified",1,"Kind: 📄 Basic Ignore  | basicIgnore:    when you don't want to block all of appdata","dm:last1months path:ninmonkeys.com 2021_all: def:",0,"","",1,"fav1",,0
+"fav2:    {notebooks}",0,0,0,0,0,"Date Modified",1,"Kind: Me More                 -- meMore:    (me: plus more)","ext:ipynb dm:last2months",0,"","",1,"fav2",,0
+":buff1]   ext:ipynb dm:<2022   ( less perm fav slots ) ",0,0,0,0,0,"Date Modified",1,"Kind: Me More                 -- meMore:    (me: plus more)","ext:ipynb dm:<2022",0,"","",1,"buff1",,0
+":buff2",0,0,0,0,0,"Date Modified",1,"Kind: Me More                 -- meMore:    (me: plus more)","ext:cs;csx;dax;html;js;json;md;pbix;pq;ps1;py;xlsx def: ( data | psreadline)",0,"","",1,"buff2",,0
+"workspaces on any drive",0,0,0,0,0,"Date Modified",1,"Kind: 📄 ┐ Nin /.output/ foldes           ⇽ ninOut:","( ext:code-workspace !path:steam )",0,"","",1,,,0
+"1",0,0,0,0,0,"Date Modified",1,"Kind: 📄 ┐ Nin /.output/ foldes           ⇽ ninOut:","ext:pdf;md;ps1;py dm:last1years (path:robo | path:copy) ext:ps1 dm:yesterday",0,"","",1,,,0
+"( find AppXManifest.xml and bundles  )",0,0,0,1,0,"Date Modified",1,"∅ ┐ Empty, Literally","app ext:xml  file:regex:""^Appx.*\.xml""",0,"","",1,,,0
+"2022-04 - PBI with Pwsh forks  myFork: path:c:\",0,0,0,1,0,"Date Modified",1,"∅ ┐ Empty Plus global defaults","ext:xlsx;docx;pq;ps1;md;pq;docx;cs;pq;pbix myFork: path:c:\",0,"","",1,,,0
+"2022-04-22 - BDG - client       ",0,0,0,1,0,"Date Modified",1,"∅ ┐ Empty Plus global defaults","me: ""c:\"" ext:ps1;csv;json;js;xml;log;md  path:bdg ",0,"","",1,,,0
+"( screen clip png folders )",0,0,0,1,0,"Date Modified",1,"∅ ┐ Empty Plus global defaults","( path:ww:""%LocalAppData%\Packages\Microsoft.ScreenSketch_8wekyb3d8bbwe\TempState"" | path:ww:""%LocalAppData%\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TempState\ScreenClip"" )",0,"","",1,,,0

@@ -1021,7 +1021,19 @@ function Write-NinProfilePrompt {
             ) | Join-String
 
         }
+        'currentSpartan' {
+            @( # [1] save 2022-04-30 - spartan prompt
+                "`n"
+                @("${fg:30}" ; Get-Location; ) -join ''
 
+                $ec = $error.count
+                $ec -gt 0 ? $ec : ''
+
+
+                "${fg:30}PS> "
+
+            ) -join "${fg:clear}`n"
+        }
         'errorSummary' {
             @(
                 "`n"
