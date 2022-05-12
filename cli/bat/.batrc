@@ -1,4 +1,6 @@
 # profile: Jake, desktop, 2022-04
+--force-colorization
+--plain # keep colors, remove extras like line numbers
 #
 # see bat-extras
 #    for examples: <https://github.com/eth-p/bat-extras/tree/master/doc>

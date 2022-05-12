@@ -459,10 +459,11 @@ if (Get-Module 'psutil' -ListAvailable -ea ignore) {
     $StringModule_DontInjectJoinString = $true # to fix psutil, see: <https://discordapp.com/channels/180528040881815552/467577098924589067/750401458750488577>
 }
 #>
-if (Import-Module 'Pansies' -ea ignore) {
-    [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
-    $__ninConfig.Terminal.ColorMode = [PoshCode.Pansies.RgbColor]::ColorMode
-}
+[PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
+# if (Import-Module 'Pansies' -ea ignore) {
+#     [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
+#     $__ninConfig.Terminal.ColorMode = [PoshCode.Pansies.RgbColor]::ColorMode
+# }
 
 
 # 'Config: ', $__ninConfig | Join-String | Write-Debug
@@ -1102,7 +1103,7 @@ if ($false) {
             Free = '{0,-6:n0}GB' -f ($_.Free / 1gb)
             Name = $_.Name
         }
-    }
+    } | Format-Table -AutoSize
 }
 
 # if (!(Get-Module dev.nin)) {
