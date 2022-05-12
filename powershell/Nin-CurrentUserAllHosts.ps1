@@ -156,7 +156,7 @@ $script:__ninConfig ??= @{
     UseAggressiveAlias         = $true
     ImportGitBash              = $true  # __doc__: Include gitbash binaries in path+gcm
     UsePSReadLinePredict       = $true  # __doc__: uses beta PSReadLine [+Predictor]
-    UsePSReadLinePredictPlugin = $false # __doc__: uses beta PSReadLine [+Plugin]
+    UsePSReadLinePredictPlugin = $true # __doc__: uses beta PSReadLine [+Plugin]
     Import                     = @{
         SeeminglyScience = $true
     }
@@ -775,9 +775,13 @@ if ($true) {
         moves to next line, bringing any remaining text with it
     AddLineBelow
         Adds and moves to next line, leaving text where it was.
+
+     now VS Code supports it, making it the default
     #>
-    # what ?
-    Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
+    Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView # SilentlyContinue
+    Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
+    Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function BackwardWord
+    # Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
     Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
     Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
     Set-PSReadLineOption -ContinuationPrompt ((' ' * 4) -join '')
