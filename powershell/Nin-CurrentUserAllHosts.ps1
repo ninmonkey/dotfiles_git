@@ -58,6 +58,41 @@ first: 🚀
 # Get-Command __doc__ | Join-String -op ' loaded?'
 # see also: C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10\AddDocstring-Sketch\Add-Docstring-sketch-iter3.ps1
 
+# Export-ModuleMember -Function '__PromptMini'
+function __PromptMini {
+    <#
+    .synopsis
+        minimal (more-so), only dependency is Pansies (actually I could remove that)
+    #>
+    $c = @{
+        Yellow = $PSStyle.Foreground.FromRgb('#ffff00')
+        Gray40 = $PSStyle.Foreground.FromRgb(
+            255 * 0.4, 255 * 0.4, 255 * 0.4 )
+
+        Gray80 = $PSStyle.Foreground.FromRgb(
+            255 * 0.8, 255 * 0.8, 255 * 0.8 )
+
+        Reset  = $PSStyle.Reset
+    }
+    @(
+        # PSStyle.Foreground.FromRgb($C.Yellow), 'hi', -join ''
+        $true ? "`n" : ''
+        if ($Error.Count -gt 0) {
+            ' '
+            $C.Yellow
+            $Error.Count
+            ' '
+            # $Error.count | Join-String -os ' ' | New-Text -fg 'yellow'
+        }
+        $C.Gray40
+        $PSVersionTable.PSVersion.ToString()
+        $C.Gray80
+        '🐒> '
+        # New-Text -fg gray80 ''
+        $c.Reset
+    ) -join ''
+}
+
 function __noop__ {
     <#
     .synopsis
