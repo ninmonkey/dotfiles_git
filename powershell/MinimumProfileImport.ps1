@@ -62,7 +62,7 @@ function prompt {
     # minimal sugar for minprofile prompt
     @(
         "`n`n"
-        (get-path)
+        (Get-Location)
         "`nMin> "
 
     ) -join ''

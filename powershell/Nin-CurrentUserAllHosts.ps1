@@ -44,7 +44,6 @@ $Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerSh
 $Env:RIPGREP_CONFIG_PATH = (Get-Item 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\cli\ripgrep\.ripgreprc')
 
 
-
 <#
 first: 🚀
     - [ ] ask about how to namespace enums?
@@ -1048,6 +1047,9 @@ if (! $OneDrive.Enable_MyDocsBugMapping) {
     _profileEventOnFinalLoad
 }
 
+if ($true -or $EnableHistHandler) {
+    Enable-NinHistoryHandler
+}
 
 
 # if (! (Get-Command 'Out-VSCodeVenv' -ea ignore)) {
