@@ -25,7 +25,8 @@ if (! $PathSeem) {
     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
     Write-Verbose 'SeeminglySci: Imported'
 }
-
+Import-Module CompletionPredictor -Verbose
+Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView -Verbose
 <#
     [section]: essential imports
 #>
@@ -994,6 +995,22 @@ if ($__ninConfig.LogFileEntries) {
 
 $env:NinEnableToastDebug = $True
 
+
+function __prompt_noModuleLoaded {
+    @(
+        "`n`n"
+
+        $(if (Test-Path variable:/PSDebugContext) {
+                '[DBG]🐛> '
+            } else {
+                ''
+            }) + 'Pwsh ' + "`n" + $(Get-Location) + "`n" +
+        $(if ($NestedPromptLevel -ge 1) {
+                '>>'
+            }) + '> '
+    ) -join ''
+}
+
 function Prompt_Nin {
     <#
     .synopsis
@@ -1001,7 +1018,18 @@ function Prompt_Nin {
     .description
     #>
 
+    if ('HardcodedExperiment') {
+        Invoke-NinPrompt
+        # __prompt_usingColorExperiment_v2
+        return
+    }
+
     $profile_isLoaded = $false
+    if (!$profile_isLoaded) {
+        __prompt_noModuleLoaded
+        return
+
+    }
 
     if (Get-Module Ninmonkey.Profile -ea ignore) {
         $profile_isLoaded = $true
@@ -1150,3 +1178,9 @@ if ($false) {
 # if (!(Get-Module dev.nin)) {
 #     Import-Module Dev.Nin
 # }
+
+function Csv2 {
+    $Input | Microsoft.PowerShell.Utility\Join-String -sep ', '
+}
+
+# . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Inspect-LocationPathInfoStackState.ps1'
