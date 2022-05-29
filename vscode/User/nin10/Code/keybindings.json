@@ -675,5 +675,23 @@
         "key": "ctrl+alt+u",
         "command": "cursorRedo",
         "when": "textInputFocus"
-    }
+    },
+    // // work around to get shift+enter to send to PSRL a sentinel
+    // {
+    //     "key": "shift+enter",
+    //     "command": "workbench.action.terminal.sendSequence",
+    //     "args": {
+    //         "text": "\u2665"
+    //     },
+    //     "when": "terminalFocus",
+    // },
+    // {
+    //     "key": "shift+enter",
+    //     "command": "",
+    //     // "command": "-workbench.action.terminal.sendSequence",
+    //     // "args": {
+    //     //     "text": "\u2665"
+    //     // },
+    //     // "when": "terminalFocus",
+    // },
 ]
