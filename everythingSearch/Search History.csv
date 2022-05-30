@@ -1,7 +1,125 @@
 Search,Search Count,Last Search Date
+"ext:xlsx;docx;pq;ps1;md;pq;docx;cs  path:ww:client_BDG",5,132983951229756744
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:js;log;json ext:pbix",10,132983950710921405
+"dm:last10weeks me: path:sql",1,132983256680347399
+"get-sql-keys",1,132983256199230177
+"ext:pbix dm:last10minutes",1,132982512426975040
+"ext:pbix dm:last10days",2,132982511549691186
+"ext:pbix ",10,132982509829578575
+"ext:pbix dm:last1years da:last14days path:util",1,132982509488615929
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:js;log;json:xlsx;ps1",1,132982508868623584
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:js;log;json ext:xlsx;ps1 dm:last30minutes",3,132982508767537412
+"ext:csv;xlsx;ps1;md;json;pbix;pq   (path:ww:""C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG"" )     ( no_venv: noAppData: !path:""bdg\github"" )  dm:last100days !ext:pbix ext:xlsx",5,132983951342166291
+"ext:ps1 path:aws me:",2,132982508299215085
+"ext:ps1 dm:thisweek path:type",3,132981589565684925
+"ext:pbix path:query path:temp",1,132980887975162243
+"ext:csv;xlsx;ps1;md;json;pbix;pq   (path:ww:""C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG"" )     ( no_venv: noAppData: !path:""bdg\github"" )  dm:last100days !ext:pbix",2,132980694456344942
+"ext:csv;xlsx;ps1;md;json;pbix;pq   (path:ww:""C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG"" )     ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:pbix",2,132980620450955564
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq path:bdg ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:pbix;json",1,132980521489240810
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:pbix;json",3,132980520953413531
+"ext:xlsx;docx;pq;ps1;md;pq;docx;cs  path:ww:client_BDG                                      path:ww:client_BDG",3,132980520580079314
+"ext:pbix;json;pq;ps1;md !path:myFork !ext:json !path:ww:client_bdg ext:pbix path:template me: ",7,132980520361518621
+"path:ww:roms da:last24hours",1,132980517300164320
+"ext:dax me: dm:last8months ",4,132980517050154868
+"ext:pbix ( ( dm:last3months me: ) | ( da:last3months ))",1,132980516003258365
+"ext:pbix dm:last3months me:",6,132980515262529950
+"ext:ps1 me: path:set",2,132980515233628264
+"ext:pbix path:group me:",3,132980515176438172
+"path:ww:""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App""             dm:last3minutes ext:log",8,132980483850869733
+"dm:last3days path:adventure !path:nvidia !path",1,132980455028589280
+"dm:last3days path:adventure",1,132980454755977643
+"ext:zip dm:last5minutes",1,132980058262116342
+"ext:ps1 dm:today me:",4,132978798304959504
+"ext:dax me: dm:last8months",2,132978764194302126
+"ext:pbix dm:last3weeks ",1,132977056880117419
+"ext:pbix dm:last3weeks me:",1,132977056785475790
+"path:""H:\datasource_staging_area\2022-05-20\2022-05-21\current\traces"" dm:last4minutes",1,132976611500939387
+"path:ww:""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App""             dm:last20minutes ext:log",2,132976600951047595
+"path:ww:""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App""             dm:last20minutes",1,132976575693366557
+"path:ww:""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App             dm:last20minutes",1,132976575505506823
+"path:power path:bi path:AnalysisServicesWorkspaces | (path:ww:""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App\AnalysisServicesWorkspaces )",1,132976570343711567
+"path:power path:bi path:AnalysisServicesWorkspaces",3,132976570015649227
+"ext:code-workspace !appdata: !myFork: path:ww:c",4,132976254344463681
+"ext:ps1;log ext:ps1 dm:today me:",1,132976233022395554
+"ext:ps1;log ",4,132976203563197065
+"ext:ps1 me: dm:last30minutes",1,132976132310377849
+"ext:pbix;json;pq;ps1;md me: path:template me: !path:myFork !ext:json",1,132975544744100775
+"ext:pbix;json; me: path:template me: !path:myFork",2,132975543934454388
+"ext:pbix;json; me:",1,132975461915082653
+"ext:pbix; me:",2,132975461340289632
+"ext:xlsx;pbix;docx;csv;js;xlsx;ps1;md;json;pbix;pq            dm:today !path:2022-fam-share me:",7,132975408503920469
+"ext:pbix;xlsx; craz",1,132975366746557273
+"ext:pbix me: ",1,132975365762099678
+"dm:last90hours ext:csv;ps1;pbix;pq;log;ps1 ext:pbix;ps1;log me: ",1,132974785669965348
+"dm:last90hours ext:csv;ps1;pbix;pq;log;ps1 ext:ps1;log me: ",1,132974658385417983
+"dm:last5minutes ( path:power | path:trace | path:tracing ) !path:webview",4,132974614562967384
+"dm:last5minutes ext:log",2,132974614536299708
+"dm:last1minutes",2,132974613952642287
+"dm:last5minutes (ext:log | path:power )",1,132974611595762927
+"dm:last90hours ext:csv;ps1;pbix;pq;log ext:log me: path:fam",2,132974611061389449
+"dm:last90hours ext:csv;ps1;pbix;pq;log ext:log me:",2,132974609208695501
+"(ext:ps1 path:namespace) | (ext:log dm:today) me:",2,132974608834140771
+"ext:ps1 dm:today",10,132974608677390459
+"ext:ps1 me: dm:last2weeks path:report",3,132974607846094846
+"ext:ps1 path:namespace",1,132974438261770868
+"dm:last90hours ext:csv;ps1;pbix;pq",6,132974437732684520
+"dm:last14days ext:csv",5,132973803535198623
+"ext:xlsx;docx;pq;ps1;md;pq;docx;cs  path:ww:client_BDG                                      !path:ww:""client_BDG\github"" !path:ww:""client_BDG\self_copy2"" ",2,132973803122668198
+"dm:last30hours ext:csv",1,132973763849745899
+"dm:last14days ext:ps1 ext:csv",1,132973762466118700
+"dm:last14days ext:ps1",1,132973714963469527
+"sd",1,132973710466508043
+"dm:last10days me: ",2,132973686605389593
+"ext:ps1 me: ( path | comple ) path:web                                                                                                 ( | plustheAST | query)",21,132973675565113907
+"ext:xlsx;docx;pq;ps1;md;pq;docx;cs  path:ww:client_BDG                                      !path:ww:""client_BDG\github""",1,132973579631878804
+"ext:xlsx;docx;pq;ps1;md;pq;docx;cs  path:ww:client_BDG    dm:last30hours",13,132973578277250645
+"ext:xlsx;docx;pq;ps1;md;pq;docx;cs  dm:last17days path:bdg",1,132973166096493419
+"ext:ps1;md;png dm:last7days path:bug",1,132973139243867063
+"ext:ps1;md;png dm:last7days bug",1,132973138845459669
+"ext:pbix;png dm:today me:",1,132973088833300459
+"ext:pbix;png dm:today",4,132973084138697618
+"ext:pbix da:last2hours dm:last20seconds",1,132972938426962473
+"ext:pbix da:last2hours",1,132972936101762601
+"ext:pbix dm:last2hours",1,132972935436689521
+"ext:pbix hsl",2,132972914368862747
+"ext:pbix color",1,132972904877160726
+"path:screentogif  ext:xml",2,132972904669193331
+"path:screentogif ",1,132972821783313256
+"ext:png;gif dm:last12days !path:ww:""refs_links""  me:",2,132972821648120088
+"ext:png;gif dm:last12days !path:ww:""ref_links""  me:",1,132972816601295273
+"ext:png;gif dm:last12days me:",1,132972816260405431
+"dm:last43minutes ext:ps1;pq;md;log path:pq",1,132972778956162199
+"( )              !ext:dll                  path:%appdata%\code                       dm:last1hours",1,132972709373352650
+"( )              !ext:dll                  path:%appdata%\code                       dm:last1hours ext:log",1,132972709094978245
+"( )              !ext:dll                  path:%appdata%\code\logs                           dm:last1hours",1,132972708776413722
+"( path:Log | ext:log )              !ext:dll                  path:%appdata%\code\logs                           dm:last1hours",1,132972692352048118
+"dm:last32hours ( path:Log | ext:log )              !ext:dll                  !path:%appdata%\code\logs                           dm:before:2022-04-01",2,132972692091812310
+"ext:svg dm:last3months me: !path:refs !path:bdg !path:dotfiles",2,132972691643116045
+"ext:svg dm:last3months me:!path:refs !path:bdg !path:dotfiles",1,132971827507561206
+"ext:xlsx;pbix;docx;csv;js;xlsx;ps1;md;json;pbix;pq            dm:today ext:ps1",4,132971826143533326
+"dm:today me: ext:pbix;ps1",2,132971807825395994
+"ext:sqlitedb path:ww:""%UserProfile%\Microsoft\Power BI Desktop Store App""",1,132971140386636260
+"path:ww:""%UserProfile%\Microsoft\Power BI Desktop Store App"" dm:last23minutes",3,132971139572591940
+"ext:xlsx;pbix  ext:docx;csv;js;xlsx;ps1;md;json;pbix;pq            dm:today !path:2022-fam-share",1,132971131301489184
+"ext:xlsx;pbix  ext:docx;csv;js;xlsx;ps1;md;json;pbix;pq                                                                  dm:last30days   !path:2022-fam-share path:buff",5,132971131107093786
+"me:  extPBI:         !path:bdg        !pathBackup:       !gitDownloads:",1,132971130895879546
+"( |ext:log;json;jsonl;trc ) path:ww:""%UserProfile%\Microsoft\Power BI Desktop Store App"" dm:today path",2,132971130834757899
+"extPBI:         !path:bdg        !pathBackup:       !gitDownloads:",12,132971130288517171
+"ext:log log me: path:data",2,132971130142462919
+"( |ext:log;json;jsonl;trc ) path:ww:""%UserProfile%\Microsoft\Power BI Desktop Store App"" dm:today path:traces dm:last20minutes",2,132971111006338139
+"path:ww:""%UserProfile%\Microsoft\Power BI Desktop Store App"" dm:today",1,132971105055720628
+"!path:ww:""WebView2""       cat           ""%UserProfile%\Microsoft\Power BI Desktop Store App"" dm:today ext:json;jsonl;log           ",1,132971103124358313
+"ext:ps1 dm:today ( me: ) ",1,132971098053011238
+"!path:ww:""WebView2""                 ""%UserProfile%\Microsoft\Power BI Desktop Store App"" dm:today ext:json;jsonl;log           ",1,132971097937065569
+"!path:ww:""WebView2""                 ""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App"" dm:today ext:json;jsonl;log           ",1,132971012582360884
+"""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App"" dm:today ext:json;jsonl;log      path:ww:""WebView2""",1,132971012237801945
+"""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App"" dm:today ext:json;jsonl;log",1,132971011807013613
+"""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App"" dm:today",2,132971011569939125
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq        ext:pbix;pq;md                                              !path:bdg        !pathBackup:       !gitDownloads:",1,132971006366860523
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq        ext:pbix;pq;md                          path:ben  path:grib                                 !path:bdg        !pathBackup:       !gitDownloads:",1,132970984173011372
+"ext:csv;js;xlsx;ps1;md;json;pbix;pq        ext:pbix;pq;md                                                            !path:bdg        !pathBackup:       !gitDownloads:",9,132970983945670865
 "path:ww:""C:\Users\cppmo_000\AppData\Local\NVIDIA""",3,132970982257294867
 "ext:json dm:last42minutes",1,132970981217288804
-"extPBI:         !path:bdg        !pathBackup:       !gitDownloads:",11,132970981166790114
 "ext:json dm:last2minutes",1,132970446411488117
 "path:ww:""C:\Users\cppmo_000\AppData\Local\Mozilla\Firefox\Profiles"" ( key4.db | logins.json )",1,132970421343084217
 "ext:dax;pbix;pq;ps1;md;js;html;pq;dax ext:ps1 ( path:tab | path:dev )",6,132970374324376017
@@ -22,19 +140,16 @@ Search,Search Count,Last Search Date
 "ext:odl;odlgz;odlsent;aold !path:ww:""c:\""",1,132969617634899157
 "ext:odl;odlgz;odlsent;aold",1,132969616930062549
 "ext:ps1 dm:last3weeks me: alias",1,132969607898222402
-"ext:csv;js;xlsx;ps1;md;json;pbix;pq        ext:pbix;pq;md                                                            !path:bdg        !pathBackup:       !gitDownloads:",5,132969449985513417
 "ext:csv;js;xlsx;ps1;md;json;pbix;pq                                                                    path:bdg",7,132969446956158326
 "ext:csv;js;xlsx;ps1;md;json;pbix;pq        ext:pbix;pq;md                                                            !path:bdg    ",1,132969446869952117
 "ext:ps1;md;json;png path:bug path:pan dm:last1months",3,132969311904069092
 "( path:one | path:drive )   ",3,132968804201030461
-"ext:ps1 dm:today",7,132968731206328702
 "ext:pbix calculation",3,132968715076346352
 """H:\root_d_backup2018\Documents\2021\Power BI\Buffer""",2,132968607263261250
 """Financial Sample.xlsx""",1,132968463084040558
 "ext:ps1 dm:last2",2,132968442909290728
 "ext:ps1 dm:last1months jedi",1,132967775005696199
 "ext:xlsx;pbix  ext:docx;csv;js;xlsx;ps1;md;json;pbix;pq                                                                  dm:last30days   ( !path:2022-fam-share |)",3,132967774897784529
-"ext:xlsx;pbix  ext:docx;csv;js;xlsx;ps1;md;json;pbix;pq                                                                  dm:last30days   !path:2022-fam-share path:buff",4,132967740367699237
 """C:\Users\cppmo_000\SkyDrive\2022-fam-share\""  !path:datamodel",3,132967098359743390
 "ext:log path:power path:bi dm:last30minutes",1,132967040460482522
 "ext:xlsx;pbix  ext:docx;csv;js;xlsx;ps1;md;json;pbix;pq                                                                  dm:last130days   !path:2022-fam-share                 (path:lib | path:nin| path:console| ) ",1,132967019780226399
@@ -51,7 +166,6 @@ Search,Search Count,Last Search Date
 "ext:xlsx  ext:csv;js;xlsx;ps1;md;json;pbix;pq                                                                    ( no_venv: noAppData: !path:""bdg\github"" noApps:)  dm:last30days !ext:pbix    !path:2022-fam-share path:ww:""c:\""  path:bdg",1,132966735923716268
 "ext:csv;js;xlsx;ps1;md;json;pbix;pq                                                                    ( no_venv: noAppData: !path:""bdg\github"" noApps:)  dm:last30days !ext:pbix    !path:2022-fam-share path:ww:""c:\""  path:bdg",1,132966726779069037
 "ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last30days !ext:pbix",1,132966724297216782
-"ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:pbix;json",2,132966723971089397
 "ext:pbix;md;log dm:last4days path:code !path:%appdata% !path:ww:.vscode",1,132966719530209372
 "ext:pbix;md;log dm:last4days path:code",1,132966719339918132
 "ext:pbix;md;log dm:last2days   me: path:report",2,132966718266793648
@@ -73,7 +187,6 @@ Search,Search Count,Last Search Date
 "ext:pbit;pbix path:temp",1,132964209208285760
 "ext:pbit ",1,132964208822906584
 "ext:log path:power path:bi ( path:trace | ) dm:last2days",6,132964208752811004
-"ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:js;log;json ext:xlsx;ps1 dm:last30minutes",1,132963429554432362
 "ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last10days !ext:js;log;json ext:xlsx",1,132963384749136049
 "ext:csv;js;xlsx;ps1;md;json;pbix;pq ( no_venv: noAppData: !path:""bdg\github"" )  dm:last3days !ext:js;log;json",8,132963284700242416
 "ext:pbix path:dad",1,132963266351850079
@@ -89,7 +202,6 @@ Search,Search Count,Last Search Date
 "ext:csv;js;xlsx;ps1;md;json path:bdg ( no_venv: noAppData: !path:""bdg\github"" )  dm:today",4,132961809751415993
 "ext:pbix;csv dm:last10days",2,132961683091314662
 "ext:pbix;csv dm:last10days path:bdg",1,132961682698089408
-"ext:pbix dm:last10days",1,132961640613439298
 "bdg:",1,132961640200300567
 "ext:csv;js;xlsx;ps1;md;json path:bdg ( no_venv: noAppData: !path:""bdg\github"" ) ",1,132961609707498448
 "ext:csv;js;xlsx;ps1;md;json ( dm:last3weeks| ) path:bdg ( no_venv: noAppData: ) path:""bdg\github""",1,132961609387656010
@@ -102,7 +214,6 @@ Search,Search Count,Last Search Date
 """C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_ancient\2019\db_personal\config\windows terminal\backgrounds\"" ",1,132961482888206407
 "ext:mp4;gif ( path:elep | path:background | path:wall  ) me:",1,132961482672484218
 "ext:xlsx;ps1;md;json ( dm:last3weeks ) path:bdg ( no_venv: noAppData: )",1,132961450319932465
-"ext:ps1 dm:today me:",3,132961368857756836
 "( ""Microsoft.Mashup.Client.Packaging"" | ""Microsoft.Mashup.Client.Packaging.MashupPackage"" | ""Microsoft.Mashup"" )",2,132961368429538705
 """G:\2021-github-downloads\PowerShell\Indented-Automation🧑\Mastering-Windows-PowerShell-Scripting-Fourth-Edition\"" ",3,132961366374820521
 "astering-Windows-PowerShell-",1,132961056640821909
@@ -130,7 +241,6 @@ Search,Search Count,Last Search Date
 "ext:pq;md;pbix;pbit;xlsx;png ( path:bug | path:report | path:date) no_venv:  path:ww:c:\  hideApps:                ",1,132960107230793107
 "ext:pq;md;pbix;pbit;xlsx;png ( path:bug | path:report | path:date) no_venv:  path:ww:c:\  hideApps:",1,132960104314578380
 "ext:pq;md;pbix;pbit;xlsx;png ( path:bug | path:report | path:date) no_venv:",1,132960103214220584
-"ext:ps1 me: ( path | comple ) path:web                                                                                                 ( | plustheAST | query)",14,132960086056255619
 "ext:pbix dm:today",10,132959338308494333
 "ext:pbix;ps1 dm:last3days me:",1,132959180510937816
 "ext:ps1 me: ( path:culture | path:convert )",1,132959175650922728
@@ -175,7 +285,6 @@ Search,Search Count,Last Search Date
 "path:%userprofile% path:regret",1,132955938364425142
 "ext:pbix;png",1,132955903670803120
 "( path:ww:""%LocalAppData%\Packages\Microsoft.ScreenSketch_8wekyb3d8bbwe\TempState"" | path:ww:""%LocalAppData%\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TempState\ScreenClip"" )",2,132955879428039718
-"ext:pbix;png dm:today",3,132955878612453337
 "(          path:""C:\Users\cppmo_000\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TempState\ScreenClip""               |          path:ww:""C:\Users\cppmo_000\AppData\Local\Packages\Microsoft.ScreenSketch_8wekyb3d8bbwe\TempState""",1,132955872670798043
 "ext:ps1;csv;json;js;xml;log;md;xlsx;csv  path:bdg me: ""c:\""                  !path:ww:""client_BDG\github\""",1,132955553081064220
 "ext:ps1;csv;json;js;xml;log;md;xlsx;csv  path:bdg me: ""c:\"" ",1,132955442698972693
@@ -194,7 +303,6 @@ Search,Search Count,Last Search Date
 "ext:png join h",1,132954094431471594
 """C:\nin_temp"" ext:ps1",2,132953702941438744
 """C:\nin_temp\1234\"" ",1,132953701413291956
-"ext:xlsx;docx;pq;ps1;md;pq;docx;cs  path:ww:client_BDG    dm:last30hours",10,132953059018172619
 "ext:ps1 hash",1,132953026231760508
 "ext:zip dm:last2minutes",1,132952957530180779
 "ext:xlsx;docx;pq;ps1;md;pq;docx;cs ext:xlsx dm:last2hours",1,132952305307636259
@@ -321,7 +429,6 @@ Search,Search Count,Last Search Date
 "dm:03/31/2022..04/1/2022 ( log | ext:log )     before:2024",1,132932981257221839
 "dm:03/31/2022..04/1/2022 log dm:last32hours path:Log | ext:log !ext:dll                  !path:%appdata%\code\logs                           dm:before:2022-04-01 ",4,132932979653234832
 "dm:03/31/2022..04/1/2022",1,132932979413126524
-"dm:last32hours ( path:Log | ext:log )              !ext:dll                  !path:%appdata%\code\logs                           dm:before:2022-04-01",1,132932977920087168
 "dm:last32hours ( path:Log | ext:log )              !ext:dll                  !path:%appdata%\code\logs                           before:2022-04-01",1,132932972058166021
 "dm:last32hours ( path:Log | ext:log )              !ext:dll",1,132932964434750572
 "dm:last32hours ( path:Log | ext:log;evtx ext:evtx )",1,132932963797986016
@@ -418,7 +525,6 @@ Search,Search Count,Last Search Date
 "ode",1,132920109942738558
 "ext:md path:cheat path:git me:",8,132920109569498700
 "ext:pq me: dm:last3months",2,132919606520005341
-"ext:pbix ",5,132919602913019764
 "ext:pbix me: dm:thismonth",7,132917504106762710
 "ext:docx;xlsx;ps1;pq;md dm:last3days                       path:""2022_work""                 !path:""maybe_repos""",1,132917029049823155
 "ext:docx;xlsx;ps1;pq;md dm:last3days                       path:""2022_work""",1,132917028667005884
@@ -473,53 +579,3 @@ Search,Search Count,Last Search Date
 "ext:gif app",1,132908253533331162
 "ext:pdf lang",2,132908253255754419
 "ext:code-workspace path:steam",1,132907405362890269
-"C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git ext:json sql",1,132904752631776324
-"ext:sql;json me: snip",1,132904681830545651
-"ext:cs;css;csx;dax;html;js;json;md;pbix;pq;ps1;py;xlsx ext:html;json;css dm:last4months",2,132904668837762053
-"""C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git"" ext:ps1 dm:today",1,132904668756598161
-"ext:ps1 dm:last3days  dm:today",1,132904642793220228
-"dir:dotfile ext:ps1 dm:last3days ",3,132904642691041753
-"""C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git"" ext:ps1",1,132904642422915416
-"ext:ps1 dm:last3days ",1,132904641570322586
-"ext:cs;csx;dax;html;js;json;md;pbix;pq;ps1;py;xlsx ext:html;json dm:last4months",1,132904601111379381
-"ext:cs;csx;dax;html;js;json;md;pbix;pq;ps1;py;xlsx def: ( data | psreadline)",5,132904490915477287
-"ext:ipynb dm:<2022",1,132903921405364033
-"ext:ipynb dm:last2months",6,132903921181825668
-"dm:last1months path:ninmonkeys.com 2021_all:",3,132903921177356810
-"dm:last1months path:ninmonkeys.com 2021_all: def:",4,132903921148630856
-"ext:sql;md snippets",3,132903921103754903
-"ext:code-workspace;json snippets",1,132903857417226821
-"ext:ruby",1,132903805214416228
-"ext:cs;csx;dax;html;js;json;md;pbix;pq;ps1;py;xlsx def: dm:last20hours ext:pbix;",1,132903295987817051
-"ext:code-workspace ( (""G:\2021-github-downloads\"")  )  | mE:",2,132901454174137738
-"ext:ps1 dm:last9days __init__",4,132901454082049216
-"ext:pbix storm | kusto",3,132901454047844801
-"ext:pbix date me:",2,132901453950396381
-"ext:pbix;pq dm:last9months",2,132900620207582231
-"ext:dax;pbix;pq;ps1;md;js;html;pq;dax;xlsx data def: ( data | psreadline)",1,132900526032047687
-"ext:dax;pbix;pq;ps1;md;js;html;pq;dax;xlsx data def:",4,132900524083182883
-"ext:ps1 me: com",2,132900132929985343
-"ext:dax;pbix;pq;ps1;md;js;html;pq;dax ext:ps1 loop",19,132900130538812780
-"ext:code-workspace ""G:\2021-github-downloads\""",2,132898861545819909
-"ext:code-workspace me:",2,132898861536355371
-"( ""G:\2021-github-downloads\"" |ext:code-workspace",1,132898721448990248
-"""G:\2021-github-downloads\"" ext:code-workspace",1,132898721303075052
-"""G:\2021-github-downloads\"" ",1,132898667843429507
-"ext:code-workspace da:last7days",2,132898667072426562
-"ext:code-workspace dm:last7days",1,132898667056862126
-"ext:ps1 dm:last3days git",1,132898645278310829
-"ext:png;svg;gif me: ",1,132898510134120065
-"ext:dax;pbix;pq;ps1;md;js;html;pq;dax;xlsx",1,132897875458826142
-"ext:dax;pbix;pq;ps1;md;js;html;pq;dax generate data",1,132897773799452322
-"ext:html dm:today",1,132897630764838243
-"me: ext:ps1;pq;md (!path:""C:\Users\cppmo_000\SkyDrive\Documents\PowerShell)  (hash | obj | table | prop )",2,132895338466607323
-"me: ext:ps1;pq;md (hash | obj | table | prop )",1,132895308881318178
-"me: ext:ps1 (hash | obj | table | prop ) path:prop",1,132895308301462215
-"ext:pbix me: color m",1,132895140529493182
-"dm:today code-work",1,132894970288014148
-"me: dm:last6weeks dial",1,132894887901438092
-"ext:css me: dm:last6weeks",1,132894887773349877
-"ext:css me: dm:last3weeks",1,132894887686416849
-"me: ext:ps1 (hash | obj | table | prop )",2,132894887615335833
-"ext:xml me: dm:today",1,132893552303916775
-"ext:dax;pbix;pq;ps1;md;js;html;pq;dax ext:pbix dm:last2weeks ( bit | color )",3,132893551993548075

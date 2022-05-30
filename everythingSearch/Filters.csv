@@ -132,3 +132,4 @@ Name,Case,Whole Word,Path,Diacritics,Regex,Search,Macro,Key
 "📌 Everything (almost, with filters)     def:",0,0,0,0,0,"( !path:ww:""h:\""   basicIgnore: !appdata: no_git: no_venv: not_games: ignore_programdata: !app_firefox: !path:ww:""$recycle.bin"" !path:ww:""refs_web"" !path:ww:""refs_links"" )","def",
 "              pathBackup:                   bunch of backup or temp dirs",0,0,0,1,0,"( path:regex:""[cgh]:\\.*backup"" )","pathBackup",
 "📁 dir⇽ myCode:   ┐ ( any of my git related paths )",0,0,0,1,0,"( path:ww:""My_github"" | path:ww:""My_gist"" | path:ww:""My_Fork"" )","myCode",
+"[1]   BDG",0,0,0,1,0,"( ext:xlsx;docx;pq;ps1;md;pq;docx;cs  path:ww:client_BDG                                      !path:ww:""client_BDG\github"" !path:ww:""client_BDG\self_copy2""  )",,
