@@ -25,8 +25,16 @@ if (! $PathSeem) {
     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
     Write-Verbose 'SeeminglySci: Imported'
 }
-Import-Module CompletionPredictor -Verbose
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView -Verbose
+$me = ps -id $PID
+if($me.Parent.Name -match 'Azure') {
+    $IsAzureDataStudio = $True
+}
+if(! $IsAzureDataStudio ) {
+    Import-Module CompletionPredictor -Verbose
+    Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView -Verbose
+} else {
+    Write-warning 'skipping predictor because of ADS...'
+}
 <#
     [section]: essential imports
 #>
