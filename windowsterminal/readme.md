@@ -1,20 +1,29 @@
 Windows Terminal Config
 - [Command Line Args](#command-line-args)
-- [dsfs](#dsfs)
+  - [Commands](#commands)
   - [User Settings and Config Paths](#user-settings-and-config-paths)
   - [Special Requirements for WindowsStore AppInstalls](#special-requirements-for-windowsstore-appinstalls)
   - [To Experiment](#to-experiment)
   - [See more](#see-more)
+  - [specs? like PEP maybe?](#specs-like-pep-maybe)
 
 # Command Line Args
 
-[docs: cli-args](https://docs.microsoft.com/en-us/windows/terminal/command-line-arguments?tabs=windows)
-# dsfs
+- [docs: cli-args](https://docs.microsoft.com/en-us/windows/terminal/command-line-arguments?tabs=windows)
+
+## Commands
+
+- [Wt Commands](https://docs.microsoft.com/en-us/windows/terminal/customize-settings/actions)
+- [Custom Commands on Command Palette](https://docs.microsoft.com/en-us/windows/terminal/command-palette)
+
 
 ## User Settings and Config Paths
 
+- main [Profiles.Schema.Json](https://github.com/microsoft/terminal/blob/main/doc/cascadia/profiles.schema.json)
 - [docs: settings.json](https://docs.microsoft.com/en-us/windows/terminal/install#settings-json-file)
 - [docs: json-fragment-extensions](https://docs.microsoft.com/en-us/windows/terminal/json-fragment-extensions)
+- [ColorSchemes.xaml](https://github.com/microsoft/terminal/blob/main/src/cascadia/TerminalSettingsEditor/ColorSchemes.xaml)
+- [ProfileAppearance.xml](https://github.com/microsoft/terminal/blob/main/src/cascadia/TerminalSettingsEditor/Profiles_Appearance.xaml)
 
 > Tip: it is possible to create a [JSON fragment extension](https://docs.microsoft.com/en-us/windows/terminal/json-fragment-extensions) in order to store profile data and color schemes in a separate file, which can be useful to prevent excessively large configuration files.
 
@@ -57,3 +66,10 @@ Windows Terminal Config
 
 - <https://docs.microsoft.com/en-us/windows/terminal/customize-settings/startup>
 - <https://docs.microsoft.com/en-us/windows/terminal/install#settings-json-file>
+- [Json Util API](https://github.com/microsoft/terminal/blob/main/doc/cascadia/Json-Utility-API.md)
+- [scheme parse .cs](https://github.com/microsoft/terminal/blob/main/src/tools/ColorTool/ColorTool/SchemeParsers/IniSchemeParser.cs#L15)
+
+
+## specs? like PEP maybe?
+
+- [#2325 - Default Profile Settings.md](https://github.com/microsoft/terminal/blob/main/doc/specs/%232325%20-%20Default%20Profile%20Settings.md)
