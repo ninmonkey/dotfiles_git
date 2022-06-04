@@ -661,24 +661,11 @@
     "search.experimental.searchInOpenEditors": true,
     /*
 
-  ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
 
-      see also settings:
-          powershell.notebooks.*
-
-      /*
-      "notebook.breadcrumbs.showCodeCells": and
-      "notebook.outline.showCodeCells":
-              https://code.visualstudio.com/updates/v1_53#_outline-and-breadcrumbs
-
-          */
-    "notebook.breadcrumbs.showCodeCells": true,
     "workbench.panel.defaultLocation": "right",
     "workbench.panel.defaultLocation": "bottom",
     "terminal.integrated.tabs.showActions": "singleTerminalOrNarrow",
     "terminal.integrated.showExitAlert": true,
-    "notebook.outline.showCodeCells": true,
-    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
     /*
 
   ###### SubSect: Editor ⇢ Tabs, Pins, Icons, Decorations
@@ -1514,6 +1501,8 @@
     // "powershell editor services.trace.server": "verbose",
     // "powershell editor services.trace.server": "diagnostic",
     "powerquery.trace.server": "verbose",
+    "powerquery.trace.server": "verbose",
+    "powerquery.trace.server": "",
     /* ... */
     "editor.wordWrap": "on",
     // "terminal.integrated.automationShell.windows": "",
@@ -3050,10 +3039,10 @@
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
     "editor.fontWeight": "bold",
     "editor.fontWeight": "normal", // # is default default
-    "editor.fontSize": 12,
     "editor.fontSize": 18,
-    "editor.fontSize": 16,
+    "editor.fontSize": 12,
     "editor.fontSize": 14,
+    "editor.fontSize": 16,
     /* save my best clean profile
 
     theme: Clean, thin-ish
@@ -3927,5 +3916,30 @@
         "editor.snippetSuggestions": "bottom",
         "editor.suggest.filterGraceful": true,
         "editor.suggest.insertMode": "insert",
-    }
+    },
+    /*
+      ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
+
+      see also settings:
+          powershell.notebooks.*
+
+      /*
+      "notebook.breadcrumbs.showCodeCells": and
+      "notebook.outline.showCodeCells":
+              https://code.visualstudio.com/updates/v1_53#_outline-and-breadcrumbs
+
+          */
+    "notebook.breadcrumbs.showCodeCells": true,
+    "notebook.outline.showCodeCells": true,
+    "notebook.outputLineHeight": 0.7,
+    "notebook.outputLineHeight": 0.8,
+    "notebook.cellFocusIndicator": "border",
+    "notebook.compactView": true,
+    "notebook.cellToolbarVisibility": "click",
+    "notebook.output.textLineLimit": 100, // seems to require restart
+    // "notebook.displayOrder": []
+    "notebook.dragAndDropEnabled": true,
+    "notebook.consolidatedOutputButton": false,
+    "notebook.consolidatedRunButton": true, // simplifies/removes UI
+    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
 }

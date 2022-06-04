@@ -512,6 +512,10 @@
         "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
     },
     {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.output.toggleOutput"
+    },
+    {
         "key": "ctrl+numpad2",
         "command": "workbench.action.problems.focus"
     },
