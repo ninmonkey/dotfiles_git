@@ -781,8 +781,7 @@
 
       */
     "powershell.developer.editorServicesLogLevel": "Diagnostic",
-    "powerquery.trace.server": "verbose",
-    "powerquery.trace.server": "messages",
+    // "powerquery.trace.server": "messages",
     "python.analysis.logLevel": "Warning", // error/warnining/info/trace
     // "powershell editor services.trace.server": "verbose",
     // "powershell editor services.trace.server": "diagnostic",
@@ -892,12 +891,8 @@
         // "files.trimFinalNewlidnes": true,
         "files.insertFinalNewline": false
     },
-    "[powerquery]": {
-        "editor.formatOnSave": false,
-        "editor.semanticHighlighting.enabled": true
-        // "editor.semanticHighlighting.enabled": false,
-        // todo: edit theme
-    },
+    "problems.decorations.enabled": true,
+    "problems.showCurrentInStatus": true,
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
@@ -1304,6 +1299,8 @@
     "fileutils.typeahead.enabled": true,
     // "firefox.profile": "",
     "dotfiles.repository": "https://github.com/owner/repository.git",
+    // Controls whether the last typed input to the command palette should be restored when opening it the next time.
+    "workbench.commandPalette.preserveInput": true,
     "workbench.commandPalette.history": 50,
     "workbench.editor.languageDetection": true,
     "workbench.hover.delay": 500,
@@ -1500,9 +1497,6 @@
     /* debug and verbose logging settings */
     // "powershell editor services.trace.server": "verbose",
     // "powershell editor services.trace.server": "diagnostic",
-    "powerquery.trace.server": "verbose",
-    "powerquery.trace.server": "verbose",
-    "powerquery.trace.server": "",
     /* ... */
     "editor.wordWrap": "on",
     // "terminal.integrated.automationShell.windows": "",
@@ -1800,6 +1794,9 @@
         "editorWarning.foreground": "#00fff200", // main squiggle fully hidden because adddon still shows inline
         "editorWarning.foreground": "#00fff252", // main squiggle
     },
+    // "editorWarning.foreground": "#00fff2", // main squiggle
+    // "editorWarning.foreground": "#00fff252", // main squiggle
+    // "editorWarning.foreground": "#00fff2", // main squiggle
     "notebook.experimental.useMarkdownRenderer": true,
     "notebook.diff.enablePreview": true,
     "debug.inlineValues": "auto",
@@ -2004,10 +2001,7 @@
     "python.defaultInterpreterPath": "C:/Users/cppmo_000/.virtualenvs/1-offs-ErlZkEu9/Scripts/python.exe",
     "python.defaultInterpreterPath": "C:/Users/cppmo_000/AppData/Local/Microsoft/WindowsApps/python3.9.exe",
     "errorLens.enabledDiagnosticLevels": [
-        "error",
-        "warning",
-        "hint",
-        "info"
+        "error"
     ],
     /*
 
@@ -2245,7 +2239,7 @@
     "workbench.editor.labelFormat": "default",
     "notebook.cellToolbarLocation": {
         "default": "right",
-        "jupyter-notebook": "left"
+        "jupyter-notebook": "right"
     },
     /*
 
@@ -3039,9 +3033,9 @@
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
     "editor.fontWeight": "bold",
     "editor.fontWeight": "normal", // # is default default
-    "editor.fontSize": 18,
     "editor.fontSize": 12,
     "editor.fontSize": 14,
+    "editor.fontSize": 18,
     "editor.fontSize": 16,
     /* save my best clean profile
 
@@ -3907,11 +3901,10 @@
     "scm.diffDecorations": "all",
     "scm.diffDecorationsIgnoreTrimWhitespace": "true",
     "scm.diffDecorations": "none",
-    "editor.inlineSuggest.mode": "subwordSmart",
+    // "editor.inlineSuggest.mode": "subwordSmart",
     "[powershell]": {
         "editor.suggest.showInlineDetails": true,
         "editor.suggest.preview": true,
-        "editor.suggest.showSnippets": true,
         "editor.suggest.showSnippets": false,
         "editor.snippetSuggestions": "bottom",
         "editor.suggest.filterGraceful": true,
@@ -3942,4 +3935,99 @@
     "notebook.consolidatedOutputButton": false,
     "notebook.consolidatedRunButton": true, // simplifies/removes UI
     // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
+    /*
+
+        == section:  power query
+
+
+    */
+    // Recommended always off. Enables benchmark traces to be generated for the extension.
+    "powerquery.benchmark.enable": true,
+    "powerquery.benchmark.enable": false,
+    // Specifies whether to enable experimental diagnostics features. This may result in false positives while the feature is under development.
+    "powerquery.diagnostics.experimental": false,
+    "powerquery.general.experimental": true,
+    // Recommended always on. Toggles internal caching causing performance degregation when off. Used to find hot paths in the extension.
+    "powerquery.diagnostics.isWorkspaceCacheAllowed": true,
+    // Sets what strategy is used by the type analysis. Extended is useful for small scripts but can hang on larger, complicated files. If performance isn't acceptable then fallback to Primitive.
+    "powerquery.diagnostics.typeStrategy": "Extended",
+    // Locale to use for errors and other messages returned by the language parser.
+    "powerquery.general.locale": "en-US",
+    // Traces the communication between VS Code and the language server.
+    // When enabled - shows gutter icons (In place of the debug breakpoint icon).
+    "errorLens.gutterIconsEnabled": false,
+    "powershell.startAutomatically": false,
+    "powerquery.benchmark.enable": false, // almost always disable
+    "powerquery.trace.server": "messages", // [ off* | verbose | messages ]
+    "powerquery.general.mode": "SDK", // "Power Query",
+    // "editor.inlineSuggest.enabled": false,
+    "[powerquery]": {
+        "editor.colorDecorators": true, // what is?
+        "editor.bracketPairColorization.enabled": true,
+        "editor.bracketPairColorization.independentColorPoolPerBracketType": true, // this may be better specifically for power query
+        "editor.wrappingIndent": "deepIndent", // as: parent+2
+        "editor.wrappingIndent": "indent", // as: parent+1
+        "editor.wrappingIndent": "none", // as: first char, no indent
+        "editor.wrappingIndent": "same", // as: parent+0
+        "editor.wrappingStrategy": "simple",
+        "editor.wrappingStrategy": "advanced", // wraps words  like "#duration(1, 0, 0, 0)" correctly
+        "editor.wordWrap": "wordWrapColumn", // uses 160
+        "editor.wordWrap": "on", // uses viewport
+        "editor.wordWrap": "bounded", // min( window | 160 )
+        "editor.fontSize": 16,
+        "editor.wordWrapColumn": 160,
+        "diffEditor.wordWrap": "inherit",
+        // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+        "editor.formatOnSave": false,
+        "editor.semanticHighlighting.enabled": true
+        // "editor.semanticHighlighting.enabled": false,
+        // todo: edit theme
+    },
+    /*
+
+    minimizing visual noise section
+
+    important references:
+        https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
+        https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax
+
+
+    */
+    //  - interval: Line numbers are rendered every 10 lines.
+    "[powershell]": {
+        "editor.lineNumbers": "interval", // hide numbers, show only every 10th
+        // "editor.suggest.shareSuggestSelections": true,
+        "editor.tabCompletion": "off",
+        "editor.tabCompletion": "on",
+        "editor.tabCompletion": "onlySnippets",
+        "editor.suggestSelection": "recentlyUsedByPrefix", // <// https://code.visualstudio.com/docs/editor/intellisense#_suggestion-selection>
+        "editor.suggestSelection": "first",
+        "editor.suggest.localityBonus": true, // example: <https://code.visualstudio.com/docs/editor/intellisense#_locality-bonus> not sure if you'll like this
+        "editor.suggestOnTriggerCharacters": true, // on '.'
+        "editor.quickSuggestionsDelay": 10, // super slow to when testing
+        "editor.quickSuggestionsDelay": 1500, // 1,000 equals 1 second
+        "editor.quickSuggestions": {
+            "other": "on", // noisy : this pops up automatically
+            "other": "off", //
+            "other": "inline", // better. no popup, shows first suggestion as ghost, ctrl+space to see more
+            "comments": "off",
+            "strings": "inline",
+            "strings": "off",
+        },
+        // "editor.snippetSuggestions": "top",
+        "editor.snippetSuggestions": "inline",
+        "editor.snippetSuggestions": "none", // snippets *never* show on suggestions, then hit the hotkey 'insert snippet' if you want to manually show them
+        "editor.hover.delay": 300, // 10, 710,
+        "editor.hover.enabled": true, // false,
+    },
+    // default squiggle
+    // "editorWarning.foreground": "#00fff2", // main squiggle : different hue
+    "workbench.colorCustomizations": {
+        // hiding squiggles,  last 2 digits are alpha.
+        // RRGGBBAA
+        "editorWarning.foreground": "#00fff200", // squiggle: gone
+        "editorWarning.foreground": "#00fff2", // squiggle : 100%
+        "editorWarning.foreground": "#00fff25c", // squiggle : 30%
+    },
+    // main squiggle fully hidden because adddon still shows inline
 }
