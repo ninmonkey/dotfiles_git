@@ -7,6 +7,9 @@ using namespace System.Management.Automation # [ErrorRecord]
 Set-Alias 'sc' -Value 'Set-Content'
 
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
+$env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -join ''
+
+
 
 # wip dev,nin: todo:2022-03
 # Keep colors when piping Pwsh in 7.2
@@ -25,15 +28,21 @@ if (! $PathSeem) {
     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
     Write-Verbose 'SeeminglySci: Imported'
 }
-$me = ps -id $PID
-if($me.Parent.Name -match 'Azure') {
+$me = Get-Process -Id $PID
+if ($me.Parent.Name -match 'Azure') {
     $IsAzureDataStudio = $True
 }
-if(! $IsAzureDataStudio ) {
-    Import-Module CompletionPredictor -Verbose
-    Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView -Verbose
+Write-Warning '㏒ : IsAzureDataStudio?'
+if (! $IsAzureDataStudio ) {
+    Write-Warning '     ㏒ : NinIsLoaded?d'
+    if ( Get-Module 'Ninmonkey.Console') {
+        Import-Module CompletionPredictor -Verbose
+        Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView -Verbose
+    } else {
+        Write-Warning '㏒ : Nin failed, skipping command predictor'
+    }
 } else {
-    Write-warning 'skipping predictor because of ADS...'
+    Write-Warning 'skipping predictor because of ADS...'
 }
 <#
     [section]: essential imports
@@ -41,7 +50,12 @@ if(! $IsAzureDataStudio ) {
 Import-Module Ninmonkey.Console -DisableNameChecking
 Import-Module Dev.Nin -DisableNameChecking
 
-Enable-NinCoreAlias
+Write-Warning '㏒ : Load-NinCoreAliases?'
+if (Get-Module 'Ninmonkey.Console') {
+    Enable-NinCoreAlias
+} else {
+    Write-Warning '㏒ : Nin failed, skipping aliases'
+}
 
 <#
     [section]: secondary imports
@@ -907,6 +921,7 @@ if (Test-Path $Env:Nin_PSModulePath) {
         $env:PSModulePath = $Env:Nin_PSModulePath, $env:PSModulePath -join ';'
     }
 }
+
 $Env:PSModulePath = @(
     $Env:PSModulePath
     'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell'
