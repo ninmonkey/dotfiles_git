@@ -500,8 +500,7 @@
     "editor.folding": true,
     "editor.foldingHighlight": true, //collapsed folded blocks highlight the single line
     "editor.foldingStrategy": "auto",
-    "editor.showFoldingControls": "mouseover", // hide icons until you hover the gutter
-    "editor.highlightActiveIndentGuide": true, // highight **just one** specific line-block (the current block)
+    "editor.showFoldingControls": "mouseover", // highight **just one** specific line-block (the current block)
     // "editor.fontWeight": "normal", // bold 300, 900,
     "editor.hover.delay": 300, // 10, 710,
     "editor.hover.enabled": true, // false,

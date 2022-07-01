@@ -879,7 +879,11 @@
         // "editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced",
         // "editor.defaultFormatter": "yzhang.markdown-all-in-one",
         "editor.wordWrap": "on",
-        "editor.quickSuggestions": false,
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
         "editor.formatOnSave": true,
         // "editor.formatOnType": true,
         /* hard line breaks in MD are declared using two trailing spaces */
@@ -1334,9 +1338,10 @@
 
       applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
   */
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook"
-    },
+    //   # maybe this config is messing up nteract
+    // "workbench.editorAssociations": {
+    //     // "*.ipynb": "jupyter-notebook"
+    // },
     /*
 
   ###### SubSect: Files ⇢ Files.Associations
@@ -1350,6 +1355,7 @@
         // these have higher precendence than extensions
         "*.dax": "sql",
         "*.json": "jsonc",
+        "*.jsonl": "jsonc",
         // powershell
         "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
         // microsoft / vs studio
@@ -1478,7 +1484,6 @@
     // "python.globalModuleInstallation": false,
     // "python.experiments.optInto": [],
     "python.languageServer": "Pylance",
-    "pylance.insidersChannel": "off",
     "python.autoComplete.showAdvancedMembers": true,
     "python.analysis.autoImportCompletions": true,
     "python.analysis.completeFunctionParens": true,
@@ -1798,7 +1803,6 @@
     // "editorWarning.foreground": "#00fff252", // main squiggle
     // "editorWarning.foreground": "#00fff2", // main squiggle
     "notebook.experimental.useMarkdownRenderer": true,
-    "notebook.diff.enablePreview": true,
     "debug.inlineValues": "auto",
     "terminal.integrated.allowChords": true,
     "terminal.integrated.automationShell.windows": null,
@@ -1827,8 +1831,7 @@
       */
     // "powershell.pester.outputVerbosity": "Minimal", //"Diagnostic",
     "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
-    "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
-    "powershell.pester.debugOutputVerbosity": "Detailed", // "Detailed", //Diagnostic",
+    "powershell.pester.outputVerbosity": "Detailed", // "Detailed", //Diagnostic",
     "terminal.integrated.environmentChangesRelaunch": true,
     // "terminal.integrated.fontWeight": "500",
     "terminal.integrated.experimentalUseTitleEvent": false, // An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals
@@ -2405,10 +2408,6 @@
     */
     // Whether to use the enhanced text diff editor for notebook.
     "notebook.diff.enablePreview": true,
-    // Hide Metadata Differences
-    "notebook.diff.ignoreMetadata": false,
-    // Hide Outputs Differences
-    "notebook.diff.ignoreOutputs": false,
     /*
 
     ### Sect: diff (more git)
@@ -2886,8 +2885,6 @@
     "powershell.integratedConsole.suppressStartupBanner": false,
     // Falls back to the legacy (lightweight) ReadLine experience. This will disable the use of PSReadLine in the PowerShell Integrated Console.
     "powershell.integratedConsole.useLegacyReadLine": false,
-    // Defines the verbosity of output to be used when debugging a test or a block. For Pester 5 and newer the default value Diagnostic will print additional information about discovery, skipped and filtered tests, mocking and more.
-    "powershell.pester.debugOutputVerbosity": "Diagnostic",
     // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
     "powershell.pester.outputVerbosity": "FromPreference",
     // Use code lens that is compatible with Pester 4. Disabling this will show 'Run Tests' on all It, Describe and Context blocks, and will correctly work only with Pester 5 and newer.
@@ -3080,8 +3077,8 @@
     "terminal.integrated.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontSize": 16,
     "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 16,
     "errorLens.fontSize": "12px",
     // "editor.fontWeight": "350", // for cascadia code
     // fira: retina is more bold (on nin8)
@@ -3089,10 +3086,10 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 18,
     "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 12,
     // "debug.console.lineHeight": 0,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
@@ -3924,8 +3921,11 @@
           */
     "notebook.breadcrumbs.showCodeCells": true,
     "notebook.outline.showCodeCells": true,
-    "notebook.outputLineHeight": 0.7,
-    "notebook.outputLineHeight": 0.8,
+    // "notebook.outputLineHeight": 0.7,
+    // "notebook.outputLineHeight": 0.8,
+    "notebook.outputLineHeight": 1.3,
+    "notebook.outputLineHeight": 1.2,
+    "notebook.outputLineHeight": 1.0,
     "notebook.cellFocusIndicator": "border",
     "notebook.compactView": true,
     "notebook.cellToolbarVisibility": "click",
@@ -3946,6 +3946,7 @@
     "powerquery.benchmark.enable": false,
     // Specifies whether to enable experimental diagnostics features. This may result in false positives while the feature is under development.
     "powerquery.diagnostics.experimental": false,
+    "powerquery.general.experimental": false,
     "powerquery.general.experimental": true,
     // Recommended always on. Toggles internal caching causing performance degregation when off. Used to find hot paths in the extension.
     "powerquery.diagnostics.isWorkspaceCacheAllowed": true,
@@ -3959,16 +3960,36 @@
     "powershell.startAutomatically": false,
     "powerquery.benchmark.enable": false, // almost always disable
     "powerquery.trace.server": "messages", // [ off* | verbose | messages ]
-    "powerquery.general.mode": "SDK", // "Power Query",
+    "powerquery.trace.server": "verbose", // [ off* | verbose | messages ] # you need verbose enabled for debugging
+    "powerquery.general.mode": "SDK", // [ Power Query* | SDK ],
     // "editor.inlineSuggest.enabled": false,
     "[powerquery]": {
+        /*
+        todo: parens are too bold right now
+        */
+        "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
+        // "editor.letterSpacing": 0.7, // with: 'cascadia code pl' (also)
+        // "editor.letterSpacing": 0, // with: 'cascadia code pl' (also)
+        // "editor.letterSpacing": 0.3, // with: 'cascadia code pl'
+        "editor.guides.indentation": true,
+        "editor.guides.indentation": false,
+        "editor.formatOnSaveMode": "file",
+        "editor.matchBrackets": "always",
+        "editor.guides.bracketPairs": false, // these are the already dim guides
+        "editor.guides.bracketPairs": "active", // these are the already dim guides
+        "editor.guides.bracketPairs": true, // these are the already dim guides
+        "editor.lineHeight": 1.50, // 0= auto, <= 8 is multiplier; else size in pixels
+        "editor.lineHeight": 25, // 0= auto, <= 8 is multiplier; else size in pixels
+        "editor.lineHeight": 0, // 0= auto, <= 8 is multiplier; else size in pixels
+        "editor.lineHeight": 24, // 0= auto, <= 8 is multiplier; else size in pixels
         "editor.colorDecorators": true, // what is?
+        // "editor.bracketPairColorization.independentColorPoolPerBracketType": false, // this may be better specifically for power query
         "editor.bracketPairColorization.enabled": true,
         "editor.bracketPairColorization.independentColorPoolPerBracketType": true, // this may be better specifically for power query
         "editor.wrappingIndent": "deepIndent", // as: parent+2
-        "editor.wrappingIndent": "indent", // as: parent+1
         "editor.wrappingIndent": "none", // as: first char, no indent
         "editor.wrappingIndent": "same", // as: parent+0
+        "editor.wrappingIndent": "indent", // as: parent+1
         "editor.wrappingStrategy": "simple",
         "editor.wrappingStrategy": "advanced", // wraps words  like "#duration(1, 0, 0, 0)" correctly
         "editor.wordWrap": "wordWrapColumn", // uses 160
@@ -4029,5 +4050,18 @@
         "editorWarning.foreground": "#00fff2", // squiggle : 100%
         "editorWarning.foreground": "#00fff25c", // squiggle : 30%
     },
+    "cSpell.ignorePaths": [
+        "package-lock.json",
+        "node_modules",
+        "vscode-extension",
+        ".git/objects",
+        ".vscode",
+        ".vscode-insiders",
+        ".ipynb"
+    ],
+    "notebook.diff.ignoreOutputs": true,
+    "cSpell.userWords": [
+        "Codepoint"
+    ],
     // main squiggle fully hidden because adddon still shows inline
 }
