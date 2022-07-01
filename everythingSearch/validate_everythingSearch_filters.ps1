@@ -7,6 +7,7 @@ class BestPracticeRule {
     # Extra information
     [string]$Description
 
+
     <#
     function to parse,
         passed the config to validate,
@@ -25,6 +26,7 @@ class RuleParseResult {
     [string]$Message
     [hashtable]$Detail
 }
+
 
 class BestPracticeRuleViolation {
     # What failed, with custom payloads
@@ -83,6 +85,8 @@ class BestPracticeRuleViolation {
 )
 
 
+
+
 $AppConf = @{ Root = Get-Item $PSScriptRoot }
 $AppConf += @{
     Import_CsvPath = Get-Item -ea stop (Join-Path $AppConf.Root 'everything - nin10 ┐ filters.csv')
@@ -98,6 +102,7 @@ function es_FindDuplicateMacro {
 
     }
 }
+
 
 es_FindDuplicateMacro $Config
 

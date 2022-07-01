@@ -9,6 +9,10 @@ Set-Alias 'sc' -Value 'Set-Content'
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
 $env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -join ''
 
+if (-not( Get-Module BDG_lib -ea ignore)) {
+    $Env:PSModulePath += ';', (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self')
+    # 'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib\
+}
 
 
 # wip dev,nin: todo:2022-03
