@@ -3,6 +3,9 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+# I am not sure what's the right *nix env vars for encoding
+# grep specifically required this
+$env:LC_ALL = 'en_US.utf8'
 
 Set-Alias 'sc' -Value 'Set-Content'
 
@@ -12,6 +15,12 @@ $env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -joi
 if (-not( Get-Module BDG_lib -ea ignore)) {
     $Env:PSModulePath += ';', (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self')
     # 'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib\
+}
+if ($False) {
+    # if you want random window names
+    Import-Module NameIt
+    $Host.UI.RawUI.WindowTitle = NameIt\Invoke-Generate '[noun]-[syllable]-[verb]-[syllable]-[color]'
+    $Host.UI.RawUI.WindowTitle = NameIt\Invoke-Generate '[noun]-[verb]-[color]'
 }
 
 
