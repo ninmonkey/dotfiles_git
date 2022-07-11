@@ -32,6 +32,26 @@
 
     */
     /*
+    Markdown Snippets (nin) 2022-07-08
+    */
+    "Markdown Perfect Pwsh Prompt": {
+        "prefix": "perfect",
+        "description": "Prefix Perfect inline text with Pwsh prompt, no monkey to prevent half chars",
+        "body": [
+            "Pwsh>  ${TM_SELECTED_TEXT/\n/\n       /g}",
+        ],
+    },
+    /*
+    Markdown Snippets (nin) 2022-07-08
+    */
+    "Markdown Pwsh Prompt": {
+        "prefix": "mdPrompt🐒",
+        "description": "Prefix inline text with Pwsh prompt",
+        "body": [
+            "Pwsh🐒> ${TM_SELECTED_TEXT/\n/\n        /g}",
+        ],
+    },
+    /*
     Add one like
         $_.psobject.properties | %{ $_.Name, $_.value -join ' = ' }
 
@@ -613,7 +633,7 @@
     "Help ⇢ Comment Based": {
         //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
         "prefix": "DocString Help Docstring 🐒",
-        "description": "nin ⁞ The important docstring attributes. Selected Text Populates Synopis",
+        "description": "nin ⁞ The important docstring attributes. Selected Text Populates Synopsis",
         "body": [
             "<#",
             ".synopsis",
