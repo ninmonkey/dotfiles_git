@@ -847,7 +847,7 @@
         "editor.semanticHighlighting.enabled": true,
         // "editor.maxTokenizationLineLength": 20000
         "editor.detectIndentation": false,
-        "editor.tabSize": 4
+        "editor.tabSize": 4,
     },
     "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
     "[xml]": {
@@ -1614,7 +1614,7 @@
       This is deprecated, the new recommended way to configure your default shell is by creating a terminal profile in `#terminal.integrated.profiles.windows#` and setting its profile name as the default in `#terminal.integrated.defaultProfile.windows#`. This will currently take priority over the new profiles settings but that will change in the future.
       */
     // "terminal.integrated.shell.windows": "C:/Program Files/PowerShell/7/pwsh.exe",
-    // "terminal.integrated.shellArgs.windows": [
+    // "terminal.integrated.shellArgs.windows": [ // deprecated
     //     "-NoLogo"
     // ],
     /*
@@ -1805,7 +1805,33 @@
     "notebook.experimental.useMarkdownRenderer": true,
     "debug.inlineValues": "auto",
     "terminal.integrated.allowChords": true,
-    "terminal.integrated.automationShell.windows": null,
+    // "terminal.integrated.automationShell.windows": null
+    /*
+    to debug:
+        terminal.integrated.automationProfile.windows
+    this errors as:
+
+            All parameters are case-insensitive.
+            The terminal process "pwsh -Nop -Nol /d /c npm run test:benchmark" terminated with exit code: 64.
+
+            Terminal will be reused by tasks, press any key to close it.
+
+            > Executing task in folder powerquery-parser: npm run build <
+
+            The argument '/d' is not recognized as the name of a script file. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+     */
+    // "terminal.integrated.automationProfile.windows": {
+    //     "path": "pwsh",
+    //     "args": [
+    //         "-Nop",
+    //         "-Nol"
+    //     ],
+    //     "color": "terminal.ansiYellow",
+    //     "icon": "terminal-powershell",
+    //     // "env": {}
+    //     // "overrideName":
+    // },
     "terminal.integrated.allowWorkspaceConfiguration": false,
     // "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.enableFileLinks": true,
@@ -1887,7 +1913,7 @@
     // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
     // - args: [-NoLogo','-NoProfile]
     // "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
-    "terminal.integrated.defaultProfile.windows": "Pwsh🐒",
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒 -Nop", // "Pwsh🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",
@@ -1908,6 +1934,36 @@
 
       */
     "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                // "scope": "comment.block",
+                "scope": "comment.line", // single-line comments
+                "settings": {
+                    "foreground": "#6ea58049",
+                    // "fontStyle": "underline strikethrough"
+                    // "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "comment.block", // multi-line comments, ignores single, ignores head/tail
+                "settings": {
+                    "foreground": "#38df6f93",
+                    "foreground": "#6eaff0ff",
+                    "foreground": "#6ea580a8",
+                    // "fontStyle": "underline strikethrough"
+                    // "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "constant.character.escape",
+                "settings": {
+                    // "foreground": "#FF0000",
+                    // "fontStyle": "bold"
+                    // "fontStyle": "underline"
+                    "fontStyle": "bold"
+                }
+            }
+        ],
         "[Visual Studio 2019 Dark]": {
             // example test
             "textMateRules": [],
@@ -2067,8 +2123,21 @@
           https://code.visualstudio.com/docs/editor/variables-reference
       */
     "terminal.integrated.profiles.windows": {
+        "Pwsh🐒 -Nop": {
+            "color": "terminal.ansiGreen",
+            "overrideName": true,
+            "path": [
+                "pwsh.exe",
+                "C:/Program Files/PowerShell/7/pwsh.exe"
+            ],
+            "args": [
+                "-NoProfile",
+                "-NoLogo"
+            ],
+            "icon": "terminal-powershell"
+        },
         "Pwsh🐒": {
-            "color": "terminal.ansiMagenta",
+            "color": "terminal.ansiYellow",
             "overrideName": true,
             "path": [
                 "pwsh.exe",
@@ -2108,9 +2177,10 @@
             ],
             "icon": "terminal-powershell"
         },
-        "Windows PowerShell -NoP": {
+        "Win PS -NoP": {
             "overrideName": true,
             "icon": "arrow-both",
+            // "icon": "",
             "path": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
             "args": [
                 "-NoLogo",
@@ -2548,7 +2618,7 @@
     //  - countAscending: Results are sorted by count per file, in ascending order.
     "search.sortOrder": "modified",
     // Controls whether to use global `.gitignore` and `.ignore` files when searching for files.
-    "search.useGlobalIgnoreFiles": false,
+    "search.useGlobalIgnoreFiles": true,
     // Controls whether to use `.gitignore` and `.ignore` files when searching for files.
     "search.useIgnoreFiles": true,
     "editor.mouseWheelScrollSensitivity": 1.2,
@@ -3086,10 +3156,10 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 14,
-    "terminal.integrated.fontSize": 18,
     "terminal.integrated.fontSize": 16,
     "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontSize": 14,
     // "debug.console.lineHeight": 0,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
@@ -3439,7 +3509,6 @@
     //    "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekViewDuringAutoRun": false,
-    "terminal.explorerKind": "integrated",
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
     "python.diagnostics.sourceMapsEnabled": true,
@@ -3451,7 +3520,6 @@
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
     "gitlens.advanced.abbreviateShaOnCopy": true,
-    "terminal.integrated.copyOnSelection": true,
     "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
     "gitlens.mode.active": "zen",
     // "debug.console.acceptSuggestionOnEnter":,
@@ -3945,9 +4013,9 @@
     "powerquery.benchmark.enable": true,
     "powerquery.benchmark.enable": false,
     // Specifies whether to enable experimental diagnostics features. This may result in false positives while the feature is under development.
-    "powerquery.diagnostics.experimental": false,
-    "powerquery.general.experimental": false,
+    "powerquery.diagnostics.experimental": false, // maybe replaced by 'powerquery.general.experimental' ?
     "powerquery.general.experimental": true,
+    "powerquery.general.experimental": false,
     // Recommended always on. Toggles internal caching causing performance degregation when off. Used to find hot paths in the extension.
     "powerquery.diagnostics.isWorkspaceCacheAllowed": true,
     // Sets what strategy is used by the type analysis. Extended is useful for small scripts but can hang on larger, complicated files. If performance isn't acceptable then fallback to Primitive.

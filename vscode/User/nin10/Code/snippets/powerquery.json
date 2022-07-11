@@ -7,11 +7,21 @@
         new: snippet variables: <https://code.visualstudio.com/updates/v1_53#_new-snippet-variables>
         docs: <https://code.visualstudio.com/docs/editor/userdefinedsnippets>
     */
-    "Transform.Literal.Text | Transforms Quote Literal": {
-        "prefix": "Quote Text",
-        "description": "Transforms Quote Literal  ⁞   Ex: Sorted Table ⇒ \"#Sorted Table\"\n\nDoes not escape inner quotes",
+    // "Transform.Literal.Text | Transforms Quote Literal": {
+    //     // # note: extension addon makes this mostly redundant
+    //     "prefix": "Quote Text",
+    //     "description": "Transforms Quote Literal  ⁞   Ex: Sorted Table ⇒ \"#Sorted Table\"\n\nDoes not escape inner quotes",
+    //     "body": [
+    //         "#\"${1:$TM_SELECTED_TEXT}\"${0}",
+    //     ],
+    // },
+    "Let | Inner expression": {
+        "prefix": "Let Tiny",
+        "description": "Selected as a let expression",
         "body": [
-            "#\"${1:$TM_SELECTED_TEXT}\"${0}",
+            " let ${1:x} = ${2:$TM_SELECTED_TEXT} in ${1:x}${0} " // #iter0
+            // "let ${1:x} = ${2:$TM_SELECTED_TEXT} in ${1:x},${0}" // #iter0
+            // "#\"(nl,cr)\"${0}",
         ],
     },
     "Constant.Text | Insert Newline literal": {
