@@ -115,6 +115,46 @@
                     "order": 1
                 }
             },
+            // {
+            //     "name": "cur.Pester.ps1 🐛",
+            //     "type": "PowerShell",
+            //     "request": "launch",
+            //     "script": "Invoke-Pester -Output Detailed -",
+            //     "cwd": "${workspaceFolder}",
+            //     "presentation": {
+            //         "hidden": true,
+            //         "group": "Invoke-Run",
+            //         "order": 1
+            //     }
+            // },
+            {
+                "name": "PowerShell Launch Script",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "Cur.Pester 🐜",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "Invoke-Pester",
+                "args": [
+                    "-Configuration",
+                    "$PesterConfig"
+                ],
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                // "args": [
+                //     "-Nop"
+                // ],
+                // "cwd": "${workspaceFolder}"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            },
             {
                 "name": "Cur.ps1 🏃‍♂️",
                 "type": "PowerShell",
@@ -580,6 +620,32 @@
 
     */
     "editor.minimap.enabled": true,
+    "editor.minimap.autohide": true, // zen:config
+    /*
+        new: https://code.visualstudio.com/updates/v1_69#_minimap-context-menu
+    */
+    "sortJSON.contextMenu": {
+        "sortJSON": true,
+        "sortJSON": false, // zen:config
+        "sortJSONReverse": true,
+        "sortJSONReverse": false, // zen:config
+        "sortJSONKeyLength": true,
+        "sortJSONKeyLength": false, // zen:config
+        "sortJSONKeyLengthReverse": true,
+        "sortJSONKeyLengthReverse": false, // zen:config
+        "sortJSONAlphaNum": true,
+        "sortJSONAlphaNum": false, // zen:config
+        "sortJSONAlphaNumReverse": true,
+        "sortJSONAlphaNumReverse": false, // zen:config
+        "sortJSONValues": true,
+        "sortJSONValues": false, // zen:config
+        "sortJSONValuesReverse": true,
+        "sortJSONValuesReverse": false, // zen:config
+        "sortJSONType": true,
+        "sortJSONType": false, // zen:config
+        "sortJSONTypeReverse": true,
+        "sortJSONTypeReverse": false, // zen:config
+    },
     //
     // mode: small right
     "editor.minimap.renderCharacters": true,
@@ -608,7 +674,7 @@
     "editor.peekWidgetDefaultFocus": "tree",
     // "editor.quickSuggestions": false | true | Obj
     "editor.quickSuggestions": {
-        "other": true,
+        "other": true, // [ true | false |off | on | Inline ]
         "comments": false,
         "strings": false
     },
@@ -1151,6 +1217,7 @@
         "editor.formatOnType": false, // currently it's NYI in the extension
         "editor.formatOnType": true, // not implemented yet?
         "files.trimTrailingWhitespace": true,
+        "editor.semanticHighlighting.enabled": true,
         "editor.suggest.filterGraceful": true,
         "editor.suggest.insertMode": "insert",
         "editor.suggest.showFolders": true,
@@ -1189,11 +1256,7 @@
         "editor.inlineSuggest.enabled": false,
         // "editor.inlayHints.enabled": false, // error lens, debugger, etc
         // "editor.suggest.localityBonus": false,
-        "editor.suggest.localityBonus": true, // seems worse if you enable it.
-        "editor.suggest.showIcons": true,
-        "editor.suggest.shareSuggestSelections": false,
-        "editor.suggest.showStatusBar": true,
-        "editor.suggestFontSize": 12, // was < 12 | 14 >
+        2 | 14 >
         "editor.codeLensFontSize": 12,
         "editor.inlayHints.fontSize": 12,
         "editor.suggestOnTriggerCharacters": true,
@@ -1205,30 +1268,35 @@
         "editor.autoClosingOvertype": "auto",
         "editor.autoClosingQuotes": "languageDefined",
         "editor.find.autoFindInSelection": "multiline",
-        "editor.suggest.showInlineDetails": true,
-        "editor.suggest.showSnippets": true,
-        "editor.suggest.showCustomcolors": true,
         "outline.showClasses": true,
         "outline.showBooleans": false,
         "outline.showEnums": false,
         "outline.showNull": false,
         "outline.showStrings": false,
         "outline.showVariables": false,
-        "editor.suggest.preview": true,
         "editor.autoSurround": "languageDefined",
         // "editor.colorDecorators": false,
         "editor.columnSelection": false,
         "editor.copyWithSyntaxHighlighting": true,
         // "editor.cursorSurroundingLines": 0,
+        "editor.suggest.preview": true,
+        "editor.suggest.showInlineDetails": true,
+        "editor.suggest.showSnippets": true,
+        "editor.wordBasedSuggestions": true,
+        "editor.suggest.showCustomcolors": true,
+        "editor.suggest.localityBonus": true, // seems worse if you enable it.
+        "editor.suggest.showIcons": true,
+        "editor.suggest.shareSuggestSelections": false,
+        "editor.suggest.showStatusBar": true,
+        "editor.suggestFontSize": 12, // was < 1
         "editor.quickSuggestionsDelay": 800,
         "editor.quickSuggestionsDelay": 400,
         "editor.quickSuggestionsDelay": 1500,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
-        "editor.wordBasedSuggestions": true,
         // "editor.wordBasedSuggestionsMode": "matchingDocuments",
         "editor.wordBasedSuggestionsMode": "matchingDocuments",
         "editor.quickSuggestions": {
-            "other": true,
+            "other": true, // [ true | false |off | on | Inline ]
             "comments": false,
             "strings": true
         },
@@ -1348,7 +1416,6 @@
 
       */
     "files.defaultLanguage": "${activeEditorLanguage}",
-    "files.trimTrailingWhitespace": true,
     "files.encoding": "utf8",
     "files.autoGuessEncoding": false,
     "files.associations": {
@@ -1367,6 +1434,7 @@
         ".ripgreprc": "shellscript",
         "nuget.config": "xml",
         "*.psm1": "powershell",
+        "*.resx": "xml", // visual studio
     },
     /*
 
@@ -1960,13 +2028,64 @@
                     // "foreground": "#FF0000",
                     // "fontStyle": "bold"
                     // "fontStyle": "underline"
-                    "fontStyle": "bold"
+                    // "fontStyle": "bold"
+                }
+            },
+            /*
+            {
+                "scope": "storage.type.powershell",
+                "settings": {
+                    "foreground": "#FF0000",
+                    "foreground": "#9842b4bb",
+                    // "fontStyle": "bold strikethrough",
+                    "fontStyle": "strikethrough",
+                    "fontStyle": "",
+                }
+            },
+            {
+                "scope": "meta.type.powershell",
+                "settings": {
+                    "foreground": "#FF0000",
+                    "foreground": "#9842b4bb",
+                    // "fontStyle": "bold strikethrough",
+                    "fontStyle": "strikethrough",
+                    "fontStyle": "",
+                }
+            },
+            {
+                "scope": "meta.function.powershell",
+                "settings": {
+                    "foreground": "#FF0000",
+                    "foreground": "#ffd000bb",
+                    // "fontStyle": "bold strikethrough",
+                    "fontStyle": "strikethrough",
+                    "fontStyle": "",
                 }
             }
+            */
+            // {
+            //     "scope": "storage.type",
+            //     "name": "dampen powershell types",
+            //     "settings": {
+            //         "foreground": "#ff0000",
+            //         // "foreground": "#FF0000",
+            //         // "fontStyle": "bold"
+            //     }
+            // }
         ],
         "[Visual Studio 2019 Dark]": {
             // example test
-            "textMateRules": [],
+            "textMateRules": [
+                /*
+                {
+                    "scope": "storage.type.powershell",
+                    "settings": {
+                        "foreground": "#FF0000",
+                        "foreground": "#9842b4bb",
+                    }
+                }
+                */
+            ],
             /*
                 {
                     "name": "dev test",
@@ -1979,10 +2098,19 @@
                 }
             #>
             */
+            //
+            "types": {
+                "foreground": "#FF0000",
+                "foreground": "#4278b4f3",
+                "foreground": "#4277b499",
+                "foreground": "#9842b4bb",
+                // "types": "#8b42f195",
+                // "fontStyle": "bold"
+            },
             "keywords": {
                 "foreground": "#1e4a7cf3",
                 "foreground": "#4278b4f3",
-                "fontStyle": "bold underline"
+                // "fontStyle": "bold"
             }
         }
     },
@@ -2312,7 +2440,8 @@
     "workbench.editor.labelFormat": "default",
     "notebook.cellToolbarLocation": {
         "default": "right",
-        "jupyter-notebook": "right"
+        "jupyter-notebook": "left",
+        "dotnet-interactive": "left"
     },
     /*
 
@@ -2543,7 +2672,7 @@
     // URI of your GitHub Enterprise Instance
     "github-enterprise.uri": "",
     // Whether to automatically navigate to the next merge conflict after resolving a merge conflict.
-    "merge-conflict.autoNavigateNextConflict.enabled": false,
+    "merge-conflict.autoNavigateNextConflict.enabled": true,
     // Create a CodeLens for merge conflict blocks within editor.
     "merge-conflict.codeLens.enabled": true,
     // Create decorators for merge conflict blocks within editor.
@@ -2942,7 +3071,7 @@
     // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
     "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
     // Loads user and system-wide PowerShell profiles (profile.ps1 and Microsoft.VSCode_profile.ps1) into the PowerShell session. This affects IntelliSense and interactive script execution, but it does not affect the debugger.
-    "powershell.enableProfileLoading": true,
+    "powershell.enableProfileLoading": false,
     // Controls the comment-based help completion behavior triggered by typing '##'. Set the generated help style with 'BlockComment' or 'LineComment'. Disable the feature with 'Disabled'.
     "powershell.helpCompletion": "BlockComment",
     // Switches focus to the console when a script selection is run or a script file is debugged. This is an accessibility feature. To disable it, set to false.
@@ -3102,6 +3231,7 @@
     "editor.fontWeight": "normal", // # is default default
     "editor.fontSize": 12,
     "editor.fontSize": 14,
+    "editor.fontSize": 15,
     "editor.fontSize": 18,
     "editor.fontSize": 16,
     /* save my best clean profile
@@ -3156,10 +3286,10 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontSize": 16, // at full zoom this is big
     "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 13,
     // "debug.console.lineHeight": 0,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
@@ -3220,13 +3350,12 @@
     // "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.lineNumbers": "relative", // weird
     "editor.lineNumbers": "interval", // cleaner
     // "editor.lineHeight": 25, // 0-8 are multipliers, > 8 are literal px sizes
-    "notebook.lineNumbers": "off",
+    "notebook.lineNumbers": "on",
     "zenMode.hideLineNumbers": true,
     "zenMode.centerLayout": true,
     "zenMode.fullScreen": false,
@@ -3322,7 +3451,7 @@
         "warning",
         "info"
     ],
-    "errorLens.fontWeight": 200,
+    // "errorLens.fontWeight": "300",
     "errorLens.delay": 2500,
     "errorLens.delay": 0,
     "errorLens.delay": 500,
@@ -3341,6 +3470,7 @@
     "errorLens.warningGutterIconColor": "#ff932f3b", // dim: 2x
     // "errorLens.followCursor": "allLines",
     "errorLens.followCursor": "closestProblem",
+    "debug.inlineValues": false,
     "errorLens.followCursorMore": 2,
     "errorLens.infoGutterIconColor": "#d46f6f",
     "errorLens.infoGutterIconColor": "#00b7e4",
@@ -3396,7 +3526,6 @@
     // "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     /*
 
@@ -3997,10 +4126,9 @@
     "notebook.cellFocusIndicator": "border",
     "notebook.compactView": true,
     "notebook.cellToolbarVisibility": "click",
-    "notebook.output.textLineLimit": 100, // seems to require restart
+    "notebook.output.textLineLimit": 120, // seems to require restart
     // "notebook.displayOrder": []
     "notebook.dragAndDropEnabled": true,
-    "notebook.consolidatedOutputButton": false,
     "notebook.consolidatedRunButton": true, // simplifies/removes UI
     // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
     /*
@@ -4036,10 +4164,12 @@
         todo: parens are too bold right now
         */
         "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
+        "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
         // "editor.letterSpacing": 0.7, // with: 'cascadia code pl' (also)
         // "editor.letterSpacing": 0, // with: 'cascadia code pl' (also)
         // "editor.letterSpacing": 0.3, // with: 'cascadia code pl'
         "editor.guides.indentation": true,
+        "editor.fontWeight": "normal",
         "editor.guides.indentation": false,
         "editor.formatOnSaveMode": "file",
         "editor.matchBrackets": "always",
@@ -4063,14 +4193,21 @@
         "editor.wordWrap": "wordWrapColumn", // uses 160
         "editor.wordWrap": "on", // uses viewport
         "editor.wordWrap": "bounded", // min( window | 160 )
+        "editor.fontSize": 14,
+        "editor.fontSize": 12,
         "editor.fontSize": 16,
+        "outline.showOperators": true,
+        "outline.showVariables": true,
         "editor.wordWrapColumn": 160,
         "diffEditor.wordWrap": "inherit",
         // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.formatOnSave": false,
-        "editor.semanticHighlighting.enabled": true
+        "editor.semanticHighlighting.enabled": true,
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
+        "editor.inlineSuggest.enabled": true,
+        "editor.suggest.preview": true,
+        "editor.rename.enablePreview": true
     },
     /*
 
@@ -4106,8 +4243,13 @@
         // "editor.snippetSuggestions": "top",
         "editor.snippetSuggestions": "inline",
         "editor.snippetSuggestions": "none", // snippets *never* show on suggestions, then hit the hotkey 'insert snippet' if you want to manually show them
+        "editor.fontSize": 18,
+        "editor.fontSize": 16, // at full zoom, this is big
+        "editor.fontSize": 13,
+        "editor.fontSize": 14,
         "editor.hover.delay": 300, // 10, 710,
         "editor.hover.enabled": true, // false,
+        // "editor.suggest.snippetsPreventQuickSuggestions": true
     },
     // default squiggle
     // "editorWarning.foreground": "#00fff2", // main squiggle : different hue
@@ -4132,4 +4274,85 @@
         "Codepoint"
     ],
     // main squiggle fully hidden because adddon still shows inline
+    /*
+        what's new / experimental: 2022-07-16
+
+            https://code.visualstudio.com/updates/v1_69#_command-center
+            https://code.visualstudio.com/updates/v1_69#_shell-integration
+
+        new git stuff
+            https://code.visualstudio.com/updates/v1_69#_commit-action-button-for-git-repositories
+
+                bunch of settings like "git.useEditorAsCommitInput"
+
+        new debug console refs:
+
+            https://code.visualstudio.com/updates/v1_69#_debugging
+
+        codeicons:
+            https://code.visualstudio.com/api/references/icons-in-labels
+
+        Jupyter
+            https://code.visualstudio.com/updates/v1_69#_jupyter
+
+        markdown link validation
+            https://code.visualstudio.com/updates/v1_69#_markdown-link-validation
+                latest changes
+            https://code.visualstudio.com/updates/v1_68#_markdown-link-validation
+                experimental settings here
+    */
+    "powershell.debugging.createTemporaryIntegratedConsole": false,
+    "terminal.integrated.shellIntegration.enabled": true,
+    "terminal.integrated.shellIntegration.decorationsEnabled": true,
+    "terminal.integrated.shellIntegration.history": 200,
+    "window.commandCenter": true,
+    "terminal.integrated.shellIntegration.decorationIcon": "circle-outline",
+    "terminal.integrated.shellIntegration.decorationIconSuccess": "primitive-dot",
+    "terminal.integrated.shellIntegration.decorationIconError": "error-small",
+    "logViewer.logLevel": "trace",
+    "logViewer.followTailMode": "manual",
+    "logViewer.showStatusBarItemOnChange": true,
+    /* end of new: 2022-07-16 */
+    /*
+
+            experiment: new addon:
+                berublan.vscode-log-viewer
+
+
+        "logViewer.showStatusBarItemOnChange": true,
+        "logViewer.watch": ...
+
+
+    */
+    /* end of new: 2022-07-20 */
+    // Defines the verbosity of output to be used when debugging a test or a block. For Pester 5 and newer the default value Diagnostic will print additional information about discovery, skipped and filtered tests, mocking and more.
+    "powershell.pester.debugOutputVerbosity": "Diagnostic",
+    // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
+    "powershell.pester.outputVerbosity": "FromPreference",
+    "git.mergeEditor": true,
+    "files.trimTrailingWhitespace": true,
+    "debug.showSubSessionsInToolBar": true,
+    // "terminal.integrated.automationProfile.windows": {
+    //     // "args": []
+    //     "path": "",
+    //     "color":
+    // },
+    /*
+            {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Program",
+        "program": "${workspaceFolder}/app.js",
+        "cwd": "${workspaceFolder}",
+        "args": ["${env:USERNAME}"]
+        }
+        */
+    "csharp.showOmnisharpLogOnError": true,
+    // "omnisharp.waitForDebugger": false
+    "omnisharp.loggingLevel": "information",
+    "omnisharp.loggingLevel": "trace", // not sure which is the highest
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    "powershell.developer.editorServicesLogLevel": "Normal",
+    "editor.guides.highlightActiveIndentation": false,
+    "editor.occurrencesHighlight": true,
 }

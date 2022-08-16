@@ -6,8 +6,11 @@ using namespace System.Management.Automation # [ErrorRecord]
 # I am not sure what's the right *nix env vars for encoding
 # grep specifically required this
 $env:LC_ALL = 'en_US.utf8'
+$__ConfigOnlyuseFast = $false
 
 Set-Alias 'sc' -Value 'Set-Content'
+
+'🐒' * 300 -join '' | write-warning
 
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
 $env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -join ''
@@ -45,6 +48,10 @@ $me = Get-Process -Id $PID
 if ($me.Parent.Name -match 'Azure') {
     $IsAzureDataStudio = $True
 }
+if($Host.Name -match 'studio code host') {
+    $IsAzureDataStudio = $true
+    'skippping VSCode host...' | write-warning
+}
 Write-Warning '㏒ : IsAzureDataStudio?'
 if (! $IsAzureDataStudio ) {
     Write-Warning '     ㏒ : NinIsLoaded?d'
@@ -57,6 +64,9 @@ if (! $IsAzureDataStudio ) {
 } else {
     Write-Warning 'skipping predictor because of ADS...'
 }
+
+if($__ConfigOnlyuseFast) { return }
+
 <#
     [section]: essential imports
 #>
@@ -633,7 +643,8 @@ function _profileEventOnFinalLoad {
         $__ninConfig.IsFirstLoad
     ) {
         # if Vs Code didn't set a directory, fallback to pwsh
-        Set-Location "$Env:UserProfile/Documents/2021/Powershell"
+        # Set-Location "$Env:UserProfile/Documents/2021/Powershell"
+        # $Env:UserProfile/SkyDrive/Documents/2022/Pwsh/
 
     }
     "FirstLoad? $($__ninConfig.IsFirstLoad)" | Write-Host -fore green
@@ -1179,7 +1190,7 @@ if ($false -and 'probably obsolete') {
 if ($OneDrive.Enable_MyDocsBugMapping) {
     Remove-Module 'psfzf', 'psscripttools', 'zlocation'
     Set-Alias 'code' -Value 'Invoke-VSCodeVenv' -Force
-    Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
+    # Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
 }
 
 # New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
