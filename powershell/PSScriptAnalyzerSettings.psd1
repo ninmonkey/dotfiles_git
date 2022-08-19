@@ -1,42 +1,20 @@
-<#
-created:
-    Jake
-    2021-05-11
-refs:
-    - [Docs: PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/RuleDocumentation)
-    - [Creating Custom Rules](https://github.com/PowerShell/PSScriptAnalyzer#custom-rules)
-    - [Suppress rule Attributes](https://github.com/PowerShell/PSScriptAnalyzer#suppressing-rules)
-        - Chris Dent's example defines new tests
-
-examples:
-    - [Chris Dent's Settings](https://github.com/indented-automation/Indented.ScriptAnalyzerRules)
-
-#>
-
 @{
-    Severity = @(
+    Severity     = @(
         'Error'
         'Warning'
     )
-    # ExcludeRules = @(
-    #     'PSDSC*'
-    #     'PSUseDeclaredVarsMoreThanAssignments'
-    #     'PSUseShouldProcessForStateChangingFunctions'
-    # )
+    ExcludeRules = @(
+        # 'PSDSC*'
+        # 'PSUseDeclaredVarsMoreThanAssignments'
+        # 'PSUseShouldProcessForStateChangingFunctions'
+    )
 
-    Rules    = @{
-        # disable 'process' because tiny typo-s mutates proccess expressions by accident
-        PSAvoidUsingCmdletAliases  = @{
-            Enable      = $True
-            'Whitelist' = @('process')
-        }
-
+    <#
+        try: https://github.com/indented-automation/Indented.ScriptAnalyzerRules/blob/c8a90433e6f9036c6cf8082d2b74676adc660b55/Indented.ScriptAnalyzerRules/public/rules/AvoidOutOfScopeVariables.ps1
+    #>
+    Rules        = @{
         PSAvoidTrailingWhitespace  = @{
-            # Enable = $false
-            Enable = $true
-        }
-        'AvoidGlobalAliases'       = @{
-            Enable = $True
+            Enable = $false # else VSCode Linter spam
         }
         PSPlaceOpenBrace           = @{
             Enable             = $true
@@ -52,22 +30,12 @@ examples:
             NoEmptyLineBefore  = $false
         }
 
-        # PSUseConsistentIndentation = @{
-        # this is for WinPS, not PS pre-denting pipes
-        # Enable = $false
-        # Kind                = 'space'
-        # PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
-        # IndentationSize     = 4
-        # }
-
         PSUseConsistentIndentation = @{
-            # this one does not work well with 7+ pipes
-            Enable              = $false
+            Enable              = $true
             Kind                = 'space'
             PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
             IndentationSize     = 4
         }
-
 
         PSUseConsistentWhitespace  = @{
             Enable                          = $true
@@ -89,14 +57,5 @@ examples:
         PSUseCorrectCasing         = @{
             Enable = $true
         }
-
-        <#
-        how to create a new or custom compatible list:
-            <https://github.com/PowerShell/PSScriptAnalyzer/blob/master/RuleDocumentation/UseCompatibleCmdlets.md>
-
-        #>
-        # 'PSUseCompatibleCmdlets'    = @{
-        #     'compatibility' = @("coreff-6.1.0-windows")
-        # }
     }
 }
