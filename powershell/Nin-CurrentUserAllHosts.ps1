@@ -3,6 +3,10 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
+[PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
+$PSStyle.OutputRendering = 'ansi'
+
 # I am not sure what's the right *nix env vars for encoding
 # grep specifically required this
 $env:LC_ALL = 'en_US.utf8'
@@ -48,16 +52,15 @@ $me = Get-Process -Id $PID
 if ($me.Parent.Name -match 'Azure') {
     $IsAzureDataStudio = $True
 }
-if($Host.Name -match 'studio code host') {
-    $IsAzureDataStudio = $true
-    'skippping VSCode host...' | write-warning
-}
-Write-Warning '㏒ : IsAzureDataStudio?'
+# if($Host.Name -match 'studio code host') {
+#     $IsAzureDataStudio = $true
+#     'skippping VSCode host...' | write-warning
+# }
+# Write-Warning '㏒ : IsAzureDataStudio?'
 if (! $IsAzureDataStudio ) {
     Write-Warning '     ㏒ : NinIsLoaded?d'
     if ( Get-Module 'Ninmonkey.Console') {
-        Import-Module CompletionPredictor -Verbose
-        Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView -Verbose
+
     } else {
         Write-Warning '㏒ : Nin failed, skipping command predictor'
     }
@@ -424,6 +427,10 @@ function _reloadModule {
     $ExecutionContext | Jprop
 #>
 
+if($PSEditor) {
+    Import-EditorCommand -Module EditorServicesCommandSuite
+}
+
 $eaIgnore = @{
     'ErrorAction' = 'Ignore'
     'PassThru'    = $True
@@ -456,13 +463,13 @@ $eaIgnore = @{
         # Test whether term is running, in order to run EditorServicesCommandSuite
         $__ninConfig.Terminal.IsVSCodeAddon_Terminal = $true
     }
-    if ($psEditor) {
-        Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> EditorServicesCommandSuite'
-        $escs = Import-Module EditorServicesCommandSuite -PassThru -DisableNameChecking
-        if ($null -ne $escs -and $escs.Version.Major -lt 0.5.0) {
-            Import-EditorCommand -Module EditorServicesCommandSuite
-        }
-    }
+    # if ($psEditor) {
+    #     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> EditorServicesCommandSuite'
+    #     $escs = Import-Module EditorServicesCommandSuite -PassThru -DisableNameChecking
+    #     if ($null -ne $escs -and $escs.Version.Major -lt 0.5.0) {
+    #         Import-EditorCommand -Module EditorServicesCommandSuite
+    #     }
+    # }
     # if ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) {
     #     Import-Module EditorServicesCommandSuite
     # Set-PSReadLineKeyHandler -Chord "$([char]0x2665)" -Function AddLine # work around for shift+enter pasting a newline
@@ -539,7 +546,7 @@ if (Get-Module 'psutil' -ListAvailable -ea ignore) {
     $StringModule_DontInjectJoinString = $true # to fix psutil, see: <https://discordapp.com/channels/180528040881815552/467577098924589067/750401458750488577>
 }
 #>
-[PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
+
 # if (Import-Module 'Pansies' -ea ignore) {
 #     [PoshCode.Pansies.RgbColor]::ColorMode = [PoshCode.Pansies.ColorMode]::Rgb24Bit
 #     $__ninConfig.Terminal.ColorMode = [PoshCode.Pansies.RgbColor]::ColorMode
@@ -825,32 +832,7 @@ if ($true) {
     }
 }
 
-if ($__ninConfig.UsePSReadLinePredict) {
-    try {
-        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionSource') {
-            Set-PSReadLineOption @eaIgnore -PredictionSource History # SilentlyContinue #stop
-        }
-        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionViewStyle') {
-            Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView # SilentlyContinue
-        }
-    } catch {
-        Warn🛑 'Failed: -PredictionSource History & ListView'
-    }
-}
-if ($__ninConfig.UsePSReadLinePredictPlugin) {
-    try {
-        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionSource') {
-            Set-PSReadLineOption @eaIgnore -PredictionSource HistoryAndPlugin
-        }
-        if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionViewStyle') {
-            Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView
-        }
-    } catch {
-        Warn🛑 'Failed: -PredictionSource HistoryAndPlugin'
-    }
-}
-
-if ($true) {
+function nin.ImportPSReadLine {
     <#
     AddLine
         moves to next line, bringing any remaining text with it
@@ -859,14 +841,101 @@ if ($true) {
 
      now VS Code supports it, making it the default
     #>
-    Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView # SilentlyContinue
-    Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
-    Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function BackwardWord
-    # Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
-    Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
-    Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
-    Set-PSReadLineOption -ContinuationPrompt ((' ' * 4) -join '')
+    param(
+        # Default includes list view but not
+        [Parameter(Mandatory, Position=0)]
+        [ArgumentCompletions(
+            'MyDefault_HistListView',
+            'Using_Plugin'
+        )]
+        [string]$ImportType
+    )
+
+    switch($ImportType) {
+        'Using_Plugin' {
+            write-debug '
+            import: CompletionPredictor
+                1] PredictionSource: History+Plugin
+        '
+            Import-Module CompletionPredictor -Verbose -scope global
+            Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView -PredictionSource HistoryAndPlugin
+        }
+        'MyDefault_HistListView' {
+            write-debug '
+            1] predict list view
+            2] ctrl+f/d
+            3] alt+enter    addLine
+            4] ctrl+enter   insertLine
+
+            predictSource: History, style: ListView
+            '
+
+            Set-PSReadLineOption @eaIgnore -PredictionSource History
+            Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView
+
+            Set-PSReadLineOption -ContinuationPrompt ((' ' * 4) -join '')
+
+            Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
+            Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function BackwardWord
+            # Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
+            Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
+            Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
+                'no-op' | write-debug
+         }
+
+         default {
+            throw "Unhandled Parameter mode: $ImportType"
+         }
+    }
     # Set-PSReadLineOption -ContinuationPrompt (' ' * 4 | New-Text -fg gray80 -bg gray30 | ForEach-Object tostring )
+}
+
+
+
+# if ($__ninConfig.UsePSReadLinePredict) {
+#     try {
+#         if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionSource') {
+#             Set-PSReadLineOption @eaIgnore -PredictionSource History # SilentlyContinue #stop
+#         }
+#         if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionViewStyle') {
+#             Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView # SilentlyContinue
+#         }
+#     } catch {
+#         Warn🛑 'Failed: -PredictionSource History & ListView'
+#     }
+# }
+# if ($__ninConfig.UsePSReadLinePredictPlugin) {
+#     try {
+#         if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionSource') {
+#             Set-PSReadLineOption @eaIgnore -PredictionSource HistoryAndPlugin
+#         }
+#         if (Test-CommandHasParameterNamed 'Set-PSReadLineOption' 'PredictionViewStyle') {
+#             Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView
+#         }
+#     } catch {
+#         Warn🛑 'Failed: -PredictionSource HistoryAndPlugin'
+#     }
+# }
+
+
+
+if ($false) {
+    <#
+    AddLine
+        moves to next line, bringing any remaining text with it
+    AddLineBelow
+        Adds and moves to next line, leaving text where it was.
+
+     now VS Code supports it, making it the default
+    #>
+    # Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView # SilentlyContinue
+    # Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
+    # Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function BackwardWord
+    # # Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
+    # Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
+    # Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
+    # Set-PSReadLineOption -ContinuationPrompt ((' ' * 4) -join '')
+    # # Set-PSReadLineOption -ContinuationPrompt (' ' * 4 | New-Text -fg gray80 -bg gray30 | ForEach-Object tostring )
 }
 
 
@@ -1136,57 +1205,57 @@ if ($true -or $EnableHistHandler) {
 #     }
 # }
 
-if ($false) {
-    Import-Module PsFzf
+# if ($false) {
+#     Import-Module PsFzf
 
-    if (Get-Command Set-PsFzfOption -ea ignore) {
-        # Set reverse hist fzf
+#     if (Get-Command Set-PsFzfOption -ea ignore) {
+#         # Set reverse hist fzf
 
-        # Really needs filtering
-        Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+shift+r'
-        # 'Ctrl+r' | write-blue
-        # | str prefix 'PsFzf: History set to '
+#         # Really needs filtering
+#         Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+shift+r'
+#         # 'Ctrl+r' | write-blue
+#         # | str prefix 'PsFzf: History set to '
 
-        Hr 1
-        'keybind ↳ History set to ↳ '
+#         Hr 1
+#         'keybind ↳ History set to ↳ '
 
         # 'Ctrl+r' | Write-Color blue
         # | str prefix ([string]@(
         #         'PsFzf:' | Write-Color gray60
         #         'keybind ↳ History set to ↳ '
-        #     ))
+#         #     ))
 
-        Hr 1
-    }
-}
+#         Hr 1
+#     }
+# }
 if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> final invokevscode dotsource, should not exist '
 }
 
-# temp hack
-if ($false -and 'probably obsolete') {
-    if (! (Get-Command 'code-venv' -ea ignore) ) {
-        Set-Alias 'code' 'code-insiders.cmd'
-        # somehow didn't load, so do it now
-        $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
-        if ($src) {
-            . $src
-        }
-        Set-Alias 'code' -Value 'Invoke-VSCodeVenv'
-        $Value = (@(
-                Get-Command -ea ignore -CommandType Application code-insiders.cmd
-                Get-Command -ea ignore -CommandType Alias code.cmd
-                Get-Command -ea ignore 'venv-code'
-            ) | Select-Object -First 1)
-        New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value $Value
-        # try {
-        #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
-        # }
-        # catch {
-        #     Warn🛑 'Failed parsing: Out-VSCodeVenv.ps1'
-        # }
-    }
-}
+# # temp hack
+# if ($false -and 'probably obsolete') {
+#     if (! (Get-Command 'code-venv' -ea ignore) ) {
+#         Set-Alias 'code' 'code-insiders.cmd'
+#         # somehow didn't load, so do it now
+#         $src = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Invoke-VSCodeVenv.ps1'
+#         if ($src) {
+#             . $src
+#         }
+#         Set-Alias 'code' -Value 'Invoke-VSCodeVenv'
+#         $Value = (@(
+#                 Get-Command -ea ignore -CommandType Application code-insiders.cmd
+#                 Get-Command -ea ignore -CommandType Alias code.cmd
+#                 Get-Command -ea ignore 'venv-code'
+#             ) | Select-Object -First 1)
+#         New-Alias 'code.exe' -Description 'Attempts to use "code-insiders.cmd", then "code.cmd", then "venv-code".' -Value $Value
+#         # try {
+#         #     . gi (join-path $PSScriptRoot 'Out-VSCodeVenv.ps1')
+#         # }
+#         # catch {
+#         #     Warn🛑 'Failed parsing: Out-VSCodeVenv.ps1'
+#         # }
+#     }
+# }
 if ($OneDrive.Enable_MyDocsBugMapping) {
     Remove-Module 'psfzf', 'psscripttools', 'zlocation'
     Set-Alias 'code' -Value 'Invoke-VSCodeVenv' -Force
@@ -1199,6 +1268,11 @@ if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] <-- end of file'
 }
 
+write-warning "Find func: 'Lookup()'"
+'reached bottom'
+$VerbosePReference = 'continue'
+$WarningPreference = 'continue'
+$debugpreference = 'continue'
 
 if ($false) {
     Get-PSDrive -PSProvider FileSystem
@@ -1226,8 +1300,12 @@ if ($false) {
 #     Import-Module Dev.Nin
 # }
 
-function Csv2 {
-    $Input | Microsoft.PowerShell.Utility\Join-String -sep ', '
-}
+# function Csv2 {
+#     $Input | Microsoft.PowerShell.Utility\Join-String -sep ', '
+# }
 
 # . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Inspect-LocationPathInfoStackState.ps1'
+'reached bottom'
+$VerbosePReference = 'continue'
+$WarningPreference = 'continue'
+$debugpreference = 'continue'
