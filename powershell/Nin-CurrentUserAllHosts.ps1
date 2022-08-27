@@ -5,10 +5,10 @@ using namespace System.Management.Automation # [ErrorRecord]
 
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
-$DisabledForPerfTest = $true
-$superVerbose = $true
-$superVerboseAtBottom = $true # at end of profile load, turn on then
-if ($superVerbose) {
+$superVerboseAtBottom = $false # at end of profile load, turn on then
+$DisabledForPerfTest = $false
+$superVerboseAtTop = $false
+if ($superVerboseAtTop) {
     $VerbosePReference = 'continue'
     $WarningPreference = 'continue'
     $debugpreference = 'continue'
@@ -1334,6 +1334,17 @@ function prompt {
         "`nPwsh>"
     ) -join ''
 }
+if ($superVerboseAtBottom) {
+    $VerbosePReference = 'continue'
+    $WarningPreference = 'continue'
+    $debugpreference = 'continue'
+}
+
+$PSDefaultParameterValues['*:Debug'] = $true
+$PSDefaultParameterValues['*:Verbose'] = $true
+$PSDefaultParameterValues['import-module:Debug'] = $false
+
+'--- last line of profile has completed -- '
 # if (!(Get-Module dev.nin)) {
 #     Import-Module Dev.Nin
 # }
@@ -1344,8 +1355,3 @@ function prompt {
 
 # . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Inspect-LocationPathInfoStackState.ps1'
 
-if ($superVerboseAtBottom) {
-    $VerbosePReference = 'continue'
-    $WarningPreference = 'continue'
-    $debugpreference = 'continue'
-}
