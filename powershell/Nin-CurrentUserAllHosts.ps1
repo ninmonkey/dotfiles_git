@@ -5,6 +5,7 @@ using namespace System.Management.Automation # [ErrorRecord]
 
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
+$DisabledForPerfTest = $true
 $superVerbose = $true
 $superVerboseAtBottom = $true # at end of profile load, turn on then
 if ($superVerbose) {
@@ -1196,27 +1197,30 @@ function Prompt_Nin {
     # IsAdmin = Test-UserIsAdmin
 }
 
-function prompt {
-    # wrapper, prevents gitbash autolading on default prompt
-    Prompt_Nin
-}
+if ( -not $DisabledForPerfTest ) {
 
-# ie: Lets you set aw breakpoint that fires only once on prompt
-# $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
-# $prompt2}}
-# New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
-# New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
-if ($__ninConfig.LogFileEntries) {
-    New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan'
-    | ForEach-Object ToString | Warn🛑
-}
+    function prompt {
+        # wrapper, prevents gitbash autolading on default prompt
+        Prompt_Nin
+    }
 
-# if (! $OneDrive.Enable_MyDocsBugMapping) {
-#     _profileEventOnFinalLoad
-# }
+    # ie: Lets you set aw breakpoint that fires only once on prompt
+    # $prompt2 = function:prompt  # easily invoke the prompt one time, for a debug breakpoint, that only fires once
+    # $prompt2}}
+    # New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Write-Debug
+    # New-Text "End: <-- '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
+    if ($__ninConfig.LogFileEntries) {
+        New-Text "<-- '$PSScriptRoot' before onedrive mapping" -fg 'cyan'
+        | ForEach-Object ToString | Warn🛑
+    }
 
-if ($true -or $EnableHistHandler) {
-    Enable-NinHistoryHandler
+    # if (! $OneDrive.Enable_MyDocsBugMapping) {
+    #     _profileEventOnFinalLoad
+    # }
+
+    if ($true -or $EnableHistHandler) {
+        Enable-NinHistoryHandler
+    }
 }
 
 
@@ -1296,28 +1300,40 @@ if ($__ninConfig.LogFileEntries) {
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
 
-if ($false) {
-    Get-PSDrive -PSProvider FileSystem
-    | ForEach-Object {
-        @(
-            $l = @(
-                Lookup -InputObject $_ -LiteralPropertyName Name
-                Lookup -InputObject $_ -LiteralPropertyName Free
-            ) | Merge-HashtableList
-            $l
+if (-not $DisabledForPerfTest) {
 
-        )
-    }
-} else {
-    Get-PSDrive -PSProvider FileSystem
-    | ForEach-Object {
-        [pscustomobject]@{
-            Free = '{0,-6:n0}GB' -f ($_.Free / 1gb)
-            Name = $_.Name
+    if ($false) {
+        Get-PSDrive -PSProvider FileSystem
+        | ForEach-Object {
+            @(
+                $l = @(
+                    Lookup -InputObject $_ -LiteralPropertyName Name
+                    Lookup -InputObject $_ -LiteralPropertyName Free
+                ) | Merge-HashtableList
+                $l
+
+            )
         }
-    } | Format-Table -AutoSize
+    } else {
+        Get-PSDrive -PSProvider FileSystem
+        | ForEach-Object {
+            [pscustomobject]@{
+                Free = '{0,-6:n0}GB' -f ($_.Free / 1gb)
+                Name = $_.Name
+            }
+        } | Format-Table -AutoSize
+    }
 }
 
+function prompt {
+    @(
+        "`n"
+        $PSVersionTable.PSVersion -join ''
+        ' '
+        Get-Location
+        "`nPwsh>"
+    ) -join ''
+}
 # if (!(Get-Module dev.nin)) {
 #     Import-Module Dev.Nin
 # }
