@@ -5,7 +5,7 @@ using namespace System.Management.Automation # [ErrorRecord]
 
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
-$superVerboseAtBottom = $false # at end of profile load, turn on then
+$superVerboseAtBottom = $true # at end of profile load, turn on then
 $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
 if ($superVerboseAtTop) {
@@ -747,9 +747,9 @@ if ($true) {
 
     $Profile | Add-Member -NotePropertyName 'NinProfileMainEntryPoint' -NotePropertyValue $PSCommandPath -ea Ignore
     $Profile | Add-Member -NotePropertyName '$Profile' -NotePropertyValue (Get-Item $PSCommandPath) -ea Ignore
-    $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
-    $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
-    $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
+    # $historyLists = Get-ChildItem -Recurse "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine" -Filter '*_history.txt'
+    # $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
+    # $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
     $Profile | Add-Member -NotePropertyName 'PSDefaultParameterValues' -NotePropertyValue $PSCommandPath -ErrorAction Ignore
     $Profile | Add-Member -NotePropertyName '$Profile.PrevGlobalEntryPoint' -NotePropertyValue 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\Nin-PrevGlobalProfile_EntryPoint.ps1' -ErrorAction Ignore
 
@@ -1334,17 +1334,27 @@ function prompt {
         "`nPwsh>"
     ) -join ''
 }
+
+$superVerboseAtBottom = $false
+'SuperVerbose?: ', $superVerboseAtBottom -join ''
 if ($superVerboseAtBottom) {
+
     $VerbosePReference = 'continue'
     $WarningPreference = 'continue'
     $debugpreference = 'continue'
+
+    $PSDefaultParameterValues['*:Debug'] = $true
+    $PSDefaultParameterValues['*:Verbose'] = $true
+    $PSDefaultParameterValues['Import-Module:Debug'] = $false #
+    $PSDefaultParameterValues['Set-Alias:Debug'] = $false #
+
+    # Set-PSDebug -Trace 1
 }
 
-$PSDefaultParameterValues['*:Debug'] = $true
-$PSDefaultParameterValues['*:Verbose'] = $true
-$PSDefaultParameterValues['import-module:Debug'] = $false
-
 '--- last line of profile has completed -- '
+
+
+
 # if (!(Get-Module dev.nin)) {
 #     Import-Module Dev.Nin
 # }
