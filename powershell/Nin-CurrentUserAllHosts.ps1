@@ -5,9 +5,13 @@ using namespace System.Management.Automation # [ErrorRecord]
 
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
-$VerbosePReference = 'continue'
-$WarningPreference = 'continue'
-$debugpreference = 'continue'
+$superVerbose = $true
+$superVerboseAtBottom = $true # at end of profile load, turn on then
+if ($superVerbose) {
+    $VerbosePReference = 'continue'
+    $WarningPreference = 'continue'
+    $debugpreference = 'continue'
+}
 
 # this is very important, the other syntax for UTF8 defaults to UTF8+BOM which
 # breaks piping, like piping returning from FZF contains a BOM
@@ -465,35 +469,35 @@ $eaIgnore = @{
     Set-Alias @eaIgnore -Name 'Sci->Dism' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
     Set-Alias @eaIgnore -Name 'Dev->SBtoDismExpression' -Value 'ScriptBlockDisassembler\Get-ScriptBlockDisassembly' -Description 'tags: Sci,DevTool; sci''s SB to Expressions module'
 )
-& {
-    $parent = (Get-Process -Id $pid).Parent.Name
-    if ($parent -eq 'code') {
-        $__ninConfig.Terminal.CurrentTerminal = 'code'
-        $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'Code - Insiders') {
-        $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
-        $__ninConfig.Terminal.IsVSCode = $true
-    } elseif ($parent -eq 'windowsterminal') {
-        # preview still uses this name
-        $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
-    }
-    if ($pseditor) {
-        # previously was: if (Get-Module 'PowerShellEditorServices*' -ea ignore) {
-        # Test whether term is running, in order to run EditorServicesCommandSuite
-        $__ninConfig.Terminal.IsVSCodeAddon_Terminal = $true
-    }
-    # if ($psEditor) {
-    #     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> EditorServicesCommandSuite'
-    #     $escs = Import-Module EditorServicesCommandSuite -PassThru -DisableNameChecking
-    #     if ($null -ne $escs -and $escs.Version.Major -lt 0.5.0) {
-    #         Import-EditorCommand -Module EditorServicesCommandSuite
-    #     }
-    # }
-    # if ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) {
-    #     Import-Module EditorServicesCommandSuite
-    # Set-PSReadLineKeyHandler -Chord "$([char]0x2665)" -Function AddLine # work around for shift+enter pasting a newline
-    # }
+# & {
+$parent = (Get-Process -Id $pid).Parent.Name
+if ($parent -eq 'code') {
+    $__ninConfig.Terminal.CurrentTerminal = 'code'
+    $__ninConfig.Terminal.IsVSCode = $true
+} elseif ($parent -eq 'Code - Insiders') {
+    $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
+    $__ninConfig.Terminal.IsVSCode = $true
+} elseif ($parent -eq 'windowsterminal') {
+    # preview still uses this name
+    $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
 }
+if ($pseditor) {
+    # previously was: if (Get-Module 'PowerShellEditorServices*' -ea ignore) {
+    # Test whether term is running, in order to run EditorServicesCommandSuite
+    $__ninConfig.Terminal.IsVSCodeAddon_Terminal = $true
+}
+# if ($psEditor) {
+#     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> EditorServicesCommandSuite'
+#     $escs = Import-Module EditorServicesCommandSuite -PassThru -DisableNameChecking
+#     if ($null -ne $escs -and $escs.Version.Major -lt 0.5.0) {
+#         Import-EditorCommand -Module EditorServicesCommandSuite
+#     }
+# }
+# if ($__ninConfig.Terminal.IsVSCodeAddon_Terminal) {
+#     Import-Module EditorServicesCommandSuite
+# Set-PSReadLineKeyHandler -Chord "$([char]0x2665)" -Function AddLine # work around for shift+enter pasting a newline
+# }
+# }
 
 
 <#
@@ -646,38 +650,38 @@ $PSDefaultParameterValues['Dev.Nin\Pipe->Error:infa'] = 'Continue'
 
 # Import-Module Ninmonkey.Console
 
-function _profileEventOnFinalLoad {
-    <#
-    minimal final function ran on end
-    #>
-    Write-Debug '$__ninConfig.EnableGreetingOnLoad'
-    function _writeTodoGreeting {
-        Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
-        | Join-String
-        Hr
-        # h1 'Todo' | New-Text -fg yellow -bg magenta
-        '🐵'
-    }
+# function _profileEventOnFinalLoad {
+#     <#
+#     minimal final function ran on end
+#     #>
+#     Write-Debug '$__ninConfig.EnableGreetingOnLoad'
+#     function _writeTodoGreeting {
+#         Get-Gradient -StartColor gray20 -EndColor gray50 -Width $seg -ColorSpace Hsl
+#         | Join-String
+#         Hr
+#         # h1 'Todo' | New-Text -fg yellow -bg magenta
+#         '🐵'
+#     }
 
-    if ($__ninConfig.EnableGreetingOnLoad) {
-        _writeTodoGreeting
-    }
+#     if ($__ninConfig.EnableGreetingOnLoad) {
+#         _writeTodoGreeting
+#     }
 
-    if (
-        ((Get-Location).Path -eq (Get-Item "$Env:Userprofile" )) -and
-        $__ninConfig.Terminal.IsVSCode -and
-        $__ninConfig.IsFirstLoad
-    ) {
-        # if Vs Code didn't set a directory, fallback to pwsh
-        # Set-Location "$Env:UserProfile/Documents/2021/Powershell"
-        # $Env:UserProfile/SkyDrive/Documents/2022/Pwsh/
+#     if (
+#         ((Get-Location).Path -eq (Get-Item "$Env:Userprofile" )) -and
+#         $__ninConfig.Terminal.IsVSCode -and
+#         $__ninConfig.IsFirstLoad
+#     ) {
+#         # if Vs Code didn't set a directory, fallback to pwsh
+#         # Set-Location "$Env:UserProfile/Documents/2021/Powershell"
+#         # $Env:UserProfile/SkyDrive/Documents/2022/Pwsh/
 
-    }
-    "FirstLoad? $($__ninConfig.IsFirstLoad)" | Write-Host -fore green
+#     }
+#     "FirstLoad? $($__ninConfig.IsFirstLoad)" | Write-Host -fore green
 
-    $__ninConfig.IsFirstLoad = $false
+#     $__ninConfig.IsFirstLoad = $false
 
-}
+# }
 
 
 function Get-ProfileAggressiveItem {
@@ -720,22 +724,22 @@ if ($true) {
     }
 
     # todo:  # can I move this logic to profile? at first I thought there was scope issues, but that doesn't matter
-    Remove-Alias -Name 'cd' -ea ignore
-    New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'A modern "cd"'
+    # Remove-Alias -Name 'cd' -ea ignore
+    Remove-Alias -Name 'cd'-ea ignore -Scope global -Force
+    New-Alias @splatAlias -Name 'cd' -Value Ninmonkey.Console\Set-NinLocation -Description 'A modern "cd", Personal Profile'
     Set-Alias @splatAlias -Name 's' -Value Select-Object -Description 'aggressive: to override other modules'
     Set-Alias @splatAlias -Name 'cl' -Value Set-Clipboard -Description 'aggressive: set clip'
     Set-Alias @splatAlias -Name 'resCmd' -Value 'Resolve-CommandName' -Description '.'
-    New-Alias @splatAlias 'CodeI' -Value code-insiders -Description 'quicker cli toggling whether to use insiders or not'
+    New-Alias @splatAlias 'CodeI' -Value 'code-insiders' -Description 'quicker cli toggling whether to use insiders or not'
     # New-Alias 'jp' -Value 'Join-Path' -Description '[Disabled because of jp.exe]. quicker for the cli'
-    New-Alias @splatAlias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
+    # New-Alias @splatAlias 'joinPath' -Value 'Join-Path' -Description 'quicker for the cli'
     New-Alias @splatAlias 'jp' -Value 'Join-Path' -Description 'quicker for the cli'
+    New-Alias @splatAlias 'js' -Value 'Join-String' -Description 'quicker for the cli'
 
-    if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
-        New-Alias -Name 'f' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
-    }
+    # if (Get-Command 'PSScriptTools\Select-First' -ea ignore) {
+    #     New-Alias -Name 'f' -Value 'PSScriptTools\Select-First' -ea ignore -Description 'shorthand for Select-Object -First <x>'
+    # }
 
-    Remove-Alias 'cd' -Scope global -Force -ea ignore
-    New-Alias @splatAlias -Name 'cd' -Value Set-NinLocation -Description 'Personal Profile for easier movement'
     # For personal profile only. Maybe It's too dangerous,
     # should just use 'go' instead? It's not in the actual module
     # Usually not a great idea, but this is for a interactive command line profile
@@ -746,6 +750,7 @@ if ($true) {
     $historyLists = Get-ChildItem (Split-Path (Get-PSReadLineOption).HistorySavePath) *history.txt # captures both, might even help on *nix
     $Profile | Add-Member -NotePropertyName 'PSReadLineHistory' -NotePropertyValue $historyLists -ErrorAction Ignore
     $Profile | Add-Member -NotePropertyName 'PSDefaultParameterValues' -NotePropertyValue $PSCommandPath -ErrorAction Ignore
+    $Profile | Add-Member -NotePropertyName '$Profile.PrevGlobalEntryPoint' -NotePropertyValue 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\Nin-PrevGlobalProfile_EntryPoint.ps1' -ErrorAction Ignore
 
     # experimenting:
     $Accel = [PowerShell].Assembly.GetType('System.Management.Automation.TypeAccelerators')
@@ -1206,9 +1211,9 @@ if ($__ninConfig.LogFileEntries) {
     | ForEach-Object ToString | Warn🛑
 }
 
-if (! $OneDrive.Enable_MyDocsBugMapping) {
-    _profileEventOnFinalLoad
-}
+# if (! $OneDrive.Enable_MyDocsBugMapping) {
+#     _profileEventOnFinalLoad
+# }
 
 if ($true -or $EnableHistHandler) {
     Enable-NinHistoryHandler
@@ -1275,12 +1280,13 @@ if ($__ninConfig.LogFileEntries) {
 #         # }
 #     }
 # }
+<#>
 if ($OneDrive.Enable_MyDocsBugMapping) {
     Remove-Module 'psfzf', 'psscripttools', 'zlocation'
     Set-Alias 'code' -Value 'Invoke-VSCodeVenv' -Force
     # Push-Location 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell'
 }
-
+#>
 # New-Text "End <-- True end: '$PSScriptRoot'" -fg 'cyan' | ForEach-Object ToString | Warn🛑
 
 if ($__ninConfig.LogFileEntries) {
@@ -1289,9 +1295,6 @@ if ($__ninConfig.LogFileEntries) {
 
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
-$VerbosePReference = 'continue'
-$WarningPreference = 'continue'
-$debugpreference = 'continue'
 
 if ($false) {
     Get-PSDrive -PSProvider FileSystem
@@ -1324,7 +1327,9 @@ if ($false) {
 # }
 
 # . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Inspect-LocationPathInfoStackState.ps1'
-'reached bottom'
-$VerbosePReference = 'continue'
-$WarningPreference = 'continue'
-$debugpreference = 'continue'
+
+if ($superVerboseAtBottom) {
+    $VerbosePReference = 'continue'
+    $WarningPreference = 'continue'
+    $debugpreference = 'continue'
+}
