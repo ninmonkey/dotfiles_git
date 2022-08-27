@@ -3,18 +3,39 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
+Write-Warning "Find func: 'Lookup()'"
+'reached bottom'
+$VerbosePReference = 'continue'
+$WarningPreference = 'continue'
+$debugpreference = 'continue'
+
+# this is very important, the other syntax for UTF8 defaults to UTF8+BOM which
+# breaks piping, like piping returning from FZF contains a BOM
+# which actually causes a full exception when it's piped to Get-Item
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
+Import-Module pansies
 [PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
-$PSStyle.OutputRendering = 'ansi'
+
+$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi # wip dev,nin: todo:2022-03 # Keep colors when piping Pwsh in 7.2
+
+# must-have guard aliases, that prevent shadowing, or prevent invoking
+# binary by accident if a module isn't imported
+Set-Alias 'Label' -Value 'Ninmonkey.Console\Write-ConsoleLabel'
+Set-Alias 'sc' -Value 'Set-Content'
+Set-Alias 'To->Csv' -Value 'ConvertTo-Csv'
+Set-Alias 'To->Json' -Value 'ConvertTo-Json'
+Set-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable'
+# Set-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable'
+
+# __countDuplicateLoad
+
+Write-Debug "run --->>>> '$PSCommandPath'"
+
 
 # I am not sure what's the right *nix env vars for encoding
 # grep specifically required this
 $env:LC_ALL = 'en_US.utf8'
 $__ConfigOnlyuseFast = $false
-
-Set-Alias 'sc' -Value 'Set-Content'
-
-'🐒' * 300 -join '' | write-warning
 
 $env:PATH += ';', 'G:\programs_nin_bin' -join ''
 $env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -join ''
@@ -31,9 +52,7 @@ if ($False) {
 }
 
 
-# wip dev,nin: todo:2022-03
-# Keep colors when piping Pwsh in 7.2
-$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi
+
 
 <#
     [section]: Seemingly Sci imports
@@ -68,7 +87,7 @@ if (! $IsAzureDataStudio ) {
     Write-Warning 'skipping predictor because of ADS...'
 }
 
-if($__ConfigOnlyuseFast) { return }
+if ($__ConfigOnlyuseFast) { return }
 
 <#
     [section]: essential imports
@@ -427,7 +446,7 @@ function _reloadModule {
     $ExecutionContext | Jprop
 #>
 
-if($PSEditor) {
+if ($PSEditor) {
     Import-EditorCommand -Module EditorServicesCommandSuite
 }
 
@@ -843,7 +862,7 @@ function nin.ImportPSReadLine {
     #>
     param(
         # Default includes list view but not
-        [Parameter(Mandatory, Position=0)]
+        [Parameter(Mandatory, Position = 0)]
         [ArgumentCompletions(
             'MyDefault_HistListView',
             'Using_Plugin'
@@ -851,17 +870,17 @@ function nin.ImportPSReadLine {
         [string]$ImportType
     )
 
-    switch($ImportType) {
+    switch ($ImportType) {
         'Using_Plugin' {
-            write-debug '
+            Write-Debug '
             import: CompletionPredictor
                 1] PredictionSource: History+Plugin
         '
-            Import-Module CompletionPredictor -Verbose -scope global
+            Import-Module CompletionPredictor -Verbose -Scope global
             Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView -PredictionSource HistoryAndPlugin
         }
         'MyDefault_HistListView' {
-            write-debug '
+            Write-Debug '
             1] predict list view
             2] ctrl+f/d
             3] alt+enter    addLine
@@ -880,12 +899,12 @@ function nin.ImportPSReadLine {
             # Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object key -Match 'Enter|^l$' | Write-Debug
             Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
             Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
-                'no-op' | write-debug
-         }
+            'no-op' | Write-Debug
+        }
 
-         default {
+        default {
             throw "Unhandled Parameter mode: $ImportType"
-         }
+        }
     }
     # Set-PSReadLineOption -ContinuationPrompt (' ' * 4 | New-Text -fg gray80 -bg gray30 | ForEach-Object tostring )
 }
@@ -1219,10 +1238,10 @@ if ($true -or $EnableHistHandler) {
 #         Hr 1
 #         'keybind ↳ History set to ↳ '
 
-        # 'Ctrl+r' | Write-Color blue
-        # | str prefix ([string]@(
-        #         'PsFzf:' | Write-Color gray60
-        #         'keybind ↳ History set to ↳ '
+# 'Ctrl+r' | Write-Color blue
+# | str prefix ([string]@(
+#         'PsFzf:' | Write-Color gray60
+#         'keybind ↳ History set to ↳ '
 #         #     ))
 
 #         Hr 1
@@ -1268,7 +1287,7 @@ if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] <-- end of file'
 }
 
-write-warning "Find func: 'Lookup()'"
+Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
 $VerbosePReference = 'continue'
 $WarningPreference = 'continue'
