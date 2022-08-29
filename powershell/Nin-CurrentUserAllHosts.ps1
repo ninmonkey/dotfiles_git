@@ -36,6 +36,20 @@ Set-Alias 'Join-Hashtable' -Value 'Ninmonkey.Console\Join-Hashtable'
 
 Write-Debug "run --->>>> '$PSCommandPath'"
 
+<#
+don't forget to collect
+
+Write-Warning '🦈'
+
+# Import-Module Dev.Nin -Force
+'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-07',
+'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\buffer\2021-10'
+| Get-Item | Where-Object { Test-Path $_ } | ForEach-Object FullName
+| Sort-Object -Unique
+| Join-String -sep "`n  - " -DoubleQuote -op "experiments🧪`n  - "
+
+#>
+
 
 # I am not sure what's the right *nix env vars for encoding
 # grep specifically required this
@@ -876,6 +890,8 @@ function nin.ImportPSReadLine {
         [string]$ImportType
     )
 
+
+
     switch ($ImportType) {
         'Using_Plugin' {
             Write-Debug '
@@ -884,6 +900,7 @@ function nin.ImportPSReadLine {
         '
             Import-Module CompletionPredictor -Verbose -Scope global
             Set-PSReadLineOption @eaIgnore -PredictionViewStyle ListView -PredictionSource HistoryAndPlugin
+            break
         }
         'MyDefault_HistListView' {
             Write-Debug '
@@ -906,12 +923,15 @@ function nin.ImportPSReadLine {
             Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
             Set-PSReadLineKeyHandler -Chord 'ctrl+enter' -Function InsertLineAbove
             'no-op' | Write-Debug
+            break
         }
 
         default {
             throw "Unhandled Parameter mode: $ImportType"
         }
     }
+
+    Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
     # Set-PSReadLineOption -ContinuationPrompt (' ' * 4 | New-Text -fg gray80 -bg gray30 | ForEach-Object tostring )
 }
 
