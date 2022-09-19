@@ -14,6 +14,7 @@ if ($superVerboseAtTop) {
     $debugpreference = 'continue'
 }
 
+
 # this is very important, the other syntax for UTF8 defaults to UTF8+BOM which
 # breaks piping, like piping returning from FZF contains a BOM
 # which actually causes a full exception when it's piped to Get-Item
@@ -22,6 +23,192 @@ Import-Module pansies
 [PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
 
 $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi # wip dev,nin: todo:2022-03 # Keep colors when piping Pwsh in 7.2
+<#
+begin => section:consolidate somewhere
+#>
+function Err {
+    # sugar when in debug mode
+    param( [switch]$Clear,
+        [Alias('At')][int]$Index,
+        [Alias('Limit')][int]$Count )
+
+    if ($Clear) { $global:error.Clear() }
+
+    if ($Index) {
+        $global:error | At $Index
+        return
+        # | select -Index $INdex
+    }
+    if ($Count) {
+        $global:error | Select-Object -First $Count
+        return
+    }
+
+    return $global:error
+}
+
+function ToastIt {
+    param(
+        [string]$Text )
+
+    New-BurntToastNotification -Text $Text
+}
+
+function unroll {
+    <#
+    .synopsis
+        sugar to unroll items
+    .description
+        # Sometimes Join on proc, is simpler to first collect
+        # example:
+
+            function _Csv4 { process{ $Input | Join-String -sep ', ' }}
+            'a'..'d' | _Csv4
+
+            # out:
+
+                a
+                b
+                c
+                d
+
+            'a'..'d' | rollup | _Csv4
+
+            # out:
+
+                a, b, c, d
+    .link
+        profile\unroll
+    .link
+        profile\rollup
+    #>
+
+    $input | ForEach-Object { $_ }
+}
+function rollup {
+    <#
+    .synopsis
+    .description
+        # Sometimes Join on proc, is simpler to first collect
+        # example:
+
+            function _Csv4 { process{ $Input | Join-String -sep ', ' }}
+            'a'..'d' | _Csv4
+
+            # out:
+
+                a
+                b
+                c
+                d
+
+            'a'..'d' | rollup | _Csv4
+
+            # out:
+
+                a, b, c, d
+    .link
+        profile\unroll
+    .link
+        profile\rollup
+    #>
+    [OutputType('[object[]]')]
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin { [list[object]]$items = @() }
+    process {
+        $Items.AddRange( $InputObject )
+    }
+    end {
+        , $Items
+    }
+}
+
+function Fmd {
+    # Find-Member abbrviated, simplified defaults
+    # param(
+    #     [Parameter(Mandatory,ValueFromPipeline)]
+    # )
+    param(
+        [switch]$PassThru
+    )
+    process {
+        if ($PassThru ) {
+            return ($input | Fm | Sort-Object -Unique Name)
+        }
+
+        $input | Fm | Sort-Object -Unique Name | Format-Table -AutoSize -Wrap
+    }
+}
+function tryX {
+    param(
+        $Obj
+        # [switch]
+    )
+    $Obj | Fmd
+    Hr
+    $Obj | iot2
+}
+function _colorHexToRgb {
+    # oh gosh. terrible hack.
+    [OutputType('System.Drawing.Color')]
+    param( [string]$HexStr )
+    if ($HexStr.Length -eq 8) { throw 'wip' }
+
+    $alpha = 0xff
+    $strRgb = $HexStr.Substring(0, 6)
+    $r, $g, $b = [rgbcolor]::FromRgb( $strRgb ).ToRgb()
+
+    return [System.Drawing.Color]::FromArgb( $alpha, $r, $g, $b)
+}
+class excelColor {
+    [int]$Red = 0xff
+    [int]$Green = 0xff
+    [int]$Blue = 0xff
+    [int]$Alpha = 0xff
+    [System.Drawing.Color]$Color = 'white'
+
+
+    excelColor ( [string]$HexStr ) {
+        $this.Color = [excelColor]::FromHex( $HexStr )
+
+    }
+    excelColor ( [int]$Red, [int]$Green, [int]$Blue ) {
+        $This.Red = $Red
+        $This.Green = $Green
+        $This.Blue = $Blue
+        $This.Color = [excelColor]::FromRGBA( $this.Red, $This.Green, $This.Blue )
+
+    }
+    excelColor ( [int]$Red, [int]$Green, [int]$Blue, [int]$Alpha ) {
+        $This.Red = $Red
+        $This.Green = $Green
+        $This.Blue = $Blue
+        $This.Alpha = $Alpha
+        $This.Color = [excelColor]::FromRGBA( $this.Red, $This.Green, $This.Blue, $This.Alpha )
+    }
+
+    # static [excelColor] FromHex( [string]$HexStr) {
+    static [System.Drawing.Color] FromHex( [string]$HexStr) {
+        [System.Drawing.Color]$res = _colorHexToRgb -HexStr $HexStr
+        return $res
+    }
+    static [System.Drawing.Color] FromRGB( [int]$Red, [int]$Green, [int]$Blue ) {
+        return [System.Drawing.Color]::FromArgb( $Red, $Green, $Blue)
+    }
+    static [System.Drawing.Color] FromRGBA( [int]$Red, [int]$Green, [int]$Blue, [int]$Alpha ) {
+        return [System.Drawing.Color]::FromArgb( $Alpha, $Red, $Green, $Blue)
+    }
+
+}
+
+<#
+end <== section:consolidate somewhere
+#>
+
 
 # must-have guard aliases, that prevent shadowing, or prevent invoking
 # binary by accident if a module isn't imported
@@ -116,7 +303,9 @@ Import-Module Dev.Nin -DisableNameChecking
 
 Write-Warning '㏒ : Load-NinCoreAliases?'
 if (Get-Module 'Ninmonkey.Console') {
+    # slow
     Enable-NinCoreAlias
+    Ninmonkey.Console\nin.ImportPSReadLine MyDefault_HistListView
 } else {
     Write-Warning '㏒ : Nin failed, skipping aliases'
 }
@@ -871,7 +1060,7 @@ if ($true) {
     }
 }
 
-function nin.ImportPSReadLine {
+function nin.ImportPSReadLine.profile {
     <#
     AddLine
         moves to next line, bringing any remaining text with it
@@ -1172,7 +1361,35 @@ function __prompt_noModuleLoaded {
     ) -join ''
 }
 
-function Prompt_Nin {
+
+[object[]]$Cs ??= '#DDA0DD', '#9370DB', '#008B8B'
+$__colors = $cs
+function Prompt_Nin.2 {
+    $colors = $Cs ?? [object[]]@('#DDA0DD', '#9370DB', '#008B8B')
+    $uniStr = '˫！︕'
+
+    (@(
+        "`n"
+        if ($global:error.count -gt 0) {
+            $PSStyle.Foreground.FromRgb('#c77445')
+            $global:error.count
+            '！'
+            # '˫'
+        }
+        ''
+        $PSStyle.Foreground.FromRgb( $Colors[0])
+        $PSVersionTable.PSVersion -join ''
+        ' '
+        # "${fg:green}"
+        $PSStyle.Foreground.FromRgb( $Colors[1])
+        #        Get-Location | abbrPath
+        Get-Location
+        "${fg:clear}"
+        "`nPwsh> "
+    ) -join '')
+}
+
+function Prompt_Nin.1 {
     <#
     .synopsis
         directly redirect to real prompt. not profiled for performance at all
@@ -1221,7 +1438,7 @@ if ( -not $DisabledForPerfTest ) {
 
     function prompt {
         # wrapper, prevents gitbash autolading on default prompt
-        Prompt_Nin
+        Prompt_Nin.2
     }
 
     # ie: Lets you set aw breakpoint that fires only once on prompt
@@ -1346,13 +1563,17 @@ if (-not $DisabledForPerfTest) {
 }
 
 function prompt {
-    @(
-        "`n"
-        $PSVersionTable.PSVersion -join ''
-        ' '
-        Get-Location
-        "`nPwsh>"
-    ) -join ''
+    if ($true) {
+        Prompt_Nin.2
+    } else {
+        @(
+            "`n"
+            $PSVersionTable.PSVersion -join ''
+            ' '
+            Get-Location
+            "`nPwsh>"
+        ) -join ''
+    }
 }
 
 $superVerboseAtBottom = $false
