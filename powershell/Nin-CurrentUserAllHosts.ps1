@@ -8,12 +8,15 @@ Write-Warning "Find func: 'Lookup()'"
 $superVerboseAtBottom = $true # at end of profile load, turn on then
 $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
+$manualVSCodeIntegrationScript = $false
 if ($superVerboseAtTop) {
     $VerbosePReference = 'continue'
     $WarningPreference = 'continue'
     $debugpreference = 'continue'
 }
 
+Write-Warning 'hardcoded PQ import'
+. 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Power-BI\My_Github\Ninmonkey.PowerQueryLib\source-pwsh\src\Text to PowerQueryLiterals.ps1'
 
 # this is very important, the other syntax for UTF8 defaults to UTF8+BOM which
 # breaks piping, like piping returning from FZF contains a BOM
@@ -26,6 +29,33 @@ $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi 
 <#
 begin => section:consolidate somewhere
 #>
+
+
+function _formatPath {
+    <#
+    .synopsis
+        fix paths, translate to forward slash, like JSON
+    .NOTES
+    .example
+        # from clipboard
+        Pwsh> 'c:\foo\bar' | _formatPath
+            'c:/foo/bar'
+    #>
+    param(
+        [Parameter(ValueFromPipeline)]
+        [string]$Content,
+
+        [Alias('toClip')][switch]$SaveClipboard
+    )
+    process {
+        if (-not $Content) { $Content = Get-Clipboard }
+        $render = $Content -replace '\\', '/'
+        if ( $CopyToClipboard ) { $render | Set-Clipboard ; return; }
+        return $render
+    }
+}
+
+
 function Err {
     # sugar when in debug mode
     param( [switch]$Clear,
@@ -48,10 +78,28 @@ function Err {
 }
 
 function ToastIt {
+    # mini sugar using defaults
     param(
-        [string]$Text )
+        [parameter(Mandatory)]
+        [string[]]$Text,
 
-    New-BurntToastNotification -Text $Text
+        [string]$Title,
+
+        # [string]$Sound #
+        [switch]$NotSilent
+    )
+    $textList = @(
+        if ($title) { $title }
+        $Text | Join-String -sep "`n"
+    )
+
+    $splatIt = @{
+        # The parameter requires at least 0 value(s) and no more than 3
+        Text   = $TextList
+        Silent = $true
+    }
+    if ($NotSilent) { $SplatIt.Silent = $False }
+    New-BurntToastNotification @splatIt
 }
 
 function unroll {
@@ -143,7 +191,7 @@ function Fmd {
         $input | Fm | Sort-Object -Unique Name | Format-Table -AutoSize -Wrap
     }
 }
-function tryX {
+function iot_both {
     param(
         $Obj
         # [switch]
@@ -203,6 +251,18 @@ class excelColor {
         return [System.Drawing.Color]::FromArgb( $Alpha, $Red, $Green, $Blue)
     }
 
+}
+
+<#
+todo: move above to profile module
+#>
+
+if ($env:TERM_PROGRAM -eq 'vscode') {
+    #  . "$(code --locate-shell-integration-path pwsh)"
+    # Note: is this only rquired if injection fails?
+    if ( $manualVSCodeIntegrationScript ) {
+        . "$(code.cmd --locate-shell-integration-path pwsh)"
+    }
 }
 
 <#
@@ -1592,7 +1652,11 @@ if ($superVerboseAtBottom) {
     # Set-PSDebug -Trace 1
 }
 
-'--- last line of profile has completed -- '
+function _tempImportAws {
+    Import-Module -Force 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\aws_utils.nin\aws_utils.nin\' -verbose -scope Global
+}
+
+'--- last line of profile has completed -- ' | write-debug
 
 
 
