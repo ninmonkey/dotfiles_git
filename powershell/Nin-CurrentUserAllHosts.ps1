@@ -5,14 +5,17 @@ using namespace System.Management.Automation # [ErrorRecord]
 
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
-$superVerboseAtBottom = $true # at end of profile load, turn on then
+
+$superVerboseAtBottom = $false # at end of profile load, turn on then
 $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
 $manualVSCodeIntegrationScript = $false
+
 if ($superVerboseAtTop) {
     $VerbosePReference = 'continue'
     $WarningPreference = 'continue'
     $debugpreference = 'continue'
+
 }
 
 Write-Warning 'hardcoded PQ import'
@@ -29,7 +32,29 @@ $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::Ansi 
 <#
 begin => section:consolidate somewhere
 #>
-
+function __profileGreet {
+    <#
+    .SYNOPSIS
+        # greet function, do one per day ? currently not throttled
+    .NOTES
+        see: <https://devblogs.microsoft.com/powershell/announcing-the-release-of-get-whatsnew/#using-get-whatsnew>
+    .LINK
+        https://devblogs.microsoft.com/powershell/announcing-the-release-of-get-whatsnew/#using-get-whatsnew
+    #>
+    $binGlow = gcm -CommandType Application 'glow' -ea Ignore
+    $splat = @{
+        Daily = $true
+        # Version = '7.3'
+        Version =  '7.1', '7.2','7.3'
+    }
+    if(-not $binGlow ) {
+        Get-WhatsNew @splat
+    } else {
+        Get-WhatsNew @splat
+        | & $binGlow @('-')
+    }
+    hr 2 -fg '#8fc0df'
+}
 
 function _formatPath {
     <#
@@ -56,11 +81,69 @@ function _formatPath {
 }
 
 
-function Err {
+function Err.2xp {
     # sugar when in debug mode
+    <#
+    todo: param set that that will use
+
+        err 0           : index paramset $error[0]
+        err -num 3      : first 3     $error | select -first 3
+        err 2:4         : $errors[2..4]
+
+        alias Gerr      : autopipe global to Get-Error
+        alias Rerr      : prints errors in reverse
+        param tac       : errors
+
+    #>
+    [Alias('gErr🎨')]
+    [CmdletBinding()]
     param( [switch]$Clear,
         [Alias('At')][int]$Index,
-        [Alias('Limit')][int]$Count )
+        [Alias('Number')] # 'count' and 'clear' are too close for tying
+        [int]$Limit )
+
+        # count still grabs the newest, but  output in reverse
+        [Alias('tac')]
+        [switch]$Reverse
+
+    if ($Clear) { $global:error.Clear() }
+
+    if ($Index) {
+        $global:error | At $Index
+        # | reverseIt # redundant, but intent
+        return
+    }
+    if ($Limit) {
+        $global:error
+        | Select-Object -First $Count
+        | ReverseIt
+        return
+    }
+
+    return $global:error
+}
+
+function _errPreview {
+    $Input | %{ $_ | io | ft Reported, Name, ShortValue, ShortType -auto }
+}
+function Err {
+    # sugar when in debug mode
+    <#
+    todo: param set that that will use
+
+        err 0           : index paramset $error[0]
+        err -num 3      : first 3     $error | select -first 3
+        err 2:4         : $errors[2..4]
+
+    #>
+    param( [switch]$Clear,
+        [Alias('At')][int]$Index,
+        [Alias('Number')] # 'count' and 'clear' are too close for tying
+        [int]$Limit,
+
+        # select count still grabs the newest, this just prints newest at bottom
+        [Alias('tac')][switch]$Reverse
+    )
 
     if ($Clear) { $global:error.Clear() }
 
@@ -69,12 +152,23 @@ function Err {
         return
         # | select -Index $INdex
     }
-    if ($Count) {
-        $global:error | Select-Object -First $Count
+    if ($Limit) {
+        if($Reverse) {
+            $global:error | Select-Object -First $Count | ReverseIt
+        } else {
+            $global:error | Select-Object -First $Count
+        }
         return
     }
 
-    return $global:error
+    if($Reverse) {
+        $global:error | ReverseIt
+    } else {
+        $global:error
+    }
+    return
+
+    # return $global:error
 }
 
 function ToastIt {
@@ -1658,7 +1752,7 @@ function _tempImportAws {
 
 '--- last line of profile has completed -- ' | write-debug
 
-
+__profileGreet
 
 # if (!(Get-Module dev.nin)) {
 #     Import-Module Dev.Nin
@@ -1669,4 +1763,81 @@ function _tempImportAws {
 # }
 
 # . 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Powershell\My_Github\Dev.Nin\public_experiment\Inspect-LocationPathInfoStackState.ps1'
+
+# inline exports
+
+function resolveAliasedCommand {
+    <#
+    .SYNOPSIS
+        converts patterns and aliases, resolving to the actual functions
+    .example
+        Pwsh> from->Alias '.' -Module Ninmonkey | sort Name, Source -Unique
+
+        Pwsh> (Get-Alias 'at').ReferencedCommand | editFunc -infa Continue
+        loading:... <G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell\Utility.psm1>
+    #>
+    # [Alias('to->Func')]
+    [Alias('from->Alias')]
+    [OutputType('System.Management.Automation.FunctionInfo')]
+    [CmdletBinding()]
+    param(
+        # name/alias
+        [Parameter(Mandatory, Position = 0)][string]$Name = '.',
+
+        # suggest some common ones
+        [Parameter(Position = 1)][ArgumentCompletions(
+            'ClassExplorer', 'Utility', 'Microsoft.PowerShell', 'Ninmonkey',
+            'PSReadLine', 'PSScriptAnalyzer', 'ImportExcel', 'ugit'
+        )][string]$Module = '',
+
+        # default is regex, switch to 'normal' wildcards
+        [Alias('Like')][switch]$UsingLike
+    )
+    if ($UsingLike) {
+        # change empty regexes to match everything
+        if( $Name -eq '.' ) {  $Name = '*' }
+        if( [string]::IsNullOrWhiteSpace( $Module ) ) {
+             $Module = '*'
+        }
+        (Get-Alias | ? Source -like $Module | ? Name -Like $Name).ReferencedCommand
+       return
+    }
+
+    (Get-Alias | ? Source -Match $Module | ? Name -Match $Name).ReferencedCommand
+}
+
+
+#  https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock?view=powershellsdk-7.0.0#properties
+
+
+function cmdToScriptBlock {
+    # barely-sugar, more so for semantics
+    # converts functions and scriptblocks to scriptblocks
+    <#
+    .example
+        Pwsh>
+            gcm prompt  | cmdToScriptBlock
+            (gcm prompt).ScriptBlock | cmdToScriptBlock
+    #>
+    [OutputType('System.Management.Automation.ScriptBlock')]
+    [CmdletBinding()]
+    param()
+    process {
+        if($_ -is 'ScriptBlock') { return $_ }
+        return $_.ScriptBlock
+    }
+}
+
+function scriptBlockToFile {
+    # barely-sugar, more so for semantics
+    process {
+        $_.Ast.Extent.File
+    }
+}
+function fileFromScriptBlock {
+    # barely-sugar, more so for semantics
+    #    param( [])
+    $cmd.ScriptBlock.Ast.Extent.File
+}
+
 
