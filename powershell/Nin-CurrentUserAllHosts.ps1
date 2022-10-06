@@ -1766,6 +1766,11 @@ __profileGreet
 
 # inline exports
 
+@'
+(Get-Alias 'at').ResolvedCommand | fileFromScriptBlock
+    finish your pwsh dump
+'@
+
 function resolveAliasedCommand {
     <#
     .SYNOPSIS
@@ -1810,6 +1815,7 @@ function resolveAliasedCommand {
 #  https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock?view=powershellsdk-7.0.0#properties
 
 
+
 function cmdToScriptBlock {
     # barely-sugar, more so for semantics
     # converts functions and scriptblocks to scriptblocks
@@ -1837,7 +1843,9 @@ function scriptBlockToFile {
 function fileFromScriptBlock {
     # barely-sugar, more so for semantics
     #    param( [])
-    $cmd.ScriptBlock.Ast.Extent.File
+    process {
+        $_.ScriptBlock.Ast.Extent.File
+    }
 }
 
 
