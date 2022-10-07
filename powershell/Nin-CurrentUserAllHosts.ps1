@@ -136,6 +136,7 @@ function Err {
         err 2:4         : $errors[2..4]
 
     #>
+    [OutputType('[object[]]')]
     param( [switch]$Clear,
         [Alias('At')][int]$Index,
         [Alias('Number')] # 'count' and 'clear' are too close for tying
@@ -143,6 +144,7 @@ function Err {
 
         # select count still grabs the newest, this just prints newest at bottom
         [Alias('tac')][switch]$Reverse
+        # [Alias('gerr')][switch]$ToGetError
     )
 
     if ($Clear) { $global:error.Clear() }
@@ -154,9 +156,9 @@ function Err {
     }
     if ($Limit) {
         if($Reverse) {
-            $global:error | Select-Object -First $Count | ReverseIt
+            $global:error | Select-Object -First $Limit | ReverseIt
         } else {
-            $global:error | Select-Object -First $Count
+            $global:error | Select-Object -First $Limit
         }
         return
     }
