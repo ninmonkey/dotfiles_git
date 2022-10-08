@@ -897,10 +897,6 @@
     // "json.maxItemsComputed": 10000,
     "[json][jsonc][markdown]": {
         // "editor.fontSize": 13,
-        "editor.defaultFormatter": "vscode.json-language-features",
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": false,
-        "editor.semanticHighlighting.enabled": true,
     },
     "[markdown-math][markdown_latex_combined]": {},
     "[dotnet-interactive.markdown]": {},
@@ -919,29 +915,6 @@
         // "editor.maxTokenizationLineLength": 20000
         "editor.detectIndentation": false,
         "editor.tabSize": 4,
-    },
-    "[asl-yaml]": {
-        "editor.fontSize": 14
-    },
-    "[ssm-yaml]": {
-        "editor.fontSize": 14
-    },
-    "[toml]": {
-        "editor.fontSize": 14,
-    },
-    "[yaml]": {
-        "editor.fontSize": 14,
-        "editor.insertSpaces": true,
-        "editor.tabSize": 2,
-        "editor.autoIndent": "keep",
-        "gitlens.codeLens.scopes": [
-            "document"
-        ],
-        "editor.quickSuggestions": {
-            "other": true,
-            "comments": false,
-            "strings": true
-        }
     },
     "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
     "[xml]": {
@@ -1637,14 +1610,8 @@
     // "editor.cursorStyle": "block-outline",
     "editor.cursorStyle": " underline",
     /* cursor config for screenshots */
-    "editor.cursorBlinking": "phase", // "smooth",
-    "editor.cursorBlinking": "blink", // "smooth",
-    // "editor.cursorStyle": "block-outline",
-    "editor.cursorStyle": "block",
-    "editor.cursorStyle": "line-thin",
+    "editor.cursorBlinking": "solid", // "smooth",
     "editor.cursorStyle": "block-outline",
-    "editor.cursorStyle": "underline", // subtle
-    "editor.cursorStyle": "block-outline", // subtle
     // "editor.cursorSurrounding"underline"s": 50,
     // "terminal.integrated.cursorWidth": 1,
     // "terminal.integrated.cursorWidth": 1,
@@ -1897,12 +1864,10 @@
         "editorLineNumber.foreground": "#858585", // default: gray fade
         "editorLineNumber.foreground": "#858585a1", // dim
         "editorLineNumber.foreground": "#4e4e4ea1", // default: gray fade
-        "editorLineNumber.foreground": "#ff0065", // default: gray fade
         // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
         // "editorLineNumber.activeForeground": "#6ad4ee",
         "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
         "editorLineNumber.activeForeground": "#929292", // dim
-        "editorLineNumber.activeForeground": "#ff0065", // def: fg
         // new: 2021-12
         "editorWarning.foreground": "#00fff200", // main squiggle fully hidden because adddon still shows inline
         "editorWarning.foreground": "#00fff252", // main squiggle
@@ -1971,7 +1936,6 @@
     "terminal.integrated.experimentalUseTitleEvent": false, // An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals
     "terminal.integrated.cursorBlinking": false,
     // "terminal.integrated.cursorStyle": "line", # no like.
-    "terminal.integrated.cursorStyle": "line",
     "terminal.integrated.cursorStyle": "underline",
     "terminal.integrated.cursorStyle": "block",
     "terminal.integrated.altClickMovesCursor": true, // sometimes wonky
@@ -2022,7 +1986,7 @@
     // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
     // - args: [-NoLogo','-NoProfile]
     // "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
-    "terminal.integrated.defaultProfile.windows": "Pwsh🐒", // "Pwsh🐒",
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒 -Nop", // "Pwsh🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",
@@ -2303,18 +2267,6 @@
                 "-NoProfile",
                 "-NoLogo"
             ],
-            "icon": "terminal-powershell"
-        },
-        "Pwsh💀_no_args": {
-            "color": "terminal.ansiYellow",
-            "overrideName": true,
-            "path": [
-                // "pwsh.exe",
-                "C:/Program Files/PowerShell/7/pwsh.exe"
-            ],
-            // "args": [
-            //     "-NoLogo"
-            // ],
             "icon": "terminal-powershell"
         },
         "Pwsh🐒": {
@@ -3360,10 +3312,10 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 13,
-    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 18,
     "terminal.integrated.fontSize": 16, // at full zoom this is big
+    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontSize": 14,
     // "debug.console.lineHeight": 0,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
@@ -4229,24 +4181,16 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": true,
     "explorer.fileNesting.patterns": {
-        "*.ts": "${capture}.js",
-        "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
-        "*.jsx": "${capture}.js",
-        "*.tsx": "${capture}.ts",
-        "tsconfig.json": "tsconfig.*.json",
-        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml"
+        // "*pq.log": "${capture}*.log",
+        // "*.log": "${capture}-parsed.log",
+        // sub-log-split
+        // "*.ts": "${capture}.js",
+        // "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        // "*.jsx": "${capture}.js",
+        // "*.tsx": "${capture}.ts",
+        // "tsconfig.json": "tsconfig.*.json",
+        // "package.json": "package-lock.json, yarn.lock"
     },
-    // "explorer.fileNesting.patterns": {
-    // "*pq.log": "${capture}*.log",
-    // "*.log": "${capture}-parsed.log",
-    // sub-log-split
-    // "*.ts": "${capture}.js",
-    // "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
-    // "*.jsx": "${capture}.js",
-    // "*.tsx": "${capture}.ts",
-    // "tsconfig.json": "tsconfig.*.json",
-    // "package.json": "package-lock.json, yarn.lock"
-    // },
     /*
 
     begin: Justin grote's config
@@ -4391,11 +4335,11 @@
         "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
         "editor.fontWeight": "bold",
         "editor.fontWeight": "normal", // # is default default
-        "editor.fontSize": 15,
-        "editor.fontSize": 18,
-        "editor.fontSize": 12,
-        "editor.fontSize": 16,
         "editor.fontSize": 14,
+        "editor.fontSize": 12,
+        "editor.fontSize": 15,
+        "editor.fontSize": 16,
+        "editor.fontSize": 18,
     },
     /*
 
@@ -4428,9 +4372,6 @@
             "strings": "inline",
             "strings": "off",
         },
-        "outline.showClasses": true,
-        "breadcrumbs.showClasses": true,
-        "editor.suggest.showClasses": true,
         // "editor.snippetSuggestions": "top",
         "editor.snippetSuggestions": "inline",
         "editor.snippetSuggestions": "none", // snippets *never* show on suggestions, then hit the hotkey 'insert snippet' if you want to manually show them
@@ -4496,6 +4437,7 @@
                 experimental settings here
     */
     "powershell.debugging.createTemporaryIntegratedConsole": false,
+    "terminal.integrated.shellIntegration.enabled": true,
     "terminal.integrated.shellIntegration.decorationsEnabled": true,
     "terminal.integrated.shellIntegration.history": 200,
     "window.commandCenter": true,
@@ -4692,9 +4634,9 @@
     "notebook.markup.fontSize": 18,
     "notebook.showCellStatusBar": "visibleAfterExecute",
     "notebook.outputFontSize": 16, // works on [dotnet-interactive]
-    "ipynb.experimental.pasteImages.enabled": true, // new: 1.71: https://code.visualstudio.com/updates/v1_71#_jupyter
-    "editor.experimental.pasteActions.enabled": true, // new: 1.71: https://code.visualstudio.com/updates/v1_71#_jupyter
-    "workbench.experimental.settingsProfiles.enabled": true, // https://code.visualstudio.com/updates/v1_71#_settings-profiles
+    "ipynb.experimental.pasteImages.enabled": true,
+    "editor.experimental.pasteActions.enabled": true,
+    "workbench.experimental.settingsProfiles.enabled": true,
     // new feature: <https://code.visualstudio.com/updates/v1_71#_configure-suggest-matching>
     // new feature: profiles : <https://code.visualstudio.com/updates/v1_71#_settings-profiles>
     /*
@@ -4705,51 +4647,11 @@ markdown.experimental.updateLinksOnFileMove.enabled
 markdown.experimental.updateLinksOnFileMove.enabled
 
 
-"workbench.experimental.editSessions.enabled": true
 
-new: enum settings: <https://code.visualstudio.com/updates/v1_71#_enum-settings-enumitemlabels-documentation>
 
-when contexts
-https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
 
 
 
 
     */
-    // "powershell.integratedConsole.startInBackground": false,
-    // "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new: <https://code.visualstudio.com/docs/terminal/shell-integration#_command-decorations-and-the-overview-ruler>
-    "workbench.experimental.editor.dragAndDropIntoEditor.enabled": true, // new: <https://code.visualstudio.com/updates/v1_66#_drop-into-editor>
-    "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new features: <https://code.visualstudio.com/updates/v1_66#_terminal-shell-integration
-    // MASSIVE CONFIGS AT <https://code.visualstudio.com/docs/terminal/appearance>
-    "terminal.integrated.smoothScrolling": true,
-    "editor.cursorSurroundingLines": 5,
-    // "editor.cursorSurroundingLinesStyle":
-    // "editor.multiCursorPaste": "full"
-    // "editor.cursorWidth": 400,
-    "rainbow_csv.enable_cursor_position_info": true,
-    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.1.5\\.nuget\\Microsoft.PowerQuery.SdkTools.2.110.3\\tools",
-    "[html][js][jsx][python][markdown]": {
-        // it specifically said cautious using other than html
-        "emmet.useInlineCompletions": true, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
-    },
-    "emmet.useInlineCompletions": false,
-    "workbench.statusBar.visible": false, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
-    /*
-    new:
-        - <https://code.visualstudio.com/updates/v1_71#_new-code-action-control>
-            - <https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings>
-            - <https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions>
-
-
-    example new code actions:
-            {
-                "key": "ctrl+shift+r ctrl+e",
-                "command": "editor.action.codeAction",
-                "args": {
-                    "kind": "refactor.extract.function" } }
-        */
-    "workbench.tree.expandMode": "singleClick",
-    "editor.stickyScroll.enabled": true,
-    "editor.stickyScroll.maxLineCount": 5,
-    // "editor.lightbulb.enable":
 }

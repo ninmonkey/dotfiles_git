@@ -247,7 +247,7 @@
             This doesn't have a fancy template choice
             this gives you a cleaner experience than the choice-box
             */
-        "prefix": "param nin",
+        "prefix": "Parameter nin : 🐒",
         "body": [
             "# ${3} ",
             "[Parameter(${1:Mandatory, Position = 0})]",
@@ -360,8 +360,8 @@
         ],
     },
     "Func ⇢ Pipeline 🐒": {
-        "prefix": "advancedPipe",
-        "description": "Complicated Defaults for a new Cmdlet function🐒",
+        "prefix": "Function ⇢ Pipeline 🐒",
+        "description": "Defaults for a new Cmdlet function🐒",
         "body": [
             "using namespace System.Collections.Generic",
             "",
@@ -407,7 +407,7 @@
     },
     "Older Func ⇢ Pipeline 🐒": {
         "prefix": "Function ⇢ Pipeline 🐒",
-        "description": "old/minimal/Defaults for a  new function🐒",
+        "description": "Defaults for a  new function🐒",
         "body": [
             "function ${1:Get-Foo} {",
             "    <#",
@@ -438,9 +438,9 @@
             "}"
         ]
     },
-    "Function ⇢ Pipeline ⇢ Collect All🐒": {
-        "prefix": "pipefunc",
-        "description": "Collects objects from the pipeline 🐒",
+    "Func ⇢ Pipeline ⇢ Collect All🐒": {
+        "prefix": "Function ⇢ Collect All Pipeline 🐒",
+        "description": "Collects all objects from the pipeline 🐒",
         "body": [
             "function ${1:Get-Foo} {",
             "    <#",
@@ -451,67 +451,32 @@
             "    .example",
             "          .",
             "    .outputs",
-            "          [object | None]",
+            "          [string | None]",
             "    ",
             "    #>",
-            "    [CmdletBinding()]",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
             "    param(",
-            "        [Parameter(Mandatory, ValueFromPipeline)]",
-            "        [object[]]\\$InputObject",
+            "        [Parameter(Mandatory, Position = 0)]",
+            "        [string]\\$Name",
             // "        ${4}",
             "    )",
             "    ",
             "    begin {",
-            "        [list[object]]\\$items = @()",
+            "        \\$NameList = [list[string]]::new()",
             "    }",
             "    process {",
-            "        \\$items.AddRange( \\$InputObject )",
+            "        \\$Name | ForEach-Object {",
+            "            \\$NameList.Add( \\$_ )",
+            "        }",
             "    }",
+            // "       ${0:${TM_SELECTED_TEXT}}", // to use selected text, see: "Function ⇢ Tiny"
+            // "    # todo: always wrap CmdletExceptionWrapper: From Sci",
             "    end {",
-            "        \\$items",
+            "        \\$NameList",
             "    }",
             "}"
         ]
     },
-    // "old_Func ⇢ Pipeline ⇢ Collect All🐒": {
-    //     "prefix": "Function ⇢ Collect All Pipeline 🐒",
-    //     "description": "Collects all objects from the pipeline 🐒",
-    //     "body": [
-    //         "function ${1:Get-Foo} {",
-    //         "    <#",
-    //         "    .synopsis",
-    //         "        ${2:Stuff}",
-    //         "    .description",
-    //         "       .",
-    //         "    .example",
-    //         "          .",
-    //         "    .outputs",
-    //         "          [object | None]",
-    //         "    ",
-    //         "    #>",
-    //         "    [CmdletBinding(PositionalBinding = \\$false)]",
-    //         "    param(",
-    //         "        [Parameter(Mandatory, Position = 0)]",
-    //         "        [string]\\$Name",
-    //         // "        ${4}",
-    //         "    )",
-    //         "    ",
-    //         "    begin {",
-    //         "        \\$NameList = [list[string]]::new()",
-    //         "    }",
-    //         "    process {",
-    //         "        \\$Name | ForEach-Object {",
-    //         "            \\$NameList.Add( \\$_ )",
-    //         "        }",
-    //         "    }",
-    //         // "       ${0:${TM_SELECTED_TEXT}}", // to use selected text, see: "Function ⇢ Tiny"
-    //         // "    # todo: always wrap CmdletExceptionWrapper: From Sci",
-    //         "    end {",
-    //         "        \\$NameList",
-    //         "    }",
-    //         "}"
-    //     ]
-    // },
     "Func ⇢ Basic 🐒": {
         "prefix": "Function ⇢ Basic 🐒",
         "description": "Minimal defaults | Supports selected text.",
@@ -542,7 +507,7 @@
     "CalculatedProperty": {
         "prefix": "Calculated-Property ⇢ SingleLine 🐒",
         "body": [
-            "@{name='${1:PropertyName}';expression={  \\$_.${2:${TM_SELECTED_TEXT:\\$_.PropertyValue }} }}$0"
+            "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
         ],
         "description": "nin ⁞ a CalculatedProperty on a Single Line",
     },
@@ -552,9 +517,10 @@
             "@{",
             "    Name = '${1:PropertyName}'",
             "    Expression = {",
-            "        \\$_.${2:${TM_SELECTED_TEXT:PropertyValue}}",
+            "        ${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}",
             "   }",
-            "}$0",
+            "}",
+            "$0"
         ],
         "description": "nin ⁞ a CalculatedProperty using multiple lines",
     },
@@ -599,7 +565,6 @@
     //         "}",
     //     ],
     // },
-    /*
     "Parameter: Completer ⇢ ValidateSet": {
         "prefix": "Param ⇢ Completer | [ValidateSet] 🐒",
         // "prefix": "Completer ⇢ ValidateSet",
@@ -613,7 +578,6 @@
             "$0",
         ],
     },
-    */
     "Parameter: Completer 2 ⇢ ValidateSet": {
         "prefix": "Param 2⇢ Completer | [ValidateSet] 🐒",
         // "prefix": "Completer ⇢ ValidateSet",

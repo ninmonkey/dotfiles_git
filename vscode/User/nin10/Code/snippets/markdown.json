@@ -48,6 +48,7 @@
     Markdown Snippets (nin) 2022-01-22
     */
     "EmptyFile -> Readme": {
+        "prefix": "read/me.md ⁞ template nin🐒",
         "prefix": "readme.md ⁞ template nin🐒",
         "description": "empty markdown files, needs improvement",
         "body": [
@@ -183,15 +184,14 @@
 
         */
     },
-    /*
-    "example: nin: Links To Markdown": {
-        "prefix": "Example: Url ⇢ Markdown",
-        "description": "nin🐒 ⁞ Wraps selected url in markdown syntax",
-        "body": [
-            "[${$2$TM_SELECTED_TEXT]($TM_SELECTED_TEXT)" //default value
-        ],
-    },
-    */
+    // "broken: example: nin: Links To Markdown": {
+    //     "prefix": "qqExample: Url ⇢ Markdown",
+    //     "description": "nin🐒 ⁞ Wraps selected url in markdown syntax",
+    //     "body": [
+    //         "[${$2${TM_SELECTED_TEXT}](${TM_SELECTED_TEXT})" //default value
+    //         "[${$2$TM_SELECTED_TEXT]($TM_SELECTED_TEXT)" //default value
+    //     ],
+    // },
     "nin: Unicode Separators": {
         /*
         I have more saved at: <https://gist.github.com/ninmonkey/ab7291f150a60310c2185796859c4ada>
@@ -207,9 +207,25 @@
             //  ⭪ ⭫ ⭬ ⭭ ⸺ ⸻ ⹃ 〜 〰 ︱ ︲ ﹉ ﹍ ﹘ 𝄄
         ],
     },
+    "dsfds": {
+        "prefix": "dbg choice",
+        "description": "debug choice",
+        "body": [
+            "${1: ${TM_SELECTED_TEXT:$CLIPBOARD}}",
+        ]
+    },
+    "nin: Links From Clipboard To Markdown. iter1": {
+        "prefix": "mdlink Paste Clipboard Copy a Url ⇢ Markdown",
+        "description": "Copies your clipboard to create a new markdown link 🐒 ⁞ Could merge with 'nin: Links To Markdown' -- if no selection then use clipboard",
+        "body": [
+            // "[${1:$CLIPBOARD}](${2:$CLIPBOARD})", // Works:iter0
+            "[${1:$CLIPBOARD}](${2:$CLIPBOARD})", // Works:iter1
+            // "[${1:${$TM_SELECTED_TEXT:noSel}](${2:${$TM_SELECTED_TEXT:noSel}})", // Broke:iter1
+        ]
+    },
     "nin: Links To Markdown": {
-        "prefix": "Url ⇢ Markdown",
-        "description": "Links 🐒 ⁞ Wraps selected url in markdown syntax",
+        "prefix": "link Url ⇢ Markdown",
+        "description": "Links 🐒 ⁞ Wraps selected url in markdown syntax. Good for when a raw url exists / is bare, without a label. ⁞ Could merge with 'nin: Links To Markdown' -- if no selection then use clipboard",
         /*
         input:
             using selection: https://code.visualstudio.com/docs/editor/userdefinedsnippets
@@ -226,10 +242,11 @@
             // "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
         ],
     },
-    "nin: Advanced Links To Markdown": {
-        "prefix": "Advanced Url ⇢ Markdown",
-        "description": "Links with Suggested names based on url. nin🐒 ⁞ Works better using  multipole cursors verses the basic one. Wraps selected url in markdown syntax  ; supports: multi",
-        /*
+    // "nin: Advanced Links To Markdown": {
+    //     "prefix": "z",
+    //     "isFileTemplate": true,
+    //     "description": "Links with Suggested names based on url. nin🐒 ⁞ Works better using  multipole cursors verses the basic one. Wraps selected url in markdown syntax  ; supports: multi",
+    /*
         input:
 '
 
@@ -237,17 +254,17 @@
 
 
         */
-        "body": [
-            // "${TM_SELECTED_TEXT/(.*s\\\\/)(.*)/$1 = $2/}" // # example workign regex
-            // "${TM_SELECTED_TEXT/(.*s\\\\\\\\/)(.*)/$0 = $1 = $2 = $4/}" // # example workign regex
-            "${TM_SELECTED_TEXT/.*s(.*)/\n0 = $0\n1 = $1\n2 = $2\n3 = $3/}" // # example workign regex
-            // "${TM_SELECTED_TEXT/(.*s)(.*)/$1 = $2/}" // # example workign regex
-            // "[${1:Label}](${2:$TM_SELECTED_TEXT})"
-            // "[${$2$TM_SELECTED_TEXT]($TM_SELECTED_TEXT)" //default value
-            // "[${1:PropertyName}]($TM_SELECTED_TEXT)" # default value
-            // "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
-        ],
-    },
+    // "body": [
+    // "${TM_SELECTED_TEXT/(.*s\\\\/)(.*)/$1 = $2/}" // # example workign regex
+    // "${TM_SELECTED_TEXT/(.*s\\\\\\\\/)(.*)/$0 = $1 = $2 = $4/}" // # example workign regex
+    // "${TM_SELECTED_TEXT/.*s(.*)/\n0 = $0\n1 = $1\n2 = $2\n3 = $3/}" // # example workign regex
+    // "${TM_SELECTED_TEXT/(.*s)(.*)/$1 = $2/}" // # example workign regex
+    // "[${1:Label}](${2:$TM_SELECTED_TEXT})"
+    // "[${$2$TM_SELECTED_TEXT]($TM_SELECTED_TEXT)" //default value
+    // "[${1:PropertyName}]($TM_SELECTED_TEXT)" # default value
+    // "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"
+    //     ],
+    // },
     // "[${1:PropertyName}]($TM_SELECTED_TEXT)" # default value
     // // "[${1:PropertyName}]($TM_SELECTED_TEXT)" # default value
     // // "@{name='${1:PropertyName}';expression={${2:${TM_SELECTED_TEXT:\\$_.PropertyValue}}}}$0"

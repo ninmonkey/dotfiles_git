@@ -3,7 +3,42 @@
     nord token customizations: <https://www.nordtheme.com/docs/ports/visual-studio-code/customization#ui>
     */
     "launch": {
+        "inputs": [
+            {
+                "id": "curPs1Var",
+                "type": "promptString",
+                // "default": "${workspaceFolder}/main.ps1",
+                "default": "${file}",
+                "description": "repeat running specific file",
+            },
+        ],
         "configurations": [
+            {
+                "name": "Cur.ps1💻",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${input:curPs1Var}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                "cwd": "${file}" // else workspace
+                // "args": [
+                //     "-Nop"
+                // ],
+                // "cwd": "${workspaceFolder}"
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            },
+            {
+                "name": "https.js",
+                "program": "C:/Users/cppmo_000/SkyDrive/Documents/2022/client_BDG/proto/node-https-log.js",
+                "request": "launch",
+                "skipFiles": [
+                    "<node_internals>/**"
+                ],
+                "type": "node"
+            },
             {
                 "args": [
                     "--extensionDevelopmentPath=${workspaceFolder}"
@@ -19,6 +54,7 @@
             {
                 "name": "Py:🐍 <variable>.py",
                 "type": "python",
+                // "internalConsoleOptions": ,
                 "request": "launch",
                 "args": [
                     "-Nop"
@@ -38,6 +74,249 @@
                 // "console": "externalTerminal",
                 // "redirectOutput": true,
                 // "autoReload": {}
+            },
+            /*
+
+      ### Sect: Personal Launchers
+
+      tags: dotnet, launch.json
+
+      */
+            {
+                "name": "Main.ps1 🏃‍♂️⌚TempTerm",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/InitModule.ps1",
+                "cwd": "${workspaceFolder}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 0
+                },
+                "createTemporaryIntegratedConsole": true,
+                "args": [
+                    "-NoProfile",
+                    "-NoL"
+                ],
+                // "postDebugTask": {
+                //     "task": "",
+                //     "type": ""
+                // },
+            },
+            {
+                "name": "Main.ps1 🏃‍♂️",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/main.ps1",
+                "cwd": "${workspaceFolder}",
+                "presentation": {
+                    "hidden": true,
+                    "group": "Invoke-Run",
+                    "order": 1
+                }
+            },
+            // {
+            //     "name": "cur.Pester.ps1 🐛",
+            //     "type": "PowerShell",
+            //     "request": "launch",
+            //     "script": "Invoke-Pester -Output Detailed -",
+            //     "cwd": "${workspaceFolder}",
+            //     "presentation": {
+            //         "hidden": true,
+            //         "group": "Invoke-Run",
+            //         "order": 1
+            //     }
+            // },
+            {
+                "name": "PowerShell Launch Script",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "Cur.Pester 🐜",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "Invoke-Pester",
+                "args": [
+                    "-Configuration",
+                    "$PesterConfig"
+                ],
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                // "args": [
+                //     "-Nop"
+                // ],
+                // "cwd": "${workspaceFolder}"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            },
+            {
+                "name": "Cur.ps1 🏃‍♂️",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${file}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                // "args": [
+                //     "-Nop"
+                // ],
+                // "cwd": "${workspaceFolder}"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            },
+            {
+                "presentation": {
+                    "hidden": false,
+                    "group": "visual-test",
+                    // "order": 1
+                },
+                "name": "🐛🎨 cur: Invoke-GithubInfo visualTest ",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/test/public/visual_test/Invoke-GithubInfo.visual_test.ps1",
+                // "cwd": "${file}"
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "[🐛] run a specific *.tests.ps1",
+                "type": "PowerShell",
+                "request": "launch",
+                "presentation": {
+                    "hidden": true,
+                    "group": "",
+                    "order": 1
+                },
+                "script": "Invoke-Pester",
+                "args": [
+                    "-Path 'public\\ConvertFrom-LiteralPath.tests.ps1'"
+                ],
+                "cwd": "${workspaceFolder}"
+            },
+            // {
+            //     "name": "PowerShell: Launch Script",
+            //     "type": "PowerShell",
+            //     "request": "launch",
+            //     "script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
+            //     "cwd": "${workspaceFolder}"
+            // },
+            {
+                "name": "cur.ps1",
+                "type": "PowerShell",
+                "presentation": {
+                    "hidden": true,
+                    "group": "Invoke-File",
+                    "order": 1
+                },
+                "request": "launch",
+                "script": "${file}",
+                "cwd": "${file}"
+            },
+            {
+                "name": "cur 🐜 (temp_cur_test.ps1)",
+                "type": "PowerShell",
+                "request": "launch",
+                "presentation": {
+                    "hidden": true,
+                    "group": "Invoke-File",
+                    "order": 1
+                },
+                "script": "${workspaceFolder}/private/temp_cur_test.ps1",
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "presentation": {
+                    "hidden": false,
+                    "group": "Visual-Test",
+                    // "order": 1
+                },
+                "name": "🐛🎨 cur: Format-Dict visualTest ",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/test/public/visual_test/Format-Dict.visual_test.ps1",
+                // "cwd": "${file}"
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "presentation": {
+                    "hidden": false,
+                    "group": "Visual-Test"
+                    // "order": 1
+                },
+                "name": "🐛🎨 cur: visualTest ",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/test/public/visual_test/_format_RgbColorStringy.visual_tests.ps1",
+                // "cwd": "${file}"
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "cur: Module Test🐛",
+                "type": "PowerShell",
+                "request": "launch",
+                "presentation": {
+                    "hidden": true,
+                    "group": "Invoke-File",
+                    "order": 1
+                },
+                "script": "${workspaceFolder}/test/private/_import_error_test.ps1",
+                // "cwd": "${file}"
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "🐛 : [Details] — ", // [nin.PowerShell]",
+                "type": "PowerShell",
+                "request": "launch",
+                "presentation": {
+                    "hidden": true,
+                    "group": "Invoke-Pester",
+                    "order": 1
+                },
+                "script": "Invoke-Pester",
+                "args": [
+                    "-Output",
+                    "Detailed"
+                ],
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "🐛 : | default | — ", // [nin.PowerShell]",
+                "type": "PowerShell",
+                "presentation": {
+                    "hidden": true,
+                    "group": "Invoke-Pester",
+                    "order": 1
+                },
+                "request": "launch",
+                "script": "Invoke-Pester",
+                // "args": [],
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "🐛 | 🏃 | #WIP |",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "Invoke-Pester",
+                "cwd": "${workspaceFolder}",
+                "presentation": {
+                    "hidden": true,
+                    "group": "",
+                    "order": 1
+                },
+                "args": [
+                    "-Output",
+                    "Detailed",
+                    "-TagFilter",
+                    // "wiph"
+                    "wip-hash"
+                ]
             },
             /*
 
@@ -220,188 +499,6 @@
             },
             /*
 
-      ### Sect: Personal Launchers
-
-      tags: dotnet, launch.json
-
-      */
-            {
-                "name": "Main.ps1 🏃‍♂️",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${workspaceFolder}/main.ps1",
-                "cwd": "${workspaceFolder}",
-                "presentation": {
-                    "hidden": true,
-                    "group": "Invoke-Run",
-                    "order": 1
-                }
-            },
-            {
-                "name": "Cur.ps1 🏃‍♂️",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${file}",
-                "presentation": {
-                    "hidden": false,
-                    "group": "Invoke-Run",
-                    "order": 1
-                },
-                // "args": [
-                //     "-Nop"
-                // ],
-                // "cwd": "${workspaceFolder}"
-                "cwd": "${file}" // else workspace
-                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
-            },
-            {
-                "presentation": {
-                    "hidden": false,
-                    "group": "visual-test",
-                    // "order": 1
-                },
-                "name": "🐛🎨 cur: Invoke-GithubInfo visualTest ",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${workspaceFolder}/test/public/visual_test/Invoke-GithubInfo.visual_test.ps1",
-                // "cwd": "${file}"
-                "cwd": "${workspaceFolder}"
-            },
-            {
-                "name": "[🐛] run a specific *.tests.ps1",
-                "type": "PowerShell",
-                "request": "launch",
-                "presentation": {
-                    "hidden": true,
-                    "group": "",
-                    "order": 1
-                },
-                "script": "Invoke-Pester",
-                "args": [
-                    "-Path 'public\\ConvertFrom-LiteralPath.tests.ps1'"
-                ],
-                "cwd": "${workspaceFolder}"
-            },
-            // {
-            //     "name": "PowerShell: Launch Script",
-            //     "type": "PowerShell",
-            //     "request": "launch",
-            //     "script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
-            //     "cwd": "${workspaceFolder}"
-            // },
-            {
-                "name": "cur.ps1",
-                "type": "PowerShell",
-                "presentation": {
-                    "hidden": true,
-                    "group": "Invoke-File",
-                    "order": 1
-                },
-                "request": "launch",
-                "script": "${file}",
-                "cwd": "${file}"
-            },
-            {
-                "name": "cur 🐜 (temp_cur_test.ps1)",
-                "type": "PowerShell",
-                "request": "launch",
-                "presentation": {
-                    "hidden": true,
-                    "group": "Invoke-File",
-                    "order": 1
-                },
-                "script": "${workspaceFolder}/private/temp_cur_test.ps1",
-                "cwd": "${workspaceFolder}"
-            },
-            {
-                "presentation": {
-                    "hidden": false,
-                    "group": "Visual-Test",
-                    // "order": 1
-                },
-                "name": "🐛🎨 cur: Format-Dict visualTest ",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${workspaceFolder}/test/public/visual_test/Format-Dict.visual_test.ps1",
-                // "cwd": "${file}"
-                "cwd": "${workspaceFolder}"
-            },
-            {
-                "presentation": {
-                    "hidden": false,
-                    "group": "Visual-Test"
-                    // "order": 1
-                },
-                "name": "🐛🎨 cur: visualTest ",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${workspaceFolder}/test/public/visual_test/_format_RgbColorStringy.visual_tests.ps1",
-                // "cwd": "${file}"
-                "cwd": "${workspaceFolder}"
-            },
-            {
-                "name": "cur: Module Test🐛",
-                "type": "PowerShell",
-                "request": "launch",
-                "presentation": {
-                    "hidden": true,
-                    "group": "Invoke-File",
-                    "order": 1
-                },
-                "script": "${workspaceFolder}/test/private/_import_error_test.ps1",
-                // "cwd": "${file}"
-                "cwd": "${workspaceFolder}"
-            },
-            {
-                "name": "🐛 : [Details] — ", // [nin.PowerShell]",
-                "type": "PowerShell",
-                "request": "launch",
-                "presentation": {
-                    "hidden": true,
-                    "group": "Invoke-Pester",
-                    "order": 1
-                },
-                "script": "Invoke-Pester",
-                "args": [
-                    "-Output",
-                    "Detailed"
-                ],
-                "cwd": "${workspaceFolder}"
-            },
-            {
-                "name": "🐛 : | default | — ", // [nin.PowerShell]",
-                "type": "PowerShell",
-                "presentation": {
-                    "hidden": true,
-                    "group": "Invoke-Pester",
-                    "order": 1
-                },
-                "request": "launch",
-                "script": "Invoke-Pester",
-                // "args": [],
-                "cwd": "${workspaceFolder}"
-            },
-            {
-                "name": "🐛 | 🏃 | #WIP |",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "Invoke-Pester",
-                "cwd": "${workspaceFolder}",
-                "presentation": {
-                    "hidden": true,
-                    "group": "",
-                    "order": 1
-                },
-                "args": [
-                    "-Output",
-                    "Detailed",
-                    "-TagFilter",
-                    // "wiph"
-                    "wip-hash"
-                ]
-            }
-            /*
-
         end of : Settings -> launch -> configurations -> [..]
 
       */
@@ -500,8 +597,7 @@
     "editor.folding": true,
     "editor.foldingHighlight": true, //collapsed folded blocks highlight the single line
     "editor.foldingStrategy": "auto",
-    "editor.showFoldingControls": "mouseover", // hide icons until you hover the gutter
-    "editor.highlightActiveIndentGuide": true, // highight **just one** specific line-block (the current block)
+    "editor.showFoldingControls": "mouseover", // highight **just one** specific line-block (the current block)
     // "editor.fontWeight": "normal", // bold 300, 900,
     "editor.hover.delay": 300, // 10, 710,
     "editor.hover.enabled": true, // false,
@@ -524,6 +620,32 @@
 
     */
     "editor.minimap.enabled": true,
+    "editor.minimap.autohide": true, // zen:config
+    /*
+        new: https://code.visualstudio.com/updates/v1_69#_minimap-context-menu
+    */
+    "sortJSON.contextMenu": {
+        "sortJSON": true,
+        "sortJSON": false, // zen:config
+        "sortJSONReverse": true,
+        "sortJSONReverse": false, // zen:config
+        "sortJSONKeyLength": true,
+        "sortJSONKeyLength": false, // zen:config
+        "sortJSONKeyLengthReverse": true,
+        "sortJSONKeyLengthReverse": false, // zen:config
+        "sortJSONAlphaNum": true,
+        "sortJSONAlphaNum": false, // zen:config
+        "sortJSONAlphaNumReverse": true,
+        "sortJSONAlphaNumReverse": false, // zen:config
+        "sortJSONValues": true,
+        "sortJSONValues": false, // zen:config
+        "sortJSONValuesReverse": true,
+        "sortJSONValuesReverse": false, // zen:config
+        "sortJSONType": true,
+        "sortJSONType": false, // zen:config
+        "sortJSONTypeReverse": true,
+        "sortJSONTypeReverse": false, // zen:config
+    },
     //
     // mode: small right
     "editor.minimap.renderCharacters": true,
@@ -605,24 +727,11 @@
     "search.experimental.searchInOpenEditors": true,
     /*
 
-  ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
 
-      see also settings:
-          powershell.notebooks.*
-
-      /*
-      "notebook.breadcrumbs.showCodeCells": and
-      "notebook.outline.showCodeCells":
-              https://code.visualstudio.com/updates/v1_53#_outline-and-breadcrumbs
-
-          */
-    "notebook.breadcrumbs.showCodeCells": true,
     "workbench.panel.defaultLocation": "right",
     "workbench.panel.defaultLocation": "bottom",
     "terminal.integrated.tabs.showActions": "singleTerminalOrNarrow",
     "terminal.integrated.showExitAlert": true,
-    "notebook.outline.showCodeCells": true,
-    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
     /*
 
   ###### SubSect: Editor ⇢ Tabs, Pins, Icons, Decorations
@@ -738,8 +847,7 @@
 
       */
     "powershell.developer.editorServicesLogLevel": "Diagnostic",
-    "powerquery.trace.server": "verbose",
-    "powerquery.trace.server": "messages",
+    // "powerquery.trace.server": "messages",
     "python.analysis.logLevel": "Warning", // error/warnining/info/trace
     // "powershell editor services.trace.server": "verbose",
     // "powershell editor services.trace.server": "diagnostic",
@@ -805,7 +913,7 @@
         "editor.semanticHighlighting.enabled": true,
         // "editor.maxTokenizationLineLength": 20000
         "editor.detectIndentation": false,
-        "editor.tabSize": 4
+        "editor.tabSize": 4,
     },
     "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
     "[xml]": {
@@ -837,7 +945,11 @@
         // "editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced",
         // "editor.defaultFormatter": "yzhang.markdown-all-in-one",
         "editor.wordWrap": "on",
-        "editor.quickSuggestions": false,
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
         "editor.formatOnSave": true,
         // "editor.formatOnType": true,
         /* hard line breaks in MD are declared using two trailing spaces */
@@ -849,17 +961,14 @@
         // "files.trimFinalNewlidnes": true,
         "files.insertFinalNewline": false
     },
-    "[powerquery]": {
-        "editor.formatOnSave": false,
-        "editor.semanticHighlighting.enabled": true
-        // "editor.semanticHighlighting.enabled": false,
-        // todo: edit theme
-    },
+    "problems.decorations.enabled": true,
+    "problems.showCurrentInStatus": true,
     "[log]": {
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
         "editor.wrappingStrategy": "simple",
         "editor.fontSize": 11,
+        "editor.fontSize": 14,
     },
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -1094,12 +1203,12 @@
         // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?", // causes splat-expression etc to break
-        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
+        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
         "editor.formatOnSave": true,
         "editor.snippetSuggestions": "bottom",
-        "editor.snippetSuggestions": "none",
+        "editor.snippetSuggestions": "top",
         "files.encoding": "utf8bom",
         // "editor.formatOnSaveMode": "file",
         "editor.formatOnSaveMode": "modifications",
@@ -1116,7 +1225,6 @@
         "editor.suggest.showInterfaces": true,
         "editor.suggest.showVariables": true,
         "editor.suggest.showProperties": true,
-        "editor.rename.enablePreview": true,
         "editor.suggest.showOperators": true,
         "editor.suggest.showTypeParameters": true,
         "editor.foldingHighlight": true,
@@ -1147,7 +1255,7 @@
         "editor.inlineSuggest.enabled": false,
         // "editor.inlayHints.enabled": false, // error lens, debugger, etc
         // "editor.suggest.localityBonus": false,
-        "editor.suggest.localityBonus": false, // seems worse if you enable it.
+        "editor.suggest.localityBonus": true, // seems worse if you enable it.
         "editor.suggest.showIcons": true,
         "editor.suggest.shareSuggestSelections": false,
         "editor.suggest.showStatusBar": true,
@@ -1163,16 +1271,24 @@
         "editor.autoClosingOvertype": "auto",
         "editor.autoClosingQuotes": "languageDefined",
         "editor.find.autoFindInSelection": "multiline",
+        "editor.suggest.showInlineDetails": true,
         "editor.suggest.showSnippets": true,
+        "editor.suggest.showCustomcolors": true,
+        "outline.showClasses": true,
+        "outline.showBooleans": false,
+        "outline.showEnums": false,
+        "outline.showNull": false,
+        "outline.showStrings": false,
+        "outline.showVariables": false,
         "editor.suggest.preview": true,
         "editor.autoSurround": "languageDefined",
-        "editor.colorDecorators": true,
+        // "editor.colorDecorators": false,
         "editor.columnSelection": false,
         "editor.copyWithSyntaxHighlighting": true,
         // "editor.cursorSurroundingLines": 0,
         "editor.quickSuggestionsDelay": 800,
         "editor.quickSuggestionsDelay": 400,
-        "editor.quickSuggestionsDelay": 800,
+        "editor.quickSuggestionsDelay": 1500,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
         "editor.wordBasedSuggestions": true,
         // "editor.wordBasedSuggestionsMode": "matchingDocuments",
@@ -1253,6 +1369,8 @@
     "fileutils.typeahead.enabled": true,
     // "firefox.profile": "",
     "dotfiles.repository": "https://github.com/owner/repository.git",
+    // Controls whether the last typed input to the command palette should be restored when opening it the next time.
+    "workbench.commandPalette.preserveInput": true,
     "workbench.commandPalette.history": 50,
     "workbench.editor.languageDetection": true,
     "workbench.hover.delay": 500,
@@ -1286,22 +1404,23 @@
 
       applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
   */
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook"
-    },
+    //   # maybe this config is messing up nteract
+    // "workbench.editorAssociations": {
+    //     // "*.ipynb": "jupyter-notebook"
+    // },
     /*
 
   ###### SubSect: Files ⇢ Files.Associations
 
       */
     "files.defaultLanguage": "${activeEditorLanguage}",
-    "files.trimTrailingWhitespace": true,
     "files.encoding": "utf8",
     "files.autoGuessEncoding": false,
     "files.associations": {
         // these have higher precendence than extensions
         "*.dax": "sql",
         "*.json": "jsonc",
+        "*.jsonl": "jsonc",
         // powershell
         "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
         // microsoft / vs studio
@@ -1424,9 +1543,12 @@
 
 */
     "python.formatting.provider": "black",
-    "python.pythonPath": "c:/Users/cppmo_000/Documents/2020/python/one_offs/Heroes of the Storm stats/venv/Scripts/python.exe",
+    // "python.pythonPath": "c:/Users/cppmo000/Documents/2020/python/one_offs/Heroes of the Storm stats/venv/Scripts/python.exe",
+    "python.pythonPath": "G:/root_venv/py/global/Scripts/python.exe",
+    "python.venvPath": "G:/root_venv/py",
+    // "python.globalModuleInstallation": false,
+    // "python.experiments.optInto": [],
     "python.languageServer": "Pylance",
-    "pylance.insidersChannel": "off",
     "python.autoComplete.showAdvancedMembers": true,
     "python.analysis.autoImportCompletions": true,
     "python.analysis.completeFunctionParens": true,
@@ -1445,7 +1567,6 @@
     /* debug and verbose logging settings */
     // "powershell editor services.trace.server": "verbose",
     // "powershell editor services.trace.server": "diagnostic",
-    "powerquery.trace.server": "verbose",
     /* ... */
     "editor.wordWrap": "on",
     // "terminal.integrated.automationShell.windows": "",
@@ -1558,7 +1679,7 @@
       This is deprecated, the new recommended way to configure your default shell is by creating a terminal profile in `#terminal.integrated.profiles.windows#` and setting its profile name as the default in `#terminal.integrated.defaultProfile.windows#`. This will currently take priority over the new profiles settings but that will change in the future.
       */
     // "terminal.integrated.shell.windows": "C:/Program Files/PowerShell/7/pwsh.exe",
-    // "terminal.integrated.shellArgs.windows": [
+    // "terminal.integrated.shellArgs.windows": [ // deprecated
     //     "-NoLogo"
     // ],
     /*
@@ -1615,7 +1736,14 @@
     "editor.rulers": [
         120
     ],
+    ///
+    ///
+    ///
+    ///
     "workbench.colorCustomizations": {
+        "scm.providerBorder": "#ff0000",
+        "editorGutter.addedBackground": "#c300ff",
+        // "changes"
         // new built-in bracket colors
         // "editorBracketMatch.background": "#29b0c2",
         // custom for addons:
@@ -1733,13 +1861,42 @@
         "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
         "editorLineNumber.activeForeground": "#929292", // dim
         // new: 2021-12
+        "editorWarning.foreground": "#00fff200", // main squiggle fully hidden because adddon still shows inline
         "editorWarning.foreground": "#00fff252", // main squiggle
     },
+    // "editorWarning.foreground": "#00fff2", // main squiggle
+    // "editorWarning.foreground": "#00fff252", // main squiggle
+    // "editorWarning.foreground": "#00fff2", // main squiggle
     "notebook.experimental.useMarkdownRenderer": true,
-    "notebook.diff.enablePreview": true,
     "debug.inlineValues": "auto",
     "terminal.integrated.allowChords": true,
-    "terminal.integrated.automationShell.windows": null,
+    // "terminal.integrated.automationShell.windows": null
+    /*
+    to debug:
+        terminal.integrated.automationProfile.windows
+    this errors as:
+
+            All parameters are case-insensitive.
+            The terminal process "pwsh -Nop -Nol /d /c npm run test:benchmark" terminated with exit code: 64.
+
+            Terminal will be reused by tasks, press any key to close it.
+
+            > Executing task in folder powerquery-parser: npm run build <
+
+            The argument '/d' is not recognized as the name of a script file. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+     */
+    // "terminal.integrated.automationProfile.windows": {
+    //     "path": "pwsh",
+    //     "args": [
+    //         "-Nop",
+    //         "-Nol"
+    //     ],
+    //     "color": "terminal.ansiYellow",
+    //     "icon": "terminal-powershell",
+    //     // "env": {}
+    //     // "overrideName":
+    // },
     "terminal.integrated.allowWorkspaceConfiguration": false,
     // "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.enableFileLinks": true,
@@ -1765,8 +1922,7 @@
       */
     // "powershell.pester.outputVerbosity": "Minimal", //"Diagnostic",
     "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
-    "powershell.pester.outputVerbosity": "Detailed", //"Diagnostic",
-    "powershell.pester.debugOutputVerbosity": "Detailed", // "Detailed", //Diagnostic",
+    "powershell.pester.outputVerbosity": "Detailed", // "Detailed", //Diagnostic",
     "terminal.integrated.environmentChangesRelaunch": true,
     // "terminal.integrated.fontWeight": "500",
     "terminal.integrated.experimentalUseTitleEvent": false, // An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals
@@ -1822,7 +1978,7 @@
     // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
     // - args: [-NoLogo','-NoProfile]
     // "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
-    "terminal.integrated.defaultProfile.windows": "Pwsh🐒",
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒 -Nop", // "Pwsh🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",
@@ -1843,9 +1999,90 @@
 
       */
     "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                // "scope": "comment.block",
+                "scope": "comment.line", // single-line comments
+                "settings": {
+                    "foreground": "#6ea58049",
+                    // "fontStyle": "underline strikethrough"
+                    // "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "comment.block", // multi-line comments, ignores single, ignores head/tail
+                "settings": {
+                    "foreground": "#38df6f93",
+                    "foreground": "#6eaff0ff",
+                    "foreground": "#6ea580a8",
+                    // "fontStyle": "underline strikethrough"
+                    // "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "constant.character.escape",
+                "settings": {
+                    // "foreground": "#FF0000",
+                    // "fontStyle": "bold"
+                    // "fontStyle": "underline"
+                    // "fontStyle": "bold"
+                }
+            },
+            /*
+            {
+                "scope": "storage.type.powershell",
+                "settings": {
+                    "foreground": "#FF0000",
+                    "foreground": "#9842b4bb",
+                    // "fontStyle": "bold strikethrough",
+                    "fontStyle": "strikethrough",
+                    "fontStyle": "",
+                }
+            },
+            {
+                "scope": "meta.type.powershell",
+                "settings": {
+                    "foreground": "#FF0000",
+                    "foreground": "#9842b4bb",
+                    // "fontStyle": "bold strikethrough",
+                    "fontStyle": "strikethrough",
+                    "fontStyle": "",
+                }
+            },
+            {
+                "scope": "meta.function.powershell",
+                "settings": {
+                    "foreground": "#FF0000",
+                    "foreground": "#ffd000bb",
+                    // "fontStyle": "bold strikethrough",
+                    "fontStyle": "strikethrough",
+                    "fontStyle": "",
+                }
+            }
+            */
+            // {
+            //     "scope": "storage.type",
+            //     "name": "dampen powershell types",
+            //     "settings": {
+            //         "foreground": "#ff0000",
+            //         // "foreground": "#FF0000",
+            //         // "fontStyle": "bold"
+            //     }
+            // }
+        ],
         "[Visual Studio 2019 Dark]": {
             // example test
-            "textMateRules": [],
+            "textMateRules": [
+                /*
+                {
+                    "scope": "storage.type.powershell",
+                    "settings": {
+                        "foreground": "#FF0000",
+                        "foreground": "#9842b4bb",
+                    }
+                }
+                */
+            ],
             /*
                 {
                     "name": "dev test",
@@ -1858,10 +2095,19 @@
                 }
             #>
             */
+            //
+            "types": {
+                "foreground": "#FF0000",
+                "foreground": "#4278b4f3",
+                "foreground": "#4277b499",
+                "foreground": "#9842b4bb",
+                // "types": "#8b42f195",
+                // "fontStyle": "bold"
+            },
             "keywords": {
                 "foreground": "#1e4a7cf3",
                 "foreground": "#4278b4f3",
-                "fontStyle": "bold underline"
+                // "fontStyle": "bold"
             }
         }
     },
@@ -1939,10 +2185,7 @@
     "python.defaultInterpreterPath": "C:/Users/cppmo_000/.virtualenvs/1-offs-ErlZkEu9/Scripts/python.exe",
     "python.defaultInterpreterPath": "C:/Users/cppmo_000/AppData/Local/Microsoft/WindowsApps/python3.9.exe",
     "errorLens.enabledDiagnosticLevels": [
-        "error",
-        "warning",
-        "hint",
-        "info"
+        "error"
     ],
     /*
 
@@ -2005,8 +2248,21 @@
           https://code.visualstudio.com/docs/editor/variables-reference
       */
     "terminal.integrated.profiles.windows": {
+        "Pwsh🐒 -Nop": {
+            "color": "terminal.ansiGreen",
+            "overrideName": true,
+            "path": [
+                "pwsh.exe",
+                "C:/Program Files/PowerShell/7/pwsh.exe"
+            ],
+            "args": [
+                "-NoProfile",
+                "-NoLogo"
+            ],
+            "icon": "terminal-powershell"
+        },
         "Pwsh🐒": {
-            "color": "terminal.ansiMagenta",
+            "color": "terminal.ansiYellow",
             "overrideName": true,
             "path": [
                 "pwsh.exe",
@@ -2046,9 +2302,10 @@
             ],
             "icon": "terminal-powershell"
         },
-        "Windows PowerShell -NoP": {
+        "Win PS -NoP": {
             "overrideName": true,
             "icon": "arrow-both",
+            // "icon": "",
             "path": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
             "args": [
                 "-NoLogo",
@@ -2059,7 +2316,7 @@
             "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
             "args": [
                 "-NoLogo"
-            ]
+            ],
         }
     },
     //   "sortJSON.contextMenu": {
@@ -2109,9 +2366,10 @@
     "editor.rename.enablePreview": true,
     "editor.semanticHighlighting.enabled": true,
     "editor.snippetSuggestions": "bottom",
-    "editor.snippetSuggestions": "top",
-    "editor.snippetSuggestions": "bottom",
     "editor.snippetSuggestions": "none",
+    "editor.snippetSuggestions": "inline",
+    "editor.snippetSuggestions": "bottom",
+    "editor.snippetSuggestions": "bottom",
     "editor.suggest.filterGraceful": true,
     "editor.suggest.insertMode": "insert",
     "editor.suggest.preview": true,
@@ -2119,10 +2377,10 @@
     "editor.suggest.previewMode": true,
     "editor.suggest.showInlineDetails": true,
     "editor.suggest.showSnippets": true,
-    "editor.suggest.showSnippets": true,
+    "editor.suggest.showSnippets": false,
     "editor.suggest.snippetsPreventQuickSuggestions": true,
     "editor.tabCompletion": "off",
-    "snippets.viewer.combineLanguageSnippets": true,
+    "snippets.viewer.combineLanguageSnippets": false,
     // "snippets.viewer.skipLanguageSnippets": "",
     "snippets.viewer.expandSnippetFiles": true,
     "snippets.viewer.focusOnActiveEditorSnippets": true, // will merge extension and your custom snippets
@@ -2179,7 +2437,8 @@
     "workbench.editor.labelFormat": "default",
     "notebook.cellToolbarLocation": {
         "default": "right",
-        "jupyter-notebook": "left"
+        "jupyter-notebook": "left",
+        "dotnet-interactive": "left"
     },
     /*
 
@@ -2345,10 +2604,6 @@
     */
     // Whether to use the enhanced text diff editor for notebook.
     "notebook.diff.enablePreview": true,
-    // Hide Metadata Differences
-    "notebook.diff.ignoreMetadata": false,
-    // Hide Outputs Differences
-    "notebook.diff.ignoreOutputs": false,
     /*
 
     ### Sect: diff (more git)
@@ -2414,7 +2669,7 @@
     // URI of your GitHub Enterprise Instance
     "github-enterprise.uri": "",
     // Whether to automatically navigate to the next merge conflict after resolving a merge conflict.
-    "merge-conflict.autoNavigateNextConflict.enabled": false,
+    "merge-conflict.autoNavigateNextConflict.enabled": true,
     // Create a CodeLens for merge conflict blocks within editor.
     "merge-conflict.codeLens.enabled": true,
     // Create decorators for merge conflict blocks within editor.
@@ -2487,9 +2742,9 @@
     //  - modified: Results are sorted by file last modified date, in descending order.
     //  - countDescending: Results are sorted by count per file, in descending order.
     //  - countAscending: Results are sorted by count per file, in ascending order.
-    "search.sortOrder": "default",
+    "search.sortOrder": "modified",
     // Controls whether to use global `.gitignore` and `.ignore` files when searching for files.
-    "search.useGlobalIgnoreFiles": false,
+    "search.useGlobalIgnoreFiles": true,
     // Controls whether to use `.gitignore` and `.ignore` files when searching for files.
     "search.useIgnoreFiles": true,
     "editor.mouseWheelScrollSensitivity": 1.2,
@@ -2585,9 +2840,6 @@
     "editor.gotoLocation.multipleTypeDefinitions": "peek",
     // Controls whether the cursor should be hidden in the overview ruler.
     "editor.hideCursorInOverviewRuler": false,
-    // Controls whether the editor should highlight the active indent guide.
-    "editor.highlightActiveIndentGuide": false,
-    "editor.highlightActiveIndentGuide": true,
     // Controls the delay in milliseconds after which the hover is shown.
     "editor.hover.delay": 300,
     // Controls whether the hover is shown.
@@ -2816,21 +3068,19 @@
     // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
     "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
     // Loads user and system-wide PowerShell profiles (profile.ps1 and Microsoft.VSCode_profile.ps1) into the PowerShell session. This affects IntelliSense and interactive script execution, but it does not affect the debugger.
-    "powershell.enableProfileLoading": true,
+    "powershell.enableProfileLoading": false,
     // Controls the comment-based help completion behavior triggered by typing '##'. Set the generated help style with 'BlockComment' or 'LineComment'. Disable the feature with 'Disabled'.
     "powershell.helpCompletion": "BlockComment",
     // Switches focus to the console when a script selection is run or a script file is debugged. This is an accessibility feature. To disable it, set to false.
     "powershell.integratedConsole.focusConsoleOnExecute": true,
     // Use the vscode API to clear the terminal since that's the only reliable way to clear the scrollback buffer. Turn this on if you're use to 'Clear-Host' clearing scroll history as wellclear-terminal-via-lsp.
-    "powershell.integratedConsole.forceClearScrollbackBuffer": false,
+    "powershell.integratedConsole.forceClearScrollbackBuffer": true,
     // Shows the integrated console when the PowerShell extension is initialized.
     "powershell.integratedConsole.showOnStartup": true,
     // Do not show the Powershell Integrated Console banner on launch
     "powershell.integratedConsole.suppressStartupBanner": false,
     // Falls back to the legacy (lightweight) ReadLine experience. This will disable the use of PSReadLine in the PowerShell Integrated Console.
     "powershell.integratedConsole.useLegacyReadLine": false,
-    // Defines the verbosity of output to be used when debugging a test or a block. For Pester 5 and newer the default value Diagnostic will print additional information about discovery, skipped and filtered tests, mocking and more.
-    "powershell.pester.debugOutputVerbosity": "Diagnostic",
     // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
     "powershell.pester.outputVerbosity": "FromPreference",
     // Use code lens that is compatible with Pester 4. Disabling this will show 'Run Tests' on all It, Describe and Context blocks, and will correctly work only with Pester 5 and newer.
@@ -2951,7 +3201,6 @@
     "editor.fontFamily": "'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'cascadia code retina', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
-    "editor.fontFamily": "'cascadia code', consolas, monospace",
     "editor.fontFamily": "'cascadia code', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'fira code retina', 'cascadia code', Consolas, 'fira code', 'Courier New', monospace",
     "editor.fontFamily": "'fira code', Consolas, monospace",
@@ -2960,29 +3209,71 @@
     "editor.fontFamily": "'FiraCode Nerd Font', 'Fira code Retina', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code pl semilight', verdana, 'cascadia code', monospace",
     "editor.fontFamily": "'fira code retina', consolas, monospace", // retina seems bolder
-    "editor.fontFamily": "'fira code', 'cascadia code', consolas, monospace", // retina seems bolder
     "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code', monospace",
     "editor.fontFamily": "'FuraCode Nerd font', Consolas, 'Courier New', monospace",
     "errorLens.fontFamily": "calibri", //"arial bold",
     "editor.fontFamily": "'cascadia code retina', consolas, monospace",
-    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
     "editor.fontFamily": "'firacode nerd font'", //can view nerd font icons
     "editor.fontFamily": "'cascadia code', 'fira code', 'Fira Code retina', 'FuraCode nerd font', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'cascadia code', consolas, monospace",
     "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'cascadia code', monospace",
-    "editor.fontSize": 16,
-    // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
+    "editor.fontFamily": "'FiraCode Nerd Font','Courier New', monospace",
+    "editor.fontFamily": "'Fira code Retina', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'fira code', 'cascadia code', consolas, monospace", // retina seems bolder
+    "editor.fontFamily": "'fira code', monospace",
+    "editor.fontFamily": "'fira code', monospace",
+    "editor.fontFamily": "consolas, monospace",
+    "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
+    "editor.fontWeight": "bold",
+    "editor.fontWeight": "normal", // # is default default
+    "editor.fontSize": 12,
     "editor.fontSize": 18,
+    "editor.fontSize": 16,
+    "editor.fontSize": 14,
+    /* save my best clean profile
+
+    theme: Clean, thin-ish
+
+        bigger sizes, cleaner but not too thin
+
+        "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'cascadia code', monospace",
+        "editor.fontSize": 16,
+        // "editor.fontWeight": "600",
+
+    theme: SUPER THICK
+
+        works well on small font sizes, even 12
+
+        "editor.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'cascadia code', monospace",
+        "editor.fontSize": 14,
+        "editor.fontSize": 12,
+        "editor.fontWeight": "bold",
+
+
+    theme: biggest, thin
+
+
+        "editor.fontFamily": "'Fira code Retina', monospace",
+        "editor.fontSize": 12,
+        "editor.fontSize": 18,
+        "editor.fontWeight": "normal", // # is default
+
+    */
+    // "editor.fontSize": 16, // was [ 14 | 16 | 18 ]
     // "editor.fontSize": 14,
     // "editor.fontWeight": "600",
     "debug.console.fontSize": 14,
-    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'fira code', 'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 16,
     "errorLens.fontSize": "12px",
     // "editor.fontWeight": "350", // for cascadia code
@@ -2991,22 +3282,24 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 16,
+    // "debug.console.lineHeight": 0,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
     // "terminal.integrated.fontWeight": "normal", // maybe too bold
     // "terminal.integrated.fontWeightBold": "normal",
-    "terminal.integrated.letterSpacing": 0,
+    // "terminal.integrated.letterSpacing": 1,
     // "errorLens.fontWeight": "normal",
     "terminal.integrated.lineHeight": 1,
-    "errorLens.enabled": true, // for zoom -1
+    "errorLens.enabled": false, // for zoom -1
     "errorLens.delay": 1300,
+    "errorLens.followCursorMore": 2,
     "errorLens.followCursor": "closestProblem",
     "errorLens.exclude": [], //# regex
     "errorLens.excludeBySource": [], // ["eslint"]
-    "errorLens.followCursorMore": 2,
     "errorLens.statusBarIconsEnabled": true,
     "yaml.schemas": {},
     // "errorLens.severityText": [
@@ -3053,13 +3346,12 @@
     // "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.lineNumbers": "relative", // weird
     "editor.lineNumbers": "interval", // cleaner
     // "editor.lineHeight": 25, // 0-8 are multipliers, > 8 are literal px sizes
-    "notebook.lineNumbers": "off",
+    "notebook.lineNumbers": "on",
     "zenMode.hideLineNumbers": true,
     "zenMode.centerLayout": true,
     "zenMode.fullScreen": false,
@@ -3147,14 +3439,18 @@
     "errorLens.gutterIconSet": "circle",
     "errorLens.gutterIconsFollowCursorOverride": false, // show just selected errors or whole file?
     "errorLens.gutterIconsFollowCursorOverride": true, // show just selected errors or whole file?
+    "errorLens.followCursor": "closestProblem",
+    // "errorLens.followCursor": "allLines",
     "errorLens.enabledDiagnosticLevels": [
         "error",
         "hint",
         "warning",
         "info"
     ],
-    "errorLens.fontWeight": 200,
+    // "errorLens.fontWeight": "300",
     "errorLens.delay": 2500,
+    "errorLens.delay": 0,
+    "errorLens.delay": 500,
     "errorLens.fontFamily": "'cascadia code pl', 'calibri'",
     // "editor.fontWeight": "300",
     // "editor.fontWeight": "400",
@@ -3164,12 +3460,13 @@
     "errorLens.fontSize": "15",
     "errorLens.fontSize": "80%", // was: [15, 80% ]
     "editor.overviewRulerBorder": true, // not sure what it does
-    // "errorLens.borderRadius": "10px",
+    "errorLens.borderRadius": "10px",
     "errorLens.warningGutterIconColor": "#ff942f", // def: #ff942f
     "errorLens.warningGutterIconColor": "#ff932f6e", // dim: 1x
     "errorLens.warningGutterIconColor": "#ff932f3b", // dim: 2x
-    "errorLens.followCursor": "allLines",
+    // "errorLens.followCursor": "allLines",
     "errorLens.followCursor": "closestProblem",
+    "debug.inlineValues": false,
     "errorLens.followCursorMore": 2,
     "errorLens.infoGutterIconColor": "#d46f6f",
     "errorLens.infoGutterIconColor": "#00b7e4",
@@ -3225,7 +3522,6 @@
     // "powershell.codeFormatting.autoCorrectAliases": true,
     "pester.suppressCodeLensNotice": true,
     "testExplorer.useNativeTesting": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
     "editor.suggest.showStatusBar": true,
     /*
 
@@ -3338,7 +3634,6 @@
     //    "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekView": "never",
     "testing.automaticallyOpenPeekViewDuringAutoRun": false,
-    "terminal.explorerKind": "integrated",
     "terminal.integrated.defaultLocation": "editor",
     "search.seedWithNearestWord": true,
     "python.diagnostics.sourceMapsEnabled": true,
@@ -3350,7 +3645,6 @@
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,
     "gitlens.advanced.abbreviateShaOnCopy": true,
-    "terminal.integrated.copyOnSelection": true,
     "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
     "gitlens.mode.active": "zen",
     // "debug.console.acceptSuggestionOnEnter":,
@@ -3747,9 +4041,300 @@
             ]
         }
     },
+    "powershell.powerShellAdditionalExePaths": {},
     "redhat.telemetry.enabled": false,
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "workbench.colorTheme": "Visual Studio 2019 Dark",
-    "window.zoomLevel": 1
+    "gitlens.statusBar.enabled": false,
+    "hexeditor.columnWidth": 16,
+    "hexeditor.showDecodedText": true,
+    "hexeditor.defaultEndianness": "little",
+    "hexeditor.inspectorType": "aside",
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": true,
+    "explorer.fileNesting.patterns": {
+        // "*pq.log": "${capture}*.log",
+        // "*.log": "${capture}-parsed.log",
+        // sub-log-split
+        // "*.ts": "${capture}.js",
+        // "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        // "*.jsx": "${capture}.js",
+        // "*.tsx": "${capture}.ts",
+        // "tsconfig.json": "tsconfig.*.json",
+        // "package.json": "package-lock.json, yarn.lock"
+    },
+    /*
+
+    begin: Justin grote's config
+
+     */
+    "errorLens.errorBackground": "#e4545410",
+    "errorLens.errorForeground": "#ff646440",
+    "errorLens.errorMessageBackground": "#e4545405",
+    "errorLens.warningBackground": "#ff942f10",
+    "errorLens.warningForeground": "#fa973a70",
+    "errorLens.warningMessageBackground": "#fff00005",
+    /*
+
+    end: Justin grote's config
+
+     */
+    /*
+     final debug for testing
+     */
+    "scm.diffDecorationsGutterPattern": {
+        "added": false,
+        "modified": false,
+    },
+    "scm.diffDecorationsIgnoreTrimWhitespace": "false",
+    "scm.diffDecorations": "all",
+    "scm.diffDecorationsIgnoreTrimWhitespace": "true",
+    "scm.diffDecorations": "none",
+    // "editor.inlineSuggest.mode": "subwordSmart",
+    "[powershell]": {
+        "editor.suggest.showInlineDetails": true,
+        "editor.suggest.preview": true,
+        "editor.suggest.showSnippets": false,
+        "editor.snippetSuggestions": "bottom",
+        "editor.suggest.filterGraceful": true,
+        "editor.suggest.insertMode": "insert",
+    },
+    /*
+      ###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
+
+      see also settings:
+          powershell.notebooks.*
+
+      /*
+      "notebook.breadcrumbs.showCodeCells": and
+      "notebook.outline.showCodeCells":
+              https://code.visualstudio.com/updates/v1_53#_outline-and-breadcrumbs
+
+          */
+    "notebook.breadcrumbs.showCodeCells": true,
+    "notebook.outline.showCodeCells": true,
+    // "notebook.outputLineHeight": 0.7,
+    // "notebook.outputLineHeight": 0.8,
+    "notebook.outputLineHeight": 1.3,
+    "notebook.outputLineHeight": 1.2,
+    "notebook.outputLineHeight": 1.0,
+    "notebook.cellFocusIndicator": "border",
+    "notebook.compactView": true,
+    "notebook.cellToolbarVisibility": "click",
+    "notebook.output.textLineLimit": 120, // seems to require restart
+    // "notebook.displayOrder": []
+    "notebook.dragAndDropEnabled": true,
+    "notebook.consolidatedRunButton": true, // simplifies/removes UI
+    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
+    /*
+
+        == section:  power query
+
+
+    */
+    // Recommended always off. Enables benchmark traces to be generated for the extension.
+    "powerquery.benchmark.enable": true,
+    "powerquery.benchmark.enable": false,
+    // Specifies whether to enable experimental diagnostics features. This may result in false positives while the feature is under development.
+    "powerquery.diagnostics.experimental": false, // maybe replaced by 'powerquery.general.experimental' ?
+    "powerquery.general.experimental": true,
+    "powerquery.general.experimental": false,
+    // Recommended always on. Toggles internal caching causing performance degregation when off. Used to find hot paths in the extension.
+    "powerquery.diagnostics.isWorkspaceCacheAllowed": true,
+    // Sets what strategy is used by the type analysis. Extended is useful for small scripts but can hang on larger, complicated files. If performance isn't acceptable then fallback to Primitive.
+    "powerquery.diagnostics.typeStrategy": "Extended",
+    // Locale to use for errors and other messages returned by the language parser.
+    "powerquery.general.locale": "en-US",
+    // Traces the communication between VS Code and the language server.
+    // When enabled - shows gutter icons (In place of the debug breakpoint icon).
+    "errorLens.gutterIconsEnabled": false,
+    "powershell.startAutomatically": false,
+    "powerquery.benchmark.enable": false, // almost always disable
+    "powerquery.trace.server": "messages", // [ off* | verbose | messages ]
+    "powerquery.trace.server": "verbose", // [ off* | verbose | messages ] # you need verbose enabled for debugging
+    "powerquery.general.mode": "SDK", // [ Power Query* | SDK ],
+    // "editor.inlineSuggest.enabled": false,
+    "[powerquery]": {
+        /*
+        todo: parens are too bold right now
+        */
+        "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
+        // "editor.letterSpacing": 0.7, // with: 'cascadia code pl' (also)
+        // "editor.letterSpacing": 0, // with: 'cascadia code pl' (also)
+        // "editor.letterSpacing": 0.3, // with: 'cascadia code pl'
+        "editor.guides.indentation": true,
+        "editor.guides.indentation": false,
+        "editor.formatOnSaveMode": "file",
+        "editor.matchBrackets": "always",
+        "editor.guides.bracketPairs": false, // these are the already dim guides
+        "editor.guides.bracketPairs": "active", // these are the already dim guides
+        "editor.guides.bracketPairs": true, // these are the already dim guides
+        "editor.lineHeight": 1.50, // 0= auto, <= 8 is multiplier; else size in pixels
+        "editor.lineHeight": 25, // 0= auto, <= 8 is multiplier; else size in pixels
+        "editor.lineHeight": 0, // 0= auto, <= 8 is multiplier; else size in pixels
+        "editor.lineHeight": 24, // 0= auto, <= 8 is multiplier; else size in pixels
+        "editor.colorDecorators": true, // what is?
+        // "editor.bracketPairColorization.independentColorPoolPerBracketType": false, // this may be better specifically for power query
+        "editor.bracketPairColorization.enabled": true,
+        "editor.bracketPairColorization.independentColorPoolPerBracketType": true, // this may be better specifically for power query
+        "editor.wrappingIndent": "deepIndent", // as: parent+2
+        "editor.wrappingIndent": "none", // as: first char, no indent
+        "editor.wrappingIndent": "same", // as: parent+0
+        "editor.wrappingIndent": "indent", // as: parent+1
+        "editor.wrappingStrategy": "simple",
+        "editor.wrappingStrategy": "advanced", // wraps words  like "#duration(1, 0, 0, 0)" correctly
+        "editor.wordWrap": "wordWrapColumn", // uses 160
+        "editor.wordWrap": "on", // uses viewport
+        "editor.wordWrap": "bounded", // min( window | 160 )
+        "editor.fontSize": 16,
+        "editor.fontSize": 14,
+        "outline.showOperators": true,
+        "outline.showVariables": true,
+        "editor.wordWrapColumn": 160,
+        "diffEditor.wordWrap": "inherit",
+        // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+        "editor.formatOnSave": false,
+        "editor.semanticHighlighting.enabled": true,
+        // "editor.semanticHighlighting.enabled": false,
+        // todo: edit theme
+        "editor.inlineSuggest.enabled": true,
+        "editor.suggest.preview": true,
+        "editor.rename.enablePreview": true
+    },
+    /*
+
+    minimizing visual noise section
+
+    important references:
+        https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
+        https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax
+
+
+    */
+    //  - interval: Line numbers are rendered every 10 lines.
+    "[powershell]": {
+        "editor.lineNumbers": "interval", // hide numbers, show only every 10th
+        // "editor.suggest.shareSuggestSelections": true,
+        "editor.tabCompletion": "off",
+        "editor.tabCompletion": "on",
+        "editor.tabCompletion": "onlySnippets",
+        "editor.suggestSelection": "recentlyUsedByPrefix", // <// https://code.visualstudio.com/docs/editor/intellisense#_suggestion-selection>
+        "editor.suggestSelection": "first",
+        "editor.suggest.localityBonus": true, // example: <https://code.visualstudio.com/docs/editor/intellisense#_locality-bonus> not sure if you'll like this
+        "editor.suggestOnTriggerCharacters": true, // on '.'
+        "editor.quickSuggestionsDelay": 10, // super slow to when testing
+        "editor.quickSuggestionsDelay": 1500, // 1,000 equals 1 second
+        "editor.quickSuggestions": {
+            "other": "on", // noisy : this pops up automatically
+            "other": "off", //
+            "other": "inline", // better. no popup, shows first suggestion as ghost, ctrl+space to see more
+            "comments": "off",
+            "strings": "inline",
+            "strings": "off",
+        },
+        // "editor.snippetSuggestions": "top",
+        "editor.snippetSuggestions": "inline",
+        "editor.snippetSuggestions": "none", // snippets *never* show on suggestions, then hit the hotkey 'insert snippet' if you want to manually show them
+        "editor.hover.delay": 300, // 10, 710,
+        "editor.hover.enabled": true, // false,
+        // "editor.suggest.snippetsPreventQuickSuggestions": true
+    },
+    // default squiggle
+    // "editorWarning.foreground": "#00fff2", // main squiggle : different hue
+    "workbench.colorCustomizations": {
+        // hiding squiggles,  last 2 digits are alpha.
+        // RRGGBBAA
+        "editorWarning.foreground": "#00fff200", // squiggle: gone
+        "editorWarning.foreground": "#00fff2", // squiggle : 100%
+        "editorWarning.foreground": "#00fff25c", // squiggle : 30%
+    },
+    "cSpell.ignorePaths": [
+        "package-lock.json",
+        "node_modules",
+        "vscode-extension",
+        ".git/objects",
+        ".vscode",
+        ".vscode-insiders",
+        ".ipynb"
+    ],
+    "notebook.diff.ignoreOutputs": true,
+    "cSpell.userWords": [
+        "Codepoint"
+    ],
+    // main squiggle fully hidden because adddon still shows inline
+    /*
+        what's new / experimental: 2022-07-16
+
+            https://code.visualstudio.com/updates/v1_69#_command-center
+            https://code.visualstudio.com/updates/v1_69#_shell-integration
+
+        new git stuff
+            https://code.visualstudio.com/updates/v1_69#_commit-action-button-for-git-repositories
+
+                bunch of settings like "git.useEditorAsCommitInput"
+
+        new debug console refs:
+
+            https://code.visualstudio.com/updates/v1_69#_debugging
+
+        codeicons:
+            https://code.visualstudio.com/api/references/icons-in-labels
+
+        Jupyter
+            https://code.visualstudio.com/updates/v1_69#_jupyter
+
+        markdown link validation
+            https://code.visualstudio.com/updates/v1_69#_markdown-link-validation
+                latest changes
+            https://code.visualstudio.com/updates/v1_68#_markdown-link-validation
+                experimental settings here
+    */
+    "powershell.debugging.createTemporaryIntegratedConsole": false,
+    "terminal.integrated.shellIntegration.enabled": true,
+    "terminal.integrated.shellIntegration.decorationsEnabled": true,
+    "terminal.integrated.shellIntegration.history": 200,
+    "window.commandCenter": true,
+    "terminal.integrated.shellIntegration.decorationIcon": "circle-outline",
+    "terminal.integrated.shellIntegration.decorationIconSuccess": "primitive-dot",
+    "terminal.integrated.shellIntegration.decorationIconError": "error-small",
+    "logViewer.logLevel": "trace",
+    "logViewer.followTailMode": "manual",
+    "logViewer.showStatusBarItemOnChange": true,
+    /* end of new: 2022-07-16 */
+    /*
+
+            experiment: new addon:
+                berublan.vscode-log-viewer
+
+
+        "logViewer.showStatusBarItemOnChange": true,
+        "logViewer.watch": ...
+
+
+    */
+    /* end of new: 2022-07-20 */
+    // Defines the verbosity of output to be used when debugging a test or a block. For Pester 5 and newer the default value Diagnostic will print additional information about discovery, skipped and filtered tests, mocking and more.
+    "powershell.pester.debugOutputVerbosity": "Diagnostic",
+    // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
+    "powershell.pester.outputVerbosity": "FromPreference",
+    "git.mergeEditor": true,
+    "files.trimTrailingWhitespace": true,
+    "debug.showSubSessionsInToolBar": true,
+    "window.zoomLevel": -1,
+    // "terminal.integrated.automationProfile.windows": {
+    //     // "args": []
+    //     "path": "",
+    //     "color":
+    // },
+    /*
+            {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Program",
+        "program": "${workspaceFolder}/app.js",
+        "cwd": "${workspaceFolder}",
+        "args": ["${env:USERNAME}"]
+        }
+        */
 }

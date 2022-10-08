@@ -2022,7 +2022,7 @@
     // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
     // - args: [-NoLogo','-NoProfile]
     // "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
-    "terminal.integrated.defaultProfile.windows": "Pwsh🐒", // "Pwsh🐒",
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒 -Nop", // "Pwsh🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",
@@ -4727,29 +4727,13 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     // "editor.multiCursorPaste": "full"
     // "editor.cursorWidth": 400,
     "rainbow_csv.enable_cursor_position_info": true,
-    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.1.5\\.nuget\\Microsoft.PowerQuery.SdkTools.2.110.3\\tools",
+    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.1.5\\.nuget\\Microsoft.PowerQuery.SdkTools.2.110.2\\tools",
+    "workbench.activityBar.visible": false,
+    "window.menuBarVisibility": "compact",
+    "workbench.statusBar.visible": false,
     "[html][js][jsx][python][markdown]": {
         // it specifically said cautious using other than html
         "emmet.useInlineCompletions": true, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
     },
-    "emmet.useInlineCompletions": false,
-    "workbench.statusBar.visible": false, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
-    /*
-    new:
-        - <https://code.visualstudio.com/updates/v1_71#_new-code-action-control>
-            - <https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings>
-            - <https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions>
-
-
-    example new code actions:
-            {
-                "key": "ctrl+shift+r ctrl+e",
-                "command": "editor.action.codeAction",
-                "args": {
-                    "kind": "refactor.extract.function" } }
-        */
-    "workbench.tree.expandMode": "singleClick",
-    "editor.stickyScroll.enabled": true,
-    "editor.stickyScroll.maxLineCount": 5,
-    // "editor.lightbulb.enable":
+    "emmet.useInlineCompletions": false, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
 }

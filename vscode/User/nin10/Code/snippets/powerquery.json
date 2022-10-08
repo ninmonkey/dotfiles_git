@@ -15,6 +15,33 @@
     //         "#\"${1:$TM_SELECTED_TEXT}\"${0}",
     //     ],
     // },
+    /*
+    see ref:
+        https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables
+        */
+    "__ wip: PowerQuery.Add Calculated Columns": {
+        // "Add Custom Column": {
+        // "scope": "powerquery,ruby",
+        "prefix": "wip0 Add Column 0",
+        "description": "...iter",
+        "body": [
+            "${4:StepName} = Table.AddColumn(",
+            "   ${2:TableName},",
+            "    \"${3:ColumnName}\",",
+            "    each ${0:$TM_SELECTED_TEXT}",
+            "    ${1|type text,Int64.Type,type any|}",
+            // "    ${4|type any|type record|type table| type list|}",
+            "),",
+            "more vars: ",
+            "\n\nWord:  $TM_CURRENT_WORD ",
+            "\n\nLine:  $TM_CURRENT_LINE",
+            "\n\nClip:  $CLIPBOARD ",
+            "\n\nClip:  $TM_CURRENT_LINE",
+            "\n\nClip:  $TM_CURRENT_LINE",
+        ],
+        // "    ${4:type any|type record|type table| type list}",
+        // more vars
+    },
     "Let | Inner expression": {
         "prefix": "Let Tiny",
         "description": "Selected as a let expression",
