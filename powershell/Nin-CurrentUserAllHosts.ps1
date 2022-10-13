@@ -6,7 +6,9 @@ using namespace System.Management.Automation # [ErrorRecord]
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
 
-$superVerboseAtBottom = $false # at end of profile load, turn on then
+$script:__superVerboseAtBottom = $true # at end of profile load, turn on then
+$script:__superTraceAtBottomLevel = 0
+$script:__superEnableDebugAtBottom = $false
 $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
 $manualVSCodeIntegrationScript = $false
@@ -15,6 +17,74 @@ if ($superVerboseAtTop) {
     $VerbosePReference = 'continue'
     $WarningPreference = 'continue'
     $debugpreference = 'continue'
+
+}
+
+
+function b.wrapLikeWildcard {
+    <#
+    .SYNOPSIS
+        converts like-patterns to always wrap wildcards
+    .example
+        'cat', 'CAT*' | b.wrapLikeWildcard
+        '*cat*', '*cat*
+    #>
+   process {
+    @( '*', $_.ToLower(), '*') -join '' -replace '\^\*{2}', '*' -replace '\*{2}$', '*'
+   }
+}
+
+function b.fm {
+    <#
+    .SYNOPSIS
+        Find member, sugar to show full name, and enforce wildcard
+    .EXAMPLE
+        Pwsh> $eis | b.fm fetch
+
+
+    #>
+   param( [string]$Pattern )
+   process {
+      $pattern = $pattern | b.wrapLikeWildcard
+      # $pattern = @( '*', $patter.ToLower(), '*') -join '' -replace '\^\*{2}', '*'
+
+        if($Pattern) {
+            $_ | Find-Member $Pattern | Sort  Name | ft Name, DisplayString
+        } else {
+            $_ | Find-Member | Sort  Name | ft Name, DisplayString
+        }
+   }
+}
+
+
+function _srcGenerateClassRecord {
+    <#
+    .SYNOPSIS
+        source generator, output is powershell
+    .EXAMPLE
+        Pwsh> $me = Get-JCUser -email '*jbolton*'
+              _srcGenerateClassRecord $Me2 -WithFzf
+    #>
+    param( [object]$InputObject, [switch]$WithFzf )
+    $propNames = $InputObject.psobject.Properties.name
+    if($WithFzf) {
+        $propNames = $propNames | & fzf '-m'
+    }
+
+     $propNames | %{
+    '[string]${0}' -f @( $_  )
+
+    }
+    "`n`n# .... `n`n"
+    $Inner  = $propNames | %{
+    '    $This.{0} = $Object.{0}' -f @( $_  )
+    } | Join-String -sep "`n"
+
+@"
+className ( [object]`$Object ) {
+$Inner
+}
+"@
 
 }
 
@@ -1731,30 +1801,12 @@ function prompt {
         ) -join ''
     }
 }
-
-$superVerboseAtBottom = $false
-'SuperVerbose?: ', $superVerboseAtBottom -join ''
-if ($superVerboseAtBottom) {
-
-    $VerbosePReference = 'continue'
-    $WarningPreference = 'continue'
-    $debugpreference = 'continue'
-
-    $PSDefaultParameterValues['*:Debug'] = $true
-    $PSDefaultParameterValues['*:Verbose'] = $true
-    $PSDefaultParameterValues['Import-Module:Debug'] = $false #
-    $PSDefaultParameterValues['Set-Alias:Debug'] = $false #
-
-    # Set-PSDebug -Trace 1
-}
-
 function _tempImportAws {
     Import-Module -Force 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\aws_utils.nin\aws_utils.nin\' -verbose -scope Global
 }
 
 '--- last line of profile has completed -- ' | write-debug
 
-__profileGreet
 
 # if (!(Get-Module dev.nin)) {
 #     Import-Module Dev.Nin
@@ -1850,4 +1902,89 @@ function fileFromScriptBlock {
     }
 }
 
+write-warning 'end... now verbose'
+# $VerbosePReference = 'continue'
+# $debugpreference = 'continue'
+# $PSDefaultParameterValues['Import-Module:Verbose'] = $true
+# $PSDefaultParameterValues['Import-Module:Debug'] = $true
 
+'SuperVerbose?: ', $script:__superVerboseAtBottom -join '' | write-warning
+if ($script:__superVerboseAtBottom) {
+
+    $VerbosePReference = 'continue'
+    $WarningPreference = 'continue'
+    # $debugpreference = 'continue'
+
+    # $PSDefaultParameterValues['*:Debug'] = $true
+    $PSDefaultParameterValues['*:Verbose'] = $true
+    $PSDefaultParameterValues['Import-Module:Debug'] = $false #
+    $PSDefaultParameterValues['Set-Alias:Debug'] = $false #
+
+        $PSDefaultParameterValues['Import-Module:Verbose'] = $true
+        $PSDefaultParameterValues['Update-Module:Verbose'] = $true
+        $PSDefaultParameterValues['Install-Module:Verbose'] = $true
+        $PSDefaultParameterValues['get-Module:Verbose'] = $true
+
+        $PSDefaultParameterValues['Import-Module:debug'] = $true
+        $PSDefaultParameterValues['Update-Module:debug'] = $true
+        $PSDefaultParameterValues['Install-Module:debug'] = $true
+        $PSDefaultParameterValues['get-Module:debug'] = $true
+    # }
+
+    # Set-PSDebug -Trace 0
+    # Set-PSDebug -Trace 2
+    "end => NinCurrentALlHosts: '$PSComandPath'" | write-warning
+}
+# $WarningPreference = 'continue'
+if ($true -or $script:__superVerboseAtBottom) {
+
+    $PSDefaultParameterValues['*:Verbose'] = $true
+    $VerbosePReference = 'continue'
+
+    $PSDefaultParameterValues['Import-Module:Verbose'] = $true
+    $PSDefaultParameterValues['Update-Module:Verbose'] = $true
+    $PSDefaultParameterValues['Install-Module:Verbose'] = $true
+    $PSDefaultParameterValues['get-Module:Verbose'] = $true
+
+    $PSDefaultParameterValues['Set-KeyHandler*:Verbose'] = $true
+    $PSDefaultParameterValues['Set-PSReadLine*:Verbose'] = $true
+    $PSDefaultParameterValues['Import-CommandSuite*:verbose'] = $true
+} else {
+    $VerbosePReference = 'silentlyContinue'
+}
+$PSDefaultParameterValues.Remove('Import-Module:Verbose')
+$PSDefaultParameterValues.Remove('*:Verbose')
+$PSDefaultParameterValues.Remove('Get-Module:Verbose')
+$PSDefaultParameterValues['Import-Module:Verbose'] = $false
+$PSDefaultParameterValues['get-Module:Verbose'] = $false
+
+
+
+if($script:__superEnableDebugAtBottom) {
+    $PSDefaultParameterValues['*:Debug'] = $true
+
+    $debugpreference = 'silentlyContinue'
+    $debugpreference = 'continue'
+
+    $PSDefaultParameterValues['Set-Alias:Debug'] = $false #
+    $PSDefaultParameterValues['Import-Module:debug'] = $false # creates prompts
+    $PSDefaultParameterValues['Update-Module:debug'] = $true
+    $PSDefaultParameterValues['Install-Module:debug'] = $true
+    $PSDefaultParameterValues['get-Module:debug'] = $true
+} else {
+    $debugpreference = 'silentlyContinue'
+    $PSDefaultParameterValues['Import-Module:debug'] = $false # creates prompts
+}
+
+# always disable for now/
+$PSDefaultParameterValues.Remove('*:Debug')
+$PSDefaultParameterValues.Remove('*:Verbose')
+
+    # }
+
+    Set-PSDebug -Trace $script:__superTraceAtBottomLevel
+    "end => NinCurrentALlHosts: '$PSComandPath'" | write-warning
+
+'autoload _tempImportAws'  | label 'util.Invoke -> '
+_tempImportAws
+__profileGreet
