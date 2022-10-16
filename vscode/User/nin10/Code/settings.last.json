@@ -14,6 +14,47 @@
         ],
         "configurations": [
             {
+                // this debug configuration shows how to debug in a clean environment with the --profile-temp switch:
+                "name": "Extension", // New in 1.72: <https://code.visualstudio.com/updates/v1_72#_extension-authoring>
+                "type": "extensionHost",
+                "request": "launch",
+                "args": [
+                    "--profile-temp",
+                    "--extensionDevelopmentPath=${workspaceFolder}"
+                ],
+                "outFiles": [
+                    "${workspaceFolder}/dist/**/*.js"
+                ],
+                "preLaunchTask": "npm: watch",
+                "presentation": {
+                    "hidden": false,
+                    "group": "zed",
+                    "order": 1
+                },
+            },
+            {
+                // this debug configuration shows how to debug in a clean environment with the --profile-temp switch:
+                /*
+                And here is a debug configuration for debugging in a controlled environment that uses a previously created profile named "extensionContext":
+                */
+                "presentation": {
+                    "hidden": false,
+                    "group": "zed",
+                    "order": 1
+                },
+                "name": "Extension", // New in 1.72: <https://code.visualstudio.com/updates/v1_72#_extension-authoring>
+                "type": "extensionHost",
+                "request": "launch",
+                "args": [
+                    "--profile=extensionContext",
+                    "--extensionDevelopmentPath=${workspaceFolder}"
+                ],
+                "outFiles": [
+                    "${workspaceFolder}/dist/**/*.js"
+                ],
+                "preLaunchTask": "npm: watch"
+            },
+            {
                 "name": "Cur.ps1💻",
                 "type": "PowerShell",
                 "request": "launch",
@@ -674,7 +715,7 @@
     "editor.peekWidgetDefaultFocus": "tree",
     // "editor.quickSuggestions": false | true | Obj
     "editor.quickSuggestions": {
-        "other": true,
+        "other": true, // [ true | false |off | on | Inline ]
         "comments": false,
         "strings": false
     },
@@ -839,6 +880,15 @@
           "git.requireGitUserConfig"
       */
     // "git.autofetch": false,           // all | true | false
+    // Specifies how much information (if any) to log to the [git output](command:git.showOutput).
+    //  - Trace: Log all information
+    //  - Debug: Log only debug, information, warning, error, and critical information
+    //  - Info: Log only information, warning, error, and critical information
+    //  - Warning: Log only warning, error, and critical information
+    //  - Error: Log only error, and critical information
+    //  - Critical: Log only critical information
+    //  - Off: Log nothing
+    "git.logLevel": "Info",
     "git.ignoreRebaseWarning": false, // [default]false | true
     "git.requireGitUserConfig": true, // [def]true | false
     /*
@@ -892,10 +942,15 @@
         "editor.formatOnPaste": false,
         // "editor.fontWeight": "500",
         // "editor.fontWeight": "400",
+        // "editor.formatOnType":
     },
     // "json.maxItemsComputed": 10000,
     "[json][jsonc][markdown]": {
         // "editor.fontSize": 13,
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        "editor.semanticHighlighting.enabled": true,
     },
     "[markdown-math][markdown_latex_combined]": {},
     "[dotnet-interactive.markdown]": {},
@@ -914,6 +969,29 @@
         // "editor.maxTokenizationLineLength": 20000
         "editor.detectIndentation": false,
         "editor.tabSize": 4,
+    },
+    "[asl-yaml]": {
+        "editor.fontSize": 14
+    },
+    "[ssm-yaml]": {
+        "editor.fontSize": 14
+    },
+    "[toml]": {
+        "editor.fontSize": 14,
+    },
+    "[yaml]": {
+        "editor.fontSize": 14,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "keep",
+        "gitlens.codeLens.scopes": [
+            "document"
+        ],
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        }
     },
     "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
     "[xml]": {
@@ -950,6 +1028,7 @@
             "strings": "off",
             "other": "off"
         },
+        "editor.fontSize": 14,
         "editor.formatOnSave": true,
         // "editor.formatOnType": true,
         /* hard line breaks in MD are declared using two trailing spaces */
@@ -967,8 +1046,8 @@
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "deepIndent",
         "editor.wrappingStrategy": "simple",
-        "editor.fontSize": 11,
         "editor.fontSize": 14,
+        "editor.fontSize": 12,
     },
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -1201,11 +1280,14 @@
         "editor.suggest.showFunctions": true,
         "editor.suggestLineHeight": 0,
         // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+        // "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?", // the current default value of extension
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?", // causes splat-expression etc to break
         "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?", // combine $ and -
         "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
-        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // break on $ and -
+        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+        // "editor.wordSeparators": "\"", // the current default value of extension
+        // break on $ and -
         "editor.formatOnSave": true,
         "editor.snippetSuggestions": "bottom",
         "editor.snippetSuggestions": "top",
@@ -1217,6 +1299,8 @@
         "editor.formatOnType": false, // currently it's NYI in the extension
         "editor.formatOnType": true, // not implemented yet?
         "files.trimTrailingWhitespace": true,
+        "editor.semanticHighlighting.enabled": false,
+        "editor.semanticHighlighting.enabled": true,
         "editor.suggest.filterGraceful": true,
         "editor.suggest.insertMode": "insert",
         "editor.suggest.showFolders": true,
@@ -1255,11 +1339,6 @@
         "editor.inlineSuggest.enabled": false,
         // "editor.inlayHints.enabled": false, // error lens, debugger, etc
         // "editor.suggest.localityBonus": false,
-        "editor.suggest.localityBonus": true, // seems worse if you enable it.
-        "editor.suggest.showIcons": true,
-        "editor.suggest.shareSuggestSelections": false,
-        "editor.suggest.showStatusBar": true,
-        "editor.suggestFontSize": 12, // was < 12 | 14 >
         "editor.codeLensFontSize": 12,
         "editor.inlayHints.fontSize": 12,
         "editor.suggestOnTriggerCharacters": true,
@@ -1271,30 +1350,35 @@
         "editor.autoClosingOvertype": "auto",
         "editor.autoClosingQuotes": "languageDefined",
         "editor.find.autoFindInSelection": "multiline",
-        "editor.suggest.showInlineDetails": true,
-        "editor.suggest.showSnippets": true,
-        "editor.suggest.showCustomcolors": true,
         "outline.showClasses": true,
         "outline.showBooleans": false,
         "outline.showEnums": false,
         "outline.showNull": false,
         "outline.showStrings": false,
         "outline.showVariables": false,
-        "editor.suggest.preview": true,
         "editor.autoSurround": "languageDefined",
         // "editor.colorDecorators": false,
         "editor.columnSelection": false,
         "editor.copyWithSyntaxHighlighting": true,
         // "editor.cursorSurroundingLines": 0,
+        "editor.suggest.preview": true,
+        "editor.suggest.showInlineDetails": true,
+        "editor.suggest.showSnippets": true,
+        "editor.wordBasedSuggestions": true,
+        "editor.suggest.showCustomcolors": true,
+        "editor.suggest.localityBonus": true, // seems worse if you enable it.
+        "editor.suggest.showIcons": true,
+        "editor.suggest.shareSuggestSelections": false,
+        "editor.suggest.showStatusBar": true,
+        "editor.suggestFontSize": 12, // was < 1
         "editor.quickSuggestionsDelay": 800,
         "editor.quickSuggestionsDelay": 400,
         "editor.quickSuggestionsDelay": 1500,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
-        "editor.wordBasedSuggestions": true,
         // "editor.wordBasedSuggestionsMode": "matchingDocuments",
         "editor.wordBasedSuggestionsMode": "matchingDocuments",
         "editor.quickSuggestions": {
-            "other": true,
+            "other": true, // [ true | false |off | on | Inline ]
             "comments": false,
             "strings": true
         },
@@ -1432,6 +1516,7 @@
         ".ripgreprc": "shellscript",
         "nuget.config": "xml",
         "*.psm1": "powershell",
+        "*.resx": "xml", // visual studio
     },
     /*
 
@@ -1486,12 +1571,82 @@
         // },
         // "**/*.js": false,
     },
+    // "files.exclude": {
+    //     "**/.git": true,
+    //     "**/.svn": true,
+    //     "**/.hg": true,
+    //     "**/CVS": true,
+    //     "**/.DS_Store": true,
+    //     "**/Thumbs.db": true
+    // },
+    // new ignore test
+    "files.exclude": {
+        "**/*.exe": true,
+        "**/*.zip": true,
+        "**/.output/*.csv": true,
+        "**/.export/*.csv": true,
+        "**/.input/*.csv": true,
+        //
+        "**/.output/*.log": true,
+        "**/.export/*.log": true,
+        "**/.input/*.log": true,
+        //
+        "**/.output/*.json": true,
+        "**/.export/*.json": true,
+        "**/.input/*.json": true,
+        "**/*.lnk": true,
+        "**/.git": true,
+        "**/*.pbix": true,
+        "**/*.zip": true,
+        // venv, cache, or compiled
+        "**/*.py[co]": true,
+        "**/__pycache__": true,
+        "**/node_modules": true,
+        "**/.mypy_cache": true,
+        "**/venv": true,
+        "**/.output/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/.input/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/.export/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        // # top level
+        "{.output,.export,.input}": true,
+        // todo: verify this works correctly
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        // "**/*.js": false,
+    },
     "files.watcherExclude": {
+        // Configure paths or glob patterns to exclude from file watching. Paths or basic glob patterns that are relative (for example `build/output` or `*.js`) will be resolved to an absolute path using the currently opened workspace. Complex glob patterns must match on absolute paths (i.e. prefix with `**/` or the full path and suffix with `/**` to match files within a path) to match properly (for example `**/build/output/**` or `/Users/name/workspaces/project/build/output/**`). When you experience the file watcher process consuming a lot of CPU, make sure to exclude large folders that are of less interest (such as build output folders).
+        "**/.export/**": true,
+        "**/.export/**": true,
+        "**/.output/**": true,
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
         "**/node_modules/*/**": true,
         "**/.hg/store/**": true
     },
+    // Configure extra paths to watch for changes inside the workspace. By default, all workspace folders will be watched recursively, except for folders that are symbolic links. You can explicitly add absolute or relative paths to support watching folders that are symbolic links. Relative paths will be resolved to an absolute path using the currently opened workspace.
+    "files.watcherInclude": [],
+    /*
+
+    searching cheat-sheet (for ctrl+F)
+
+        see: <https://code.visualstudio.com/docs/editor/codebasics#_find-in-selection>
+        This  is shorthand for ${WorkSpaceRoot}/example:
+            ./example
+
+        glob style
+            *  : 0-to-many
+            ?  : 1 char
+            ** : any number of path segments (even 0)
+            [] : range, 0-9
+            [!]: example.[!0-9]
+            {} : group pattern
+                {**\/*.html,**\/*.txt}
+
+                had to add \\ escapes because this is json
+
+
+
+    */
     /*
 
   ###### SubSect: Files ⇢ Search.Exclude
@@ -1499,8 +1654,27 @@
       */
     "search.exclude": {
         // "**/*.mez": true,
+    },
+    // Controls the positioning of the actionbar on rows in the search view.
+    //  - auto: Position the actionbar to the right when the search view is narrow, and immediately after the content when the search view is wide.
+    //  - right: Always position the actionbar to the right.
+    "search.actionsPosition": "right",
+    // Controls whether the search results will be collapsed or expanded.
+    //  - auto: Files with less than 10 results are expanded. Others are collapsed.
+    //  - alwaysCollapse
+    //  - alwaysExpand
+    "search.collapseResults": "alwaysExpand",
+    // Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `files.exclude` setting. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options).
+    "search.exclude": {
         "**/*.lnk": true,
-        "**/*.log": true
+        "**/*.log": true,
+        "**/*.output/*.log": true,
+        "**/*.export/*.log": true,
+        "**/*.output/*.json": true,
+        "**/*.export/*.json": true,
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true
     },
     "breadcrumbs.filePath": "off",
     "breadcrumbs.filePath": "last", // theme-tag: minimalism
@@ -1602,8 +1776,14 @@
     // "editor.cursorStyle": "block-outline",
     "editor.cursorStyle": " underline",
     /* cursor config for screenshots */
-    "editor.cursorBlinking": "solid", // "smooth",
+    "editor.cursorBlinking": "phase", // "smooth",
+    "editor.cursorBlinking": "blink", // "smooth",
+    // "editor.cursorStyle": "block-outline",
+    "editor.cursorStyle": "block",
+    "editor.cursorStyle": "line-thin",
     "editor.cursorStyle": "block-outline",
+    "editor.cursorStyle": "underline", // subtle
+    "editor.cursorStyle": "block-outline", // subtle
     // "editor.cursorSurrounding"underline"s": 50,
     // "terminal.integrated.cursorWidth": 1,
     // "terminal.integrated.cursorWidth": 1,
@@ -1856,10 +2036,12 @@
         "editorLineNumber.foreground": "#858585", // default: gray fade
         "editorLineNumber.foreground": "#858585a1", // dim
         "editorLineNumber.foreground": "#4e4e4ea1", // default: gray fade
+        "editorLineNumber.foreground": "#ff0065", // default: gray fade
         // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
         // "editorLineNumber.activeForeground": "#6ad4ee",
         "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
         "editorLineNumber.activeForeground": "#929292", // dim
+        "editorLineNumber.activeForeground": "#ff0065", // def: fg
         // new: 2021-12
         "editorWarning.foreground": "#00fff200", // main squiggle fully hidden because adddon still shows inline
         "editorWarning.foreground": "#00fff252", // main squiggle
@@ -1928,6 +2110,7 @@
     "terminal.integrated.experimentalUseTitleEvent": false, // An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals
     "terminal.integrated.cursorBlinking": false,
     // "terminal.integrated.cursorStyle": "line", # no like.
+    "terminal.integrated.cursorStyle": "line",
     "terminal.integrated.cursorStyle": "underline",
     "terminal.integrated.cursorStyle": "block",
     "terminal.integrated.altClickMovesCursor": true, // sometimes wonky
@@ -1978,7 +2161,7 @@
     // - path: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
     // - args: [-NoLogo','-NoProfile]
     // "terminal.integrated.defaultProfile.windows": "PowerShell🐒",
-    "terminal.integrated.defaultProfile.windows": "Pwsh🐒 -Nop", // "Pwsh🐒",
+    "terminal.integrated.defaultProfile.windows": "Pwsh🐒", // "Pwsh🐒",
     "terminal.integrated.localEchoExcludePrograms": [
         // default
         "vim",
@@ -2261,6 +2444,18 @@
             ],
             "icon": "terminal-powershell"
         },
+        "Pwsh💀_no_args": {
+            "color": "terminal.ansiYellow",
+            "overrideName": true,
+            "path": [
+                // "pwsh.exe",
+                "C:/Program Files/PowerShell/7/pwsh.exe"
+            ],
+            // "args": [
+            //     "-NoLogo"
+            // ],
+            "icon": "terminal-powershell"
+        },
         "Pwsh🐒": {
             "color": "terminal.ansiYellow",
             "overrideName": true,
@@ -2380,7 +2575,6 @@
     "editor.suggest.showSnippets": false,
     "editor.suggest.snippetsPreventQuickSuggestions": true,
     "editor.tabCompletion": "off",
-    "snippets.viewer.combineLanguageSnippets": false,
     // "snippets.viewer.skipLanguageSnippets": "",
     "snippets.viewer.expandSnippetFiles": true,
     "snippets.viewer.focusOnActiveEditorSnippets": true, // will merge extension and your custom snippets
@@ -2679,21 +2873,6 @@
     //  - Beside: Open the diff view next to the current editor group.
     //  - Below: Open the diff view below the current editor group.
     "merge-conflict.diffViewPosition": "Current",
-    // Controls the positioning of the actionbar on rows in the search view.
-    //  - auto: Position the actionbar to the right when the search view is narrow, and immediately after the content when the search view is wide.
-    //  - right: Always position the actionbar to the right.
-    "search.actionsPosition": "right",
-    // Controls whether the search results will be collapsed or expanded.
-    //  - auto: Files with less than 10 results are expanded. Others are collapsed.
-    //  - alwaysCollapse
-    //  - alwaysExpand
-    "search.collapseResults": "alwaysExpand",
-    // Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `files.exclude` setting. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options).
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/*.code-search": true
-    },
     // Controls whether to follow symlinks while searching.
     "search.followSymlinks": true,
     // When enabled, the searchService process will be kept alive instead of being shut down after an hour of inactivity. This will keep the file search cache in memory.
@@ -3056,8 +3235,6 @@
     "omnisharp.loggingLevel": "information",
     // Defines type of log messages language server writes into the output window.
     "python.analysis.logLevel": "Error",
-    // The logging level the extension logs at, defaults to 'error'
-    "python.logging.level": "error",
     // The logging level the extension logs at.
     "jupyter.logging.level": "debug",
     // Sets the logging verbosity level for the PowerShell Editor Services host executable.  Valid values are 'Diagnostic', 'Verbose', 'Normal', 'Warning', and 'Error'
@@ -3105,7 +3282,7 @@
     */
     // Specifies the level of logging output from the OmniSharp server.
     "omnisharp.loggingLevel": "information",
-    // Defines type of log messages language server writes into the output window.
+    // Defines type of log messages language server writes into the output dsfwindow.
     "python.analysis.logLevel": "Error",
     // The logging level the extension logs at, defaults to 'error'
     "python.logging.level": "error",
@@ -3226,10 +3403,11 @@
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
     "editor.fontWeight": "bold",
     "editor.fontWeight": "normal", // # is default default
-    "editor.fontSize": 12,
-    "editor.fontSize": 18,
-    "editor.fontSize": 16,
     "editor.fontSize": 14,
+    "editor.fontSize": 12,
+    "editor.fontSize": 15,
+    "editor.fontSize": 16,
+    "editor.fontSize": 18,
     /* save my best clean profile
 
     theme: Clean, thin-ish
@@ -3267,12 +3445,12 @@
     "terminal.integrated.fontFamily": "'cascadia mono pl', 'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'fira code', 'fira code', 'cascadia mono', consolas, monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'fira code', 'cascadia mono', consolas, monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl light', 'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
-    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontFamily": "'cascadia code pl', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl semilight', 'cascadia code pl', 'consolas', monospace",
+    "terminal.integrated.fontFamily": "'cascadia code pl', 'consolas', monospace",
     "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontSize": 16,
     "errorLens.fontSize": "12px",
@@ -3282,10 +3460,10 @@
     // "editor.fontWeight": "350", // for cascadia code
     // "editor.fontFamily": "'furacode nerd font'", //can view nerd font icons
     "editor.suggestFontSize": 14, // ctrl+space size
-    "terminal.integrated.fontSize": 12,
-    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontSize": 13,
     "terminal.integrated.fontSize": 14,
-    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontSize": 16, // at full zoom this is big
     // "debug.console.lineHeight": 0,
     // "terminal.integrated.fontWeight": "350", // maybe too bold
     // "terminal.integrated.fontWeight": "100", // maybe too bold
@@ -3466,6 +3644,7 @@
     "errorLens.warningGutterIconColor": "#ff932f3b", // dim: 2x
     // "errorLens.followCursor": "allLines",
     "errorLens.followCursor": "closestProblem",
+    "debug.inlineValues": true,
     "debug.inlineValues": false,
     "errorLens.followCursorMore": 2,
     "errorLens.infoGutterIconColor": "#d46f6f",
@@ -3639,6 +3818,10 @@
     "python.diagnostics.sourceMapsEnabled": true,
     "bookmarks.label.suggestion": "suggestWhenSelectedOrLineWhenNoSelected",
     "bookmarks.saveBookmarksInProject": true,
+    // "bookmarks.multicursor.toggleMode": "allLinesAtOnce",
+    "bookmarks.showNoMoreBookmarksWarning": true,
+    "bookmarks.navigateThroughAllFiles": false,
+    "bookmarks.navigateThroughAllFiles": true,
     "typescript.format.insertSpaceAfterTypeAssertion": true,
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "javascript.inlayHints.parameterTypes.enabled": true,
@@ -3708,7 +3891,32 @@
         */
         "main-palette": {
             "placeHolder": "main palette",
+            // "title": "cust title",
             "commands": [
+                /*
+            Text format for the header is:
+
+            """
+                [label] desc
+                detail
+
+
+                or
+                    "description": "     (Ctrl+Shift+D)",
+            """
+
+                */
+                // {
+                //     "command": "",
+                //     "commandArgs": [],
+                //     "description": "desc",
+                //     "detail": "detail",
+                //     // "description": "     (Ctrl+Shift+D)",
+                //     "label": "label",
+                //     "showWhen": {
+                //         "extensionEnabled": "example.extension-id",
+                //     }
+                // },
                 {
                     "label": "$(console) Pwsh Commands",
                     "description": "Supplied by PSEditorServices",
@@ -3765,6 +3973,74 @@
         "secondary-palette": {
             "placeHolder": "secondary Palette",
             "commands": [
+                // {
+                /*
+            Text format for the header is:
+
+            """
+                [label] desc
+                detail
+
+
+                or
+                    "description": "     (Ctrl+Shift+D)",
+            """
+
+                */
+                // {
+                //     "command": "",
+                //     "commandArgs": [],
+                //     "description": "desc",
+                //     "detail": "detail",
+                //     // "description": "     (Ctrl+Shift+D)",
+                //     "label": "label",
+                //     "showWhen": {
+                //         "extensionEnabled": "example.extension-id",
+                //     }
+                // },
+                // },
+                {
+                    "command": "bookmarks.toggle",
+                    "label": "Toggle Bookmark",
+                    // "detail": "Toggle",
+                    // "description": "no name"
+                },
+                {
+                    "command": "bookmarks.toggleLabeled",
+                    "label": "Toggle Bookmark Labeled",
+                    // "detail": "     (Ctrl+Alt+k)",
+                    "description": " (Ctrl+Alt+k)"
+                },
+                {
+                    "command": "bookmarks.list",
+                    "label": "List Bookmarks",
+                    // "detail": "     (Ctrl+Alt+k)",
+                    "description": " (Ctrl+Alt+L)"
+                },
+                {
+                    "command": "bookmarks.list",
+                    "label": "List Bookmarks",
+                    "detail": "     All Files",
+                    "description": " (Ctrl+Alt+Shift+L)"
+                },
+                {
+                    "command": "bookmarks.list",
+                    "label": "List Bookmarks",
+                    // "detail": "     All Files",
+                    "description": "All FIles"
+                },
+                {
+                    "command": "bookmarksExplorer.focus",
+                    "label": "Show Bookmarks",
+                    "detail": "Focus Explorer",
+                    // "description": "All FIles"
+                },
+                // {
+                //     "command": "workbench.view.extension.bookmarks",
+                //     "label": "Show2  Bookmarks",
+                //     "detail": "Focus Explorer",
+                //     // "description": "All FIles"
+                // },
                 {
                     // "label": "ZenMode  ▸⇢⁞ ┐⇽▂      ┐ workbench.actione",
                     "label": "ZenMode  ┐ workbench.action",
@@ -4045,7 +4321,6 @@
     "redhat.telemetry.enabled": false,
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "workbench.colorTheme": "Visual Studio 2019 Dark",
     "gitlens.statusBar.enabled": false,
     "hexeditor.columnWidth": 16,
     "hexeditor.showDecodedText": true,
@@ -4054,16 +4329,24 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": true,
     "explorer.fileNesting.patterns": {
-        // "*pq.log": "${capture}*.log",
-        // "*.log": "${capture}-parsed.log",
-        // sub-log-split
-        // "*.ts": "${capture}.js",
-        // "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
-        // "*.jsx": "${capture}.js",
-        // "*.tsx": "${capture}.ts",
-        // "tsconfig.json": "tsconfig.*.json",
-        // "package.json": "package-lock.json, yarn.lock"
+        "*.ts": "${capture}.js",
+        "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        "*.jsx": "${capture}.js",
+        "*.tsx": "${capture}.ts",
+        "tsconfig.json": "tsconfig.*.json",
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml"
     },
+    // "explorer.fileNesting.patterns": {
+    // "*pq.log": "${capture}*.log",
+    // "*.log": "${capture}-parsed.log",
+    // sub-log-split
+    // "*.ts": "${capture}.js",
+    // "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    // "*.jsx": "${capture}.js",
+    // "*.tsx": "${capture}.ts",
+    // "tsconfig.json": "tsconfig.*.json",
+    // "package.json": "package-lock.json, yarn.lock"
+    // },
     /*
 
     begin: Justin grote's config
@@ -4137,9 +4420,7 @@
     "powerquery.benchmark.enable": true,
     "powerquery.benchmark.enable": false,
     // Specifies whether to enable experimental diagnostics features. This may result in false positives while the feature is under development.
-    "powerquery.diagnostics.experimental": false, // maybe replaced by 'powerquery.general.experimental' ?
-    "powerquery.general.experimental": true,
-    "powerquery.general.experimental": false,
+    "powerquery.diagnostics.experimental": false,
     // Recommended always on. Toggles internal caching causing performance degregation when off. Used to find hot paths in the extension.
     "powerquery.diagnostics.isWorkspaceCacheAllowed": true,
     // Sets what strategy is used by the type analysis. Extended is useful for small scripts but can hang on larger, complicated files. If performance isn't acceptable then fallback to Primitive.
@@ -4149,7 +4430,8 @@
     // Traces the communication between VS Code and the language server.
     // When enabled - shows gutter icons (In place of the debug breakpoint icon).
     "errorLens.gutterIconsEnabled": false,
-    "powershell.startAutomatically": false,
+    "powershell.startAutomatically": true,
+    "powerquery.sdk.defaultQueryFile": ,
     "powerquery.benchmark.enable": false, // almost always disable
     "powerquery.trace.server": "messages", // [ off* | verbose | messages ]
     "powerquery.trace.server": "verbose", // [ off* | verbose | messages ] # you need verbose enabled for debugging
@@ -4160,20 +4442,22 @@
         todo: parens are too bold right now
         */
         "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
+        "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
         // "editor.letterSpacing": 0.7, // with: 'cascadia code pl' (also)
         // "editor.letterSpacing": 0, // with: 'cascadia code pl' (also)
         // "editor.letterSpacing": 0.3, // with: 'cascadia code pl'
         "editor.guides.indentation": true,
+        "editor.fontWeight": "normal",
         "editor.guides.indentation": false,
         "editor.formatOnSaveMode": "file",
         "editor.matchBrackets": "always",
         "editor.guides.bracketPairs": false, // these are the already dim guides
         "editor.guides.bracketPairs": "active", // these are the already dim guides
         "editor.guides.bracketPairs": true, // these are the already dim guides
-        "editor.lineHeight": 1.50, // 0= auto, <= 8 is multiplier; else size in pixels
-        "editor.lineHeight": 25, // 0= auto, <= 8 is multiplier; else size in pixels
-        "editor.lineHeight": 0, // 0= auto, <= 8 is multiplier; else size in pixels
-        "editor.lineHeight": 24, // 0= auto, <= 8 is multiplier; else size in pixels
+        // "editor.lineHeight": 25, // 0= auto, <= 8 is multiplier; else size in pixels
+        // "editor.lineHeight": 24, // 0= auto, <= 8 is multiplier; else size in pixels
+        // "editor.lineHeight": 1.50, // 0= auto, <= 8 is multiplier; else size in pixels
+        // "editor.lineHeight": 0, // 0= auto, <= 8 is multiplier; else size in pixels
         "editor.colorDecorators": true, // what is?
         // "editor.bracketPairColorization.independentColorPoolPerBracketType": false, // this may be better specifically for power query
         "editor.bracketPairColorization.enabled": true,
@@ -4188,6 +4472,7 @@
         "editor.wordWrap": "on", // uses viewport
         "editor.wordWrap": "bounded", // min( window | 160 )
         "editor.fontSize": 16,
+        "editor.fontSize": 12,
         "editor.fontSize": 14,
         "outline.showOperators": true,
         "outline.showVariables": true,
@@ -4195,12 +4480,21 @@
         "diffEditor.wordWrap": "inherit",
         // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.formatOnSave": false,
+        "editor.semanticHighlighting.enabled": false,
         "editor.semanticHighlighting.enabled": true,
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
         "editor.inlineSuggest.enabled": true,
         "editor.suggest.preview": true,
-        "editor.rename.enablePreview": true
+        "editor.rename.enablePreview": true,
+        "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
+        "editor.fontWeight": "bold",
+        "editor.fontWeight": "normal", // # is default default
+        "editor.fontSize": 15,
+        "editor.fontSize": 18,
+        "editor.fontSize": 12,
+        "editor.fontSize": 16,
+        "editor.fontSize": 14,
     },
     /*
 
@@ -4233,12 +4527,24 @@
             "strings": "inline",
             "strings": "off",
         },
+        "outline.showClasses": true,
+        "breadcrumbs.showClasses": true,
+        "editor.suggest.showClasses": true,
         // "editor.snippetSuggestions": "top",
         "editor.snippetSuggestions": "inline",
         "editor.snippetSuggestions": "none", // snippets *never* show on suggestions, then hit the hotkey 'insert snippet' if you want to manually show them
+        "editor.fontSize": 18,
+        "editor.fontSize": 16, // at full zoom, this is big
+        "editor.fontSize": 13,
+        "editor.fontSize": 14,
         "editor.hover.delay": 300, // 10, 710,
         "editor.hover.enabled": true, // false,
+        "editor.rename.enablePreview": true,
+        "editor.suggest.preview": true,
         // "editor.suggest.snippetsPreventQuickSuggestions": true
+    },
+    "[csv]": {
+        "editor.fontSize": 13,
     },
     // default squiggle
     // "editorWarning.foreground": "#00fff2", // main squiggle : different hue
@@ -4291,13 +4597,17 @@
                 experimental settings here
     */
     "powershell.debugging.createTemporaryIntegratedConsole": false,
-    "terminal.integrated.shellIntegration.enabled": true,
     "terminal.integrated.shellIntegration.decorationsEnabled": true,
     "terminal.integrated.shellIntegration.history": 200,
     "window.commandCenter": true,
     "terminal.integrated.shellIntegration.decorationIcon": "circle-outline",
     "terminal.integrated.shellIntegration.decorationIconSuccess": "primitive-dot",
     "terminal.integrated.shellIntegration.decorationIconError": "error-small",
+    "intellicodeApiExamples.loggingLevel": "INFO",
+    // "intellicodeApiExamples.loggingLevel": "DEBUG",
+    "dev.containers.logLevel": "debug",
+    "aws.logLevel": ,
+    "dotnet-interactive.logLevel": "Error",
     "logViewer.logLevel": "trace",
     "logViewer.followTailMode": "manual",
     "logViewer.showStatusBarItemOnChange": true,
@@ -4321,7 +4631,6 @@
     "git.mergeEditor": true,
     "files.trimTrailingWhitespace": true,
     "debug.showSubSessionsInToolBar": true,
-    "window.zoomLevel": -1,
     // "terminal.integrated.automationProfile.windows": {
     //     // "args": []
     //     "path": "",
@@ -4337,4 +4646,232 @@
         "args": ["${env:USERNAME}"]
         }
         */
+    "csharp.showOmnisharpLogOnError": true,
+    // "omnisharp.waitForDebugger": false
+    "omnisharp.loggingLevel": "information",
+    "omnisharp.loggingLevel": "trace", // not sure which is the highest
+    // "powershell.developer.editorServicesLogLevel": "",
+    "editor.guides.highlightActiveIndentation": false,
+    "editor.occurrencesHighlight": true,
+    "colorInfo.languages": [
+        {
+            "selector": "ps1",
+            "colors": "css",
+        },
+        {
+            "selector": "powershell",
+            "colors": "css",
+        },
+        {
+            "selector": "css",
+            "colors": "css"
+        },
+        {
+            "selector": "sass",
+            "colors": "css"
+        },
+        {
+            "selector": "scss",
+            "colors": "css"
+        },
+        {
+            "selector": "less",
+            "colors": "css"
+        }
+    ],
+    "yaml.customTags": [
+        "!And",
+        "!And sequence",
+        "!If",
+        "!If sequence",
+        "!Not",
+        "!Not sequence",
+        "!Equals",
+        "!Equals sequence",
+        "!Or",
+        "!Or sequence",
+        "!FindInMap",
+        "!FindInMap sequence",
+        "!Base64",
+        "!Join",
+        "!Join sequence",
+        "!Cidr",
+        "!Ref",
+        "!Sub",
+        "!Sub sequence",
+        "!GetAtt",
+        "!GetAZs",
+        "!ImportValue",
+        "!ImportValue sequence",
+        "!Select",
+        "!Select sequence",
+        "!Split",
+        "!Split sequence"
+    ],
+    "aws.profile": "profile:default",
+    "mergeEditor.diffAlgorithm": "experimental", // new: 1.7
+    "bookmarks.experimental.enableNewStickyEngine": true,
+    "bookmarks.wrapNavigation": true,
+    "bookmarks.showCommandsInContextMenu": true,
+    "editor.suggest.matchOnWordStartOnly": false,
+    "notebook.outputFontFamily": "cascadia code PL",
+    "interactiveWindow.collapseCellInputCode": "fromEditor",
+    "interactiveWindow.alwaysScrollOnNewCell": true,
+    "interactiveWindow.restore": false,
+    "dotnet-interactive.kernelEnvironmentVariables": {
+        // home, path, etc
+    },
+    "dotnet-interactive.languageServiceDelay": 500,
+    "dotnet-interactive.languageServiceDelay": 100, // experimenti
+    "dotnet-interactive.logLevel": "Error",
+    "dotnet-interactive.notebookParserArgs": [
+        "{dotnet_path}",
+        "tool",
+        "run",
+        "dotnet-interactive",
+        "--",
+        "notebook-parser"
+    ],
+    "[dotnet-interactive.csharp]": {},
+    "[dotnet-interactive.fsharp]": {},
+    "[dotnet-interactive.html]": {},
+    "[dotnet-interactive.javascript]": {},
+    "[dotnet-interactive.kql]": {},
+    "[dotnet-interactive.magic-commands]": {},
+    "[dotnet-interactive.mermaid]": {},
+    "[dotnet-interactive.pwsh]": {},
+    "[dotnet-interactive.sql]": {},
+    "docker.context": "",
+    "docker.commands.attach": "${config:docker.dockerPath} exec -it ${containerId} ${shellCommand}",
+    "docker.commands.logs": "${config:docker.dockerPath} logs --tail 1000 -f ${containerId}",
+    "docker.enableDockerComposeLanguageService": true,
+    "docker.containers.label": "RepositoryNameAndTag",
+    "docker.dockerodeOptions": {},
+    "docker.containers.groupBy": "Compose Project Name",
+    "docker.containers.sortBy": "CreatedTime",
+    "docker.networks.description": [
+        "NetworkDriver",
+        "CreatedTime"
+    ],
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        }
+    },
+    "[dockerfile]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        }
+    },
+    // some don't seem to do anything, might require restart
+    // "intellicodeApiExamples.loggingLevel": "ERROR",
+    // "intellicodeApiExamples.loggingLevel": "DEBUG",
+    "[dotnet-interactive]": {
+        // "editor.fontSize": 16
+        // "editor.fontSize": 16
+        "editor.bracketPairColorization.enabled": false,
+        "editor.defaultFormatter": "ms-vscode.powershell-preview",
+    },
+    "notebook.consolidatedOutputButton": true,
+    "notebook.undoRedoPerCell": true,
+    "notebook.diff.ignoreMetadata": true,
+    "notebook.displayOrder": [],
+    "notebook.editorOptionsCustomizations": {
+        "editor.autoSurround": "languageDefined",
+        "editor.autoClosingDelete": "auto",
+        "editor.autoIndent": "advanced", // 4 options
+        "editor.colorDecorators": true,
+        "editor.fontFamily": "'cascadia code pl', Consolas, 'Fira Code', 'Courier New','Segoe Ui', monospace",
+        "editor.bracketPairColorization.enabled": false,
+        "editor.fontSize": 16, // now I got nteract font size
+        // "editor.fontFamily": "Consolas, 'Fira Code', 'Courier New','Segoe Ui', monospace",
+    },
+    // Defines the verbosity of output to be used when debugging a test or a block. For Pester 5 and newer the default value Diagnostic will print additional information about discovery, skipped and filtered tests, mocking and more.
+    "powershell.pester.debugOutputVerbosity": "Diagnostic",
+    // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
+    "powershell.pester.outputVerbosity": "FromPreference",
+    "notebook.markup.fontSize": 18,
+    "notebook.showCellStatusBar": "visibleAfterExecute",
+    "notebook.outputFontSize": 16, // works on [dotnet-interactive]
+    "ipynb.experimental.pasteImages.enabled": true, // new: 1.71: https://code.visualstudio.com/updates/v1_71#_jupyter
+    "editor.experimental.pasteActions.enabled": true, // new: 1.71: https://code.visualstudio.com/updates/v1_71#_jupyter
+    "workbench.experimental.settingsProfiles.enabled": true, // https://code.visualstudio.com/updates/v1_71#_settings-profiles
+    // new feature: <https://code.visualstudio.com/updates/v1_71#_configure-suggest-matching>
+    // new feature: profiles : <https://code.visualstudio.com/updates/v1_71#_settings-profiles>
+    /*
+
+## https://code.visualstudio.com/updates/v1_72#_extension-debugging-in-a-clean-environment
+invoke custom profile for debugging:
+
+
+example invoke:
+
+    code ~/projects/web-sample --profile "Web Development"
+
+markdown.experimental.updateLinksOnFileMove.externalFileGlobs.
+he markdown.experimental.updateLinksOnFileMove.enabled
+markdown.experimental.updateLinksOnFileMove.enabled
+markdown.experimental.updateLinksOnFileMove.enabled
+
+
+"workbench.experimental.editSessions.enabled": true
+
+new: enum settings: <https://code.visualstudio.com/updates/v1_71#_enum-settings-enumitemlabels-documentation>
+
+when contexts
+https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+
+
+
+
+    */
+    // "powershell.integratedConsole.startInBackground": false,
+    // "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new: <https://code.visualstudio.com/docs/terminal/shell-integration#_command-decorations-and-the-overview-ruler>
+    "workbench.experimental.editor.dragAndDropIntoEditor.enabled": true, // new: <https://code.visualstudio.com/updates/v1_66#_drop-into-editor>
+    "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new features: <https://code.visualstudio.com/updates/v1_66#_terminal-shell-integration
+    // MASSIVE CONFIGS AT <https://code.visualstudio.com/docs/terminal/appearance>
+    "terminal.integrated.smoothScrolling": true,
+    "editor.cursorSurroundingLines": 5,
+    // "editor.cursorSurroundingLinesStyle":
+    // "editor.multiCursorPaste": "full"
+    // "editor.cursorWidth": 400,
+    "rainbow_csv.enable_cursor_position_info": true,
+    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.1.7-win32-x64\\.nuget\\Microsoft.PowerQuery.SdkTools.2.110.3\\tools",
+    // When set to false, the SDK does not try to automatically detect connector workspaces and prompt to create a settings file.
+    "powerquery.sdk.features.autoDetection": true,
+    "[html][js][jsx][python][markdown]": {
+        // it specifically said cautious using other than html
+        "emmet.useInlineCompletions": true, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
+    },
+    "emmet.useInlineCompletions": false,
+    "workbench.statusBar.visible": false, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
+    /*
+    new:
+        - <https://code.visualstudio.com/updates/v1_71#_new-code-action-control>
+            - <https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings>
+            - <https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions>
+
+
+    example new code actions:
+            {
+                "key": "ctrl+shift+r ctrl+e",
+                "command": "editor.action.codeAction",
+                "args": {
+                    "kind": "refactor.extract.function" } }
+        */
+    "workbench.tree.expandMode": "singleClick",
+    "editor.stickyScroll.enabled": true,
+    "editor.stickyScroll.maxLineCount": 5,
+    "powerquery.timeout.symbolTimeoutInMs": 400,
+    "powerquery.sdk.features.useServiceHost": true,
+    // Try the new feature using a reusable engine service host other than the command lines
+    "powerquery.sdk.features.useServiceHost": false,
+    // "editor.lightbulb.enable":
+    "powershell.developer.editorServicesLogLevel": "Normal",
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
 }

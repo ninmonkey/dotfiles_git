@@ -739,14 +739,14 @@
         "when": "inQuickOpen && inTerminalRunCommandPicker"
     },
     // Fallback to the shell's native ctrl+r
-    {
-        "key": "ctrl+alt+r",
-        "command": "workbench.action.terminal.sendSequence",
-        "args": {
-            "text": "\u0012" /*^R*/
-        },
-        "when": "terminalFocus"
-    },
+    // {
+    //     "key": "ctrl+alt+r",
+    //     "command": "workbench.action.terminal.sendSequence",
+    //     "args": {
+    //         "text": "\u0012" /*^R*/
+    //     },
+    //     "when": "terminalFocus"
+    // },
     // Have ctrl+c close the quick pick
     {
         "key": "ctrl+c",

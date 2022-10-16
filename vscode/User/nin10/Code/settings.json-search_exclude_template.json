@@ -1,0 +1,119 @@
+{
+    "search.exclude": {
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/node_modules": true,
+    },
+    // Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `files.exclude` setting. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options).
+    "search.exclude": {
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/node_modules": true,
+        "**/*.lnk": true,
+        "**/*.log": true,
+        "**/*.output/*.log": true,
+        "**/*.export/*.log": true,
+        "**/*.output/*.json": true,
+        "**/*.export/*.json": true,
+        "**/bower_components": true,
+        "**/*.code-search": true
+    },
+    // default value
+    "files.exclude": {
+        // # top level
+        "{.output,.export,.input}": true,
+        // todo: verify this works correctly
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        // "**/*.js": false,
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/*.exe": true,
+        "**/*.lnk": true,
+        "**/.git": true,
+        "**/*.pbix": true,
+        "**/*.zip": true,
+        // venv, cache, or compiled
+        "**/*.py[co]": true,
+        "**/__pycache__": true,
+        "**/node_modules": true,
+        "**/.mypy_cache": true,
+        "**/venv": true,
+        "**/*.js": {
+            "when": "$(basename).min.js",
+            "exclude": false,
+            // ""
+        },
+        "**/*.js": false,
+        // "files.exclude": {
+        //     "**/.git": true,
+        //     "**/.svn": true,
+        //     "**/.hg": true,
+        //     "**/CVS": true,
+        //     "**/.DS_Store": true,
+        //     "**/Thumbs.db": true
+        // },
+        // new ignore test
+        "**/*.exe": true,
+        "**/*.zip": true,
+        "**/.output/*.csv": true,
+        "**/.export/*.csv": true,
+        "**/.input/*.csv": true,
+        //
+        "**/.output/*.log": true,
+        "**/.export/*.log": true,
+        "**/.input/*.log": true,
+        //
+        "**/.output/*.json": true,
+        "**/.export/*.json": true,
+        "**/.input/*.json": true,
+        "**/*.lnk": true,
+        "**/.git": true,
+        "**/*.pbix": true,
+        "**/*.zip": true,
+        // venv, cache, or compiled
+        "**/*.py[co]": true,
+        "**/__pycache__": true,
+        "**/node_modules": true,
+        "**/.mypy_cache": true,
+        "**/venv": true,
+        "**/.output/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/.input/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/.export/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        // # top level
+        "{.output,.export,.input}": true,
+        // todo: verify this works correctly
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        // "**/*.js": false,
+    },
+    "files.watcherExclude": {
+        // Configure paths or glob patterns to exclude from file watching. Paths or basic glob patterns that are relative (for example `build/output` or `*.js`) will be resolved to an absolute path using the currently opened workspace. Complex glob patterns must match on absolute paths (i.e. prefix with `**/` or the full path and suffix with `/**` to match files within a path) to match properly (for example `**/build/output/**` or `/Users/name/workspaces/project/build/output/**`). When you experience the file watcher process consuming a lot of CPU, make sure to exclude large folders that are of less interest (such as build output folders).
+        "**/.export/**": true,
+        "**/.export/**": true,
+        "**/.output/**": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true
+    },
+    // Configure extra paths to watch for changes inside the workspace. By default, all workspace folders will be watched recursively, except for folders that are symbolic links. You can explicitly add absolute or relative paths to support watching folders that are symbolic links. Relative paths will be resolved to an absolute path using the currently opened workspace.
+    "files.watcherInclude": [],
+    /*
+
+    searching cheat-sheet (for ctrl+F)
+
+        see: <https://code.visualstudio.com/docs/editor/codebasics#_find-in-selection>
+        This  is shorthand for ${WorkSpaceRoot}/example:
+            ./example
+
+        glob style
+            *  : 0-to-many
+            ?  : 1 char
+            ** : any number of path segments (even 0)
+            [] : range, 0-9
+            [!]: example.[!0-9]
+            {} : group pattern
+                {**\/*.html,**\/*.txt}
+
+                had to add \\ escapes because this is json
+
+
+
+    */
+}
