@@ -1979,6 +1979,7 @@ if($script:__superEnableDebugAtBottom) {
 # always disable for now/
 $PSDefaultParameterValues.Remove('*:Debug')
 $PSDefaultParameterValues.Remove('*:Verbose')
+$DebugPreference = 'silentlycontinue'
 
     # }
 
