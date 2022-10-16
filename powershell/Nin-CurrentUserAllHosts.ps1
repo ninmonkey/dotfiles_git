@@ -1591,6 +1591,11 @@ function __prompt_noModuleLoaded {
 [object[]]$Cs ??= '#DDA0DD', '#9370DB', '#008B8B'
 $__colors = $cs
 function Prompt_Nin.2 {
+    $Config ??= @{
+        ShowVSCodeStatus = $true
+        ShowVSCodeAllVersions = $true
+        OutputFormat = 'dbgInfo'
+    }
     $colors = $Cs ?? [object[]]@('#DDA0DD', '#9370DB', '#008B8B')
     $uniStr = '˫！︕'
 
@@ -1611,6 +1616,66 @@ function Prompt_Nin.2 {
         #        Get-Location | abbrPath
         Get-Location
         "${fg:clear}"
+
+        if($Config.ShowVSCodeStatus) {
+            # "`n"
+            # 'PS ExtensionTerm: '
+        }
+        if($Config.ShowVSCodeAllVersions) {
+
+
+            $script:____promptMiniCache ??= @{
+                FinalRender = ''
+                ModulesString = Get-Module *editor*, *service* | sort Name
+                    | Join-String -sep ', ' { '{0} = {1}' -f @(
+                        $_.Name, $_.Version )
+                    }
+                EditorServicesRunning = if( (get-module 'EditorServicesCommandSuite', 'PowerShellEditorServices.Commands', 'PowerShellEditorServices.VSCode').count -gt 2 ) {
+                    'ES჻ '
+                } else {
+                    'ꜝ¡ǃꜟ'
+                }
+                EditorName = (ps -id $pid).Parent.name
+                ExtensionVersion = & 'code.cmd' --list-extensions --show-versions | sls '(ms-vscode.power|powerquery)' -Raw | Join-string -sep ', '
+            }
+
+            "`n"
+            <#
+            future
+                - detect which extension is actually running [1] s-vscode extension enabled is [1] pwsh-preview or not
+                    - [ms-vscode.powershell@2022.8.5, ms-vscode.powershell-preview@2022.10.0]
+                - detect other extensions, powerquery
+            #>
+            switch($Config.OutputFormat) {
+                'dbgInfo' {
+                    $render = @(
+                        $PSStyle.Foreground.FromRgb('#999999')
+                        'extensionTerm: '
+                        $script:____promptMiniCache.ModulesString
+                        "`n"
+                        $script:____promptMiniCache.EditorName ?? '<Edit?> '
+                        ': '
+                        $script:____promptMiniCache.ExtensionVersion
+
+                        $PSStyle.Reset
+                    ) -join ''
+                }
+                default  {
+                    $render = @(
+                        $PSStyle.Foreground.FromRgb('#999999')
+                        $script:____promptMiniCache.ModulesString
+                        "`n"
+                        $script:____promptMiniCache.EditorName ?? '<Edit?> '
+                        ': '
+                        $script:____promptMiniCache.ExtensionVersion
+
+                        $PSStyle.Reset
+                    ) -join ''
+                }
+            }
+            $render
+        }
+
         "`nPwsh> "
     ) -join '')
 }
@@ -1989,3 +2054,13 @@ $DebugPreference = 'silentlycontinue'
 'autoload _tempImportAws'  | label 'util.Invoke -> '
 _tempImportAws
 __profileGreet
+
+write-warning '- [ ] todo: flush all (3?4?) histories for perf'
+write-warning '- [ ] todo: explictly disable modules like AWS to improve command delays'
+Write-warning '- [ ] todo perf:
+    delete obsolete global unsaved workspaces polliting history ?
+'
+Write-warning '- [ ] todo perf:
+    [1] should I delete all of history?
+    [2] is this normal or pwsh or something?
+    [3] "$Env:AppData\Code\User\History"'
