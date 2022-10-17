@@ -20,7 +20,9 @@ if ($superVerboseAtTop) {
 
 }
 
-
+@'
+https://github.com/PowerShell/PowerShellEditorServices/blob/main/docs/guide/extensions.md , https://github.com/PowerShell/PowerShellEditorServices
+'@
 function b.wrapLikeWildcard {
     <#
     .SYNOPSIS
@@ -1594,7 +1596,10 @@ function Prompt_Nin.2 {
     $Config ??= @{
         ShowVSCodeStatus = $true
         ShowVSCodeAllVersions = $true
-        OutputFormat = 'dbgInfo'
+        OutputFormat = 'SuperSuperVerbose' #'dbgInfo'
+    }
+    $Regex ??= @{
+        Addon_VersionString = '[\d.]+'
     }
     $colors = $Cs ?? [object[]]@('#DDA0DD', '#9370DB', '#008B8B')
     $uniStr = '˫！︕'
@@ -1633,7 +1638,8 @@ function Prompt_Nin.2 {
                 EditorServicesRunning = if( (get-module 'EditorServicesCommandSuite', 'PowerShellEditorServices.Commands', 'PowerShellEditorServices.VSCode').count -gt 2 ) {
                     'ES჻ '
                 } else {
-                    'ꜝ¡ǃꜟ'
+
+
                 }
                 EditorName = (ps -id $pid).Parent.name
                 ExtensionVersion = & 'code.cmd' --list-extensions --show-versions | sls '(ms-vscode.power|powerquery)' -Raw | Join-string -sep ', '
@@ -1647,14 +1653,24 @@ function Prompt_Nin.2 {
                 - detect other extensions, powerquery
             #>
             switch($Config.OutputFormat) {
+                'SuperSuperVerbose' {
+
+                }
                 'dbgInfo' {
+                    # 'ʕ⒘|჻ꜝ¡ǃꜟ'
+                    'ʕ⒘|჻ꜝ¡ǃꜟ'
                     $render = @(
                         $PSStyle.Foreground.FromRgb('#999999')
                         'extensionTerm: '
-                        $script:____promptMiniCache.ModulesString
+                        $script:____promptMiniCache.ModulesString -replace $Regex.Addon_VersionString, {@(
+                            $PSStyle.Foreground.FromRgb('#6f2143')
+                            $_
+                            $PSStyle.Foreground.FromRgb('#6f6143')
+                        ) -join ''}
                         "`n"
+                        'bin: '
                         $script:____promptMiniCache.EditorName ?? '<Edit?> '
-                        ': '
+                        '჻ '
                         $script:____promptMiniCache.ExtensionVersion
 
                         $PSStyle.Reset
