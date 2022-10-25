@@ -9,9 +9,12 @@ Write-Warning "Find func: 'Lookup()'"
 $script:__superVerboseAtBottom = $true # at end of profile load, turn on then
 $script:__superTraceAtBottomLevel = 0
 $script:__superEnableDebugAtBottom = $false
+$script:__bottomTraceInvoke = $true
+$script:__bottomDisableVerboseAsFinalCommand = $true
 $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
 $manualVSCodeIntegrationScript = $false
+
 
 if ($superVerboseAtTop) {
     $VerbosePReference = 'continue'
@@ -36,6 +39,77 @@ function b.wrapLikeWildcard {
    }
 }
 
+function bcall {
+    param(
+        # How to visualize, A..E currently
+        [Parameter()]
+        [ValidateSet('A', 'B', 'C', 'D', 'E')]
+        [string]$FormatMode = 'E'
+    )
+    switch ($FormatMode) {
+        'A' {
+            Get-PSCallStack | fl -Force
+        }
+        'B' {
+            hr
+            Get-PSCallStack | %{
+                $_.Position | label 'Pos'
+                $_.FunctionName | label 'Func'
+                $_.Command | label 'Cmd'
+                hr
+            }
+        }
+        'C' {
+            & {
+                Get-PSCallStack | % -Begin { $i = 0 } {
+                    $prefix = ' ' * $i -join ''
+                    @(
+                        $prefix
+                        $_.FunctionName
+                    ) -join ''
+                    $i+=4
+                }
+            }
+        }
+        'D' {
+            & {
+                Get-PSCallStack
+                | ReverseIt
+                | % -Begin { $i = 0 } {
+                    $prefix = ' ' * $i -join ''
+                    @(
+                        $prefix
+                        $_.FunctionName
+                    ) -join ''
+                    $i+=4
+                }
+            }
+        }
+        'E' {
+            & {
+                Get-PSCallStack
+                | ReverseIt
+                | % -Begin { $i = 0 } {
+
+                    $prefix = ' ' * $i -join ''
+                    $render =                     @(
+                        $prefix
+                        $_.FunctionName
+                    ) -join ''
+                    @(
+                        $render.PadRight(45, ' ')
+                        ' '
+                        $_.Position
+                    ) -join ''
+                    $i+=4
+                }
+            }
+        }
+        default {
+            Get-PSCallStack
+        }
+    }
+}
 function b.fm {
     <#
     .SYNOPSIS
@@ -2080,3 +2154,165 @@ Write-warning '- [ ] todo perf:
     [1] should I delete all of history?
     [2] is this normal or pwsh or something?
     [3] "$Env:AppData\Code\User\History"'
+
+label 'Reached End Of' $PSCommandPath -bg gray30 -fg gray60
+
+label 'Reached End Of' $PSCommandPath -bg gray30 -fg gray60
+| Write-warning
+
+$script:__bottomTraceInvoke = $true
+label 'ExtraDebug' 'super trace mode on'
+
+
+# function d.split2 {
+#     param(
+#         [ArgumentTransformationAttribute('a', 'b')]
+#         [string]$Delimiter
+#     )
+#     throw "WIP"
+# }
+
+
+function d.split {
+    param(
+        [ArgumentCompletions(
+            ",",     # csv no space,  # argcompleter to add names
+            ',\s*',  # csv strip space
+            '\r?\n', # newline
+            '\n',
+            '\t',
+            '\s+'
+        )]
+        [string]$Delimiter = ',\s*'
+
+    )
+    throw "WIP: $PSCommandPath"
+}
+function d.clipStr  {
+    param(
+        <#
+        .DESCRIPTION
+            sugar for repeated sorted copied
+
+
+                'ConsoleHost', 'ConsoleHost', 'ConsoleHostRunspaceInit', 'ConsoleHostUserInterface', 'ConsoleLineOutput' | cl
+
+                (gcl) -split ', ' | Sort-Object -Unique | Join-String -sep ', ' -SingleQuote | Set-Clipboard -PassThru
+
+        #>
+        # list of strings or whatever to split
+        [Parameter(ValueFromPipeline)]
+
+        [string[]]$InputObject,
+        [ArgumentCompletions(
+            'Csv', 'Csv2',
+            'Csv_PwshLit'
+        )]
+        [Alias('InputText')]$FormatTemplate = 'Csv_PwshLit',
+
+        [Alias('WhatIf')][switch]$Preview
+    )
+
+    begin {
+        # todo : rewrite splits and joins
+        $sb = [Text.StringBuilder]::new()
+        [List[Object]]$line = @()
+        write-warning "WIP: $PSCommandPath"
+    }
+    process {
+        $line.AddRange( $InputObject )
+
+    }
+    end {
+        write-warning "NotFinishedException: $PSCommandPath"
+        # $line.ToString()
+        switch ($FormatTemplate) {
+            'Csv_PwshLit' {
+                 $render = $Line | Join-String -sep ', ' -SingleQuote
+                | Join-String -op '$x ='
+             }
+            'List_PwshLit' {
+                 $render = $Line | Join-String -sep "`n" -SingleQuote
+                | Join-String -op '$x = @(' -os ') '
+             }
+            'Csv' {
+                $render =  $Line | Join-String -sep ', ' -SingleQuote
+             }
+
+             Default {
+                throw "Unhandled Template: $FormatTemplate"
+            }
+        }
+        if($Preview)   {
+            $render; return
+
+
+
+
+        }
+    }
+    # '' -SingleQuote | Set-Clipboard -PassThru', '' | Sort-Object -Unique | Join-String -sep '', '(gcl) -split ''
+    # /'' -SingleQuote | Set-Clipboard -PassThru', '' | Sort-Object -Unique | Join-String -sep '', '(gcl) -split ''
+}
+
+function __removeTrace {
+    <#
+    .SYNOPSIS
+    .link
+        __removeTrace
+    .LINK
+        __setTrace
+    #>
+    param(
+        # [Parameter(Mandatory)]
+        # [string[]]$PresetName
+    )
+    throw "WIP: $PSCommandPath"
+}
+
+function __setTrace {
+    <#
+    .SYNOPSIS
+    .link
+        __removeTrace
+    .LINK
+        __setTrace
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [ArgumentCompletions(
+            'CmdSearch'
+        )]
+        [string[]]$PresetName
+    )
+    write-warning "WIP: $PSCommandPath"
+
+    $presetGroups = @{
+        CmdSearch = 'CommandSearchDiscovery', 'CommandDiscovery', 'CommandHelpProvider'
+    }
+
+    [object[]]$all_sources = @(switch ($PresetName) {
+        {
+            $PresetName -in @($presetGroups.Values)
+        } {
+            $presetGroups[ $presetName ]
+         }
+        Default {
+            throw "Unhandled Presetname:  '($presetName -join ',')'"
+        }
+    }) | Sort-Object -Unique
+
+    $all_sources|Join-String -op "Sources Selected = " -sep ', '
+    |Write-Verbose
+
+    Set-TraceSource -Name $all_sources
+    # ConsoleHost, ConsoleHost, ConsoleHostRunspaceInit, ConsoleHostUserInterface, ConsoleLineOutput
+}
+$script:__bottomDisableVerboseAsFinalCommand |Label 'always bottom'
+| write-warning
+
+if($script:__bottomDisableVerboseAsFinalCommand) {
+    $VerbosePReference = 'silentlycontinue'
+    $WarningPreference = 'continue'
+    $debugpreference = 'silentlycontinue'
+}
