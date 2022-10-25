@@ -2173,21 +2173,26 @@ label 'ExtraDebug' 'super trace mode on'
 # }
 
 
-function d.split {
-    param(
-        [ArgumentCompletions(
-            ",",     # csv no space,  # argcompleter to add names
-            ',\s*',  # csv strip space
-            '\r?\n', # newline
-            '\n',
-            '\t',
-            '\s+'
-        )]
-        [string]$Delimiter = ',\s*'
+# function d.break {
+#     param(
+#         [ArgumentCompletionsATTTTR('a','b', 'a', 'c', 'f')]
+#         [string]$Text
+#     )
+# }
+# function d.split {
+#     param(
+#         # [Alias('InputText')]
+#         #  [ArgumentTransformationsAttribute('a', 'b',
+#         [ArgumentCompletionsATTTRR('Csv', 'Csv2','Csv_PwshLit')]
+#         $FormatTemplate = 'Csv_PwshLit',
+#         [ArgumentCompletionsATTTRR('Csv', 'Csv2','Csv_PwshLit')]
+#         $FormatTemplate = 'Csv_PwshLit',
+#         [string]$Delimiter = ',\s*'
 
-    )
-    throw "WIP: $PSCommandPath"
-}
+#     )
+#     $x  =- 10
+#     throw "WIP: $PSCommandPath"
+# }
 function d.clipStr  {
     param(
         <#
@@ -2204,6 +2209,7 @@ function d.clipStr  {
         [Parameter(ValueFromPipeline)]
 
         [string[]]$InputObject,
+
         [ArgumentCompletions(
             'Csv', 'Csv2',
             'Csv_PwshLit'
