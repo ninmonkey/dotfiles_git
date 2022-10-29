@@ -6,6 +6,8 @@ using namespace System.Management.Automation # [ErrorRecord]
 Write-Warning "Find func: 'Lookup()'"
 'reached bottom'
 
+$PathSeem = gi -ea 'continue'  'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
+
 $script:__superVerboseAtBottom = $true # at end of profile load, turn on then
 $script:__superTraceAtBottomLevel = 0
 $script:__superEnableDebugAtBottom = $false
@@ -17,9 +19,9 @@ $manualVSCodeIntegrationScript = $false
 
 
 if ($superVerboseAtTop) {
-    $VerbosePReference = 'continue'
-    $WarningPreference = 'continue'
-    $debugpreference = 'continue'
+    # $VerbosePReference = 'continue'
+    # $WarningPreference = 'continue'
+    # $debugpreference = 'continue'
 
 }
 
@@ -269,10 +271,60 @@ function Err.2xp {
     return $global:error
 }
 
+
+function inMod {
+    <#
+    .synopsis
+        sugar for in mod
+    .example
+        # for
+        & ( impo bdg_lib -passthru ) { [PayloExportRecord] }
+
+        # run
+        inMod bdg_lib { [PayloExportRecord]  }
+    .example
+        # for
+        & ( impo bdg_lib -passthru ) { [PayloExportRecord]::new($response) }
+
+        # run
+        inMod bdg_lib { [PayloExportRecord]::new($response)  }
+    #>
+    param(
+        [Parameter(mandatory)]
+        [ArgumentCompletions('bdg_lib')]
+        [string]$ModuleName,
+
+        [Parameter(mandatory)]
+        [ArgumentCompletions(
+            '{ [JCUserUpdate_CsvRecord] }',
+            '{ [PayloExportRecord] }'
+        )]
+        [object] # string? sb? other?
+        $ScriptBlock,
+
+        [switch]$Force
+    )
+    write-warning 'partial func, and doesn''t work right'
+
+
+    $Sb = if   ( $scriptBlock -is 'scriptblock' ) { $ScriptBlock }
+          else { $scriptBlock -as 'ScriptBlock' }
+
+    & ( Import-Module $ModuleName -PassThru -force:$Force ) {
+        $Sb
+    }
+}
+
 function _errPreview {
     $Input | %{ $_ | io | ft Reported, Name, ShortValue, ShortType -auto }
 }
-function Err {
+function gErr {
+    [int]$Limit,
+    [switch]$Tac
+
+    err -Limit $Limit -Tac:$Tac | Get-Error
+}
+function Err { # [Err.v3]
     # sugar when in debug mode
     <#
     todo: param set that that will use
@@ -283,6 +335,8 @@ function Err {
 
     #>
     [OutputType('[object[]]')]
+    # [Alias('gErr')] # or Grr
+    [CmdletBinding()]
     param( [switch]$Clear,
         [Alias('At')][int]$Index,
         [Alias('Number')] # 'count' and 'clear' are too close for tying
@@ -539,14 +593,21 @@ Write-Warning '🦈'
 
 #>
 
-
+# H:\github_fork\Pwsh\MyPSModule_imports
 # I am not sure what's the right *nix env vars for encoding
 # grep specifically required this
 $env:LC_ALL = 'en_US.utf8'
 $__ConfigOnlyuseFast = $false
 
-$env:PATH += ';', 'G:\programs_nin_bin' -join ''
+$env:PATH += ';', 'G:\programs_nin_bin' -join '' # old
 $env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -join ''
+$env:Path += ';', 'H:\github_fork\Pwsh\MyPSModule_imports' -join '' # good, new
+
+$env:PSModulePath = @(
+    'H:\github_fork\Pwsh\MyPSModule_imports'
+    $env:PSModulePath
+) -join ';'
+
 
 if (-not( Get-Module BDG_lib -ea ignore)) {
     $Env:PSModulePath += ';', (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self')
@@ -554,9 +615,10 @@ if (-not( Get-Module BDG_lib -ea ignore)) {
 }
 if ($False) {
     # if you want random window names
-    Import-Module NameIt
-    $Host.UI.RawUI.WindowTitle = NameIt\Invoke-Generate '[noun]-[syllable]-[verb]-[syllable]-[color]'
-    $Host.UI.RawUI.WindowTitle = NameIt\Invoke-Generate '[noun]-[verb]-[color]'
+    # Import-Module NameIt
+
+    # $Host.UI.RawUI.WindowTitle = NameIt\Invoke-Generate '[noun]-[syllable]-[verb]-[syllable]-[color]'
+    # $Host.UI.RawUI.WindowTitle = NameIt\Invoke-Generate '[noun]-[verb]-[color]'
 }
 
 
@@ -565,20 +627,25 @@ if ($False) {
 <#
     [section]: Seemingly Sci imports
 #>
-$pathSeem = Get-Item -ea continue 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
-if (! $PathSeem) {
-    Write-Warning "Attempted to import SeeminglySci failed: 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'"
-} else {
+# $pathSeem = Get-Item -ea continue 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'
+# if (! $PathSeem) {
+#     Write-Warning "Attempted to import SeeminglySci failed: 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'"
+# } else {
+    $env:PSModulePath = @(
+        'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
+        $env:PSModulePath
+    ) -join ';'
+
     Import-Module pslambda -DisableNameChecking
-    Import-Module -DisableNameChecking (Get-Item -ea stop (Join-Path $PathSeem 'Utility.psm1'))
+    Import-Module -DisableNameChecking (gi 'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell\Utility.psm1')
     Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
     Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
     Write-Verbose 'SeeminglySci: Imported'
-}
-$me = Get-Process -Id $PID
-if ($me.Parent.Name -match 'Azure') {
-    $IsAzureDataStudio = $True
-}
+# }
+# $me = Get-Process -Id $PID
+# if ($me.Parent.Name -match 'Azure') {
+#     $IsAzureDataStudio = $True
+# }
 # if($Host.Name -match 'studio code host') {
 #     $IsAzureDataStudio = $true
 #     'skippping VSCode host...' | write-warning
@@ -607,6 +674,7 @@ Write-Warning '㏒ : Load-NinCoreAliases?'
 if (Get-Module 'Ninmonkey.Console') {
     # slow
     Enable-NinCoreAlias
+    # Ninmonkey.Console\nin.ImportPSReadLine Using_Plugin
     Ninmonkey.Console\nin.ImportPSReadLine MyDefault_HistListView
 } else {
     Write-Warning '㏒ : Nin failed, skipping aliases'
@@ -617,8 +685,7 @@ if (Get-Module 'Ninmonkey.Console') {
 #>
 
 
-$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
-$Env:PSModulePath += ';', (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
+
 $Env:RIPGREP_CONFIG_PATH = (Get-Item 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\cli\ripgrep\.ripgreprc')
 
 
@@ -730,7 +797,9 @@ if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
     . (Get-Item Temp:\complete_gh.ps1)
 }
 
-$Env:PSModulePath = @(
+$Env:PSModulePath = @( # 2022
+    (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
+    (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
     $Env:PSModulePath
 
@@ -2322,3 +2391,6 @@ if($script:__bottomDisableVerboseAsFinalCommand) {
     $WarningPreference = 'continue'
     $debugpreference = 'silentlycontinue'
 }
+$DebugPreference = 'silentlycontinue'
+$DebugPreference = 'silentlycontinue'
+$VerbosePReference = 'continue'
