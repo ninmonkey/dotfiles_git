@@ -21,15 +21,103 @@ $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
 $manualVSCodeIntegrationScript = $false
 
+function fime.2 {
+    <#
+    .synopsis
+        shortens output, for ipynb cells
+    .DESCRIPTION
+        for notebooks, hide duplicate names (from overrides) to minimize
+        total line count. Interact defaults to ~30 lines?
+
+        next:
+            modify pstypenames, to change the limitation on width
+    .NOTES
+        warning, Find-Member output:
+            as of this time any calls to [Console]::BufferWidth throw exceptions
+            and that's what <ClassExplorer.format.ps1xml> uses
+
+        console with is accessable to notebooks using:
+            $host.ui.RawUI.WindowSize.Width
+
+        it appears to work as an in-place replacement.
+    .LINK
+        profile/fime.2
+    .LINK
+        profile/nb.firstFew
+
+
+
+    #>
+   $input
+   | ClassExplorer\Find-Member @args
+   | Sort -Unique Name | ft
+}
+
+    function nb.firstFew {
+    <#
+    .SYNOPSIS
+        To simplify output for notebooks, this limits to N items, grabbing from both ends -- or even randomly
+    .DESCRIPTION
+        Try to be nicer to notebooks, when exceeding limits
+        name ideas?:
+            nb.FirstFew, nb.Some, nb.Format-Table
+
+        warning / note, Find-Member output:
+            as of this time any calls to [Console]::BufferWidth throw exceptions
+            and that's what <ClassExplorer.format.ps1xml> uses
+
+        console with is accessable to notebooks using:
+            $host.ui.RawUI.WindowSize.Width
+
+        it appears to work as an in-place replacement.
+
+
+        **note**, fime2 will have improved output, therefore
+            no need for explicity a calling Format-Table
+
+            <file:///C:\Users\cppmo_000\SkyDrive\Documents\PowerShell\Modules\ClassExplorer\2.3.3\ClassExplorer.format.ps1xml>
+
+        at first it was FirstFew, but then I added the ending
+        and even random members for betterc cell examples
+
+    .example
+        [Text.StringBuilder]
+        | fime
+        | firstFew
+    .LINK
+        profile/fime.2
+    .LINK
+        profile/nb.firstFew
+
+    #>
+    param(
+        [int]$Limit = 20,
+        [switch]$Shuffle
+    )
+    $half = $Limit  / 2
+
+    if( -not $Shuffle) {
+        $Input | Select -first $half -Last $half
+        | sort Name -unique
+            | ft Name, DisplayString
+            return
+        }
+        $Input | Get-Random -Count $Limit
+        | sort Name -unique
+    | ft Name, DisplayString
+
+}
+
+
 function yamlify {
     <#
     .SYNOPSIS
         Real quick way to flatten many properties without parsing JSON
     .EXAMPLE
         Get-Process | Select-Object -First 2 | yamlify | Format-Table
-    .EXAMPLE    
+    .EXAMPLE
         ps | s -First 1 | to->Json -Depth 1 | from->Json
-        ps | s -First 1 | to->Json -Depth 1 | from->Json 
+        ps | s -First 1 | to->Json -Depth 1 | from->Json
     #>
     param( [switch]$VariationJson )
     if (-not $VariationJson) {
@@ -38,9 +126,9 @@ function yamlify {
     }
     $input | ConvertTo-Csv | ConvertFrom-Csv
 }
-. { # more to extract 
+. { # more to extract
 
-    function new.jsonify { 
+    function new.jsonify {
         <#
     .synopsis
         to json, minimal depth, truncate arrays etc.. if long
@@ -61,12 +149,12 @@ function yamlify {
         }
     }
 
-    function _test_scalarIsBlank { 
+    function _test_scalarIsBlank {
         <#
         Test-IsBlankable Value, whitespace is blank
     #>
         [OutputType('System.Boolean')]
-        param( 
+        param(
             # any scalar
             [Parameter(Mandatory)]
             [AllowNull()]
@@ -75,7 +163,7 @@ function yamlify {
             $Object
         )
         $isBlank = $false
-        if ($null -eq $Object) { 
+        if ($null -eq $Object) {
             $isBlank = $true
             Write-Verbose '<true null>'
         }
@@ -89,7 +177,7 @@ function yamlify {
     #>
 
         [OutputType('System.Boolean')]
-        param( 
+        param(
             [Alias('Object')]
             [Property(Mandatory)]
             $TargetObject,
@@ -111,13 +199,13 @@ function yamlify {
         param(
             [Parameter(Mandatory, ValueFromPipeline)]
             [object]$InputObject,
-        
-            #invert        
+
+            #invert
             [switch]$KeepBlanks
         )
         process {
             $InputObject.PSObject.Properties
-            | Where-Object { 
+            | Where-Object {
                 -not (_test_scalarIsBlank $_.Value)
             } | ForEach-Object Name | Sort-Object
         }
@@ -130,7 +218,7 @@ function yamlify {
 
     hr
     Get-Process | s -First 1 | props.select.notBlankableValues
-} 
+}
 
 function Using.Namespace {
     '
@@ -246,7 +334,7 @@ function Get-HelpFromType {
     }
 }
 
-& { 
+& {
     'adding "win-get" autocomplete from: <https://learn.microsoft.com/en-us/windows/package-manager/winget/tab-completion>' | Write-Verbose
 
     Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
@@ -275,9 +363,9 @@ $regex = @'
 
     $inner = Get-ChildItem C:\nin_fork -Depth 2 | Select-Object -First 100 | Get-Random -Count 3
     | Join-String -sep "`n|" {
-        @( 
+        @(
             #"`n"
-            '({0})' -f [regex]::Escape( $_ ) 
+            '({0})' -f [regex]::Escape( $_ )
             #"`n"
         ) -join '' | Format-Predent -TabWidth 4 -PassThru
     } -op "`n(" -os "`n)"
@@ -398,15 +486,15 @@ function b.fm {
     }
 }
 
-function transposeObject { 
+function transposeObject {
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
         $InputObject
     )
-    process { 
-        $InputObject.PSobject.Properties | ForEach-Object { 
+    process {
+        $InputObject.PSobject.Properties | ForEach-Object {
             $props = [ordered]@{}
-            
+
             $props['Key'] = $_.Name
             $props['Value'] = $_.Value
             # $props[ $_.Value ] = $_.Name
@@ -2529,7 +2617,37 @@ label 'Reached End Of' $PSCommandPath -bg gray30 -fg gray60
 $script:__bottomTraceInvoke = $true
 label 'ExtraDebug' 'super trace mode on'
 
+function new.fime.query.anyof {
+    <#
+    .SYNOPSIS
+        dynamically generate type queries for ClassExplorer\Find-Member
+    .EXAMPLE
+        Pwsh>   new.fime.query.anyof 'int', 'System.Boolean'
+                new.fime.query.anyof 'int', 'System.Boolean' -Test
+    .EXAMPLE
+        Pwsh> Breaks on generics, ex:
 
+            $types = @( find-type *span* -Namespace System
+            find-type *span* -Namespace System.Text
+            find-type *span* -Namespace System.Buffers )
+
+            new.fime.query.anyof $types
+        # outputs
+            [anyof[System.ISpanFormattable, System.ReadOnlySpan`1[T], System.Span`1[T], timespan, System.ISpanParseable`1[TSelf], System.Text.SpanLineEnumerator, System.Text.SpanRuneEnumerator, System.Buffers.SpanAction`2[T,TArg], System.Buffers.ReadOnlySpanAction`2[T,TArg]]]
+    #>
+    param ( [object[]]$InputTypes, [switch]$Test )
+
+       $term = $InputTypes
+       | Join-String -sep ', ' { $_ } -os ']]' -op '[anyof['
+
+    if( -not $Test ) { return $Term }
+
+    if($Test) {
+        Find-Member -ParameterType ([ScriptBlock]::Create( $term ))
+        return
+    }
+    return
+}
 # function d.split2 {
 #     param(
 #         [ArgumentTransformationAttribute('a', 'b')]
