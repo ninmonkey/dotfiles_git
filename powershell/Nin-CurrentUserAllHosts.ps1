@@ -3,8 +3,12 @@ using namespace PoshCode.Pansies
 using namespace System.Collections.Generic #
 using namespace System.Management.Automation # [ErrorRecord]
 
-Write-Warning "Find func: 'Lookup()'"
-'reached bottom'
+$DebugPreference = 'silentlycontinue'
+
+Write-Warning "add func: 'Lookup()'"
+'try: <https://github.com/Jaykul/dotfiles/blob/master/.chezmoitemplates/interactive.ps1>xl8r'
+
+
 
 $PathSeem = gi -ea 'continue'  'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
 
@@ -17,13 +21,195 @@ $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
 $manualVSCodeIntegrationScript = $false
 
+function yamlify {
+    <#
+    .SYNOPSIS
+        Real quick way to flatten many properties without parsing JSON
+    .EXAMPLE
+        Get-Process | Select-Object -First 2 | yamlify | Format-Table
+    .EXAMPLE
+        ps | s -First 1 | to->Json -Depth 1 | from->Json
+        ps | s -First 1 | to->Json -Depth 1 | from->Json
+    #>
+    param( [switch]$VariationJson )
+    if(-not $VariationJson) {
+        $input | ConvertTo-Json -depth 1 | convertFrom-Json
+        return
+    }
+    $input | ConvertTo-Csv | convertFrom-Csv
+}
+function new.jsonify {
+    <#
+    .synopsis
+        to json, minimal depth, truncate arrays etc.. if long
+    #>
+    param(
+        [Parameter(Mandatory,ValueFromPipeline)]
+        $InputObject
+
+    )
+    process {
+        $InputObject
+        | to->Json -Depth 1
+        | from->Json
+    }
+}
+function Using.Namespace {
+    '
+    using namespace System.Collections.Generic
+    using namespace System.Management.Automation
+    using namespace System.Text
+    using namespace System.Text.Json
+    using namespace System.Xml
+    using namespace System.Xml.Linq
+    '
+}
 
 if ($superVerboseAtTop) {
     # $VerbosePReference = 'continue'
     # $WarningPreference = 'continue'
-    # $debugpreference = 'continue'
-
+    $debugpreference = 'continue'
 }
+
+function transpileTillCooked {
+    <#
+    .synopsis
+        repeat transpiling, until fully done
+    .DESCRIPTION
+        it's sugar for:
+
+            $src.Transpile().Transpile().Transpile().Transpile() | invoke-formatter
+
+        exit early with max iteration count
+        returns script block, while optionally printing each state
+    .EXAMPLE
+        $finalSrc = transpileTillCooked.2 -ScriptBlock $src -MaxIters 3 -Pretty
+    #>
+    [OutputType('System.Management.Automation.ScriptBlock')]
+    [Alias('transpileTillCooked.2')]
+    param(
+        [Parameter(Mandatory)]
+        [ScriptBlock]$ScriptBlock,
+        [int]$MaxIters = 7,
+
+        # This shows changes before each transpile step
+        # with any value, final output is always a [scriptblock]
+        [switch]$Pretty
+    )
+    $last = $ScriptBlock
+    $iter = 0
+
+    while($true) {
+        if($iters++ -gt $MaxIters) { break }
+        $next = $last.Transpile()
+        if($Pretty) {
+            $InformationPreference = 'continue'
+            hr | Write-Information
+            $next | Write-Information
+            $InformationPreference = 'silentlycontinue'
+        }
+        if($next.ToString() -eq $last.ToString()) { break }
+        $last = $Next
+    }
+    return $next
+}
+
+
+
+function Get-HelpFromType {
+    <#
+    .synopsis
+        open Powershell docs from a type name
+    .description
+        compied from: <https://github.com/ninmonkey/Mini.Examples-PowerShell/blob/main/Types/Get-HelpFromType.ps1>
+    .example
+        PS> HelpFromType int64
+    .example
+        PS> [System.Management.Automation.ErrorRecord] | Get-HelpFromType
+    .example
+        PS> (Get-Command ls) | HelpFromType
+        # Loads docs on [AliasInfo]
+        # <https://docs.microsoft.com/en-us/dotnet/api/System.Management.Automation.AliasInfo?view=powershellsdk-7.0.0>
+    #>
+    [Alias('TypeHelp', 'HelpFromType.3')]
+    param(
+        # object or type instance, should auto coerce to FullName
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
+        [object]$InputObject,
+
+        # Return urls instead of opening browser pages
+        [Parameter()][switch]$PassThru
+    )
+
+    process {
+        if ($InputObject -is [string]) {
+            $typeInstance = $InputObject -as [type]
+            if ($null -eq $typeInstance) {
+                Write-Debug "String, was not a type name: '$InputObject'"
+                $typeName = 'System.String'
+            }
+            else {
+                $typeName = $typeInstance.FullName
+            }
+        }
+        elseif ( $InputObject -is [type] ) {
+            $typeName = $InputObject.FullName
+        }
+        else {
+            $typeName = $InputObject.GetType().FullName
+        }
+        $url = 'https://docs.microsoft.com/en-us/dotnet/api/{0}' -f $typeName
+
+        if ($PassThru) {
+            $url
+            return
+        }
+        Start-Process $url
+    }
+}
+
+& {
+    'adding "win-get" autocomplete from: <https://learn.microsoft.com/en-us/windows/package-manager/winget/tab-completion>' | Write-Verbose
+
+    Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
+        param($wordToComplete, $commandAst, $cursorPosition)
+            [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
+            $Local:word = $wordToComplete.Replace('"', '""')
+            $Local:ast = $commandAst.ToString().Replace('"', '""')
+            winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
+                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+            }
+    }
+}
+function regex.PwshLiteral {
+    <#
+    .EXAMPLE
+    currently it *is* the example, need to allow pipeline instead
+    #>
+    param()
+
+    write-warning 'to finish'
+    $templateRegexLiteral = @'
+$regex = @'
+(?x)
+{0}
+'@ + "`n'@"
+
+    $inner = ls C:\nin_fork -Depth 2 | select -First 100 | Get-Random -Count 3
+        | Join-String -sep "`n|" {
+             @(
+                #"`n"
+                '({0})' -f [regex]::Escape( $_ )
+                #"`n"
+             ) -join '' | Format-Predent -TabWidth 4 -PassThru
+        } -op "`n(" -os "`n)"
+| Format-Predent -TabWidth 4 -PassThru
+
+        $templateRegexLiteral -f @(
+            $inner
+        )
+}
+
 
 @'
 https://github.com/PowerShell/PowerShellEditorServices/blob/main/docs/guide/extensions.md , https://github.com/PowerShell/PowerShellEditorServices
@@ -134,11 +320,28 @@ function b.fm {
    }
 }
 
+function transposeObject {
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+    )
+    process {
+        $InputObject.PSobject.Properties | ForEach-Object {
+            $props = [ordered]@{}
 
+            $props['Key'] = $_.Name
+            $props['Value'] = $_.Value
+            # $props[ $_.Value ] = $_.Name
+            [pscustomobject]$props
+        }
+    }
+}
 function _srcGenerateClassRecord {
     <#
     .SYNOPSIS
         source generator, output is powershell
+    .NOTES
+        to refactor, plus pipescript
     .EXAMPLE
         Pwsh> $me = Get-JCUser -email '*jbolton*'
               _srcGenerateClassRecord $Me2 -WithFzf
@@ -2092,8 +2295,23 @@ function resolveAliasedCommand {
 
 #  https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock?view=powershellsdk-7.0.0#properties
 
+function __find_which_pwsh_extension {
+    $psedition.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match "vscode|$"
+    $psEditor.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match "vscode|$"
+}
 
 
+function Invoke-SpartanVsCode {
+    PARAM( [string]$Path = 'h:\env' )
+
+    $user_data_dir = Join-Path 'H:\env\code\env_fast' 'data'
+    $addons_dir = Join-Path 'H:\env\code\env_fast' 'addons'
+    $c_args = '--extensions-dir', $addons_dir, '--user-data-dir', $user_data_dir, '--profile', 'fast', '--add', (gi $Path)
+
+    & code.cmd @c_args
+    write-warning ' - [  ] ask is there a better wya to invoke without breaking streams'
+    write-warning 'find the real one'
+}
 function cmdToScriptBlock {
     # barely-sugar, more so for semantics
     # converts functions and scriptblocks to scriptblocks
@@ -2128,7 +2346,7 @@ function fileFromScriptBlock {
 
 write-warning 'end... now verbose'
 # $VerbosePReference = 'continue'
-# $debugpreference = 'continue'
+$debugpreference = 'continue'
 # $PSDefaultParameterValues['Import-Module:Verbose'] = $true
 # $PSDefaultParameterValues['Import-Module:Debug'] = $true
 
@@ -2137,7 +2355,7 @@ if ($script:__superVerboseAtBottom) {
 
     $VerbosePReference = 'continue'
     $WarningPreference = 'continue'
-    # $debugpreference = 'continue'
+    $debugpreference = 'continue'
 
     # $PSDefaultParameterValues['*:Debug'] = $true
     $PSDefaultParameterValues['*:Verbose'] = $true
@@ -2187,8 +2405,8 @@ $PSDefaultParameterValues['get-Module:Verbose'] = $false
 if($script:__superEnableDebugAtBottom) {
     $PSDefaultParameterValues['*:Debug'] = $true
 
-    $debugpreference = 'silentlyContinue'
-    $debugpreference = 'continue'
+    # $debugpreference = 'silentlyContinue'
+    # $debugpreference = 'continue'
 
     $PSDefaultParameterValues['Set-Alias:Debug'] = $false #
     $PSDefaultParameterValues['Import-Module:debug'] = $false # creates prompts
@@ -2196,14 +2414,14 @@ if($script:__superEnableDebugAtBottom) {
     $PSDefaultParameterValues['Install-Module:debug'] = $true
     $PSDefaultParameterValues['get-Module:debug'] = $true
 } else {
-    $debugpreference = 'silentlyContinue'
+    # $debugpreference = 'silentlyContinue'
     $PSDefaultParameterValues['Import-Module:debug'] = $false # creates prompts
 }
 
 # always disable for now/
 $PSDefaultParameterValues.Remove('*:Debug')
 $PSDefaultParameterValues.Remove('*:Verbose')
-$DebugPreference = 'silentlycontinue'
+# $DebugPreference = 'silentlycontinue'
 
     # }
 
@@ -2389,8 +2607,10 @@ $script:__bottomDisableVerboseAsFinalCommand |Label 'always bottom'
 if($script:__bottomDisableVerboseAsFinalCommand) {
     $VerbosePReference = 'silentlycontinue'
     $WarningPreference = 'continue'
-    $debugpreference = 'silentlycontinue'
+    # $debugpreference = 'silentlycontinue'
 }
-$DebugPreference = 'silentlycontinue'
+# $DebugPreference = 'silentlycontinue'
 $DebugPreference = 'silentlycontinue'
 $VerbosePReference = 'continue'
+
+. (gi -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\buffer\2022-11-importExcel\__module__.excel.ps1')
