@@ -10,7 +10,7 @@ Write-Warning "add func: 'Lookup()'"
 
 
 
-$PathSeem = gi -ea 'continue'  'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
+$PathSeem = Get-Item -ea 'continue'  'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
 
 $script:__superVerboseAtBottom = $true # at end of profile load, turn on then
 $script:__superTraceAtBottomLevel = 0
@@ -27,33 +27,111 @@ function yamlify {
         Real quick way to flatten many properties without parsing JSON
     .EXAMPLE
         Get-Process | Select-Object -First 2 | yamlify | Format-Table
-    .EXAMPLE
+    .EXAMPLE    
         ps | s -First 1 | to->Json -Depth 1 | from->Json
-        ps | s -First 1 | to->Json -Depth 1 | from->Json
+        ps | s -First 1 | to->Json -Depth 1 | from->Json 
     #>
     param( [switch]$VariationJson )
-    if(-not $VariationJson) {
-        $input | ConvertTo-Json -depth 1 | convertFrom-Json
+    if (-not $VariationJson) {
+        $input | ConvertTo-Json -Depth 1 | ConvertFrom-Json
         return
     }
-    $input | ConvertTo-Csv | convertFrom-Csv
+    $input | ConvertTo-Csv | ConvertFrom-Csv
 }
-function new.jsonify {
-    <#
+. { # more to extract 
+
+    function new.jsonify { 
+        <#
     .synopsis
         to json, minimal depth, truncate arrays etc.. if long
     #>
-    param(
-        [Parameter(Mandatory,ValueFromPipeline)]
-        $InputObject
+        param(
+            [Parameter(Mandatory, ValueFromPipeline)]
+            $InputObject,
 
-    )
-    process {
-        $InputObject
-        | to->Json -Depth 1
-        | from->Json
+            # automatically remove any blankable values
+            [Parameter()]$DropBlank
+        )
+        process {
+            $serializeOnce = $InputObject
+            | to->Json -Depth 1
+            | from->Json
+
+
+        }
     }
-}
+
+    function _test_scalarIsBlank { 
+        <#
+        Test-IsBlankable Value, whitespace is blank
+    #>
+        [OutputType('System.Boolean')]
+        param( 
+            # any scalar
+            [Parameter(Mandatory)]
+            [AllowNull()]
+            [AllowEmptyCollection()]
+            [AllowEmptyString()]
+            $Object
+        )
+        $isBlank = $false
+        if ($null -eq $Object) { 
+            $isBlank = $true
+            Write-Verbose '<true null>'
+        }
+        if ( [string]::IsNullOrWhiteSpace( $val ) ) { $isBlank = $True }
+        return $isBlank
+    }
+    function _test_propIsBlank {
+        <#
+    .SYNOPSIS
+        test if a property is blank, by name
+    #>
+
+        [OutputType('System.Boolean')]
+        param( 
+            [Alias('Object')]
+            [Property(Mandatory)]
+            $TargetObject,
+
+            # key/field name
+            # properties to inspect
+            [Property(Mandatory)]
+            [string]$PropertyName
+            # [string[]]$PropertyName  # todo: test ma
+        )
+        $val = $TargetObject.psobject.properties[ $PropertyName ]
+        $isBlank = _test_scalarIsBlank $val
+        # if($null -eq $val) { $isBlank = $true }
+        # if( [string]::IsNullOrWhiteSpace( $val ) ) { $isBlank = $True }
+        return $isBlank
+    }
+    function props.select.notBlankableValues {
+        [cmdletbinding()]
+        param(
+            [Parameter(Mandatory, ValueFromPipeline)]
+            [object]$InputObject,
+        
+            #invert        
+            [switch]$KeepBlanks
+        )
+        process {
+            $InputObject.PSObject.Properties
+            | Where-Object { 
+                -not (_test_scalarIsBlank $_.Value)
+            } | ForEach-Object Name | Sort-Object
+        }
+        # todo: code from: "Dev.Nin\?'NotBlank"
+    }
+
+    Get-Process
+    | Select-Object -First 1
+    | new.jsonify
+
+    hr
+    Get-Process | s -First 1 | props.select.notBlankableValues
+} 
+
 function Using.Namespace {
     '
     using namespace System.Collections.Generic
@@ -99,16 +177,16 @@ function transpileTillCooked {
     $last = $ScriptBlock
     $iter = 0
 
-    while($true) {
-        if($iters++ -gt $MaxIters) { break }
+    while ($true) {
+        if ($iters++ -gt $MaxIters) { break }
         $next = $last.Transpile()
-        if($Pretty) {
+        if ($Pretty) {
             $InformationPreference = 'continue'
             hr | Write-Information
             $next | Write-Information
             $InformationPreference = 'silentlycontinue'
         }
-        if($next.ToString() -eq $last.ToString()) { break }
+        if ($next.ToString() -eq $last.ToString()) { break }
         $last = $Next
     }
     return $next
@@ -168,17 +246,17 @@ function Get-HelpFromType {
     }
 }
 
-& {
+& { 
     'adding "win-get" autocomplete from: <https://learn.microsoft.com/en-us/windows/package-manager/winget/tab-completion>' | Write-Verbose
 
     Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
         param($wordToComplete, $commandAst, $cursorPosition)
-            [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
-            $Local:word = $wordToComplete.Replace('"', '""')
-            $Local:ast = $commandAst.ToString().Replace('"', '""')
-            winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
+        [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
+        $Local:word = $wordToComplete.Replace('"', '""')
+        $Local:ast = $commandAst.ToString().Replace('"', '""')
+        winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        }
     }
 }
 function regex.PwshLiteral {
@@ -188,26 +266,26 @@ function regex.PwshLiteral {
     #>
     param()
 
-    write-warning 'to finish'
+    Write-Warning 'to finish'
     $templateRegexLiteral = @'
 $regex = @'
 (?x)
 {0}
 '@ + "`n'@"
 
-    $inner = ls C:\nin_fork -Depth 2 | select -First 100 | Get-Random -Count 3
-        | Join-String -sep "`n|" {
-             @(
-                #"`n"
-                '({0})' -f [regex]::Escape( $_ )
-                #"`n"
-             ) -join '' | Format-Predent -TabWidth 4 -PassThru
-        } -op "`n(" -os "`n)"
-| Format-Predent -TabWidth 4 -PassThru
+    $inner = Get-ChildItem C:\nin_fork -Depth 2 | Select-Object -First 100 | Get-Random -Count 3
+    | Join-String -sep "`n|" {
+        @( 
+            #"`n"
+            '({0})' -f [regex]::Escape( $_ ) 
+            #"`n"
+        ) -join '' | Format-Predent -TabWidth 4 -PassThru
+    } -op "`n(" -os "`n)"
+    | Format-Predent -TabWidth 4 -PassThru
 
-        $templateRegexLiteral -f @(
-            $inner
-        )
+    $templateRegexLiteral -f @(
+        $inner
+    )
 }
 
 
@@ -222,9 +300,9 @@ function b.wrapLikeWildcard {
         'cat', 'CAT*' | b.wrapLikeWildcard
         '*cat*', '*cat*
     #>
-   process {
-    @( '*', $_.ToLower(), '*') -join '' -replace '\^\*{2}', '*' -replace '\*{2}$', '*'
-   }
+    process {
+        @( '*', $_.ToLower(), '*') -join '' -replace '\^\*{2}', '*' -replace '\*{2}$', '*'
+    }
 }
 
 function bcall {
@@ -236,11 +314,11 @@ function bcall {
     )
     switch ($FormatMode) {
         'A' {
-            Get-PSCallStack | fl -Force
+            Get-PSCallStack | Format-List -Force
         }
         'B' {
             hr
-            Get-PSCallStack | %{
+            Get-PSCallStack | ForEach-Object {
                 $_.Position | label 'Pos'
                 $_.FunctionName | label 'Func'
                 $_.Command | label 'Cmd'
@@ -249,13 +327,13 @@ function bcall {
         }
         'C' {
             & {
-                Get-PSCallStack | % -Begin { $i = 0 } {
+                Get-PSCallStack | ForEach-Object -Begin { $i = 0 } {
                     $prefix = ' ' * $i -join ''
                     @(
                         $prefix
                         $_.FunctionName
                     ) -join ''
-                    $i+=4
+                    $i += 4
                 }
             }
         }
@@ -263,13 +341,13 @@ function bcall {
             & {
                 Get-PSCallStack
                 | ReverseIt
-                | % -Begin { $i = 0 } {
+                | ForEach-Object -Begin { $i = 0 } {
                     $prefix = ' ' * $i -join ''
                     @(
                         $prefix
                         $_.FunctionName
                     ) -join ''
-                    $i+=4
+                    $i += 4
                 }
             }
         }
@@ -277,10 +355,10 @@ function bcall {
             & {
                 Get-PSCallStack
                 | ReverseIt
-                | % -Begin { $i = 0 } {
+                | ForEach-Object -Begin { $i = 0 } {
 
                     $prefix = ' ' * $i -join ''
-                    $render =                     @(
+                    $render = @(
                         $prefix
                         $_.FunctionName
                     ) -join ''
@@ -289,7 +367,7 @@ function bcall {
                         ' '
                         $_.Position
                     ) -join ''
-                    $i+=4
+                    $i += 4
                 }
             }
         }
@@ -307,28 +385,28 @@ function b.fm {
 
 
     #>
-   param( [string]$Pattern )
-   process {
-      $pattern = $pattern | b.wrapLikeWildcard
-      # $pattern = @( '*', $patter.ToLower(), '*') -join '' -replace '\^\*{2}', '*'
+    param( [string]$Pattern )
+    process {
+        $pattern = $pattern | b.wrapLikeWildcard
+        # $pattern = @( '*', $patter.ToLower(), '*') -join '' -replace '\^\*{2}', '*'
 
-        if($Pattern) {
-            $_ | Find-Member $Pattern | Sort  Name | ft Name, DisplayString
+        if ($Pattern) {
+            $_ | Find-Member $Pattern | Sort-Object  Name | Format-Table Name, DisplayString
         } else {
-            $_ | Find-Member | Sort  Name | ft Name, DisplayString
+            $_ | Find-Member | Sort-Object  Name | Format-Table Name, DisplayString
         }
-   }
+    }
 }
 
-function transposeObject {
+function transposeObject { 
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
         $InputObject
     )
-    process {
-        $InputObject.PSobject.Properties | ForEach-Object {
+    process { 
+        $InputObject.PSobject.Properties | ForEach-Object { 
             $props = [ordered]@{}
-
+            
             $props['Key'] = $_.Name
             $props['Value'] = $_.Value
             # $props[ $_.Value ] = $_.Name
@@ -348,20 +426,20 @@ function _srcGenerateClassRecord {
     #>
     param( [object]$InputObject, [switch]$WithFzf )
     $propNames = $InputObject.psobject.Properties.name
-    if($WithFzf) {
+    if ($WithFzf) {
         $propNames = $propNames | & fzf '-m'
     }
 
-     $propNames | %{
-    '[string]${0}' -f @( $_  )
+    $propNames | ForEach-Object {
+        '[string]${0}' -f @( $_  )
 
     }
     "`n`n# .... `n`n"
-    $Inner  = $propNames | %{
-    '    $This.{0} = $Object.{0}' -f @( $_  )
+    $Inner = $propNames | ForEach-Object {
+        '    $This.{0} = $Object.{0}' -f @( $_  )
     } | Join-String -sep "`n"
 
-@"
+    @"
 className ( [object]`$Object ) {
 $Inner
 }
@@ -392,13 +470,13 @@ function __profileGreet {
     .LINK
         https://devblogs.microsoft.com/powershell/announcing-the-release-of-get-whatsnew/#using-get-whatsnew
     #>
-    $binGlow = gcm -CommandType Application 'glow' -ea Ignore
+    $binGlow = Get-Command -CommandType Application 'glow' -ea Ignore
     $splat = @{
-        Daily = $true
+        Daily   = $true
         # Version = '7.3'
-        Version =  '7.1', '7.2','7.3'
+        Version = '7.1', '7.2', '7.3'
     }
-    if(-not $binGlow ) {
+    if (-not $binGlow ) {
         Get-WhatsNew @splat
     } else {
         Get-WhatsNew @splat
@@ -453,9 +531,9 @@ function Err.2xp {
         [Alias('Number')] # 'count' and 'clear' are too close for tying
         [int]$Limit )
 
-        # count still grabs the newest, but  output in reverse
-        [Alias('tac')]
-        [switch]$Reverse
+    # count still grabs the newest, but  output in reverse
+    [Alias('tac')]
+    [switch]$Reverse
 
     if ($Clear) { $global:error.Clear() }
 
@@ -507,19 +585,19 @@ function inMod {
 
         [switch]$Force
     )
-    write-warning 'partial func, and doesn''t work right'
+    Write-Warning 'partial func, and doesn''t work right'
 
 
-    $Sb = if   ( $scriptBlock -is 'scriptblock' ) { $ScriptBlock }
-          else { $scriptBlock -as 'ScriptBlock' }
+    $Sb = if ( $scriptBlock -is 'scriptblock' ) { $ScriptBlock }
+    else { $scriptBlock -as 'ScriptBlock' }
 
-    & ( Import-Module $ModuleName -PassThru -force:$Force ) {
+    & ( Import-Module $ModuleName -PassThru -Force:$Force ) {
         $Sb
     }
 }
 
 function _errPreview {
-    $Input | %{ $_ | io | ft Reported, Name, ShortValue, ShortType -auto }
+    $Input | ForEach-Object { $_ | io | Format-Table Reported, Name, ShortValue, ShortType -auto }
 }
 function gErr {
     [int]$Limit,
@@ -527,7 +605,8 @@ function gErr {
 
     err -Limit $Limit -Tac:$Tac | Get-Error
 }
-function Err { # [Err.v3]
+function Err {
+    # [Err.v3]
     # sugar when in debug mode
     <#
     todo: param set that that will use
@@ -558,7 +637,7 @@ function Err { # [Err.v3]
         # | select -Index $INdex
     }
     if ($Limit) {
-        if($Reverse) {
+        if ($Reverse) {
             $global:error | Select-Object -First $Limit | ReverseIt
         } else {
             $global:error | Select-Object -First $Limit
@@ -566,7 +645,7 @@ function Err { # [Err.v3]
         return
     }
 
-    if($Reverse) {
+    if ($Reverse) {
         $global:error | ReverseIt
     } else {
         $global:error
@@ -834,16 +913,16 @@ if ($False) {
 # if (! $PathSeem) {
 #     Write-Warning "Attempted to import SeeminglySci failed: 'G:\2021-github-downloads\dotfiles\SeeminglyScience\PowerShell'"
 # } else {
-    $env:PSModulePath = @(
-        'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
-        $env:PSModulePath
-    ) -join ';'
+$env:PSModulePath = @(
+    'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
+    $env:PSModulePath
+) -join ';'
 
-    Import-Module pslambda -DisableNameChecking
-    Import-Module -DisableNameChecking (gi 'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell\Utility.psm1')
-    Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
-    Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
-    Write-Verbose 'SeeminglySci: Imported'
+Import-Module pslambda -DisableNameChecking
+Import-Module -DisableNameChecking (Get-Item 'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell\Utility.psm1')
+Update-TypeData -PrependPath (Join-Path $PathSeem 'profile.types.ps1xml')
+Update-FormatData -PrependPath (Join-Path $PathSeem 'profile.format.ps1xml')
+Write-Verbose 'SeeminglySci: Imported'
 # }
 # $me = Get-Process -Id $PID
 # if ($me.Parent.Name -match 'Azure') {
@@ -1940,9 +2019,9 @@ function __prompt_noModuleLoaded {
 $__colors = $cs
 function Prompt_Nin.2 {
     $Config ??= @{
-        ShowVSCodeStatus = $true
+        ShowVSCodeStatus      = $true
         ShowVSCodeAllVersions = $true
-        OutputFormat = 'SuperSuperVerbose' #'dbgInfo'
+        OutputFormat          = 'SuperSuperVerbose' #'dbgInfo'
     }
     $Regex ??= @{
         Addon_VersionString = '[\d.]+'
@@ -1968,27 +2047,27 @@ function Prompt_Nin.2 {
         Get-Location
         "${fg:clear}"
 
-        if($Config.ShowVSCodeStatus) {
+        if ($Config.ShowVSCodeStatus) {
             # "`n"
             # 'PS ExtensionTerm: '
         }
-        if($Config.ShowVSCodeAllVersions) {
+        if ($Config.ShowVSCodeAllVersions) {
 
 
             $script:____promptMiniCache ??= @{
-                FinalRender = ''
-                ModulesString = Get-Module *editor*, *service* | sort Name
-                    | Join-String -sep ', ' { '{0} = {1}' -f @(
+                FinalRender           = ''
+                ModulesString         = Get-Module *editor*, *service* | Sort-Object Name
+                | Join-String -sep ', ' { '{0} = {1}' -f @(
                         $_.Name, $_.Version )
-                    }
-                EditorServicesRunning = if( (get-module 'EditorServicesCommandSuite', 'PowerShellEditorServices.Commands', 'PowerShellEditorServices.VSCode').count -gt 2 ) {
+                }
+                EditorServicesRunning = if ( (Get-Module 'EditorServicesCommandSuite', 'PowerShellEditorServices.Commands', 'PowerShellEditorServices.VSCode').count -gt 2 ) {
                     'ES჻ '
                 } else {
 
 
                 }
-                EditorName = (ps -id $pid).Parent.name
-                ExtensionVersion = & 'code.cmd' --list-extensions --show-versions | sls '(ms-vscode.power|powerquery)' -Raw | Join-string -sep ', '
+                EditorName            = (Get-Process -Id $pid).Parent.name
+                ExtensionVersion      = & 'code.cmd' --list-extensions --show-versions | Select-String '(ms-vscode.power|powerquery)' -Raw | Join-String -sep ', '
             }
 
             "`n"
@@ -1998,7 +2077,7 @@ function Prompt_Nin.2 {
                     - [ms-vscode.powershell@2022.8.5, ms-vscode.powershell-preview@2022.10.0]
                 - detect other extensions, powerquery
             #>
-            switch($Config.OutputFormat) {
+            switch ($Config.OutputFormat) {
                 'SuperSuperVerbose' {
 
                 }
@@ -2008,11 +2087,11 @@ function Prompt_Nin.2 {
                     $render = @(
                         $PSStyle.Foreground.FromRgb('#999999')
                         'extensionTerm: '
-                        $script:____promptMiniCache.ModulesString -replace $Regex.Addon_VersionString, {@(
-                            $PSStyle.Foreground.FromRgb('#6f2143')
-                            $_
-                            $PSStyle.Foreground.FromRgb('#6f6143')
-                        ) -join ''}
+                        $script:____promptMiniCache.ModulesString -replace $Regex.Addon_VersionString, { @(
+                                $PSStyle.Foreground.FromRgb('#6f2143')
+                                $_
+                                $PSStyle.Foreground.FromRgb('#6f6143')
+                            ) -join '' }
                         "`n"
                         'bin: '
                         $script:____promptMiniCache.EditorName ?? '<Edit?> '
@@ -2022,7 +2101,7 @@ function Prompt_Nin.2 {
                         $PSStyle.Reset
                     ) -join ''
                 }
-                default  {
+                default {
                     $render = @(
                         $PSStyle.Foreground.FromRgb('#999999')
                         $script:____promptMiniCache.ModulesString
@@ -2229,10 +2308,10 @@ function prompt {
     }
 }
 function _tempImportAws {
-    Import-Module -Force 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\aws_utils.nin\aws_utils.nin\' -verbose -scope Global
+    Import-Module -Force 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\aws_utils.nin\aws_utils.nin\' -Verbose -Scope Global
 }
 
-'--- last line of profile has completed -- ' | write-debug
+'--- last line of profile has completed -- ' | Write-Debug
 
 
 # if (!(Get-Module dev.nin)) {
@@ -2281,23 +2360,23 @@ function resolveAliasedCommand {
     )
     if ($UsingLike) {
         # change empty regexes to match everything
-        if( $Name -eq '.' ) {  $Name = '*' }
-        if( [string]::IsNullOrWhiteSpace( $Module ) ) {
-             $Module = '*'
+        if ( $Name -eq '.' ) { $Name = '*' }
+        if ( [string]::IsNullOrWhiteSpace( $Module ) ) {
+            $Module = '*'
         }
-        (Get-Alias | ? Source -like $Module | ? Name -Like $Name).ReferencedCommand
-       return
+        (Get-Alias | Where-Object Source -Like $Module | Where-Object Name -Like $Name).ReferencedCommand
+        return
     }
 
-    (Get-Alias | ? Source -Match $Module | ? Name -Match $Name).ReferencedCommand
+    (Get-Alias | Where-Object Source -Match $Module | Where-Object Name -Match $Name).ReferencedCommand
 }
 
 
 #  https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock?view=powershellsdk-7.0.0#properties
 
 function __find_which_pwsh_extension {
-    $psedition.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match "vscode|$"
-    $psEditor.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match "vscode|$"
+    $psedition.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match 'vscode|$'
+    $psEditor.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match 'vscode|$'
 }
 
 
@@ -2306,11 +2385,11 @@ function Invoke-SpartanVsCode {
 
     $user_data_dir = Join-Path 'H:\env\code\env_fast' 'data'
     $addons_dir = Join-Path 'H:\env\code\env_fast' 'addons'
-    $c_args = '--extensions-dir', $addons_dir, '--user-data-dir', $user_data_dir, '--profile', 'fast', '--add', (gi $Path)
+    $c_args = '--extensions-dir', $addons_dir, '--user-data-dir', $user_data_dir, '--profile', 'fast', '--add', (Get-Item $Path)
 
     & code.cmd @c_args
-    write-warning ' - [  ] ask is there a better wya to invoke without breaking streams'
-    write-warning 'find the real one'
+    Write-Warning ' - [  ] ask is there a better wya to invoke without breaking streams'
+    Write-Warning 'find the real one'
 }
 function cmdToScriptBlock {
     # barely-sugar, more so for semantics
@@ -2325,7 +2404,7 @@ function cmdToScriptBlock {
     [CmdletBinding()]
     param()
     process {
-        if($_ -is 'ScriptBlock') { return $_ }
+        if ($_ -is 'ScriptBlock') { return $_ }
         return $_.ScriptBlock
     }
 }
@@ -2344,13 +2423,13 @@ function fileFromScriptBlock {
     }
 }
 
-write-warning 'end... now verbose'
+Write-Warning 'end... now verbose'
 # $VerbosePReference = 'continue'
 $debugpreference = 'continue'
 # $PSDefaultParameterValues['Import-Module:Verbose'] = $true
 # $PSDefaultParameterValues['Import-Module:Debug'] = $true
 
-'SuperVerbose?: ', $script:__superVerboseAtBottom -join '' | write-warning
+'SuperVerbose?: ', $script:__superVerboseAtBottom -join '' | Write-Warning
 if ($script:__superVerboseAtBottom) {
 
     $VerbosePReference = 'continue'
@@ -2362,20 +2441,20 @@ if ($script:__superVerboseAtBottom) {
     $PSDefaultParameterValues['Import-Module:Debug'] = $false #
     $PSDefaultParameterValues['Set-Alias:Debug'] = $false #
 
-        $PSDefaultParameterValues['Import-Module:Verbose'] = $true
-        $PSDefaultParameterValues['Update-Module:Verbose'] = $true
-        $PSDefaultParameterValues['Install-Module:Verbose'] = $true
-        $PSDefaultParameterValues['get-Module:Verbose'] = $true
+    $PSDefaultParameterValues['Import-Module:Verbose'] = $true
+    $PSDefaultParameterValues['Update-Module:Verbose'] = $true
+    $PSDefaultParameterValues['Install-Module:Verbose'] = $true
+    $PSDefaultParameterValues['get-Module:Verbose'] = $true
 
-        $PSDefaultParameterValues['Import-Module:debug'] = $true
-        $PSDefaultParameterValues['Update-Module:debug'] = $true
-        $PSDefaultParameterValues['Install-Module:debug'] = $true
-        $PSDefaultParameterValues['get-Module:debug'] = $true
+    $PSDefaultParameterValues['Import-Module:debug'] = $true
+    $PSDefaultParameterValues['Update-Module:debug'] = $true
+    $PSDefaultParameterValues['Install-Module:debug'] = $true
+    $PSDefaultParameterValues['get-Module:debug'] = $true
     # }
 
     # Set-PSDebug -Trace 0
     # Set-PSDebug -Trace 2
-    "end => NinCurrentALlHosts: '$PSComandPath'" | write-warning
+    "end => NinCurrentALlHosts: '$PSComandPath'" | Write-Warning
 }
 # $WarningPreference = 'continue'
 if ($true -or $script:__superVerboseAtBottom) {
@@ -2402,7 +2481,7 @@ $PSDefaultParameterValues['get-Module:Verbose'] = $false
 
 
 
-if($script:__superEnableDebugAtBottom) {
+if ($script:__superEnableDebugAtBottom) {
     $PSDefaultParameterValues['*:Debug'] = $true
 
     # $debugpreference = 'silentlyContinue'
@@ -2423,21 +2502,21 @@ $PSDefaultParameterValues.Remove('*:Debug')
 $PSDefaultParameterValues.Remove('*:Verbose')
 # $DebugPreference = 'silentlycontinue'
 
-    # }
+# }
 
-    Set-PSDebug -Trace $script:__superTraceAtBottomLevel
-    "end => NinCurrentALlHosts: '$PSComandPath'" | write-warning
+Set-PSDebug -Trace $script:__superTraceAtBottomLevel
+"end => NinCurrentALlHosts: '$PSComandPath'" | Write-Warning
 
 'autoload _tempImportAws'  | label 'util.Invoke -> '
 _tempImportAws
 __profileGreet
 
-write-warning '- [ ] todo: flush all (3?4?) histories for perf'
-write-warning '- [ ] todo: explictly disable modules like AWS to improve command delays'
-Write-warning '- [ ] todo perf:
+Write-Warning '- [ ] todo: flush all (3?4?) histories for perf'
+Write-Warning '- [ ] todo: explictly disable modules like AWS to improve command delays'
+Write-Warning '- [ ] todo perf:
     delete obsolete global unsaved workspaces polliting history ?
 '
-Write-warning '- [ ] todo perf:
+Write-Warning '- [ ] todo perf:
     [1] should I delete all of history?
     [2] is this normal or pwsh or something?
     [3] "$Env:AppData\Code\User\History"'
@@ -2445,7 +2524,7 @@ Write-warning '- [ ] todo perf:
 label 'Reached End Of' $PSCommandPath -bg gray30 -fg gray60
 
 label 'Reached End Of' $PSCommandPath -bg gray30 -fg gray60
-| Write-warning
+| Write-Warning
 
 $script:__bottomTraceInvoke = $true
 label 'ExtraDebug' 'super trace mode on'
@@ -2480,7 +2559,7 @@ label 'ExtraDebug' 'super trace mode on'
 #     $x  =- 10
 #     throw "WIP: $PSCommandPath"
 # }
-function d.clipStr  {
+function d.clipStr {
     param(
         <#
         .DESCRIPTION
@@ -2510,33 +2589,33 @@ function d.clipStr  {
         # todo : rewrite splits and joins
         $sb = [Text.StringBuilder]::new()
         [List[Object]]$line = @()
-        write-warning "WIP: $PSCommandPath"
+        Write-Warning "WIP: $PSCommandPath"
     }
     process {
         $line.AddRange( $InputObject )
 
     }
     end {
-        write-warning "NotFinishedException: $PSCommandPath"
+        Write-Warning "NotFinishedException: $PSCommandPath"
         # $line.ToString()
         switch ($FormatTemplate) {
             'Csv_PwshLit' {
-                 $render = $Line | Join-String -sep ', ' -SingleQuote
+                $render = $Line | Join-String -sep ', ' -SingleQuote
                 | Join-String -op '$x ='
-             }
+            }
             'List_PwshLit' {
-                 $render = $Line | Join-String -sep "`n" -SingleQuote
+                $render = $Line | Join-String -sep "`n" -SingleQuote
                 | Join-String -op '$x = @(' -os ') '
-             }
+            }
             'Csv' {
-                $render =  $Line | Join-String -sep ', ' -SingleQuote
-             }
+                $render = $Line | Join-String -sep ', ' -SingleQuote
+            }
 
-             Default {
+            Default {
                 throw "Unhandled Template: $FormatTemplate"
             }
         }
-        if($Preview)   {
+        if ($Preview) {
             $render; return
 
 
@@ -2578,33 +2657,33 @@ function __setTrace {
         )]
         [string[]]$PresetName
     )
-    write-warning "WIP: $PSCommandPath"
+    Write-Warning "WIP: $PSCommandPath"
 
     $presetGroups = @{
         CmdSearch = 'CommandSearchDiscovery', 'CommandDiscovery', 'CommandHelpProvider'
     }
 
     [object[]]$all_sources = @(switch ($PresetName) {
-        {
-            $PresetName -in @($presetGroups.Values)
-        } {
-            $presetGroups[ $presetName ]
-         }
-        Default {
-            throw "Unhandled Presetname:  '($presetName -join ',')'"
-        }
-    }) | Sort-Object -Unique
+            {
+                $PresetName -in @($presetGroups.Values)
+            } {
+                $presetGroups[ $presetName ]
+            }
+            Default {
+                throw "Unhandled Presetname:  '($presetName -join ',')'"
+            }
+        }) | Sort-Object -Unique
 
-    $all_sources|Join-String -op "Sources Selected = " -sep ', '
-    |Write-Verbose
+    $all_sources | Join-String -op 'Sources Selected = ' -sep ', '
+    | Write-Verbose
 
     Set-TraceSource -Name $all_sources
     # ConsoleHost, ConsoleHost, ConsoleHostRunspaceInit, ConsoleHostUserInterface, ConsoleLineOutput
 }
-$script:__bottomDisableVerboseAsFinalCommand |Label 'always bottom'
-| write-warning
+$script:__bottomDisableVerboseAsFinalCommand | Label 'always bottom'
+| Write-Warning
 
-if($script:__bottomDisableVerboseAsFinalCommand) {
+if ($script:__bottomDisableVerboseAsFinalCommand) {
     $VerbosePReference = 'silentlycontinue'
     $WarningPreference = 'continue'
     # $debugpreference = 'silentlycontinue'
@@ -2612,5 +2691,3 @@ if($script:__bottomDisableVerboseAsFinalCommand) {
 # $DebugPreference = 'silentlycontinue'
 $DebugPreference = 'silentlycontinue'
 $VerbosePReference = 'continue'
-
-. (gi -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\buffer\2022-11-importExcel\__module__.excel.ps1')
