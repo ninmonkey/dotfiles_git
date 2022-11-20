@@ -8,9 +8,19 @@ $DebugPreference = 'silentlycontinue'
 Write-Warning "add func: 'Lookup()'"
 'try: <https://github.com/Jaykul/dotfiles/blob/master/.chezmoitemplates/interactive.ps1>xl8r'
 
+if($true) {
+    # temp to test a crash or not
+    $PSDefaultParameterValues['import-module:verbose'] = $false
+    $PSDefaultParameterValues['import-module:debug'] = $false
+    $PSDefaultParameterValues['import-module:DisableNameChecking'] = $true
+
+}
 
 
 $PathSeem = Get-Item -ea 'continue'  'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
+if(-not $PathSeem) {
+    write-warning "`$PathSeem failed to locate import! from: $PSCommandPath."
+}
 
 $script:__superVerboseAtBottom = $true # at end of profile load, turn on then
 $script:__superTraceAtBottomLevel = 0
@@ -20,6 +30,22 @@ $script:__bottomDisableVerboseAsFinalCommand = $true
 $DisabledForPerfTest = $false
 $superVerboseAtTop = $false
 $manualVSCodeIntegrationScript = $false
+
+
+function commitMsg.experimental {
+    <#
+.synopis
+ mini git sugar for stuff like gists , NYI: ShouldProcess
+.example
+   commitMsg -filename (gcl) -msg 'Compare-StringSet 95% working, small type errors'
+#>
+    [CmdletBinding()]
+    param( $Filename, [ValidateNotNullOrEmpty()][string]$Msg)
+    goto $filename -ea stop
+    git add $filename
+    git commit -m $Msg
+
+}
 
 function fime.2 {
     <#
@@ -126,7 +152,7 @@ function yamlify {
     }
     $input | ConvertTo-Csv | ConvertFrom-Csv
 }
-. { # more to extract
+# . { # more to extract
 
     function new.jsonify {
         <#
@@ -143,7 +169,8 @@ function yamlify {
         process {
             $serializeOnce = $InputObject
             | to->Json -Depth 1
-            | from->Json
+
+            $serializeOnce | from->Json
 
 
         }
@@ -212,13 +239,13 @@ function yamlify {
         # todo: code from: "Dev.Nin\?'NotBlank"
     }
 
-    Get-Process
-    | Select-Object -First 1
-    | new.jsonify
+#     Get-Process
+#     | Select-Object -First 1
+#     | new.jsonify
 
-    hr
-    Get-Process | s -First 1 | props.select.notBlankableValues
-}
+#     hr
+#     Get-Process | s -First 1 | props.select.notBlankableValues
+# }
 
 function Using.Namespace {
     '
@@ -470,7 +497,18 @@ function b.fm {
         Find member, sugar to show full name, and enforce wildcard
     .EXAMPLE
         Pwsh> $eis | b.fm fetch
+    .notes
+        Actually I was getting string type instead of hashset using
 
+            ,$SetA | b.fm
+
+        vs working version
+
+            ,$SetA | fm
+
+        why? because process was using $_ | fm , enumerating when not wantded
+
+            $_ | fm
 
     #>
     param( [string]$Pattern )
@@ -479,9 +517,10 @@ function b.fm {
         # $pattern = @( '*', $patter.ToLower(), '*') -join '' -replace '\^\*{2}', '*'
 
         if ($Pattern) {
-            $_ | Find-Member $Pattern | Sort-Object  Name | Format-Table Name, DisplayString
+            Find-Member -InputObject $_ $Pattern | Sort-Object  Name | Format-Table Name, DisplayString
+            Find-Member -InputObject $_ $Pattern | Sort-Object  Name | Format-Table Name, DisplayString
         } else {
-            $_ | Find-Member | Sort-Object  Name | Format-Table Name, DisplayString
+            Find-Member -InputObject $_ | Sort-Object  Name | Format-Table Name, DisplayString
         }
     }
 }
@@ -971,12 +1010,16 @@ $__ConfigOnlyuseFast = $false
 
 $env:PATH += ';', 'G:\programs_nin_bin' -join '' # old
 $env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -join ''
-$env:Path += ';', 'H:\github_fork\Pwsh\MyPSModule_imports' -join '' # good, new
+$env:Path += ';', 'H:/github_fork/Pwsh/autoLoader.MyPSModule_imports' -join '' # good, new
 
+if($true) {
 $env:PSModulePath = @(
     'H:\github_fork\Pwsh\MyPSModule_imports'
     $env:PSModulePath
 ) -join ';'
+} else {
+    write-warning 'Ignoring github-forks path: "H:\github_fork\Pwsh\MyPSModule_imports"'
+}
 
 
 if (-not( Get-Module BDG_lib -ea ignore)) {
@@ -1167,19 +1210,28 @@ if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
     . (Get-Item Temp:\complete_gh.ps1)
 }
 
-$Env:PSModulePath = @( # 2022
-    (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
-    (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
-    'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
-    $Env:PSModulePath
+if($false) {
+    write-warning "Disabled import path: 'G:\2021-github-downloads\PowerShell\Santisq🧑' "
+    write-warning 'maybe disabled import: "C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\"'
+} else {
+    $Env:PSModulePath = @( # 2022
+        (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
+        (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
+        'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\'
+        $Env:PSModulePath
 
-) -join ';'
+    ) -join ';'
+}
 
+if($true) {
+    write-warning 'skipping importing path: "C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell" dotfiles'
+} else {
 if ($OneDrive.Enable_MyDocsBugMapping) {
     $Env:PSModulePath = @(
         $Env:PSModulePath
         'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell'
     ) -join ';'
+}
 }
 
 <#
@@ -2045,7 +2097,7 @@ $OptionalImports | ForEach-Object {
 # Import-Module Dev.Nin -DisableNameChecking
 # Import-Module posh-git -DisableNameChecking
 # finally "profile"
-# Import-Module Ninmonkey.Profile -DisableNameChecking
+Import-Module Ninmonkey.Profile -DisableNameChecking -ea 'Continue' -wa 'Continue'
 
 if ($__ninConfig.LogFileEntries) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Backup-VSCode() start'
@@ -2637,8 +2689,8 @@ function new.fime.query.anyof {
     #>
     param ( [object[]]$InputTypes, [switch]$Test )
 
-       $term = $InputTypes
-       | Join-String -sep ', ' { $_ } -os ']]' -op '[anyof['
+    $term = $InputTypes
+    | Join-String -sep ', ' { $_ } -os ']]' -op '[anyof['
 
     if( -not $Test ) { return $Term }
 

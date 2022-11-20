@@ -118,6 +118,41 @@ if ($true) {
     $PROFILE | Add-Member -ea ignore -NotePropertyName 'Ninmonkey.Profile.psm1' -NotePropertyValue (Get-Item $PSCommandPath)
     $PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_Dotfiles' -NotePropertyValue ((Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
     $PROFILE | Add-Member -ea ignore -NotePropertyName 'Nin_PSModules' -NotePropertyValue ((Get-Item $Env:Nin_PSModulePath -ea ignore) ?? $null )
+    $PROFILE | Add-Member -ea ignore -Force -NotePropertyMembers @{
+        Pwsh = @{
+            'Ninmonkey.Profile/*' = (Get-Item $PSScriptRoot)
+            'Ninmonkey.Profile.psm1' = (Get-Item $PSCommandPath)
+            'Nin_Dotfiles' = ((Get-Item $env:Nin_Dotfiles -ea ignore) ?? $null )
+            'Nin_PSModules' = ((Get-Item $Env:Nin_PSModulePath -ea ignore) ?? $null )
+            PSModules = @()
+
+        }
+        VSCode = @{
+            AppData = @{
+                Root = Gi $Env:APPDATA\code\User
+                Settings = @{
+                    Json =      gi $Env:APPDATA\Code\User\settings.json
+                    Snippets =  gi $Env:APPDATA\Code\User\snippets
+                    Keybinding = gi  $Env:APPDATA\Code\User\keybindings.json
+
+                }
+
+            }
+
+        }
+        Git = @{
+
+            Global = @{
+                GitConfig = gi (Join-Path "${Env:UserProfile}" "SkyDrive/Documents/2022/dotfiles_git/apps/git/global_.gitconfig")
+                GitIgnore = gi (Join-Path "${Env:UserProfile}" "SkyDrive/Documents/2022/dotfiles_git/apps/git/global_ignore.2022.gitignore" )
+
+            }
+        }
+        Venv = @{
+            GlobalRoot = gi 'H:\env'
+        }
+    }
+
 } else {
     $dictMembers = @{
         'Ninmonkey.Profile.psm1' = Get-Item @ignoreSplat $PSSCriptRoot
@@ -190,7 +225,7 @@ Remove-Alias -Name 'cd' -Scope global -Force -ea Ignore
 
 
     ##
-    New-Alias @splatIgnorePass 'Err' -Value Dev.Nin\Test-HasNewError -Description 'makes -clear and -reset 1🤚ed'
+    # New-Alias @splatIgnorePass 'Err.dev' -Value Dev.Nin\Test-HasNewError -Description 'makes -clear and -reset 1🤚ed'
 
     ## Category 'Out->'
     ## Category 'Pipe->'
@@ -257,34 +292,36 @@ $newAliasList += @(
 # }
 ## FZF optional
 
+if( -not (gcm str -ea ignore)) {
 
-$newAliasList | ForEach-Object { $_.DisplayName }
-| str csv -Sort | Write-Color gray60
-| str prefix ('Profile Aliases: ')# #orange)
-# | Write-Debug # long form
+    $newAliasList | ForEach-Object { $_.DisplayName }
+    | str csv -Sort | Write-Color gray60
+    | str prefix ('Profile Aliases: ')# #orange)
+    # | Write-Debug # long form
 
-# short names only
-$newAliasList | ForEach-Object { $_.Name }
-| str csv -Sort | Write-Color gray60
-| str prefix ('Profile Aliases: ')# #orange)
-| Join-String
-| Write-Warning
-# Wait-Debugger
-# Export-ModuleMember -Variable $newAliasList
-
+    # short names only
+    $newAliasList | ForEach-Object { $_.Name }
+    | str csv -Sort | Write-Color gray60
+    | str prefix ('Profile Aliases: ')# #orange)
+    | Join-String
+    | Write-Warning
+    # Wait-Debugger
+    # Export-ModuleMember -Variable $newAliasList
+}
 # Func: Summarize  Aliases:
-
-$newAliasList
-| Sort-Object Name, ResolvedCommand
-| Join-String {
-    '{0} [{1}] {2}' -f @(
-        $_.Name | Write-Color 'green'
-        $_.ResolvedCommand | Write-Color 'darkgreen'
-        'desc' | Write-Color gray50
-    )
-} -sep "`n" | SplitStr Newline | str HR
-| Join-String
-| Write-Warning
+if( -not (gcm SplitStr -ea ignore)) {
+    $newAliasList
+    | Sort-Object Name, ResolvedCommand
+    | Join-String {
+        '{0} [{1}] {2}' -f @(
+            $_.Name | Write-Color 'green'
+            $_.ResolvedCommand | Write-Color 'darkgreen'
+            'desc' | Write-Color gray50
+        )
+    } -sep "`n" | SplitStr Newline | str HR
+    | Join-String
+    | Write-Warning
+}
 # Wait-Debugger
 # $newAliasList | Sort-Object Name | Join-String -sep ', ' -SingleQuote -op 'New Alias: '
 # | New-Text -fg 'pink' | Join-String -op 'Ninmonkey.Profile: '
@@ -305,6 +342,8 @@ function toggleErrors {
         0
     }
 }
+
+write-warning "'${PSCommandPath}' cleanup => dev.nin => disable auto import"
 
 if ($GitPromptSettings) {
     # Disable Posh-Git from including filepath, I already handle that.
