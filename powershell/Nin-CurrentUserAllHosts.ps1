@@ -1210,7 +1210,7 @@ if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
     . (Get-Item Temp:\complete_gh.ps1)
 }
 
-if($false) {
+if($true) {
     write-warning "Disabled import path: 'G:\2021-github-downloads\PowerShell\Santisq🧑' "
     write-warning 'maybe disabled import: "C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\"'
 } else {
@@ -1264,8 +1264,8 @@ $script:__ninConfig ??= @{
         SeeminglyScience = $true
     }
     Config                     = @{
-        PSScriptAnalyzerSettings2 = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
-        PSScriptAnalyzerSettings  = Get-Item -ea ignore 'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
+        PSScriptAnalyzerSettings2 = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2020\dotfiles_git\vs code profiles\user\PSScriptAnalyzerSettings.psd1'
+        PSScriptAnalyzerSettings  = Get-Item -ea ignore 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\PSScriptAnalyzerSettings.psd1'
     }
     OnLoad                     = @{
         IgnoreImportWarning = $true # __doc__: Ignore warnings from any modules imported on profile first load
@@ -1522,8 +1522,8 @@ if ($pseditor) {
 #>
 # set vars if not already existing
 $Env:TempNin ??= "$Env:UserProfile\SkyDrive\Documents\2021\profile_dump"
-$Env:Nin_Home ??= "$Env:UserProfile\Documents\2021" # what is essentially my base/root directory
-$Env:Nin_Dotfiles ??= "$Env:UserProfile\Documents\2021\dotfiles_git"
+$Env:Nin_Home ??= "$Env:UserProfile\SkyDrive\Documents\2021" # what is essentially my base/root directory
+$Env:Nin_Dotfiles ??= "$Env:UserProfile\SkyDrive\Documents\2021\dotfiles_git"
 $env:NinNow = "$Env:Nin_Home"
 
 
@@ -1533,7 +1533,7 @@ $Env:LESS ??= '-R'
 $ENV:PAGER ??= 'bat'
 # $ENV:PAGER ??= 'less -R'
 $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
-$Env:Nin_PSModulePath ??= "$Env:UserProfile\Documents\2021\Powershell\My_Github"
+$Env:Nin_PSModulePath ??= "$Env:UserProfile\SkyDrive\Documents\2021\Powershell\My_Github"
 
 $Env:Pager ??= 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 
@@ -2044,7 +2044,7 @@ if (Test-Path $Env:Nin_PSModulePath) {
 
 $Env:PSModulePath = @(
     $Env:PSModulePath
-    'C:\Users\cppmo_000\Documents\2021\dotfiles_git\powershell'
+    # 'C:\Users\cppmo_000\SkyDriveDocuments\2021\dotfiles_git\powershell'
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell'
     $pathSeem
 ) | Join-String -sep ';'

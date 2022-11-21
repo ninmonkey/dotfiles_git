@@ -1,0 +1,3512 @@
+[
+    {
+        "identifier": {
+            "id": "adpyke.codesnap",
+            "uuid": "8c1fc960-44b1-45e8-89b5-85f982fdaf27"
+        },
+        "version": "1.3.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\adpyke.codesnap-1.3.4",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/adpyke.codesnap-1.3.4",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "8c1fc960-44b1-45e8-89b5-85f982fdaf27",
+            "publisherId": "8d7f2028-26ae-4724-8306-a1c8bb6c6794",
+            "publisherDisplayName": "adpyke",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1641742361432
+        }
+    },
+    {
+        "identifier": {
+            "id": "adrieankhisbe.vscode-ndjson",
+            "uuid": "8719ef51-d9a5-4b89-bee5-04ff9f707f6e"
+        },
+        "version": "0.100.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\adrieankhisbe.vscode-ndjson-0.100.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/adrieankhisbe.vscode-ndjson-0.100.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "8719ef51-d9a5-4b89-bee5-04ff9f707f6e",
+            "publisherId": "14205c67-b75d-4ba1-a394-bf2c238c95f1",
+            "publisherDisplayName": "Adriean Khisbe (Adrien Becchis)",
+            "installedTimestamp": 1622317403452
+        }
+    },
+    {
+        "identifier": {
+            "id": "ahebrank.yaml2json",
+            "uuid": "a4f0c51b-9bfb-4f23-b646-0d3bbbc40142"
+        },
+        "version": "0.0.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ahebrank.yaml2json-0.0.4",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ahebrank.yaml2json-0.0.4",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "a4f0c51b-9bfb-4f23-b646-0d3bbbc40142",
+            "publisherId": "ff9e43ae-c9f1-44cb-b34a-72a3f5dd93f8",
+            "publisherDisplayName": "ahebrank",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1644792571012
+        }
+    },
+    {
+        "identifier": {
+            "id": "alefragnani.bookmarks",
+            "uuid": "b689fcc8-d494-4dbf-a228-2c694a578afc"
+        },
+        "version": "13.3.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\alefragnani.bookmarks-13.3.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/alefragnani.bookmarks-13.3.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "b689fcc8-d494-4dbf-a228-2c694a578afc",
+            "publisherId": "3fbdef65-bdf5-4723-aeaf-9e12a50546ef",
+            "publisherDisplayName": "Alessandro Fragnani",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "amazonwebservices.aws-toolkit-vscode",
+            "uuid": "ac5787df-9b2d-441c-abf0-977d62bc66f0"
+        },
+        "version": "1.51.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\amazonwebservices.aws-toolkit-vscode-1.51.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/amazonwebservices.aws-toolkit-vscode-1.51.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "ac5787df-9b2d-441c-abf0-977d62bc66f0",
+            "publisherId": "e5177ad8-ec3b-4d49-aefd-3d3331129b54",
+            "publisherDisplayName": "Amazon Web Services",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1665060806922
+        }
+    },
+    {
+        "identifier": {
+            "id": "amodio.amethyst-theme",
+            "uuid": "b66a8ae1-46ae-4b44-b13d-38b033bc8009"
+        },
+        "version": "4.5.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\amodio.amethyst-theme-4.5.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/amodio.amethyst-theme-4.5.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "b66a8ae1-46ae-4b44-b13d-38b033bc8009",
+            "publisherId": "bf8a4b50-88d9-407c-888e-adc622578671",
+            "publisherDisplayName": "Eric Amodio",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1654668457604
+        }
+    },
+    {
+        "identifier": {
+            "id": "amodio.tsl-problem-matcher",
+            "uuid": "91954a63-baf9-4e93-a97c-7798c45ca9f7"
+        },
+        "version": "0.6.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\amodio.tsl-problem-matcher-0.6.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/amodio.tsl-problem-matcher-0.6.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "91954a63-baf9-4e93-a97c-7798c45ca9f7",
+            "publisherId": "bf8a4b50-88d9-407c-888e-adc622578671",
+            "publisherDisplayName": "Eric Amodio",
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1648840047664
+        }
+    },
+    {
+        "identifier": {
+            "id": "arcticicestudio.nord-visual-studio-code",
+            "uuid": "6f35c257-7fd5-4bc2-9cd1-01976589c17a"
+        },
+        "version": "0.19.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\arcticicestudio.nord-visual-studio-code-0.19.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/arcticicestudio.nord-visual-studio-code-0.19.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "6f35c257-7fd5-4bc2-9cd1-01976589c17a",
+            "publisherId": "d6e09771-ef61-4944-9f28-44e338818618",
+            "publisherDisplayName": "arcticicestudio",
+            "installedTimestamp": 1635520442989
+        }
+    },
+    {
+        "identifier": {
+            "id": "baincd.mini-command-palettes",
+            "uuid": "6e9b0e71-dd1c-4551-9aae-55fa5c99dbf7"
+        },
+        "version": "1.0.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\baincd.mini-command-palettes-1.0.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/baincd.mini-command-palettes-1.0.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "6e9b0e71-dd1c-4551-9aae-55fa5c99dbf7",
+            "publisherId": "a122a38b-c251-4d46-a140-ccd84532b98a",
+            "publisherDisplayName": "Chris Bain",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1642636555950
+        }
+    },
+    {
+        "identifier": {
+            "id": "berublan.vscode-log-viewer",
+            "uuid": "063b41ed-e525-444c-b347-798851c8e5de"
+        },
+        "version": "0.12.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\berublan.vscode-log-viewer-0.12.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/berublan.vscode-log-viewer-0.12.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "063b41ed-e525-444c-b347-798851c8e5de",
+            "publisherId": "44afcfaf-f6af-41de-85eb-60d25d566651",
+            "publisherDisplayName": "Bernardo",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658324907578
+        }
+    },
+    {
+        "identifier": {
+            "id": "bierner.color-info",
+            "uuid": "0f8bd812-5d52-4fff-bd1c-6b0a7ee9cad9"
+        },
+        "version": "0.7.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\bierner.color-info-0.7.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/bierner.color-info-0.7.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "0f8bd812-5d52-4fff-bd1c-6b0a7ee9cad9",
+            "publisherId": "f164f116-e2aa-496b-84dc-2451248e8beb",
+            "publisherDisplayName": "Matt Bierner",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1643668417837
+        }
+    },
+    {
+        "identifier": {
+            "id": "bierner.docs-view",
+            "uuid": "5c5e67b8-b512-4f43-88b0-b4b7af0c50b0"
+        },
+        "version": "0.0.11",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\bierner.docs-view-0.0.11",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/bierner.docs-view-0.0.11",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5c5e67b8-b512-4f43-88b0-b4b7af0c50b0",
+            "publisherId": "f164f116-e2aa-496b-84dc-2451248e8beb",
+            "publisherDisplayName": "Matt Bierner",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1652370033976
+        }
+    },
+    {
+        "identifier": {
+            "id": "blackmist.linkcheckmd",
+            "uuid": "e8b51638-d159-4227-9912-b93eb80df615"
+        },
+        "version": "0.3.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\blackmist.linkcheckmd-0.3.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/blackmist.linkcheckmd-0.3.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "e8b51638-d159-4227-9912-b93eb80df615",
+            "publisherId": "8d004cf4-07e0-42e6-a12e-8f818ee9c974",
+            "publisherDisplayName": "Larry Franks",
+            "installedTimestamp": 1639238326293
+        }
+    },
+    {
+        "identifier": {
+            "id": "brunnerh.insert-unicode",
+            "uuid": "4a8209b8-30ec-414f-b050-9b4f38ea1bf1"
+        },
+        "version": "0.13.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\brunnerh.insert-unicode-0.13.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/brunnerh.insert-unicode-0.13.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4a8209b8-30ec-414f-b050-9b4f38ea1bf1",
+            "publisherId": "63402bd2-b11d-4bb9-9570-76cb51270006",
+            "publisherDisplayName": "brunnerh",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1644612366202
+        }
+    },
+    {
+        "identifier": {
+            "id": "bungcip.better-toml",
+            "uuid": "464f4ac7-af65-4aa9-9907-4ba7fa419085"
+        },
+        "version": "0.3.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\bungcip.better-toml-0.3.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/bungcip.better-toml-0.3.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "464f4ac7-af65-4aa9-9907-4ba7fa419085",
+            "publisherId": "87bfa971-0ee5-4ec2-afdb-1d26a8959fa4",
+            "publisherDisplayName": "bungcip"
+        }
+    },
+    {
+        "identifier": {
+            "id": "christian-kohler.path-intellisense",
+            "uuid": "a41c1549-4053-44d4-bf30-60fc809b4a86"
+        },
+        "version": "2.8.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\christian-kohler.path-intellisense-2.8.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/christian-kohler.path-intellisense-2.8.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "a41c1549-4053-44d4-bf30-60fc809b4a86",
+            "publisherId": "a892fb38-060b-475f-9e73-2e06a8a17a68",
+            "publisherDisplayName": "Christian Kohler",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1654798525217
+        }
+    },
+    {
+        "identifier": {
+            "id": "connor4312.codesong",
+            "uuid": "5ff07d36-d727-42f0-8c8a-0bee5be6a0f5"
+        },
+        "version": "1.0.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\connor4312.codesong-1.0.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/connor4312.codesong-1.0.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5ff07d36-d727-42f0-8c8a-0bee5be6a0f5",
+            "publisherId": "ef66960f-646c-4439-8286-fe3e9be40a1f",
+            "publisherDisplayName": "Connor Peet",
+            "installedTimestamp": 1635520448536
+        }
+    },
+    {
+        "identifier": {
+            "id": "connorshea.vscode-test-explorer-status-bar",
+            "uuid": "4bbfd0d5-c934-445f-ab56-1b2167378db2"
+        },
+        "version": "1.2.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\connorshea.vscode-test-explorer-status-bar-1.2.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/connorshea.vscode-test-explorer-status-bar-1.2.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4bbfd0d5-c934-445f-ab56-1b2167378db2",
+            "publisherId": "a08da62e-2792-4d33-b850-85d612c75097",
+            "publisherDisplayName": "Connor Shea",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1642636411974
+        }
+    },
+    {
+        "identifier": {
+            "id": "darkriszty.markdown-table-prettify",
+            "uuid": "136682fc-7ac4-43b7-a50a-bb7890c39f25"
+        },
+        "version": "3.6.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\darkriszty.markdown-table-prettify-3.6.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/darkriszty.markdown-table-prettify-3.6.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "136682fc-7ac4-43b7-a50a-bb7890c39f25",
+            "publisherId": "d0f49348-7e89-4d81-8ce1-d34914654ce9",
+            "publisherDisplayName": "Krisztian Daroczi",
+            "installedTimestamp": 1635520443873
+        }
+    },
+    {
+        "identifier": {
+            "id": "davidanson.vscode-markdownlint",
+            "uuid": "daf8b44d-8aae-4da2-80c5-1f770219f643"
+        },
+        "version": "0.48.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\davidanson.vscode-markdownlint-0.48.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/davidanson.vscode-markdownlint-0.48.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "daf8b44d-8aae-4da2-80c5-1f770219f643",
+            "publisherId": "2e4d1cda-6ef0-4e42-a352-ab540afe8ff0",
+            "publisherDisplayName": "David Anson",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1661780069222
+        }
+    },
+    {
+        "identifier": {
+            "id": "dbaeumer.vscode-eslint",
+            "uuid": "583b2b34-2c1e-4634-8c0b-0b82e283ea3a"
+        },
+        "version": "2.2.6",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\dbaeumer.vscode-eslint-2.2.6",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/dbaeumer.vscode-eslint-2.2.6",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "583b2b34-2c1e-4634-8c0b-0b82e283ea3a",
+            "publisherId": "29859a75-d81b-4f0e-8578-2c80ecee6f99",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1657026312127
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-article-templates",
+            "uuid": "dd9d63a9-d9bd-435a-86a2-24e709720a16"
+        },
+        "version": "0.2.13",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-article-templates-0.2.13",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-article-templates-0.2.13",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "dd9d63a9-d9bd-435a-86a2-24e709720a16",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663973909580
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-authoring-pack",
+            "uuid": "d74a1e64-791f-4c6a-a7f5-91095e3dce6e"
+        },
+        "version": "0.1.18",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-authoring-pack-0.1.18",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-authoring-pack-0.1.18",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "d74a1e64-791f-4c6a-a7f5-91095e3dce6e",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664241612481
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-build",
+            "uuid": "f958898e-c88e-4e4e-b303-85d8253cfea1"
+        },
+        "version": "0.4.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-build-0.4.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-build-0.4.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f958898e-c88e-4e4e-b303-85d8253cfea1",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664285185360
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-images",
+            "uuid": "531c9642-a2f9-4dae-a784-67d25324502e"
+        },
+        "version": "0.0.10",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-images-0.0.10",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-images-0.0.10",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "531c9642-a2f9-4dae-a784-67d25324502e",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1646839225546
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-linting",
+            "uuid": "8153966d-0b99-476e-9462-55423db237b3"
+        },
+        "version": "0.0.13",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-linting-0.0.13",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-linting-0.0.13",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "8153966d-0b99-476e-9462-55423db237b3",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663973904074
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-markdown",
+            "uuid": "9acd9f2e-7de2-4c66-a840-92767af1cb16"
+        },
+        "version": "0.2.114",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-markdown-0.2.114",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-markdown-0.2.114",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "9acd9f2e-7de2-4c66-a840-92767af1cb16",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663973908500
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-metadata",
+            "uuid": "e79662d7-3e86-4c14-adc9-1b8f1595f414"
+        },
+        "version": "1.0.9",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-metadata-1.0.9",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-metadata-1.0.9",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "e79662d7-3e86-4c14-adc9-1b8f1595f414",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663973906841
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-preview",
+            "uuid": "de68ef52-c4dc-442f-b4d2-64ee29729c37"
+        },
+        "version": "0.3.60",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-preview-0.3.60",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-preview-0.3.60",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "de68ef52-c4dc-442f-b4d2-64ee29729c37",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663973909144
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-scaffolding",
+            "uuid": "cfc1d29f-7d82-4866-ab4d-0cbf36553afa"
+        },
+        "version": "0.0.16",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-scaffolding-0.0.16",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-scaffolding-0.0.16",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "cfc1d29f-7d82-4866-ab4d-0cbf36553afa",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663973910142
+        }
+    },
+    {
+        "identifier": {
+            "id": "docsmsft.docs-yaml",
+            "uuid": "f6bcef79-211f-4454-8020-2d5b6ee9fd9a"
+        },
+        "version": "0.2.9",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\docsmsft.docs-yaml-0.2.9",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/docsmsft.docs-yaml-0.2.9",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f6bcef79-211f-4454-8020-2d5b6ee9fd9a",
+            "publisherId": "983a9d74-aa98-4a51-97df-0407d7f1a024",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663973914561
+        }
+    },
+    {
+        "identifier": {
+            "id": "donjayamanne.githistory",
+            "uuid": "5960f38e-0bbe-4644-8f9c-9c8824e82511"
+        },
+        "version": "0.6.19",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\donjayamanne.githistory-0.6.19",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/donjayamanne.githistory-0.6.19",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5960f38e-0bbe-4644-8f9c-9c8824e82511",
+            "publisherId": "1ba8bd00-2ad1-4be0-a007-5b4b954c1ee7",
+            "publisherDisplayName": "Don Jayamanne",
+            "installedTimestamp": 1635535607729
+        }
+    },
+    {
+        "identifier": {
+            "id": "dotjoshjohnson.xml",
+            "uuid": "0cb81da2-1880-4755-9995-0ae9cc728e20"
+        },
+        "version": "2.5.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\dotjoshjohnson.xml-2.5.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/dotjoshjohnson.xml-2.5.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "0cb81da2-1880-4755-9995-0ae9cc728e20",
+            "publisherId": "0a72d6f9-f644-4e7d-93fe-34389b97e913",
+            "publisherDisplayName": "Josh Johnson"
+        }
+    },
+    {
+        "identifier": {
+            "id": "dsznajder.es7-react-js-snippets",
+            "uuid": "19804510-b475-4dae-b0f7-6ca08fd1af0c"
+        },
+        "version": "4.4.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\dsznajder.es7-react-js-snippets-4.4.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/dsznajder.es7-react-js-snippets-4.4.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "19804510-b475-4dae-b0f7-6ca08fd1af0c",
+            "publisherId": "7ea644b4-2d93-4979-aac5-a12afebeb762",
+            "publisherDisplayName": "dsznajder",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1645201114212
+        }
+    },
+    {
+        "identifier": {
+            "id": "eamodio.gitlens",
+            "uuid": "4de763bd-505d-4978-9575-2b7696ecf94e"
+        },
+        "version": "12.2.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\eamodio.gitlens-12.2.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/eamodio.gitlens-12.2.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4de763bd-505d-4978-9575-2b7696ecf94e",
+            "publisherId": "678d198b-9b2e-49d3-96ff-6d801c9575df",
+            "publisherDisplayName": "GitKraken",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1662560270623
+        }
+    },
+    {
+        "identifier": {
+            "id": "emilast.logfilehighlighter",
+            "uuid": "e8b488af-fccf-4adf-b60c-fc7455bea107"
+        },
+        "version": "2.16.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\emilast.logfilehighlighter-2.16.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/emilast.logfilehighlighter-2.16.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "e8b488af-fccf-4adf-b60c-fc7455bea107",
+            "publisherId": "4534c4fe-f5e7-4c04-943b-3a6dad3e61dc",
+            "publisherDisplayName": "Emil Åström",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1654819711824
+        }
+    },
+    {
+        "identifier": {
+            "id": "equinusocio.vsc-community-material-theme",
+            "uuid": "bf8aa94a-4051-42fe-9bd1-2becad466fe7"
+        },
+        "version": "1.4.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\equinusocio.vsc-community-material-theme-1.4.4",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/equinusocio.vsc-community-material-theme-1.4.4",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "bf8aa94a-4051-42fe-9bd1-2becad466fe7",
+            "publisherDisplayName": "Equinusocio",
+            "publisherId": "3b9d55d2-da9e-415a-9bea-8d6bc07147d8",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1659726271072
+        }
+    },
+    {
+        "identifier": {
+            "id": "equinusocio.vsc-material-theme",
+            "uuid": "45bfc9eb-5e03-487f-bffe-315fa6881d6a"
+        },
+        "version": "33.5.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\equinusocio.vsc-material-theme-33.5.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/equinusocio.vsc-material-theme-33.5.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "45bfc9eb-5e03-487f-bffe-315fa6881d6a",
+            "publisherDisplayName": "Equinusocio",
+            "publisherId": "3b9d55d2-da9e-415a-9bea-8d6bc07147d8",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1659726271197
+        }
+    },
+    {
+        "identifier": {
+            "id": "equinusocio.vsc-material-theme-icons",
+            "uuid": "6959958f-be4d-42c4-8aa4-dc2c2f086b0a"
+        },
+        "version": "2.4.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\equinusocio.vsc-material-theme-icons-2.4.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/equinusocio.vsc-material-theme-icons-2.4.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "6959958f-be4d-42c4-8aa4-dc2c2f086b0a",
+            "publisherId": "3b9d55d2-da9e-415a-9bea-8d6bc07147d8",
+            "publisherDisplayName": "Equinusocio",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663249645853
+        }
+    },
+    {
+        "identifier": {
+            "id": "esbenp.prettier-vscode",
+            "uuid": "96fa4707-6983-4489-b7c5-d5ffdfdcce90"
+        },
+        "version": "9.9.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\esbenp.prettier-vscode-9.9.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/esbenp.prettier-vscode-9.9.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "96fa4707-6983-4489-b7c5-d5ffdfdcce90",
+            "publisherDisplayName": "Prettier",
+            "publisherId": "d16f4e39-2ffb-44e3-9c0d-79d873570e3a",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1663973902833
+        }
+    },
+    {
+        "identifier": {
+            "id": "evan-buss.font-switcher",
+            "uuid": "d675f82f-f7bd-40a7-a99a-2fa418b8803b"
+        },
+        "version": "4.1.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\evan-buss.font-switcher-4.1.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/evan-buss.font-switcher-4.1.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "d675f82f-f7bd-40a7-a99a-2fa418b8803b",
+            "publisherId": "f8ad9227-217c-4d37-8d0b-e329d388044d",
+            "publisherDisplayName": "Evan Buss",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658068804947
+        }
+    },
+    {
+        "identifier": {
+            "id": "file-icons.file-icons",
+            "uuid": "43335a8d-5929-408b-874a-65f08362642c"
+        },
+        "version": "1.0.29",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\file-icons.file-icons-1.0.29",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/file-icons.file-icons-1.0.29",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "43335a8d-5929-408b-874a-65f08362642c",
+            "publisherId": "bdf69065-5f25-4de9-9ff1-270dd0b6c704",
+            "publisherDisplayName": "file-icons",
+            "installedTimestamp": 1623853203666
+        }
+    },
+    {
+        "identifier": {
+            "id": "firefox-devtools.vscode-firefox-debug",
+            "uuid": "c5f4d87f-a524-462c-ac01-923eb19cf3e9"
+        },
+        "version": "2.9.8",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\firefox-devtools.vscode-firefox-debug-2.9.8",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/firefox-devtools.vscode-firefox-debug-2.9.8",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "c5f4d87f-a524-462c-ac01-923eb19cf3e9",
+            "publisherId": "a159f731-e4cf-45ea-8249-dc7f3806c7d5",
+            "publisherDisplayName": "Firefox DevTools",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658413825398
+        }
+    },
+    {
+        "identifier": {
+            "id": "florianguitton.vscode-gedcom",
+            "uuid": "f5c6c21f-b98b-453f-84fd-2bf4f07f96bc"
+        },
+        "version": "0.0.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\florianguitton.vscode-gedcom-0.0.4",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/florianguitton.vscode-gedcom-0.0.4",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f5c6c21f-b98b-453f-84fd-2bf4f07f96bc",
+            "publisherId": "14418cfb-7e52-49a1-af47-211045fee1ca",
+            "publisherDisplayName": "Florian Guitton",
+            "installedTimestamp": 1627869164321
+        }
+    },
+    {
+        "identifier": {
+            "id": "formulahendry.code-runner",
+            "uuid": "a6a0c5b2-d078-4bf5-a9ee-4e37054414b3"
+        },
+        "version": "0.11.8",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\formulahendry.code-runner-0.11.8",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/formulahendry.code-runner-0.11.8",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "a6a0c5b2-d078-4bf5-a9ee-4e37054414b3",
+            "publisherId": "38bbe3f0-5204-4170-845e-c2f966d979b8",
+            "publisherDisplayName": "Jun Han",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1654975614632
+        }
+    },
+    {
+        "identifier": {
+            "id": "github.github-vscode-theme",
+            "uuid": "7328a705-91fc-49e6-8293-da6f112e482d"
+        },
+        "version": "6.3.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\github.github-vscode-theme-6.3.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/github.github-vscode-theme-6.3.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "7328a705-91fc-49e6-8293-da6f112e482d",
+            "publisherDisplayName": "GitHub",
+            "publisherId": "7c1c19cd-78eb-4dfb-8999-99caf7679002",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658249965538
+        }
+    },
+    {
+        "identifier": {
+            "id": "github.remotehub",
+            "uuid": "fc7d7e85-2e58-4c1c-97a3-2172ed9a77cd"
+        },
+        "version": "0.44.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\github.remotehub-0.44.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/github.remotehub-0.44.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "fc7d7e85-2e58-4c1c-97a3-2172ed9a77cd",
+            "publisherId": "7c1c19cd-78eb-4dfb-8999-99caf7679002",
+            "publisherDisplayName": "GitHub",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1665149645007
+        }
+    },
+    {
+        "identifier": {
+            "id": "github.vscode-pull-request-github",
+            "uuid": "69ddd764-339a-4ecc-97c1-9c4ece58e36d"
+        },
+        "version": "0.50.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\github.vscode-pull-request-github-0.50.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/github.vscode-pull-request-github-0.50.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "69ddd764-339a-4ecc-97c1-9c4ece58e36d",
+            "publisherId": "7c1c19cd-78eb-4dfb-8999-99caf7679002",
+            "publisherDisplayName": "GitHub",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1662560542185
+        }
+    },
+    {
+        "identifier": {
+            "id": "hbenl.vscode-mocha-test-adapter",
+            "uuid": "16c44458-f8a5-434f-9d65-b658dea51b0f"
+        },
+        "version": "2.14.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\hbenl.vscode-mocha-test-adapter-2.14.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/hbenl.vscode-mocha-test-adapter-2.14.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "16c44458-f8a5-434f-9d65-b658dea51b0f",
+            "publisherId": "3356f11a-6798-4f03-a93f-3d929b7fca7c",
+            "publisherDisplayName": "Holger Benl",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658068808277
+        }
+    },
+    {
+        "identifier": {
+            "id": "hbenl.vscode-test-explorer",
+            "uuid": "ff96f1b4-a4b8-45ef-8ecf-c232c0cb75c8"
+        },
+        "version": "2.21.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\hbenl.vscode-test-explorer-2.21.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/hbenl.vscode-test-explorer-2.21.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "ff96f1b4-a4b8-45ef-8ecf-c232c0cb75c8",
+            "publisherId": "3356f11a-6798-4f03-a93f-3d929b7fca7c",
+            "publisherDisplayName": "Holger Benl",
+            "installedTimestamp": 1630271752723
+        }
+    },
+    {
+        "identifier": {
+            "id": "hbenl.vscode-test-explorer-liveshare",
+            "uuid": "733c7fa7-f39a-44d2-a5d8-b1e7d413306e"
+        },
+        "version": "1.0.5",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\hbenl.vscode-test-explorer-liveshare-1.0.5",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/hbenl.vscode-test-explorer-liveshare-1.0.5",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "733c7fa7-f39a-44d2-a5d8-b1e7d413306e",
+            "publisherId": "3356f11a-6798-4f03-a93f-3d929b7fca7c",
+            "publisherDisplayName": "Holger Benl",
+            "installedTimestamp": 1638280682836
+        }
+    },
+    {
+        "identifier": {
+            "id": "icsharpcode.ilspy-vscode",
+            "uuid": "e71e3bdc-dd75-4005-bc34-5ef5838c84ad"
+        },
+        "version": "0.13.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\icsharpcode.ilspy-vscode-0.13.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/icsharpcode.ilspy-vscode-0.13.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "e71e3bdc-dd75-4005-bc34-5ef5838c84ad",
+            "publisherId": "b70c48a1-8bf6-4654-9c0f-5f04529311da",
+            "publisherDisplayName": "SharpDevelop Team",
+            "installedTimestamp": 1638279977130
+        }
+    },
+    {
+        "identifier": {
+            "id": "johnpapa.vscode-peacock",
+            "uuid": "5a7017bf-c571-4d77-b902-6e56b16f539a"
+        },
+        "version": "4.2.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\johnpapa.vscode-peacock-4.2.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/johnpapa.vscode-peacock-4.2.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5a7017bf-c571-4d77-b902-6e56b16f539a",
+            "publisherDisplayName": "John Papa",
+            "publisherId": "4434843a-4ebf-4f44-84f5-4176380c492d",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1663853551305
+        }
+    },
+    {
+        "identifier": {
+            "id": "juanmnl.vscode-theme-hydra",
+            "uuid": "181aaa23-a4de-4f19-918e-fc844cb2de06"
+        },
+        "version": "3.2.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\juanmnl.vscode-theme-hydra-3.2.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/juanmnl.vscode-theme-hydra-3.2.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "181aaa23-a4de-4f19-918e-fc844cb2de06",
+            "publisherId": "3952d6fa-843e-412c-af55-3929cef8b933",
+            "publisherDisplayName": "juanmnl"
+        }
+    },
+    {
+        "identifier": {
+            "id": "littlefoxteam.vscode-python-test-adapter",
+            "uuid": "912fd5ae-d9f2-4c31-8a0b-d7fb669afbb4"
+        },
+        "version": "0.7.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\littlefoxteam.vscode-python-test-adapter-0.7.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/littlefoxteam.vscode-python-test-adapter-0.7.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "912fd5ae-d9f2-4c31-8a0b-d7fb669afbb4",
+            "publisherId": "5feb6684-05d9-4255-a37a-8409861d22f2",
+            "publisherDisplayName": "Little Fox Team",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1649986744343
+        }
+    },
+    {
+        "identifier": {
+            "id": "loginspector.loginspector",
+            "uuid": "de54fa26-5c37-4be8-9666-305bed8d790d"
+        },
+        "version": "1.6.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\loginspector.loginspector-1.6.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/loginspector.loginspector-1.6.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "de54fa26-5c37-4be8-9666-305bed8d790d",
+            "publisherId": "d7d89570-109e-4e88-86d0-23dda624764f",
+            "publisherDisplayName": "Log Inspector",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658324761666
+        }
+    },
+    {
+        "identifier": {
+            "id": "louiswt.regexp-preview",
+            "uuid": "5a755e10-8942-4d75-bb56-6d7435d3b500"
+        },
+        "version": "0.1.5",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\louiswt.regexp-preview-0.1.5",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/louiswt.regexp-preview-0.1.5",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5a755e10-8942-4d75-bb56-6d7435d3b500",
+            "publisherId": "131bc538-7904-44f3-a0ab-3505b7084c64",
+            "publisherDisplayName": "LouisWT"
+        }
+    },
+    {
+        "identifier": {
+            "id": "lucono.karma-test-explorer",
+            "uuid": "eea8111e-ea45-4aa2-8d60-48efb3edc54e"
+        },
+        "version": "0.7.5",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\lucono.karma-test-explorer-0.7.5",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/lucono.karma-test-explorer-0.7.5",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "eea8111e-ea45-4aa2-8d60-48efb3edc54e",
+            "publisherId": "26f17aec-afc6-4165-b153-1c670baba559",
+            "publisherDisplayName": "Lucas Ononiwu",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1662039681817
+        }
+    },
+    {
+        "identifier": {
+            "id": "matangover.mypy",
+            "uuid": "dc6e4918-e458-4703-a46d-938ec13de5e4"
+        },
+        "version": "0.2.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\matangover.mypy-0.2.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/matangover.mypy-0.2.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "dc6e4918-e458-4703-a46d-938ec13de5e4",
+            "publisherId": "fd26e9a2-d4af-4f14-b65c-6411038155ad",
+            "publisherDisplayName": "Matan Gover",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1645629530565
+        }
+    },
+    {
+        "identifier": {
+            "id": "mechatroner.rainbow-csv",
+            "uuid": "3792588c-3d35-442d-91ea-fe6a755e8155"
+        },
+        "version": "3.2.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\mechatroner.rainbow-csv-3.2.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/mechatroner.rainbow-csv-3.2.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "3792588c-3d35-442d-91ea-fe6a755e8155",
+            "publisherId": "0d5438b6-325a-4f88-aa28-6192aa2cf2a6",
+            "publisherDisplayName": "mechatroner",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664632895551
+        }
+    },
+    {
+        "identifier": {
+            "id": "medo64.code-point",
+            "uuid": "6dfb0a1d-3803-47e3-8008-0e5afb8078a5"
+        },
+        "version": "1.8.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\medo64.code-point-1.8.4",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/medo64.code-point-1.8.4",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "6dfb0a1d-3803-47e3-8008-0e5afb8078a5",
+            "publisherId": "c6d3d238-ab9e-46ec-92d8-4a84a76e905d",
+            "publisherDisplayName": "Josip Medved",
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1649009311490
+        }
+    },
+    {
+        "identifier": {
+            "id": "mhutchie.git-graph",
+            "uuid": "438221f8-1107-4ccd-a6fe-f3b7fe0856b7"
+        },
+        "version": "1.30.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\mhutchie.git-graph-1.30.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/mhutchie.git-graph-1.30.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "438221f8-1107-4ccd-a6fe-f3b7fe0856b7",
+            "publisherId": "996496dc-099f-469d-b89c-0d7713179365",
+            "publisherDisplayName": "mhutchie",
+            "installedTimestamp": 1624655405437
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-azure-devops.azure-pipelines",
+            "uuid": "7032281c-aa10-4e95-9049-46a8bd112af3"
+        },
+        "version": "1.208.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-azure-devops.azure-pipelines-1.208.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-azure-devops.azure-pipelines-1.208.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "7032281c-aa10-4e95-9049-46a8bd112af3",
+            "publisherDisplayName": "Microsoft",
+            "publisherId": "8f638efc-f2bd-42dd-89f8-23707e2320fc",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1658413825502
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-azuretools.vscode-docker",
+            "uuid": "0479fc1c-3d67-49f9-b087-fb9069afe48f"
+        },
+        "version": "1.22.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-azuretools.vscode-docker-1.22.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-azuretools.vscode-docker-1.22.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "0479fc1c-3d67-49f9-b087-fb9069afe48f",
+            "publisherDisplayName": "Microsoft",
+            "publisherId": "52b787f2-79a9-4f32-99b4-393afe3005d3",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1657570460420
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-dotnettools.csharp",
+            "uuid": "d0bfc4ab-1d3a-4487-8782-7cf6027b4fff"
+        },
+        "version": "1.25.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-dotnettools.csharp-1.25.0-win32-x64",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-dotnettools.csharp-1.25.0-win32-x64",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "d0bfc4ab-1d3a-4487-8782-7cf6027b4fff",
+            "publisherId": "d05e23de-3974-4ff0-8d47-23ee77830092",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "win32-x64",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1653488230008
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-dotnettools.vscode-dotnet-runtime",
+            "uuid": "1aab81a1-b3d9-4aef-976b-577d5d90fe3f"
+        },
+        "version": "1.5.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-dotnettools.vscode-dotnet-runtime-1.5.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-dotnettools.vscode-dotnet-runtime-1.5.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "1aab81a1-b3d9-4aef-976b-577d5d90fe3f",
+            "publisherId": "d05e23de-3974-4ff0-8d47-23ee77830092",
+            "publisherDisplayName": "Microsoft",
+            "installedTimestamp": 1637629113937
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-dotnettools.vscode-dotnet-sdk",
+            "uuid": "bdf86aba-ad9d-4593-b780-5829a4423823"
+        },
+        "version": "0.8.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-dotnettools.vscode-dotnet-sdk-0.8.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-dotnettools.vscode-dotnet-sdk-0.8.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "bdf86aba-ad9d-4593-b780-5829a4423823",
+            "publisherId": "d05e23de-3974-4ff0-8d47-23ee77830092",
+            "publisherDisplayName": "Microsoft",
+            "installedTimestamp": 1635520448663
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-edgedevtools.vscode-edge-devtools",
+            "uuid": "11cb120c-f665-45bc-a21e-6de8a5685850"
+        },
+        "version": "2.1.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-edgedevtools.vscode-edge-devtools-2.1.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-edgedevtools.vscode-edge-devtools-2.1.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "11cb120c-f665-45bc-a21e-6de8a5685850",
+            "publisherId": "27cecede-ad96-4e59-b8c9-38a0cfa8866b",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664045714399
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-mssql.data-workspace-vscode",
+            "uuid": "88e082b7-d289-4c59-bde4-4c61e0280428"
+        },
+        "version": "0.3.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-mssql.data-workspace-vscode-0.3.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-mssql.data-workspace-vscode-0.3.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "88e082b7-d289-4c59-bde4-4c61e0280428",
+            "publisherId": "60b3df88-4640-44d4-a7e5-6ba8004700bb",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1661433377926
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-mssql.mssql",
+            "uuid": "4bf45e86-a448-4531-8c01-ef33f4536306"
+        },
+        "version": "1.16.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-mssql.mssql-1.16.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-mssql.mssql-1.16.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4bf45e86-a448-4531-8c01-ef33f4536306",
+            "publisherDisplayName": "Microsoft",
+            "publisherId": "60b3df88-4640-44d4-a7e5-6ba8004700bb",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1661433388298
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-mssql.sql-bindings-vscode",
+            "uuid": "48154c8d-77c4-4978-a3a2-807fc5266321"
+        },
+        "version": "0.3.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-mssql.sql-bindings-vscode-0.3.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-mssql.sql-bindings-vscode-0.3.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "48154c8d-77c4-4978-a3a2-807fc5266321",
+            "publisherId": "60b3df88-4640-44d4-a7e5-6ba8004700bb",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1661433378455
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-mssql.sql-database-projects-vscode",
+            "uuid": "4e9e1d12-64b6-4573-9203-f601d27de5a3"
+        },
+        "version": "0.19.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-mssql.sql-database-projects-vscode-0.19.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-mssql.sql-database-projects-vscode-0.19.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4e9e1d12-64b6-4573-9203-f601d27de5a3",
+            "publisherDisplayName": "Microsoft",
+            "publisherId": "60b3df88-4640-44d4-a7e5-6ba8004700bb",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1661433378912
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-toolsai.jupyter-keymap",
+            "uuid": "9f6dc8db-620c-4844-b8c5-e74914f1be27"
+        },
+        "version": "1.0.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-toolsai.jupyter-keymap-1.0.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-toolsai.jupyter-keymap-1.0.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "9f6dc8db-620c-4844-b8c5-e74914f1be27",
+            "publisherId": "ac8eb7c9-3e59-4b39-8040-f0484d8170ce",
+            "publisherDisplayName": "Microsoft",
+            "installedTimestamp": 1637629113947
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode-remote.remote-ssh-edit",
+            "uuid": "bfeaf631-bcff-4908-93ed-fda4ef9a0c5c"
+        },
+        "version": "0.84.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode-remote.remote-ssh-edit-0.84.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode-remote.remote-ssh-edit-0.84.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "bfeaf631-bcff-4908-93ed-fda4ef9a0c5c",
+            "publisherId": "ac9410a2-0d75-40ec-90de-b59bb705801d",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664414861405
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode-remote.vscode-remote-extensionpack",
+            "uuid": "23d72dfc-8dd1-4e30-926e-8783b4378f13"
+        },
+        "version": "0.21.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode-remote.vscode-remote-extensionpack-0.21.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode-remote.vscode-remote-extensionpack-0.21.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "23d72dfc-8dd1-4e30-926e-8783b4378f13",
+            "publisherId": "ac9410a2-0d75-40ec-90de-b59bb705801d",
+            "publisherDisplayName": "Microsoft",
+            "installedTimestamp": 1624655428070
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.cpptools",
+            "uuid": "690b692e-e8a9-493f-b802-8089d50ac1b2"
+        },
+        "version": "1.12.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.cpptools-1.12.4-win32-x64",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.cpptools-1.12.4-win32-x64",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "690b692e-e8a9-493f-b802-8089d50ac1b2",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "win32-x64",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1662039689072
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.hexeditor",
+            "uuid": "cc7d2112-5178-4472-8e0e-25dced95e7f0"
+        },
+        "version": "1.9.9",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.hexeditor-1.9.9",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.hexeditor-1.9.9",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "cc7d2112-5178-4472-8e0e-25dced95e7f0",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1665149643441
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.makefile-tools",
+            "uuid": "e09cf600-90a1-414e-92a0-031f1a5391c6"
+        },
+        "version": "0.6.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.makefile-tools-0.6.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.makefile-tools-0.6.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "e09cf600-90a1-414e-92a0-031f1a5391c6",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664045705620
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.powershell",
+            "uuid": "40d39ce9-c381-47a0-80c8-a6661f731eab"
+        },
+        "version": "2022.8.5",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.powershell-2022.8.5",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.powershell-2022.8.5",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "40d39ce9-c381-47a0-80c8-a6661f731eab",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1661897087170
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.test-adapter-converter",
+            "uuid": "47210ec2-0324-4cbb-9523-9dff02a5f9ec"
+        },
+        "version": "0.1.6",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.test-adapter-converter-0.1.6",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.test-adapter-converter-0.1.6",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "47210ec2-0324-4cbb-9523-9dff02a5f9ec",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1649728675030
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vsliveshare.vsliveshare-audio",
+            "uuid": "f38fdd1c-7ee2-47b1-90b9-77ecc90d4bff"
+        },
+        "version": "0.1.91",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vsliveshare.vsliveshare-audio-0.1.91",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vsliveshare.vsliveshare-audio-0.1.91",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f38fdd1c-7ee2-47b1-90b9-77ecc90d4bff",
+            "publisherId": "74365139-d24d-4d0a-8377-c28643f7a216",
+            "publisherDisplayName": "Microsoft",
+            "installedTimestamp": 1638280677362
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vsliveshare.vsliveshare-pack",
+            "uuid": "87caf16b-d487-45c0-877d-573fe319b015"
+        },
+        "version": "0.4.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vsliveshare.vsliveshare-pack-0.4.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vsliveshare.vsliveshare-pack-0.4.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "87caf16b-d487-45c0-877d-573fe319b015",
+            "publisherId": "74365139-d24d-4d0a-8377-c28643f7a216",
+            "publisherDisplayName": "Microsoft",
+            "installedTimestamp": 1638280677775
+        }
+    },
+    {
+        "identifier": {
+            "id": "naumovs.color-highlight",
+            "uuid": "121396ad-85a1-45ec-9fd1-d95028a847f5"
+        },
+        "version": "2.5.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\naumovs.color-highlight-2.5.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/naumovs.color-highlight-2.5.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "121396ad-85a1-45ec-9fd1-d95028a847f5",
+            "publisherId": "e9a76d04-24d4-44eb-a202-964f71acf59e",
+            "publisherDisplayName": "Sergii N",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1661270518564
+        }
+    },
+    {
+        "identifier": {
+            "id": "nortakales.quick-regex-replacer",
+            "uuid": "5f3a745e-5db1-4e9e-a42f-f75e971d5ad6"
+        },
+        "version": "1.0.5",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\nortakales.quick-regex-replacer-1.0.5",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/nortakales.quick-regex-replacer-1.0.5",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5f3a745e-5db1-4e9e-a42f-f75e971d5ad6",
+            "publisherId": "a48212a3-3ba2-4d4b-a524-0e5b99251914",
+            "publisherDisplayName": "nortakales",
+            "installedTimestamp": 1623262693431
+        }
+    },
+    {
+        "identifier": {
+            "id": "octref.vscode-json-transform",
+            "uuid": "08743a88-e0aa-46a9-9563-c05a02515cab"
+        },
+        "version": "0.1.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\octref.vscode-json-transform-0.1.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/octref.vscode-json-transform-0.1.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "08743a88-e0aa-46a9-9563-c05a02515cab",
+            "publisherId": "c3b70842-905b-406e-8f5b-153e8de05481",
+            "publisherDisplayName": "Pine Wu"
+        }
+    },
+    {
+        "identifier": {
+            "id": "oderwat.indent-rainbow",
+            "uuid": "eaa2127d-cb69-4ab9-8505-a60c9ee5f28b"
+        },
+        "version": "8.3.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\oderwat.indent-rainbow-8.3.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/oderwat.indent-rainbow-8.3.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "eaa2127d-cb69-4ab9-8505-a60c9ee5f28b",
+            "publisherId": "ac064ae0-224d-4351-9aa4-45ef7bf3ed21",
+            "publisherDisplayName": "oderwat",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1649548257827
+        }
+    },
+    {
+        "identifier": {
+            "id": "patbenatar.advanced-new-file",
+            "uuid": "2cbad5ee-b4ab-4de8-a1c7-77fede846155"
+        },
+        "version": "1.2.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\patbenatar.advanced-new-file-1.2.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/patbenatar.advanced-new-file-1.2.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "2cbad5ee-b4ab-4de8-a1c7-77fede846155",
+            "publisherId": "2fd98df3-0482-4585-979d-15140214166f",
+            "publisherDisplayName": "patbenatar",
+            "installedTimestamp": 1623607888919
+        }
+    },
+    {
+        "identifier": {
+            "id": "pejmannikram.vscode-auto-scroll",
+            "uuid": "687fb9d6-ecd8-4aa4-a4f6-d285fad5c8d9"
+        },
+        "version": "1.1.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\pejmannikram.vscode-auto-scroll-1.1.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/pejmannikram.vscode-auto-scroll-1.1.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "687fb9d6-ecd8-4aa4-a4f6-d285fad5c8d9",
+            "publisherId": "f8e9162d-a63a-4427-a744-27c1c9eb6b37",
+            "publisherDisplayName": "Pejman Nikram",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658339806643
+        }
+    },
+    {
+        "identifier": {
+            "id": "pkief.material-icon-theme",
+            "uuid": "5db78037-f674-459f-a236-db622c427c5b"
+        },
+        "version": "4.21.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\pkief.material-icon-theme-4.21.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/pkief.material-icon-theme-4.21.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5db78037-f674-459f-a236-db622c427c5b",
+            "publisherId": "f9e5bc2f-fea1-4075-917f-d83e01e69f56",
+            "publisherDisplayName": "Philipp Kief",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1665182382306
+        }
+    },
+    {
+        "identifier": {
+            "id": "pnp.polacode",
+            "uuid": "d80b9a94-f4a6-4e39-bc42-62212e365682"
+        },
+        "version": "0.3.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\pnp.polacode-0.3.4",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/pnp.polacode-0.3.4",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "d80b9a94-f4a6-4e39-bc42-62212e365682",
+            "publisherId": "918585c9-12f2-4216-a4e4-5d0b6055cda2",
+            "publisherDisplayName": "P & P",
+            "targetPlatform": "undefined",
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1654631834295
+        }
+    },
+    {
+        "identifier": {
+            "id": "pspester.pester-test",
+            "uuid": "13b603bd-2734-4df1-bc30-98247286fbfd"
+        },
+        "version": "2022.3.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\pspester.pester-test-2022.3.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/pspester.pester-test-2022.3.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "13b603bd-2734-4df1-bc30-98247286fbfd",
+            "publisherId": "51ea45f5-8614-4224-bbad-97890f72797a",
+            "publisherDisplayName": "Pester",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1649171900015
+        }
+    },
+    {
+        "identifier": {
+            "id": "randomfractalsinc.snippets-viewer",
+            "uuid": "b3b9b999-60b3-4dfd-a086-fe4f7c9d136e"
+        },
+        "version": "1.12.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\randomfractalsinc.snippets-viewer-1.12.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/randomfractalsinc.snippets-viewer-1.12.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "b3b9b999-60b3-4dfd-a086-fe4f7c9d136e",
+            "publisherId": "c0235960-79cc-476e-be8e-a16e4fc76b9a",
+            "publisherDisplayName": "Random Fractals Inc.",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1661795115922
+        }
+    },
+    {
+        "identifier": {
+            "id": "randomfractalsinc.vscode-data-preview",
+            "uuid": "3b15ab8e-f648-4bfc-bae7-e588ea755b51"
+        },
+        "version": "2.3.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\randomfractalsinc.vscode-data-preview-2.3.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/randomfractalsinc.vscode-data-preview-2.3.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "3b15ab8e-f648-4bfc-bae7-e588ea755b51",
+            "publisherId": "c0235960-79cc-476e-be8e-a16e4fc76b9a",
+            "publisherDisplayName": "Random Fractals Inc."
+        }
+    },
+    {
+        "identifier": {
+            "id": "rebornix.ruby",
+            "uuid": "ae062c8a-c68e-4b92-9ecf-8f1d4288b05d"
+        },
+        "version": "0.28.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\rebornix.ruby-0.28.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/rebornix.ruby-0.28.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "ae062c8a-c68e-4b92-9ecf-8f1d4288b05d",
+            "publisherId": "d30b9513-547b-4112-9c9c-0fcffa960258",
+            "publisherDisplayName": "Peng Lv",
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1645908395867
+        }
+    },
+    {
+        "identifier": {
+            "id": "redhat.vscode-commons",
+            "uuid": "2f0eaac2-070b-4dc7-9b23-8dd4c970c11c"
+        },
+        "version": "0.0.6",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\redhat.vscode-commons-0.0.6",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/redhat.vscode-commons-0.0.6",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "2f0eaac2-070b-4dc7-9b23-8dd4c970c11c",
+            "publisherId": "eed56242-9699-4317-8bc7-e9f4b9bdd3ff",
+            "publisherDisplayName": "Red Hat",
+            "installedTimestamp": 1619525111554
+        }
+    },
+    {
+        "identifier": {
+            "id": "redhat.vscode-xml",
+            "uuid": "6703768d-d42f-474e-9f6e-5f288d53f6e8"
+        },
+        "version": "0.21.2022062916",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\redhat.vscode-xml-0.21.2022062916-win32-ia32",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/redhat.vscode-xml-0.21.2022062916-win32-ia32",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "6703768d-d42f-474e-9f6e-5f288d53f6e8",
+            "publisherId": "eed56242-9699-4317-8bc7-e9f4b9bdd3ff",
+            "publisherDisplayName": "Red Hat",
+            "targetPlatform": "win32-ia32",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1656537690190
+        }
+    },
+    {
+        "identifier": {
+            "id": "redhat.vscode-yaml",
+            "uuid": "2061917f-f76a-458a-8da9-f162de22b97e"
+        },
+        "version": "1.10.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\redhat.vscode-yaml-1.10.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/redhat.vscode-yaml-1.10.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "2061917f-f76a-458a-8da9-f162de22b97e",
+            "publisherDisplayName": "Red Hat",
+            "publisherId": "eed56242-9699-4317-8bc7-e9f4b9bdd3ff",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1661795116654
+        }
+    },
+    {
+        "identifier": {
+            "id": "richie5um2.vscode-sort-json",
+            "uuid": "3fb77af3-b8b3-4cb9-9137-f555bd80e2b1"
+        },
+        "version": "1.20.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\richie5um2.vscode-sort-json-1.20.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/richie5um2.vscode-sort-json-1.20.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "3fb77af3-b8b3-4cb9-9137-f555bd80e2b1",
+            "publisherId": "c410f7b8-d406-4e23-b77b-3719c4d5efb7",
+            "publisherDisplayName": "richie5um2",
+            "installedTimestamp": 1624655478563
+        }
+    },
+    {
+        "identifier": {
+            "id": "robbowen.synthwave-vscode",
+            "uuid": "e5fd2b56-1637-4d4f-8252-6c9d416f9a28"
+        },
+        "version": "0.1.14",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\robbowen.synthwave-vscode-0.1.14",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/robbowen.synthwave-vscode-0.1.14",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "e5fd2b56-1637-4d4f-8252-6c9d416f9a28",
+            "publisherId": "561257c5-26a1-41f1-944f-17639b7b9c87",
+            "publisherDisplayName": "Robb Owen",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1660306931448
+        }
+    },
+    {
+        "identifier": {
+            "id": "rogalmic.bash-debug",
+            "uuid": "f4f0748b-9f86-461e-84f9-73bf2e1f91c2"
+        },
+        "version": "0.3.9",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\rogalmic.bash-debug-0.3.9",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/rogalmic.bash-debug-0.3.9",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f4f0748b-9f86-461e-84f9-73bf2e1f91c2",
+            "publisherId": "60aabfd6-4033-4422-8bfe-e34a659226cb",
+            "publisherDisplayName": "rogalmic"
+        }
+    },
+    {
+        "identifier": {
+            "id": "sallar.vscode-duotone-dark",
+            "uuid": "344c4c0e-58d1-4c96-a8ec-7332addc037c"
+        },
+        "version": "0.3.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\sallar.vscode-duotone-dark-0.3.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/sallar.vscode-duotone-dark-0.3.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "344c4c0e-58d1-4c96-a8ec-7332addc037c",
+            "publisherId": "c93dc07b-d520-484b-a42d-46ebc2acc646",
+            "publisherDisplayName": "Sallar Kaboli"
+        }
+    },
+    {
+        "identifier": {
+            "id": "samuelcolvin.jinjahtml",
+            "uuid": "8b477a76-974c-403d-a454-58028c1709d1"
+        },
+        "version": "0.19.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\samuelcolvin.jinjahtml-0.19.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/samuelcolvin.jinjahtml-0.19.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "8b477a76-974c-403d-a454-58028c1709d1",
+            "publisherId": "d7c2b9b7-2569-4058-af25-ddbb0905ca89",
+            "publisherDisplayName": "Samuel Colvin",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664546494276
+        }
+    },
+    {
+        "identifier": {
+            "id": "shakram02.bash-beautify",
+            "uuid": "3cd12c20-0143-473f-b7f3-0d5f15cb7249"
+        },
+        "version": "0.1.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\shakram02.bash-beautify-0.1.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/shakram02.bash-beautify-0.1.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "3cd12c20-0143-473f-b7f3-0d5f15cb7249",
+            "publisherId": "9e5760ed-c1d9-4a5e-af19-ab5ea51d17a5",
+            "publisherDisplayName": "Ahmed Hamdy"
+        }
+    },
+    {
+        "identifier": {
+            "id": "shd101wyy.markdown-preview-enhanced",
+            "uuid": "3b1db1fc-c7f7-4bd6-9fa4-b499dfa99a8a"
+        },
+        "version": "0.6.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\shd101wyy.markdown-preview-enhanced-0.6.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.6.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "3b1db1fc-c7f7-4bd6-9fa4-b499dfa99a8a",
+            "publisherId": "deac4ec9-08f5-4752-aa45-c6f09e1f615d",
+            "publisherDisplayName": "Yiyi Wang",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1652370059542
+        }
+    },
+    {
+        "identifier": {
+            "id": "shuworks.vscode-table-formatter",
+            "uuid": "4b416b07-e709-46fb-a84b-644ab2dfe1b4"
+        },
+        "version": "1.2.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\shuworks.vscode-table-formatter-1.2.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/shuworks.vscode-table-formatter-1.2.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4b416b07-e709-46fb-a84b-644ab2dfe1b4",
+            "publisherId": "ededadfa-d9ba-49e0-81cd-d0b2e0630df5",
+            "publisherDisplayName": "Shuzo Iwasaki",
+            "installedTimestamp": 1639238345288
+        }
+    },
+    {
+        "identifier": {
+            "id": "sleistner.vscode-fileutils",
+            "uuid": "d637104e-1fd7-4063-98fc-8afe46012c9b"
+        },
+        "version": "3.5.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\sleistner.vscode-fileutils-3.5.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/sleistner.vscode-fileutils-3.5.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "d637104e-1fd7-4063-98fc-8afe46012c9b",
+            "publisherId": "99ce6203-6065-4d93-983f-c3a097ebbfe2",
+            "publisherDisplayName": "Steffen Leistner",
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1642518992376
+        }
+    },
+    {
+        "identifier": {
+            "id": "stansw.vscode-odata",
+            "uuid": "40183f13-5a36-4e35-ba13-832d01c810e0"
+        },
+        "version": "0.1.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\stansw.vscode-odata-0.1.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/stansw.vscode-odata-0.1.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "40183f13-5a36-4e35-ba13-832d01c810e0",
+            "publisherId": "09fc9ab1-9fbd-4efe-8bc4-a9f24ab30f62",
+            "publisherDisplayName": "Stanislaw Swierc"
+        }
+    },
+    {
+        "identifier": {
+            "id": "streetsidesoftware.code-spell-checker",
+            "uuid": "f6dbd813-b0a0-42c1-90ea-10dde9d925a7"
+        },
+        "version": "2.10.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\streetsidesoftware.code-spell-checker-2.10.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/streetsidesoftware.code-spell-checker-2.10.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f6dbd813-b0a0-42c1-90ea-10dde9d925a7",
+            "publisherId": "67600ca7-88fb-4104-9f7e-dd51c00facf2",
+            "publisherDisplayName": "Street Side Software",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664845539578
+        }
+    },
+    {
+        "identifier": {
+            "id": "stuart.unique-window-colors",
+            "uuid": "85e93d09-9c05-4473-867f-8daaf1bc9e75"
+        },
+        "version": "1.0.51",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\stuart.unique-window-colors-1.0.51",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/stuart.unique-window-colors-1.0.51",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "85e93d09-9c05-4473-867f-8daaf1bc9e75",
+            "publisherId": "dcf78464-2807-41b3-a304-672ab89e19b2",
+            "publisherDisplayName": "Stuart Robinson"
+        }
+    },
+    {
+        "identifier": {
+            "id": "svipas.control-snippets",
+            "uuid": "96dfa5b7-f8cb-4e56-b165-93bb512692d7"
+        },
+        "version": "1.9.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\svipas.control-snippets-1.9.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/svipas.control-snippets-1.9.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "96dfa5b7-f8cb-4e56-b165-93bb512692d7",
+            "publisherId": "64992a19-7934-4f74-bc90-058b61bfff35",
+            "publisherDisplayName": "Benas Svipas"
+        }
+    },
+    {
+        "identifier": {
+            "id": "thmsrynr.rightlines",
+            "uuid": "74f69a81-e6c2-4c1d-9ff4-3a0c644fecd3"
+        },
+        "version": "0.0.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\thmsrynr.rightlines-0.0.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/thmsrynr.rightlines-0.0.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "74f69a81-e6c2-4c1d-9ff4-3a0c644fecd3",
+            "publisherId": "eedf2a78-e927-4081-8041-401e9e1402c0",
+            "publisherDisplayName": "Thomas Rayner",
+            "installedTimestamp": 1626967014852
+        }
+    },
+    {
+        "identifier": {
+            "id": "tomoki1207.selectline-statusbar",
+            "uuid": "4e1273ba-8871-42e2-8bc2-01dd29ebf16b"
+        },
+        "version": "0.0.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\tomoki1207.selectline-statusbar-0.0.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/tomoki1207.selectline-statusbar-0.0.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4e1273ba-8871-42e2-8bc2-01dd29ebf16b",
+            "publisherId": "36dae390-559e-4374-bca8-a49ec1616c36",
+            "publisherDisplayName": "tomoki1207",
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1642636345294
+        }
+    },
+    {
+        "identifier": {
+            "id": "twxs.cmake",
+            "uuid": "2be7cf14-2603-402e-9771-fd79df83cdf8"
+        },
+        "version": "0.0.17",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\twxs.cmake-0.0.17",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/twxs.cmake-0.0.17",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "2be7cf14-2603-402e-9771-fd79df83cdf8",
+            "publisherId": "b5ab7991-81a8-4557-af54-4cb8e01e85c1",
+            "publisherDisplayName": "twxs",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664045685494
+        }
+    },
+    {
+        "identifier": {
+            "id": "tylerleonhardt.vscode-inline-values-powershell",
+            "uuid": "bc57c680-bf5c-47c9-ae98-04bc4d51bcf4"
+        },
+        "version": "0.0.6",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\tylerleonhardt.vscode-inline-values-powershell-0.0.6",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/tylerleonhardt.vscode-inline-values-powershell-0.0.6",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "bc57c680-bf5c-47c9-ae98-04bc4d51bcf4",
+            "publisherDisplayName": "Tyler Leonhardt",
+            "publisherId": "2d97a8b2-cb9f-4729-9fca-51d9cea8f5dc",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1654774460876
+        }
+    },
+    {
+        "identifier": {
+            "id": "tylerleonhardt.vscode-pester-test-adapter",
+            "uuid": "d14254cb-a6e9-4657-a52d-83d14266bacb"
+        },
+        "version": "0.0.23",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\tylerleonhardt.vscode-pester-test-adapter-0.0.23",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/tylerleonhardt.vscode-pester-test-adapter-0.0.23",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "d14254cb-a6e9-4657-a52d-83d14266bacb",
+            "publisherId": "2d97a8b2-cb9f-4729-9fca-51d9cea8f5dc",
+            "publisherDisplayName": "Tyler Leonhardt"
+        }
+    },
+    {
+        "identifier": {
+            "id": "tylerleonhardt.vscode-terminalcommanddocs",
+            "uuid": "764b6cd9-7099-41b6-829b-ccadd0600546"
+        },
+        "version": "0.0.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\tylerleonhardt.vscode-terminalcommanddocs-0.0.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/tylerleonhardt.vscode-terminalcommanddocs-0.0.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "764b6cd9-7099-41b6-829b-ccadd0600546",
+            "publisherId": "2d97a8b2-cb9f-4729-9fca-51d9cea8f5dc",
+            "publisherDisplayName": "Tyler Leonhardt",
+            "installedTimestamp": 1624667177272
+        }
+    },
+    {
+        "identifier": {
+            "id": "tylerleonhardt.vscode-types-installer-helper",
+            "uuid": "cf97b1ce-3f0b-494b-8bb6-48eea4a3c98e"
+        },
+        "version": "0.0.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\tylerleonhardt.vscode-types-installer-helper-0.0.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/tylerleonhardt.vscode-types-installer-helper-0.0.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "cf97b1ce-3f0b-494b-8bb6-48eea4a3c98e",
+            "publisherId": "2d97a8b2-cb9f-4729-9fca-51d9cea8f5dc",
+            "publisherDisplayName": "Tyler Leonhardt",
+            "installedTimestamp": 1628556779717
+        }
+    },
+    {
+        "identifier": {
+            "id": "usernamehw.errorlens",
+            "uuid": "9d8c32ab-354c-4daf-a9bf-20b633734435"
+        },
+        "version": "3.6.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\usernamehw.errorlens-3.6.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/usernamehw.errorlens-3.6.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "9d8c32ab-354c-4daf-a9bf-20b633734435",
+            "publisherId": "151820df-5dc5-4c97-8751-eb84643203fa",
+            "publisherDisplayName": "Alexander",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1658677620490
+        }
+    },
+    {
+        "identifier": {
+            "id": "vadimcn.vscode-lldb",
+            "uuid": "bee31e34-a44b-4a76-9ec2-e9fd1439a0f6"
+        },
+        "version": "1.8.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\vadimcn.vscode-lldb-1.8.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/vadimcn.vscode-lldb-1.8.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "bee31e34-a44b-4a76-9ec2-e9fd1439a0f6",
+            "publisherId": "3b05d186-6311-4caa-99b5-09032a9d3cf5",
+            "publisherDisplayName": "Vadim Chugunov",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664845538611
+        }
+    },
+    {
+        "identifier": {
+            "id": "visualstudioexptteam.vscodeintellicode",
+            "uuid": "876e8f93-74d0-4f4f-91b7-34a09f19f444"
+        },
+        "version": "1.2.28",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\visualstudioexptteam.vscodeintellicode-1.2.28",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.28",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "876e8f93-74d0-4f4f-91b7-34a09f19f444",
+            "publisherDisplayName": "Microsoft",
+            "publisherId": "e8db1608-52e8-4d8d-92a6-779c5db302a9",
+            "isPreReleaseVersion": false,
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "preRelease": false,
+            "installedTimestamp": 1664373413275
+        }
+    },
+    {
+        "identifier": {
+            "id": "vitaliymaz.vscode-svg-previewer",
+            "uuid": "27d96499-52df-4f8e-8905-275284e25ace"
+        },
+        "version": "0.7.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\vitaliymaz.vscode-svg-previewer-0.7.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/vitaliymaz.vscode-svg-previewer-0.7.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "27d96499-52df-4f8e-8905-275284e25ace",
+            "publisherId": "27dd6867-041b-4aaa-8f03-5702e1f7c2a1",
+            "publisherDisplayName": "Vitalii Mazurenko",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1664045694113
+        }
+    },
+    {
+        "identifier": {
+            "id": "vsls-contrib.codetour",
+            "uuid": "1d9b1776-4188-4b43-b23f-bab3d47537e9"
+        },
+        "version": "0.0.58",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\vsls-contrib.codetour-0.0.58",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/vsls-contrib.codetour-0.0.58",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "1d9b1776-4188-4b43-b23f-bab3d47537e9",
+            "publisherId": "03b54342-c642-4e41-b84d-6a2222e2b060",
+            "publisherDisplayName": "Jonathan Carter",
+            "installedTimestamp": 1625789942536
+        }
+    },
+    {
+        "identifier": {
+            "id": "wallabyjs.quokka-vscode",
+            "uuid": "aae0701b-111f-49c1-9000-abd37a442f28"
+        },
+        "version": "1.0.504",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\wallabyjs.quokka-vscode-1.0.504",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/wallabyjs.quokka-vscode-1.0.504",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "aae0701b-111f-49c1-9000-abd37a442f28",
+            "publisherDisplayName": "Wallaby.js",
+            "publisherId": "9e43bb4e-4318-4e59-b5c2-df1109a963dd",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1663038078108
+        }
+    },
+    {
+        "identifier": {
+            "id": "webfreak.debug",
+            "uuid": "2fd22b8e-b3b8-4e7f-9a28-a5e2d1bdd0d4"
+        },
+        "version": "0.26.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\webfreak.debug-0.26.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/webfreak.debug-0.26.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "2fd22b8e-b3b8-4e7f-9a28-a5e2d1bdd0d4",
+            "publisherId": "e054f80a-50f9-4d80-85c8-6ff87eef6c35",
+            "publisherDisplayName": "WebFreak",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1650152106122
+        }
+    },
+    {
+        "identifier": {
+            "id": "wingrunr21.vscode-ruby",
+            "uuid": "708cfcd8-e0c6-49ca-9af6-b27a342d247b"
+        },
+        "version": "0.28.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\wingrunr21.vscode-ruby-0.28.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/wingrunr21.vscode-ruby-0.28.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "708cfcd8-e0c6-49ca-9af6-b27a342d247b",
+            "publisherId": "ca1db232-c363-4e89-9428-9de26fde1f6a",
+            "publisherDisplayName": "Stafford Brunk",
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1645908395170
+        }
+    },
+    {
+        "identifier": {
+            "id": "wwm.better-align",
+            "uuid": "8bd90cfe-8edd-4b92-b992-2337fdc06604"
+        },
+        "version": "1.1.6",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\wwm.better-align-1.1.6",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/wwm.better-align-1.1.6",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "8bd90cfe-8edd-4b92-b992-2337fdc06604",
+            "publisherId": "5afc83bf-c11a-43e3-8aa9-8dad221aff58",
+            "publisherDisplayName": "wwm"
+        }
+    },
+    {
+        "identifier": {
+            "id": "yzane.markdown-pdf",
+            "uuid": "f015bc3c-a098-4245-8765-615e002e09ab"
+        },
+        "version": "1.4.4",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\yzane.markdown-pdf-1.4.4",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/yzane.markdown-pdf-1.4.4",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f015bc3c-a098-4245-8765-615e002e09ab",
+            "publisherId": "86794f67-46a8-4137-a5a4-1415a0e41e7d",
+            "publisherDisplayName": "yzane",
+            "installedTimestamp": 1639238349610
+        }
+    },
+    {
+        "identifier": {
+            "id": "yzhang.markdown-all-in-one",
+            "uuid": "98790d67-10fa-497c-9113-f6c7489207b2"
+        },
+        "version": "3.4.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\yzhang.markdown-all-in-one-3.4.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/yzhang.markdown-all-in-one-3.4.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "98790d67-10fa-497c-9113-f6c7489207b2",
+            "publisherId": "36c8b41c-6ef6-4bf5-a5b7-65bef29b606f",
+            "publisherDisplayName": "Yu Zhang",
+            "targetPlatform": "undefined",
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false,
+            "installedTimestamp": 1650814137693
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.powershell-preview",
+            "uuid": "880475da-a140-4fc5-a99f-6d1210d88559"
+        },
+        "version": "2022.10.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.powershell-preview-2022.10.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.powershell-preview-2022.10.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "880475da-a140-4fc5-a99f-6d1210d88559",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.live-server",
+            "uuid": "4eae7368-ec63-429d-8449-57a7df5e2117"
+        },
+        "version": "0.4.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.live-server-0.4.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.live-server-0.4.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4eae7368-ec63-429d-8449-57a7df5e2117",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "rust-lang.rust-analyzer",
+            "uuid": "06574cb4-e5dc-4631-8174-a543a4533621"
+        },
+        "version": "0.3.1238",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\rust-lang.rust-analyzer-0.3.1238-win32-x64",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/rust-lang.rust-analyzer-0.3.1238-win32-x64",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "06574cb4-e5dc-4631-8174-a543a4533621",
+            "publisherId": "cb14a7a7-a188-40bd-a953-e0a20757c5dd",
+            "publisherDisplayName": "The Rust Programming Language ",
+            "targetPlatform": "win32-x64",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.azure-account",
+            "uuid": "819a23e1-b6c6-41cf-9029-e653b537d996"
+        },
+        "version": "0.11.2",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.azure-account-0.11.2",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.azure-account-0.11.2",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "819a23e1-b6c6-41cf-9029-e653b537d996",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "visualstudioexptteam.intellicode-api-usage-examples",
+            "uuid": "9fa2a00e-3bfa-4c2a-abc4-a865bb2b5cf3"
+        },
+        "version": "0.2.5",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\visualstudioexptteam.intellicode-api-usage-examples-0.2.5",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/visualstudioexptteam.intellicode-api-usage-examples-0.2.5",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "9fa2a00e-3bfa-4c2a-abc4-a865bb2b5cf3",
+            "publisherId": "e8db1608-52e8-4d8d-92a6-779c5db302a9",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "zhuangtongfa.material-theme",
+            "uuid": "26a529c9-2654-4b95-a63f-02f6a52429e6"
+        },
+        "version": "3.15.6",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\zhuangtongfa.material-theme-3.15.6",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/zhuangtongfa.material-theme-3.15.6",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "26a529c9-2654-4b95-a63f-02f6a52429e6",
+            "publisherId": "8ae75bda-ec22-4a17-9340-abf1a20beca9",
+            "publisherDisplayName": "binaryify",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "powerquery.vscode-powerquery-sdk",
+            "uuid": "fa8e26d6-616f-44b5-bf40-63f691d76a0f"
+        },
+        "version": "0.1.7",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.1.7-win32-x64",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/powerquery.vscode-powerquery-sdk-0.1.7-win32-x64",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "fa8e26d6-616f-44b5-bf40-63f691d76a0f",
+            "publisherId": "8db27586-599f-488b-be9d-e7bd5493a781",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "win32-x64",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode-remote.remote-ssh",
+            "uuid": "607fd052-be03-4363-b657-2bd62b83d28a"
+        },
+        "version": "0.90.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode-remote.remote-ssh-0.90.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode-remote.remote-ssh-0.90.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "607fd052-be03-4363-b657-2bd62b83d28a",
+            "publisherId": "ac9410a2-0d75-40ec-90de-b59bb705801d",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode-remote.remote-containers",
+            "uuid": "93ce222b-5f6f-49b7-9ab1-a0463c6238df"
+        },
+        "version": "0.255.3",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode-remote.remote-containers-0.255.3",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode-remote.remote-containers-0.255.3",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "93ce222b-5f6f-49b7-9ab1-a0463c6238df",
+            "publisherId": "ac9410a2-0d75-40ec-90de-b59bb705801d",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vsliveshare.vsliveshare",
+            "uuid": "5a6dc0d5-dc02-4121-8e24-cad33a2ff0af"
+        },
+        "version": "1.0.5735",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vsliveshare.vsliveshare-1.0.5735",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vsliveshare.vsliveshare-1.0.5735",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "5a6dc0d5-dc02-4121-8e24-cad33a2ff0af",
+            "publisherId": "74365139-d24d-4d0a-8377-c28643f7a216",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-python.vscode-pylance",
+            "uuid": "364d2426-116a-433a-a5d8-a5098dc3afbd"
+        },
+        "version": "2022.10.20",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-python.vscode-pylance-2022.10.20",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-python.vscode-pylance-2022.10.20",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "364d2426-116a-433a-a5d8-a5098dc3afbd",
+            "publisherId": "998b010b-e2af-44a5-a6cd-0b5fd3b9b6f8",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-playwright.playwright",
+            "uuid": "f53b1d43-eef4-4909-99ca-56b5fa3e108c"
+        },
+        "version": "0.2.13",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-playwright.playwright-0.2.13",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-playwright.playwright-0.2.13",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f53b1d43-eef4-4909-99ca-56b5fa3e108c",
+            "publisherId": "43a584fb-6d7a-4782-ae52-15ee5fde9bab",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "isMachineScoped": false,
+            "isBuiltin": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode.remote-repositories",
+            "uuid": "cf5142f0-3701-4992-980c-9895a750addf"
+        },
+        "version": "0.22.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode.remote-repositories-0.22.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode.remote-repositories-0.22.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "cf5142f0-3701-4992-980c-9895a750addf",
+            "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665673964840,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-toolsai.vscode-jupyter-slideshow",
+            "uuid": "e153ca70-b543-4865-b4c5-b31d34185948"
+        },
+        "version": "0.1.5",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-toolsai.vscode-jupyter-slideshow-0.1.5",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-toolsai.vscode-jupyter-slideshow-0.1.5",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "e153ca70-b543-4865-b4c5-b31d34185948",
+            "publisherId": "ac8eb7c9-3e59-4b39-8040-f0484d8170ce",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665673966112
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-toolsai.vscode-jupyter-cell-tags",
+            "uuid": "ab4fb32a-befb-4102-adf9-1652d0cd6a5e"
+        },
+        "version": "0.1.6",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-toolsai.vscode-jupyter-cell-tags-0.1.6",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-toolsai.vscode-jupyter-cell-tags-0.1.6",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "ab4fb32a-befb-4102-adf9-1652d0cd6a5e",
+            "publisherId": "ac8eb7c9-3e59-4b39-8040-f0484d8170ce",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665673966078
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-vscode-remote.remote-wsl",
+            "uuid": "f0c5397b-d357-4197-99f0-cb4202f22818"
+        },
+        "version": "0.72.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-vscode-remote.remote-wsl-0.72.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-vscode-remote.remote-wsl-0.72.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f0c5397b-d357-4197-99f0-cb4202f22818",
+            "publisherId": "ac9410a2-0d75-40ec-90de-b59bb705801d",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665673964578,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-toolsai.jupyter-renderers",
+            "uuid": "b15c72f8-d5fe-421a-a4f7-27ed9f6addbf"
+        },
+        "version": "1.0.10",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-toolsai.jupyter-renderers-1.0.10",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-toolsai.jupyter-renderers-1.0.10",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "b15c72f8-d5fe-421a-a4f7-27ed9f6addbf",
+            "publisherId": "ac8eb7c9-3e59-4b39-8040-f0484d8170ce",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665673965818,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-python.isort",
+            "uuid": "4ad0ce32-ff3f-49f0-83b5-93e5dc00cfff"
+        },
+        "version": "2022.3.12861052",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-python.isort-2022.3.12861052",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-python.isort-2022.3.12861052",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "4ad0ce32-ff3f-49f0-83b5-93e5dc00cfff",
+            "publisherId": "998b010b-e2af-44a5-a6cd-0b5fd3b9b6f8",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": false,
+            "isPreReleaseVersion": true,
+            "installedTimestamp": 1665673965937,
+            "preRelease": true
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-toolsai.jupyter",
+            "uuid": "6c2f1801-1e7f-45b2-9b5c-7782f1e076e8"
+        },
+        "version": "2022.9.1202862440",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-toolsai.jupyter-2022.9.1202862440",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-toolsai.jupyter-2022.9.1202862440",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "6c2f1801-1e7f-45b2-9b5c-7782f1e076e8",
+            "publisherId": "ac8eb7c9-3e59-4b39-8040-f0484d8170ce",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665673966194,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-dotnettools.dotnet-interactive-vscode",
+            "uuid": "2c76994b-85ab-4c26-8881-83028e2ecbf4"
+        },
+        "version": "1.0.3504060",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-dotnettools.dotnet-interactive-vscode-1.0.3504060",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-dotnettools.dotnet-interactive-vscode-1.0.3504060",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "2c76994b-85ab-4c26-8881-83028e2ecbf4",
+            "publisherId": "d05e23de-3974-4ff0-8d47-23ee77830092",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665673968515,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-python.pylint",
+            "uuid": "8dc47276-5882-4c5f-903d-7eef7b9d1584"
+        },
+        "version": "2022.5.12851049",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-python.pylint-2022.5.12851049",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-python.pylint-2022.5.12851049",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "8dc47276-5882-4c5f-903d-7eef7b9d1584",
+            "publisherId": "998b010b-e2af-44a5-a6cd-0b5fd3b9b6f8",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": true,
+            "installedTimestamp": 1665673971984,
+            "preRelease": true
+        }
+    },
+    {
+        "identifier": {
+            "id": "powerquery.vscode-powerquery",
+            "uuid": "c61df72a-ddd1-4637-bea6-9c364b6a5442"
+        },
+        "version": "0.1.50",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-0.1.50",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/powerquery.vscode-powerquery-0.1.50",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "c61df72a-ddd1-4637-bea6-9c364b6a5442",
+            "publisherId": "8db27586-599f-488b-be9d-e7bd5493a781",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665696906979,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "ms-python.python",
+            "uuid": "f1f59ae4-9318-4f3c-a9b5-81b2eaa5f8a5"
+        },
+        "version": "2022.16.1",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\ms-python.python-2022.16.1",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/ms-python.python-2022.16.1",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "f1f59ae4-9318-4f3c-a9b5-81b2eaa5f8a5",
+            "publisherId": "998b010b-e2af-44a5-a6cd-0b5fd3b9b6f8",
+            "publisherDisplayName": "Microsoft",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665706778183,
+            "preRelease": false
+        }
+    },
+    {
+        "identifier": {
+            "id": "vscode-icons-team.vscode-icons",
+            "uuid": "9ccc1dd7-7ec4-4a46-bd4f-7d7b8b9d322a"
+        },
+        "version": "12.0.0",
+        "location": {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\cppmo_000\\.vscode\\extensions\\vscode-icons-team.vscode-icons-12.0.0",
+            "_sep": 1,
+            "path": "/c:/Users/cppmo_000/.vscode/extensions/vscode-icons-team.vscode-icons-12.0.0",
+            "scheme": "file"
+        },
+        "metadata": {
+            "id": "9ccc1dd7-7ec4-4a46-bd4f-7d7b8b9d322a",
+            "publisherId": "652ad61d-3a6a-48ca-ab1a-80dc8953b2b6",
+            "publisherDisplayName": "VSCode Icons Team",
+            "targetPlatform": "undefined",
+            "isApplicationScoped": false,
+            "updated": true,
+            "isPreReleaseVersion": false,
+            "installedTimestamp": 1665904578192,
+            "preRelease": false
+        }
+    }
+]
