@@ -2169,6 +2169,11 @@ function Prompt_Nin.2 {
     $colors = $Cs ?? [object[]]@('#DDA0DD', '#9370DB', '#008B8B')
     $uniStr = '˫！︕'
 
+    $state = @{
+
+        ms-vscode.powershell-preview
+    }
+
     (@(
         "`n"
         if ($global:error.count -gt 0) {
@@ -2514,23 +2519,75 @@ function resolveAliasedCommand {
 
 #  https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock?view=powershellsdk-7.0.0#properties
 
+function _getProcProp {
+    $Obj = $Input
+    $procSplat = @{
+        ErrorAction = 'ignore'
+        Property = 'CommandLine', '*descr*', '*file*', '*versiono*', 'Path', 'Name', 'Parent', 'MainModule', '*name*'
+    }
+    $Obj | Select-Object @procSplat
+}
+    # (ps -id $PID).Parent | Select-Object @sSplat
+
+function _collectProcFamilyTree {
+    # If not specified, uses current PID
+    # future: add members without cmdlet overhead for speed
+    param(
+        [Parameter(mandatory)]
+        [object]$InitialProcess
+    )
+
+    $InitialProcess ??= ps -Id $PID
+    $Config = @{
+        MaxDepth = 10
+    }
+
+    $next = $InitialProcess
+    $Depth = 0
+    # $items = @(
+        while($null -ne $next) {
+
+            $next
+            | _getProcProp
+            | Add-Member -NotePropertyName 'Depth' -NotePropertyValue $Depth -PassThru -Force -ea Ignore
+
+            $next = $next.parent
+            $Depth++;
+            if($Depth -gt $Config.MaxDepth) { $next = $Null }
+        }
+
+        # [pscustomobject]@{
+        #     Depth = $i
+        #     Proc = $next | _getProcProp
+        #     }
+        #     $next = $next.parent
+        #     $i++; $i
+        #     if($i -gt 10) { $next = $Null }
+        # }
+    # )
+
+}
+
+
+
 function __find_which_pwsh_extension {
-    $psedition.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match 'vscode|$'
-    $psEditor.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match 'vscode|$'
+    $meta = @{
+        IsAnyVsCode = $PSEditor
+        # IsAnyP
+        #  xtensionInsiders = (ps -id $PID).Parent
+        # Is
+
+        # Ex: C:\Program Files\PowerShell\7\System.Private.CoreLib.dll
+        'not_used' = $PSEdition.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match 'vscode|$'
+        # 'PSEditor.E'
+
+        # ex: C:\Users\cppmo_000\.vscode\extensions\ms-vscode.powershell-preview-2022.11.1\modules\PowerShellEditorServices\bin\Common\Microsoft.PowerShell.EditorServices.dll
+        'addonIsPreview' =  $psEditor.GetType().Assembly.Location.Split([io.path]::DirectorySeparatorChar) -match 'vscode|$'
+    }
+    [pscustomobject]$Meta
 }
 
 
-function Invoke-SpartanVsCode {
-    PARAM( [string]$Path = 'h:\env' )
-
-    $user_data_dir = Join-Path 'H:\env\code\env_fast' 'data'
-    $addons_dir = Join-Path 'H:\env\code\env_fast' 'addons'
-    $c_args = '--extensions-dir', $addons_dir, '--user-data-dir', $user_data_dir, '--profile', 'fast', '--add', (Get-Item $Path)
-
-    & code.cmd @c_args
-    Write-Warning ' - [  ] ask is there a better wya to invoke without breaking streams'
-    Write-Warning 'find the real one'
-}
 function cmdToScriptBlock {
     # barely-sugar, more so for semantics
     # converts functions and scriptblocks to scriptblocks
