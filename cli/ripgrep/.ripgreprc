@@ -11,7 +11,7 @@ powerbi:*.{csv,json,sql,jsonc,pq}*
 # Don't let ripgrep vomit really long lines to my terminal, and show a preview.
 # --max-columns=150
 #
---max-columns=200
+--max-columns=500
 # what does previou do? I think it's [x more items]
 --max-columns-preview
 

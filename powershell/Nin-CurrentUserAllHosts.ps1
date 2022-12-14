@@ -8,7 +8,7 @@ $DebugPreference = 'silentlycontinue'
 Write-Warning "add func: 'Lookup()'"
 'try: <https://github.com/Jaykul/dotfiles/blob/master/.chezmoitemplates/interactive.ps1>xl8r'
 
-if($true) {
+if ($true) {
     # temp to test a crash or not
     $PSDefaultParameterValues['import-module:verbose'] = $false
     $PSDefaultParameterValues['import-module:debug'] = $false
@@ -17,9 +17,9 @@ if($true) {
 }
 
 
-$PathSeem = Get-Item -ea 'continue'  'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
-if(-not $PathSeem) {
-    write-warning "`$PathSeem failed to locate import! from: $PSCommandPath."
+$PathSeem = Get-Item -ea 'continue' 'H:\github_fork\Pwsh\MyPSModule_imports\dotfiles\Documents\PowerShell'
+if (-not $PathSeem) {
+    Write-Warning "`$PathSeem failed to locate import! from: $PSCommandPath."
 }
 
 $script:__superVerboseAtBottom = $true # at end of profile load, turn on then
@@ -74,12 +74,12 @@ function fime.2 {
 
 
     #>
-   $input
-   | ClassExplorer\Find-Member @args
-   | Sort -Unique Name | ft
+    $input
+    | ClassExplorer\Find-Member @args
+    | Sort-Object -Unique Name | Format-Table
 }
 
-    function nb.firstFew {
+function nb.firstFew {
     <#
     .SYNOPSIS
         To simplify output for notebooks, this limits to N items, grabbing from both ends -- or even randomly
@@ -120,17 +120,17 @@ function fime.2 {
         [int]$Limit = 20,
         [switch]$Shuffle
     )
-    $half = $Limit  / 2
+    $half = $Limit / 2
 
-    if( -not $Shuffle) {
-        $Input | Select -first $half -Last $half
-        | sort Name -unique
-            | ft Name, DisplayString
-            return
-        }
-        $Input | Get-Random -Count $Limit
-        | sort Name -unique
-    | ft Name, DisplayString
+    if ( -not $Shuffle) {
+        $Input | Select-Object -First $half -Last $half
+        | Sort-Object Name -Unique
+        | Format-Table Name, DisplayString
+        return
+    }
+    $Input | Get-Random -Count $Limit
+    | Sort-Object Name -Unique
+    | Format-Table Name, DisplayString
 
 }
 
@@ -154,90 +154,90 @@ function yamlify {
 }
 # . { # more to extract
 
-    function new.jsonify {
-        <#
+function new.jsonify {
+    <#
     .synopsis
         to json, minimal depth, truncate arrays etc.. if long
     #>
-        param(
-            [Parameter(Mandatory, ValueFromPipeline)]
-            $InputObject,
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject,
 
-            # automatically remove any blankable values
-            [Parameter()]$DropBlank
-        )
-        process {
-            $serializeOnce = $InputObject
-            | to->Json -Depth 1
+        # automatically remove any blankable values
+        [Parameter()]$DropBlank
+    )
+    process {
+        $serializeOnce = $InputObject
+        | to->Json -Depth 1
 
-            $serializeOnce | from->Json
+        $serializeOnce | from->Json
 
 
-        }
     }
+}
 
-    function _test_scalarIsBlank {
-        <#
+function _test_scalarIsBlank {
+    <#
         Test-IsBlankable Value, whitespace is blank
     #>
-        [OutputType('System.Boolean')]
-        param(
-            # any scalar
-            [Parameter(Mandatory)]
-            [AllowNull()]
-            [AllowEmptyCollection()]
-            [AllowEmptyString()]
-            $Object
-        )
-        $isBlank = $false
-        if ($null -eq $Object) {
-            $isBlank = $true
-            Write-Verbose '<true null>'
-        }
-        if ( [string]::IsNullOrWhiteSpace( $val ) ) { $isBlank = $True }
-        return $isBlank
+    [OutputType('System.Boolean')]
+    param(
+        # any scalar
+        [Parameter(Mandatory)]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        $Object
+    )
+    $isBlank = $false
+    if ($null -eq $Object) {
+        $isBlank = $true
+        Write-Verbose '<true null>'
     }
-    function _test_propIsBlank {
-        <#
+    if ( [string]::IsNullOrWhiteSpace( $val ) ) { $isBlank = $True }
+    return $isBlank
+}
+function _test_propIsBlank {
+    <#
     .SYNOPSIS
         test if a property is blank, by name
     #>
 
-        [OutputType('System.Boolean')]
-        param(
-            [Alias('Object')]
-            [Property(Mandatory)]
-            $TargetObject,
+    [OutputType('System.Boolean')]
+    param(
+        [Alias('Object')]
+        [Property(Mandatory)]
+        $TargetObject,
 
-            # key/field name
-            # properties to inspect
-            [Property(Mandatory)]
-            [string]$PropertyName
-            # [string[]]$PropertyName  # todo: test ma
-        )
-        $val = $TargetObject.psobject.properties[ $PropertyName ]
-        $isBlank = _test_scalarIsBlank $val
-        # if($null -eq $val) { $isBlank = $true }
-        # if( [string]::IsNullOrWhiteSpace( $val ) ) { $isBlank = $True }
-        return $isBlank
-    }
-    function props.select.notBlankableValues {
-        [cmdletbinding()]
-        param(
-            [Parameter(Mandatory, ValueFromPipeline)]
-            [object]$InputObject,
+        # key/field name
+        # properties to inspect
+        [Property(Mandatory)]
+        [string]$PropertyName
+        # [string[]]$PropertyName  # todo: test ma
+    )
+    $val = $TargetObject.psobject.properties[ $PropertyName ]
+    $isBlank = _test_scalarIsBlank $val
+    # if($null -eq $val) { $isBlank = $true }
+    # if( [string]::IsNullOrWhiteSpace( $val ) ) { $isBlank = $True }
+    return $isBlank
+}
+function props.select.notBlankableValues {
+    [cmdletbinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
 
-            #invert
-            [switch]$KeepBlanks
-        )
-        process {
-            $InputObject.PSObject.Properties
-            | Where-Object {
-                -not (_test_scalarIsBlank $_.Value)
-            } | ForEach-Object Name | Sort-Object
-        }
-        # todo: code from: "Dev.Nin\?'NotBlank"
+        #invert
+        [switch]$KeepBlanks
+    )
+    process {
+        $InputObject.PSObject.Properties
+        | Where-Object {
+            -not (_test_scalarIsBlank $_.Value)
+        } | ForEach-Object Name | Sort-Object
     }
+    # todo: code from: "Dev.Nin\?'NotBlank"
+}
 
 #     Get-Process
 #     | Select-Object -First 1
@@ -517,10 +517,11 @@ function b.fm {
         # $pattern = @( '*', $patter.ToLower(), '*') -join '' -replace '\^\*{2}', '*'
 
         if ($Pattern) {
-            Find-Member -InputObject $_ $Pattern | Sort-Object  Name | Format-Table Name, DisplayString
-            Find-Member -InputObject $_ $Pattern | Sort-Object  Name | Format-Table Name, DisplayString
-        } else {
-            Find-Member -InputObject $_ | Sort-Object  Name | Format-Table Name, DisplayString
+            Find-Member -InputObject $_ $Pattern | Sort-Object Name | Format-Table Name, DisplayString
+            Find-Member -InputObject $_ $Pattern | Sort-Object Name | Format-Table Name, DisplayString
+        }
+        else {
+            Find-Member -InputObject $_ | Sort-Object Name | Format-Table Name, DisplayString
         }
     }
 }
@@ -605,7 +606,8 @@ function __profileGreet {
     }
     if (-not $binGlow ) {
         Get-WhatsNew @splat
-    } else {
+    }
+    else {
         Get-WhatsNew @splat
         | & $binGlow @('-')
     }
@@ -726,13 +728,13 @@ function inMod {
 function _errPreview {
     $Input | ForEach-Object { $_ | io | Format-Table Reported, Name, ShortValue, ShortType -auto }
 }
-function gErr {
+function old_gErr {
     [int]$Limit,
     [switch]$Tac
 
     err -Limit $Limit -Tac:$Tac | Get-Error
 }
-function Err {
+function old_Err {
     # [Err.v3]
     # sugar when in debug mode
     <#
@@ -766,7 +768,8 @@ function Err {
     if ($Limit) {
         if ($Reverse) {
             $global:error | Select-Object -First $Limit | ReverseIt
-        } else {
+        }
+        else {
             $global:error | Select-Object -First $Limit
         }
         return
@@ -774,7 +777,8 @@ function Err {
 
     if ($Reverse) {
         $global:error | ReverseIt
-    } else {
+    }
+    else {
         $global:error
     }
     return
@@ -782,7 +786,7 @@ function Err {
     # return $global:error
 }
 
-function ToastIt {
+function ToastIt_i0 {
     # mini sugar using defaults
     param(
         [parameter(Mandatory)]
@@ -1012,13 +1016,14 @@ $env:PATH += ';', 'G:\programs_nin_bin' -join '' # old
 $env:PATH += ';', "$Env:UserProfile/SkyDrive/Documents/2022/Pwsh/my_Github" -join ''
 $env:Path += ';', 'H:/github_fork/Pwsh/autoLoader.MyPSModule_imports' -join '' # good, new
 
-if($true) {
-$env:PSModulePath = @(
-    'H:\github_fork\Pwsh\MyPSModule_imports'
-    $env:PSModulePath
-) -join ';'
-} else {
-    write-warning 'Ignoring github-forks path: "H:\github_fork\Pwsh\MyPSModule_imports"'
+if ($true) {
+    $env:PSModulePath = @(
+        'H:\github_fork\Pwsh\MyPSModule_imports'
+        $env:PSModulePath
+    ) -join ';'
+}
+else {
+    Write-Warning 'Ignoring github-forks path: "H:\github_fork\Pwsh\MyPSModule_imports"'
 }
 
 
@@ -1068,10 +1073,12 @@ if (! $IsAzureDataStudio ) {
     Write-Warning '     ㏒ : NinIsLoaded?d'
     if ( Get-Module 'Ninmonkey.Console') {
 
-    } else {
+    }
+    else {
         Write-Warning '㏒ : Nin failed, skipping command predictor'
     }
-} else {
+}
+else {
     Write-Warning 'skipping predictor because of ADS...'
 }
 
@@ -1089,7 +1096,8 @@ if (Get-Module 'Ninmonkey.Console') {
     Enable-NinCoreAlias
     # Ninmonkey.Console\nin.ImportPSReadLine Using_Plugin
     Ninmonkey.Console\nin.ImportPSReadLine MyDefault_HistListView
-} else {
+}
+else {
     Write-Warning '㏒ : Nin failed, skipping aliases'
 }
 
@@ -1205,15 +1213,17 @@ if ($false) {
 if (!(Test-Path (Get-Item Temp:\complete_gh.ps1))) {
     Write-Warning '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> Generate "complete_gh.ps1"'
     gh completion --shell powershell | Set-Content -Path temp:\complete_gh.ps1
-} else {
+}
+else {
     Write-Verbose '㏒ [dotfiles/powershell/Nin-CurrentUserAllHosts.ps1] -> complete_gh.ps1'
     . (Get-Item Temp:\complete_gh.ps1)
 }
 
-if($true) {
-    write-warning "Disabled import path: 'G:\2021-github-downloads\PowerShell\Santisq🧑' "
-    write-warning 'maybe disabled import: "C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\"'
-} else {
+if ($true) {
+    Write-Warning "Disabled import path: 'G:\2021-github-downloads\PowerShell\Santisq🧑' "
+    Write-Warning 'maybe disabled import: "C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github\"'
+}
+else {
     $Env:PSModulePath = @( # 2022
         (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\PSTree\') -join ''
         (Get-Item -ea ignore 'G:\2021-github-downloads\PowerShell\Santisq🧑\Get-Hierarchy\') -join ''
@@ -1223,15 +1233,16 @@ if($true) {
     ) -join ';'
 }
 
-if($true) {
-    write-warning 'skipping importing path: "C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell" dotfiles'
-} else {
-if ($OneDrive.Enable_MyDocsBugMapping) {
-    $Env:PSModulePath = @(
-        $Env:PSModulePath
-        'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell'
-    ) -join ';'
+if ($true) {
+    Write-Warning 'skipping importing path: "C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell" dotfiles'
 }
+else {
+    if ($OneDrive.Enable_MyDocsBugMapping) {
+        $Env:PSModulePath = @(
+            $Env:PSModulePath
+            'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell'
+        ) -join ';'
+    }
 }
 
 <#
@@ -1405,10 +1416,12 @@ function _reloadModule {
             # Ignore warnings, allow errors
             if (!$AllowWarn) {
                 Import-Module @importSplat 3>$null
-            } else {
+            }
+            else {
                 Import-Module @importSplat
             }
-        } catch {
+        }
+        catch {
             Write-Error -ea continue -m (
                 'Failed loading: {0}{1}{2}' -f @(
                     $ModuleName
@@ -1471,10 +1484,12 @@ $parent = (Get-Process -Id $pid).Parent.Name
 if ($parent -eq 'code') {
     $__ninConfig.Terminal.CurrentTerminal = 'code'
     $__ninConfig.Terminal.IsVSCode = $true
-} elseif ($parent -eq 'Code - Insiders') {
+}
+elseif ($parent -eq 'Code - Insiders') {
     $__ninConfig.Terminal.CurrentTerminal = 'code_insiders'
     $__ninConfig.Terminal.IsVSCode = $true
-} elseif ($parent -eq 'windowsterminal') {
+}
+elseif ($parent -eq 'windowsterminal') {
     # preview still uses this name
     $__ninConfig.Terminal.CurrentTerminal = 'windowsterminal'
 }
@@ -2145,7 +2160,8 @@ function __prompt_noModuleLoaded {
 
         $(if (Test-Path variable:/PSDebugContext) {
                 '[DBG]🐛> '
-            } else {
+            }
+            else {
                 ''
             }) + 'Pwsh ' + "`n" + $(Get-Location) + "`n" +
         $(if ($NestedPromptLevel -ge 1) {
@@ -2207,7 +2223,8 @@ function Prompt_Nin.2 {
                 }
                 EditorServicesRunning = if ( (Get-Module 'EditorServicesCommandSuite', 'PowerShellEditorServices.Commands', 'PowerShellEditorServices.VSCode').count -gt 2 ) {
                     'ES჻ '
-                } else {
+                }
+                else {
 
 
                 }
@@ -2428,7 +2445,8 @@ if (-not $DisabledForPerfTest) {
 
             )
         }
-    } else {
+    }
+    else {
         Get-PSDrive -PSProvider FileSystem
         | ForEach-Object {
             [pscustomobject]@{
@@ -2442,7 +2460,8 @@ if (-not $DisabledForPerfTest) {
 function prompt {
     if ($true) {
         Prompt_Nin.2
-    } else {
+    }
+    else {
         @(
             "`n"
             $PSVersionTable.PSVersion -join ''
@@ -2599,7 +2618,8 @@ if ($true -or $script:__superVerboseAtBottom) {
     $PSDefaultParameterValues['Set-KeyHandler*:Verbose'] = $true
     $PSDefaultParameterValues['Set-PSReadLine*:Verbose'] = $true
     $PSDefaultParameterValues['Import-CommandSuite*:verbose'] = $true
-} else {
+}
+else {
     $VerbosePReference = 'silentlyContinue'
 }
 $PSDefaultParameterValues.Remove('Import-Module:Verbose')
@@ -2621,7 +2641,8 @@ if ($script:__superEnableDebugAtBottom) {
     $PSDefaultParameterValues['Update-Module:debug'] = $true
     $PSDefaultParameterValues['Install-Module:debug'] = $true
     $PSDefaultParameterValues['get-Module:debug'] = $true
-} else {
+}
+else {
     # $debugpreference = 'silentlyContinue'
     $PSDefaultParameterValues['Import-Module:debug'] = $false # creates prompts
 }
@@ -2636,7 +2657,7 @@ $PSDefaultParameterValues.Remove('*:Verbose')
 Set-PSDebug -Trace $script:__superTraceAtBottomLevel
 "end => NinCurrentALlHosts: '$PSComandPath'" | Write-Warning
 
-'autoload _tempImportAws'  | label 'util.Invoke -> '
+'autoload _tempImportAws' | label 'util.Invoke -> '
 _tempImportAws
 __profileGreet
 
@@ -2681,9 +2702,9 @@ function new.fime.query.anyof {
     $term = $InputTypes
     | Join-String -sep ', ' { $_ } -os ']]' -op '[anyof['
 
-    if( -not $Test ) { return $Term }
+    if ( -not $Test ) { return $Term }
 
-    if($Test) {
+    if ($Test) {
         Find-Member -ParameterType ([ScriptBlock]::Create( $term ))
         return
     }
