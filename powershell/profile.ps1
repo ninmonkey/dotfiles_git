@@ -35,6 +35,10 @@ function fix.PsModulePath {
         OutputSuffix = "`n"
     }
 
+    $Env:PSModulePath = @(
+        gi -ea 'continue' 'E:\PSModulePath_2022' # Add Prefixpath
+        $Env:PSModulePath
+    ) | Join-String -sep ';'
 
 
     $Env:PSModulePath -split ';'
