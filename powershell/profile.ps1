@@ -2,6 +2,8 @@
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
+    'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
+    'E:\PSModulePath_2022'
     $Env:PSModulePath
 ) | Join-String -sep ';'
 function fix.PsModulePath {
@@ -18,7 +20,7 @@ function fix.PsModulePath {
     # Write-Warning 'LEFT OFF... STRIP PATHS fix.PsModulePath'
     # return
     $global:__originalPSModulePath = $Env:PSModulePath
-    [string[]]$PathsToRemove = @(
+    [Collections.Generic.List[object]]$PathsToRemove = @(
         'C:\Program Files\PowerShell\Modules' # does not exist. maybe it's C:\Program Files\PowerShell\7 ?
         # maybe it's WinPS path? This exists: C:\Program Files\WindowsPowerShell\Modules'
 
@@ -28,6 +30,9 @@ function fix.PsModulePath {
         # refactor location:
         'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
     )
+
+    # temporarily include
+    $PathsToRemove.Remove('C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github')
 
     $joinUL_splat = @{
         Separator    = "`n  - "
@@ -53,9 +58,18 @@ function fix.PsModulePath {
         | Where-Object { $_ -notin @($PathsToRemove) }
         | Where-Object { -not [string]::IsNullOrWhiteSpace( $_ ) } # prevents errors on empty or null
         | Sort-Object -Unique -Stable
+        | Join-String -sep ';'
+        'New PSModulePath: = {0}' -f @($newModulePath)
+
+        $Env:PSModulePath = $newModulePath
+
+
+
+        $newModulePath
         | Join-String @joinUL_splat
         | Join-String -op "PSModulePath: After`n"
         | Write-Verbose
+
 
     }
     else {
