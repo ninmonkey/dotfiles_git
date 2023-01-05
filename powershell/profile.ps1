@@ -1,9 +1,13 @@
+'📚 enter ==> profile ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning
+
 "enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCOmmandpath ) '${pid}'" | Write-Warning
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
+
     'E:\PSModulePath_2022'
+    'E:\PSModulePath_base\all'
     $Env:PSModulePath
 ) | Join-String -sep ';'
 function fix.PsModulePath {
@@ -41,7 +45,7 @@ function fix.PsModulePath {
     }
 
     $Env:PSModulePath = @(
-        gi -ea 'continue' 'E:\PSModulePath_2022' # Add Prefixpath
+        Get-Item -ea 'continue' 'E:\PSModulePath_2022' # Add Prefixpath
         $Env:PSModulePath
     ) | Join-String -sep ';'
 
@@ -302,7 +306,44 @@ function renderObjProps {
 }
 
 function Err {
-    param( [int]$Num = 10, [switch]$Clear  )
+    <#
+    .SYNOPSIS
+        Useful sugar when debugging inside a module Sugar for quickly using errors in the console.  2023-01-01
+    .DESCRIPTION
+        For different contexts, $error.count can return 0 values even though
+        there are errors. Explicitly referencing global:errors will work
+        for regular mode, or module breakpoints.
+
+        Useful when debugging inside a module Sugar for quickly using errors in the console.  2023-01-01
+    .EXAMPLE
+        err -TotalCount
+            1
+        err -TestHasAny
+            $true
+
+        err -Num 4
+            errors[0..3]
+
+        err -clear
+            resets even global errors.
+    #>
+    [Alias('prof.Err')]
+    param(
+        [int]$Num = 10,
+        [switch]$Clear,
+        [Alias('Count')]
+        [switch]$TotalCount,
+
+        [Alias('HasAny')]
+        [switch]$TestHasAny
+    )
+    if ($TestHasAny) {
+        return ($global:error.count -gt 0)
+    }
+    if ($TotalErrorCount) {
+        return $global:error.count
+    }
+
     if ( $Clear) { $global:error.Clear() }
     if ($num -le $global:error.count ) {
         "Number of Errors: $($global:error.count)" | Write-Verbose
@@ -645,6 +686,7 @@ if ($true -and 'wierd stuff') {
 
 [Console]::OutputEncoding | Join-String -op 'Console::OutputEncoding '
 "exit  <== Profile: docs/profile.ps1/ => Pid: '${pid}'" | Write-Warning
+'📚 exit ==> Profile: ==>   C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/a4968549-e087-446a-852f-c027cadc78e9' | Write-Warning
 
 "Running extra typedata, source: <$PSCOmmandpath>"
 try {
@@ -656,9 +698,9 @@ try {
     Update-TypeData @updateTypeDataSplat -Force -Value {
         # coerce control chars to safe symbols
         $isCtrlChar = $this.Value -ge 0 -and $this.Value -le 0x1f
-        if (-not $isCtrlChar) {
-            return $this.ToString()
-        }
+        # if (-not $isCtrlChar) {
+        #     return $this.ToString()
+        # }
         $Rune = $isCtrlChar ? [Text.Rune]::New($this.Value + 0x2400 ) : $this
         return $Rune.ToString()
     }
@@ -666,14 +708,355 @@ try {
         TypeName   = 'System.Text.Rune'
         MemberType = 'ScriptProperty'
         MemberName = 'Hex'
+        Value      = {
+            '0x{0:x}' -f @($This.Value)
+        }
     }
-    Update-TypeData @updateTypeDataSplat -Force -Value {
-        '0x{0:x}' -f @($This.Value)
+    Update-TypeData @updateTypeDataSplat -Force
+
+    $updateTypeDataSplat = @{
+        TypeName   = 'System.Text.Rune'
+        MemberType = 'ScriptProperty'
+        MemberName = 'isCtrlChar'
+        Value      = {
+            $This.ToString() -match '\p{C}'
+        }
     }
+    Update-TypeData @updateTypeDataSplat -Force
+    $updateTypeDataSplat = @{
+        <#
+        .example
+            @('asfs '.EnumerateRunes()).Is | ft
+        .example
+            @('a s▸·⇢⁞ ┐⇽▂fs '.EnumerateRunes()) | Select Rune, Render -ExpandProperty Is | ft
+            Ps7┐ @('a s▸·⇢⁞ ┐⇽▂fs '.EnumerateRunes()) | Select Rune, Render -ExpandProperty Is | ft
+
+                Ascii CtrlChar Letter More Numeric Punctuation Separator Symbol Rune Render
+                ----- -------- ------ ---- ------- ----------- --------- ------ ---- ------
+                False    False   True ...    False       False     False  False      a
+                False    False  False ...    False       False      True  False
+                False    False   True ...    False       False     False  False      s
+                False    False  False ...    False       False     False   True      ▸
+                False    False  False ...    False       False     False  False      ·
+                False    False  False ...    False       False     False   True      ⇢
+                False    False  False ...    False       False     False  False      ⁞
+                False    False  False ...    False       False      True  False
+                False    False  False ...    False       False     False   True      ┐
+                False    False  False ...    False       False     False   True      ⇽
+                False    False  False ...    False       False     False   True      ▂
+                False    False   True ...    False       False     False  False      f
+                False    False   True ...    False       False     False  False      s
+                False    False  False ...    False       False      True  False
+        #>
+        TypeName   = 'System.Text.Rune'
+        MemberType = 'ScriptProperty'
+        MemberName = 'Is'
+        Value      = {
+            $rune = $this
+            # $str = $_
+            [pscustomobject]@{
+                PSTypeName  = 'Rune.IsA.unicodeClassesRecord.proto'
+                Ascii       = $Rune.Value -le 0x1f
+                CtrlChar    = $rune -match '\p{C}'
+                Letter      = $rune -match '\p{L}'
+                More        = '...' # https://www.regular-expressions.info/unicode.html
+                Numeric     = $Rune -match '\p{N}'
+                Punctuation = $Rune.Value -match '\p{P}'
+                Separator   = $Rune -match '\p{Z}' # '\p{Separator}'
+                Symbol      = $Rune -match '\p{S}' # \p{Symbol}
+            }
+
+        }
+    }
+    Update-TypeData @updateTypeDataSplat -Force
+
+    $updateTypeDataSplat = @{
+        TypeName                  = 'System.Text.Rune'
+        DefaultDisplayPropertySet = 'Render', 'Hex', 'IsAscii', 'IsCtrlChar', 'Utf16SequenceLength', 'Utf8SequenceLength', 'Value'
+    }
+
+    Update-TypeData @updateTypeDataSplat -Force
 }
 catch {
     Write-Error "ThrownError while updating typedata. $_"
 }
 
+function Find.PreviewChain {
+    <#
+    .synopsis
+        search for file to select, then bat it. experimenting with [List] parameters
+    .notes
+        todo next:
+            -  [ ] make FZF not go full screen, or at least when less then N number of item exist
+    #>
+    [Alias('prof.Find.PreviewChain')]
+    param(
+        [Parameter()]
+        [Collections.Generic.List[Object]]$ArgsFd = @(),
+
+        [Parameter()]
+        [Collections.Generic.List[object]]$ArgsFzf = @(),
+
+        [Parameter()]
+        [Collections.Generic.List[object]]$ArgsBat = @(),
+
+        [Parameter()]
+        [hashtable]$Options = @{},
+
+        [switch]$ShowFolders, # do I ever want to, no, because of bat?
+
+        [switch]$WhatIf
+    )
+
+    # [Collections.Generic.List[object]]$argsFd.AddRange(
+    $argsFd.AddRange(
+        @(
+            '--color', 'always' # is valid
+            # @( '--color=always' ) # is also valid
+            '--type', 'file'
+        )
+    )
+    $argsFzf.AddRange(
+        # @( '--color=always' )
+        @( '--ansi' )
+    )
+    $argsBat.AddRange(
+        @( '--color=always' )
+    )
+
+    if ($WhatIf) {
+        hr
+        $ArgsFd | Join-String -sep ' ' -op "`nFd => " -os "`n"
+        $ArgsFzf | Join-String -sep ' ' -op "`nFzf => " -os "`n"
+        $ArgsBat | Join-String -sep ' ' -op "`nBat => " -os "`n"
+        hr
+        return
+    }
+    if ($Options.StripAnsi) {
+        # original        fd | fzf | gi | %{ bat (gi -ea stop $_ ) }
+        # $PSStyle.OutputRendering =
+        fd @argsFd
+        | fzf @argsFzf
+        | StripAnsi
+        | Get-Item
+        | ForEach-Object { & 'bat' @argsBat (Get-Item -ea stop $_ ) }
+        return
+    }
+
+    fd @argsFd
+    | fzf @argsFzf
+    | Get-Item
+    | ForEach-Object { & 'bat' @argsBat (Get-Item -ea stop $_ ) }
+
+    # normal
+}
+
+# Set-Location 'g:\temp\01'
+# test.x -whatif
+# test.x
+
+function prof.findModule {
+    param(
+        # if not mandatory, better default?
+        [Parameter(Mandatory)]
+        [ArgumentCompletions(
+            'StartAutomating',
+            'Default',
+            'All'
+        )]$GroupName #= 'StartAutomating'
+    )
+    function __cachedListAvailableModules {
+        $script:__profbigGetModAvailable ??= Get-Module -ListAvailable
+    }
+    [Collections.Generic.List[object]]$query_modules = @(
+        switch ($CategoryName) {
+            'StartAutomating' {
+                __cachedListAvailableModules # Get-Module -ListAvailable
+                | Where-Object { $_.CompanyName -match 'Start-Automating' -or $_.Copyright -match 'Start-Automating' }
+                # | ForEach-Object Name | Sort-Object -Unique { $_.Name, $_.Source } Name
+            }
+            'Nin' {
+                __cachedListAvailableModules # Get-Module -ListAvailable
+                | Where-Object { $_.CompanyName -match 'Start-Automating' -or $_.Copyright -match 'Start-Automating' }
+
+            }
+            'Default' {
+                Get-Module
+            }
+            'All' {
+
+            }
+            default { throw "UnhandledCategory: ${_}" }
+        }
+    )
+
+    $query_modules = $query_modules
+    | Sort-Object -Property Name -Unique
+
+    $query_modules
+    return
 
 
+
+    # example:
+    #    the super slow command is (get-module -ListAvailable)
+    #    You are testing out filters on a command, while writing
+    #    Like Is the PK of {Name,Module} correct? results are instantly available
+
+    # refining a query, sorting is super cheap. listing is not.
+    # sidebar: This is the **walrus** operator from python (or other languages)
+    ($script:__profbigGetModAvailable ??= Get-Module -ListAvailable)
+    | Where-Object { $_.CompanyName -match 'Start-Automating' -or $_.Copyright -match 'Start-Automating' }
+    | Sort-Object -Unique Name
+    | Format-Table *copy*, *name*
+    #|fl *copy*, *name*
+
+    #| % Name | sort -Unique
+
+}
+function prof.fastGcm {
+    <#
+    .SYNOPSIS
+        sugar to sort, filter certain things, specific modules, etc.
+    .description
+        sugar for when you quickly want to find a running in cli
+
+            Ps> gcm *bat* | sort CommandType, Module, Name  | ft -group Module |  rg 'bat|$' -i
+    .EXAMPLE
+        PS> prof.fastGcm -Verbose -Debug -Module ninmonkey.Console, functional
+    #>
+    [CmdletBinding()]
+    param(
+        # this is filtering, which is **not** the regex used to highlight
+        # this filters results
+        [Alias('RegexName', 'CommandNameRegex')] # which of the names is better?
+        [Parameter(ParameterSetName = 'usingWildcard')] # verses regex
+        [string]$CommandNameFilter,
+
+
+        [Alias('Name')]
+        [Parameter(ParameterSetName = 'usingWildcard')] # verses regex
+        [string]$WildcardCommandName,
+
+        [Alias('Module')]
+        [Parameter()]
+        [ArgumentCompletions(
+            'CimCmdlets',
+            'ClassExplorer',
+            'functional',
+            'Metadata',
+            'Microsoft.PowerShell.Management',
+            'Microsoft.PowerShell.Security',
+            'Microsoft.PowerShell.Utility',
+            'Microsoft.WSMan.Management',
+            'ninmonkey.Console',
+            'pansies',
+            'Pester',
+            'PSReadLine'
+        )]
+        [string[]]$ModuleName,
+
+
+        [Alias('Hi')]
+        [Parameter()]
+        [string]$Highlight,
+
+
+        [Parameter()]
+        [string[]]$SortByProp = @('Module', 'Source', 'Name'), # @('CommandType', 'Module', 'Name'),
+        [switch]$PassThru
+    )
+    Write-Warning 'structure in args, but logic isn''t really implemented'
+
+    if ($RegexCommandName) {
+        throw '📚 NYI ==> filter by regex instead of wildcards ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/737e970b-11d5-4470-b2ac-b15b36c240e0' | Write-Warning
+    }
+
+    $getCommandSplat = @{
+        # Name = $WildcardCommandName
+    }
+    # Name = '*{0}*' -f @( $WildcardCommandName )
+
+
+
+    if ($ModuleName) {
+        $getCommandSplat.Module = $ModuleName
+    }
+
+    $sortObjectSplat = @{
+        Property = $SortByProp
+    }
+
+    $formatTableSplat = @{
+        GroupBy = 'Module'
+    }
+    $ripGrepRegex = '({0})|$' -f $Highlight
+    $RipGrepRegex | Join-String -op "ripGrepRegex: `n" -DoubleQuote | Write-Verbose
+    [Collections.Generic.List[object]]$ripGrepArgs = @(
+        '-i'
+        '--color', 'always'
+        # '--pretty' # equiv to: --color always --heading --line-number'
+    )
+
+    $ripGrepArgs | Join-String -sep ' ' -op 'RipGrep args => '
+    | Write-Verbose
+
+    $getCommandSplat | Format-Table | oss | Join-String -op 'Splat: Gcm  =: ' | Write-Verbose
+    $sortObjectSplat | Format-Table | oss | Join-String -op 'Splat: Sort =: ' | Write-Verbose
+    $formatTableSplat | Format-Table | oss | Join-String -op 'Splat: Format-Table =: ' | Write-Verbose
+    if ($Highlight -and $PassThru) { throw "Can't use PassThru when regex highlight" }
+    if ($Highlight) {
+        Get-Command @getCommandSplat
+        | Where-Object {
+            if (-not $CommandNameFilter) {
+                return $true
+            }
+            $_.Name -match $CommandNameFilter
+        }
+        | Sort-Object @sortObjectSplat
+        | Format-Table @formatTableSplat
+        | rg @ripGrepArgs
+
+        return
+    }
+
+
+    if ($PassThru) {
+        Get-Command @getCommandSplat
+        | Where-Object { return $true } | Sort-Object @sortObjectSplat
+        return
+    }
+    Get-Command @getCommandSplat
+    | Where-Object { return $true } | Sort-Object @sortObjectSplat
+    | Format-Table @formatTableSplat
+}
+
+
+function prof.previewChain {
+    <#
+    .synopsis
+        simplified version. search for file to select, then bat it.
+    #>
+    param(
+        [Collections.Generic.List[Object]]$ArgsFd,
+        [Collections.Generic.List[object]]$ArgsFzf,
+        [hashtable]$Options = @{},
+        [switch]$WhatIf
+    )
+
+    [Collections.Generic.List[object]]
+    $argsFd.AddRange(  [object[]]@( '--color', 'always' ))
+    if ($WhatIf) { return }
+    # original        fd | fzf | gi | %{ bat (gi -ea stop $_ ) }
+    fd @argsFd
+    | fzf @argsFzf
+    | Get-Item
+    | ForEach-Object { & 'bat' @argsBat (Get-Item -ea stop $_ ) }
+}
+# prof.previewChain -WhatIf
+
+'📚 exit <== profile <==  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning
+
+"📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e" | write-warning
+
+. (gi -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\prototype\git - find unchangedrepo\git - find non-commit repos.ps1')
