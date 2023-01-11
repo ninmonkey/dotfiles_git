@@ -10,6 +10,62 @@ $Env:PSModulePath = @(
     'E:\PSModulePath_base\all'
     $Env:PSModulePath
 ) | Join-String -sep ';'
+
+function quickHist {
+    [Alias('prof.quickHistory')]
+    [CmdletBinding()]
+    param(
+        [ArgumentCompletions('Default', 'Number', 'Duplicate')]
+        [string]$Template
+    )
+    # Quick, short, without duplicates
+    switch ($Template) {
+        'Number' {
+            Get-History
+            | Sort-Object -Unique -Stable CommandLine
+            | Join-String -sep (hr 1) {
+                "{0}`n{1}" -f @(
+                    $_.Id, $_.CommandLine )
+            }
+        }
+        'Duplicates' {
+            Get-History
+            | Join-String -sep (hr 1) {
+                "{0}`n{1}" -f @(
+                    $_.Id, $_.CommandLine )
+            }
+        }
+
+        default {
+            Get-History
+            | Sort-Object -Unique -Stable CommandLine
+            | Join-String CommandLine -sep (hr 1)
+        }
+    }
+}
+function prof.hack.dumpExcel {
+    # super quick hack, do not use
+    [Alias('out-xl', 'to-xl')]
+    [CmdletBinding()]
+    param(
+        [Parameter()]
+        [string]$TableName = 'default',
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange( $InputObject )
+    }
+    end {
+        $items
+        | Export-Excel -work 'a' -table $TableName -AutoSize -Show -Append #-Verbose -Debug
+    }
+}
+
 function fix.PsModulePath {
     <#
     .SYNOPSIS
@@ -1057,6 +1113,6 @@ function prof.previewChain {
 
 '📚 exit <== profile <==  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning
 
-"📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e" | write-warning
+'📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e' | Write-Warning
 
-. (gi -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\prototype\git - find unchangedrepo\git - find non-commit repos.ps1')
+. (Get-Item -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\prototype\git - find unchangedrepo\git - find non-commit repos.ps1')
