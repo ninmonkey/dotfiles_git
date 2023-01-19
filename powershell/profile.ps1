@@ -746,6 +746,36 @@ if ($true -and 'wierd stuff') {
 
 "Running extra typedata, source: <$PSCOmmandpath>"
 try {
+    # $stringToUtf8Method = @{
+    #     # ex: 'sdfds'.'.toUtf8'()
+    #     TypeName   = 'System.String'
+    #     MemberName = '.toUtf8'  # bad name on purpose
+    #     MemberType = 'ScriptMethod'
+    #     # Value      = { Write-Output ([System.Text.Encoding]::UTF8.GetBytes($this)) -NoEnumerate }
+    #     Value      = { [System.Text.Encoding]::UTF8.GetBytes($this) }
+    #     Force      = $true
+    # }
+    # Update-TypeData @stringToUtf8Method
+
+
+
+    # $updateTypeDataSplat = @{
+    #     TypeName   = 'System.String'
+    #     # MemberName = 'toUtf8'
+    #     # MemberName = '>utf8'  # bad names on purposea
+    #     MemberName = '.Utf8'  # bad names on purpose
+    #     MemberType = 'ScriptProperty'
+    #     # Value =  { @([System.Text.Encoding]::UTF8.GetBytes($this)) }
+    # }
+    # Update-TypeData @updateTypeDataSplat -Force
+    $updateTypeDataSplat = @{
+        TypeName   = 'System.String'
+        MemberName = 'LengthUnicode'  # bad name on purpose
+        MemberType = 'ScriptProperty'
+        Value      = { @($this.EnumerateRunes()).count }
+    }
+    Update-TypeData @updateTypeDataSplat -Force
+
     $updateTypeDataSplat = @{
         TypeName   = 'System.Text.Rune'
         MemberType = 'ScriptProperty'
@@ -1116,3 +1146,8 @@ function prof.previewChain {
 '📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e' | Write-Warning
 
 . (Get-Item -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\prototype\git - find unchangedrepo\git - find non-commit repos.ps1')
+
+$PSDefaultParameterValues.Remove('*:verbose')
+$PROFILE | Add-Member -NotePropertyName 'currentUserAllHosts_nin' -NotePropertyValue (Get-Item $PSCOmmandpath) -Force -ea 'ignore' -PassThru | Out-Null
+. G:\temp\ai\prompt.minimal.ps1
+
