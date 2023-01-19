@@ -780,16 +780,14 @@ try {
         TypeName   = 'System.Text.Rune'
         MemberType = 'ScriptProperty'
         MemberName = 'Render'
+        Value = {
+            # coerce control chars to safe symbols
+            [bool]$isCtrlChar = $this.Value -ge 0 -and $this.Value -le 0x1f
+            $Rune = $isCtrlChar ? [Text.Rune]::New($this.Value + 0x2400 ) : $this
+            return $Rune.ToString() # Should I be explicitly calling?
+        }
     }
-    Update-TypeData @updateTypeDataSplat -Force -Value {
-        # coerce control chars to safe symbols
-        $isCtrlChar = $this.Value -ge 0 -and $this.Value -le 0x1f
-        # if (-not $isCtrlChar) {
-        #     return $this.ToString()
-        # }
-        $Rune = $isCtrlChar ? [Text.Rune]::New($this.Value + 0x2400 ) : $this
-        return $Rune.ToString()
-    }
+    Update-TypeData @updateTypeDataSplat -Force
     $updateTypeDataSplat = @{
         TypeName   = 'System.Text.Rune'
         MemberType = 'ScriptProperty'
