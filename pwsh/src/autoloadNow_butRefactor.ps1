@@ -29,17 +29,30 @@ function Test-ModuleWasModified {
     $binFd = Get-Command -CommandType Application 'fd' -ea 'stop'
     $resolvedPath = Get-Item -ea 'stop' $BaseDirectory
 
-    [Collections.Generic.List[Object]]$fd_query = @(
+    [Collections.Generic.List[Object]]$fd_args = @(
+        if ($Extension) {
+            $Extension | ForEach-Object { '-e', $_ }
+        }
         '--changed-within'
-        '10seconds'
+        $Duration
         '--search-path'
-            (Get-Item -ea stop $resolvedPath)
+        (Get-Item -ea stop $resolvedPath)
     )
 
-    $fd_query = & $binFd
+    $fd_query = & fd @binFd
     [bool]$hasChanged = $fd_query.count -gt 0
 
+    $renderArgs = $fd_args | Join-String -sep ' ' -op 'invoke: fd '
+    | Write-Debug
 
+    'testing for changes...:
+    Changed? {0}
+    Extensions: {1}
+    Path: {2}' -f @(
+        $hasChanged
+        $Extension | Join-String -sep ', ' -op ''
+        $resolvedPath | Join-String -DoubleQuote -op ''
+    ) | Write-Verbose
 
     return $hasChanged
 }
