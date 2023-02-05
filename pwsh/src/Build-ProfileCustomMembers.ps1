@@ -65,21 +65,30 @@ $Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 $Env:Pager = 'bat'
 
 $Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
+$DescLoc = '. Source: {0}' -f @(
+    $PSCommandPath | Join-String -DoubleQuote
+)
+
+@(
+    $splat_Show = @{
+        PassThru = $true
+    }
+
+    Set-Alias @splat_Show 'Cl' -Value 'Set-ClipBoard' -Description "Set Clipboard. ${DescLoc}"
+    Set-Alias @splat_Show 'Gcl' -Value 'Get-ClipBoard' -Description "Get Clipboard. ${DescLoc}"
+    Set-Alias @splat_Show 'Impo' -Value 'Import-Module' -Description "Impo. ${DescLoc}"
+    Set-Alias @splat_Show 'Ls' -Value 'Get-ChildItem' -Description "gci. ${DescLoc}"
+    Set-Alias @splat_Show 'Sc' -Value 'Set-Content' -Description "set content. ${DescLoc}"
+) | Join-String -sep ', ' -SingleQuote -op 'set alias ' DisplayName
+| Join-String -op "SetBy: '<${PSSCommandPath}>'`n" { $_ }
 
 
 
-
-
-
-
-
-
-
-
-
+'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath )
 return
+throw 'ShouldNeverREach'
 Write-Warning 'early exit'
-throw 'ShouldNeverReach'
+
 # Env-Vars are all caps because some apps check for env vars case-sensitive
 # double check that profile isn't failing to set the global env vars
 $Env:LESS ??= '-R'
