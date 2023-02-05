@@ -1,4 +1,4 @@
-
+throw 'inspect me'
 
 # for vscode terminal integration, ctrl+ breaking  'FixShellIntegration_Clearscreen'
 Set-PSReadLineKeyHandler -Chord 'Ctrl+l' -ScriptBlock {
