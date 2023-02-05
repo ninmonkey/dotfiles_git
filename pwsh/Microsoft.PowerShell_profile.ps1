@@ -1,8 +1,26 @@
-# /h:/ non-debug
+# /h:/ non-debug # always loads?
 "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: CurrentUserCurrentHost" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
-'bypass, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath )
+
+
+
+
+'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath )
 "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: CurrentUserCurrentHost" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 return
 
 $PSDefaultParameterValues['*:verbose'] = $True
@@ -69,15 +87,7 @@ Write-Warning 'not finished, wt profile still loads profile, see: <C:\Users\cppm
 $PSDefaultParameterValues['Update-Module:Verbose'] = $true
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
 
-# this is very important, the other syntax for UTF8 defaults to UTF8+BOM which
-# breaks piping, like piping returning from FZF contains a BOM
-# which actually causes a full exception when it's piped to Get-Item
-[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
-Import-Module pansies
-[PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
-$PSStyle.OutputRendering = 'ansi'
 
-[Console]::OutputEncoding | Join-String -op 'Console::OutputEncoding '
 
 <#
 section: always bound (wt, + code, + code-debugf )#>

@@ -1,6 +1,9 @@
+"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`" of Env:Nin_Dotfiles" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+throw 'ShouldNeverReach'
+
 '📚 enter ==> profile ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning
 
-"enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCOmmandpath ) '${pid}'" | Write-Warning
+"enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCommandpath ) '${pid}'" | Write-Warning
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
@@ -735,7 +738,7 @@ if ($true -and 'wierd stuff') {
         $params = $PSBoundParameters
 
         Start-Job -ScriptBlock { Set-Location $using:pwd; Invoke-Pester @using:params } |
-            Receive-Job -Wait -AutoRemoveJob
+        Receive-Job -Wait -AutoRemoveJob
     }
     Set-Alias ipj Invoke-PesterJob
 }
@@ -780,7 +783,7 @@ try {
         TypeName   = 'System.Text.Rune'
         MemberType = 'ScriptProperty'
         MemberName = 'Render'
-        Value = {
+        Value      = {
             # coerce control chars to safe symbols
             [bool]$isCtrlChar = $this.Value -ge 0 -and $this.Value -le 0x1f
             $Rune = $isCtrlChar ? [Text.Rune]::New($this.Value + 0x2400 ) : $this
@@ -1149,3 +1152,6 @@ $PSDefaultParameterValues.Remove('*:verbose')
 $PROFILE | Add-Member -NotePropertyName 'currentUserAllHosts_nin' -NotePropertyValue (Get-Item $PSCOmmandpath) -Force -ea 'ignore' -PassThru | Out-Null
 . G:\temp\ai\prompt.minimal.ps1
 
+
+
+"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>

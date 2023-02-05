@@ -1,21 +1,34 @@
 # /h:/ vscode only
 "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
-$PROFILE
-| Add-Member -PassThru -Force -ErrorAction Ignore -NotePropertyMembers @{
-    Nin = @{
-        Dotfiles = Get-Item -ea ignore $Env:Nin_Dotfiles
-        Data     = Get-Item -ea ignore $Env:Nin_Data
-        Legacy   = [object[]]@(
-            Get-ChildItem env:\legacy_*
-        )
-
-    }
-} | Out-Null
-
-'bypass, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath )
+'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath )
 "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Write-Warning "$PSCommandPath => Merge into 2021\dotfiles_git\powershell\profile.ps1"
 . (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1')
