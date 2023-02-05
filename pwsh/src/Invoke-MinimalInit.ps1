@@ -24,8 +24,8 @@ function minimal.prompt.render.crumbs {
             hideSameLocation = $true
         }
 
-        $isSameDir = (get-item .).FullName -eq $script:__bagLastLocation.FullName
-        $script:__bagLastLocation = (get-item .)
+        $isSameDir = (Get-Item .).FullName -eq $script:__bagLastLocation.FullName
+        $script:__bagLastLocation = (Get-Item .)
         $NumErrors = $global:Error.Count
         @(
 
@@ -40,10 +40,11 @@ function minimal.prompt.render.crumbs {
                 $Color.FgDim
             }
 
-            $renderLocation =  (Get-Location) -split '\\' | Join-String -sep ' ⊢ '
-            if($isSameDir) {
+            $renderLocation = (Get-Location) -split '\\' | Join-String -sep ' ⊢ '
+            if ($isSameDir) {
                 '🐧'
-            } else {
+            }
+            else {
                 $renderLocation
             }
             # if(-not $innerConfig.hideSameLocation -and -not $isSameDir) {

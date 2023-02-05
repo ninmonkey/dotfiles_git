@@ -53,6 +53,7 @@ $eaSilent = @{ ErrorAction = 'ignore' }
 $PROFILE
 | Add-Member @eaSilent -PassThru -Force -NotePropertyMembers $NotePropertyMembers_hash
 | out-null
+write-warning '$Profile.AddMember is failing'
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'

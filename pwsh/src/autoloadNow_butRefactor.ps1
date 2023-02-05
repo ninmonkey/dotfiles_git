@@ -1,6 +1,49 @@
 ﻿"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
 
+
+function Test-ModuleWasModified {
+    <#
+    .SYNOPSIS
+        simplify autoimporting changes
+    .EXAMPLE
+        Test-ModuleWasModified -Duration 30seconds -Path '.'
+    #>
+    [OutputType('System.Boolean')]
+    [CmdletBinding()]
+    param(
+        # duration to test modified against
+        [ArgumentCompletions('30seconds', '2minutes', '2hours', '1days')]
+        [string]$Duration,
+
+        # filters? -e parameter
+        [ArgumentCompletions('ps1', 'md', 'png', 'log')]
+        [string[]]$Extension,
+
+        # path
+        [Alias('Path')]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$BaseDirectory
+    )
+
+    $binFd = Get-Command -CommandType Application 'fd' -ea 'stop'
+    $resolvedPath = Get-Item -ea 'stop' $BaseDirectory
+
+    [Collections.Generic.List[Object]]$fd_query = @(
+        '--changed-within'
+        '10seconds'
+        '--search-path'
+            (Get-Item -ea stop $resolvedPath)
+    )
+
+    $fd_query = & $binFd
+    [bool]$hasChanged = $fd_query.count -gt 0
+
+
+
+    return $hasChanged
+}
+
 function Err {
     <#
     .SYNOPSIS
