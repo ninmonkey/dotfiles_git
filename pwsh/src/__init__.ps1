@@ -1,16 +1,21 @@
 ﻿"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+$PSStyle.OutputRendering = [Management.Automation.OutputRendering]::Ansi # wip dev,nin: todo:2022-03 # Keep colors when piping Pwsh in 7.2
 
-[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
-Import-Module Pansies
-[PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
-[Console]::OutputEncoding | Join-String -op 'Console::OutputEncoding ' | Write-Verbose
-$PSStyle.OutputRendering = 'ansi'
 
+'Encoding: [Console Input/Output: {0}, {1}, $OutputEncoding: {2}]' -f @(
+   # alternate:  @( [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding ) -replace 'System.Text', ''
+     @(  [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding | % WebName )
+) | write-verbose -Verbose
+
+# [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 $base = Get-Item $PSScriptRoot
-. (Get-Item -ea 'stop' (Join-Path $Base 'Build-ProfileCustomMembers.ps1'))
-. (Get-Item -ea 'stop' (Join-Path $Base 'Invoke-MinimalInit.ps1'))
-. (Get-Item -ea 'stop' (Join-Path $Base 'autoloadNow_butRefactor.ps1'))
+. (Get-Item -ea 'continue' (Join-Path $Base 'Build-ProfileCustomMembers.ps1'))
+. (Get-Item -ea 'continue' (Join-Path $Base 'Invoke-MinimalInit.ps1'))
+. (Get-Item -ea 'continue' (Join-Path $Base 'autoloadNow_butRefactor.ps1'))
 
+
+Import-Module 'Pansies'
+[PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
 
 
 # important, the other syntax for UTF8 defaults to UTF8+BOM which

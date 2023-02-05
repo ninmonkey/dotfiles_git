@@ -1,6 +1,16 @@
 ﻿
 function minimal.prompt.render.crumbs {
-    # colorize prompt like: H: ⊢ env ⊢ py ⊢ global_tools ⊢ 2022-11
+    <#
+    .synopsis
+        colorize prompt like: H: ⊢ env ⊢ py ⊢ global_tools ⊢ 2022-11
+    .notes
+        this is no longer minimal.
+        autohides folder when same dir
+
+    .example
+        # plus colors
+        Pwsh 7.3.2> [3] 🐧
+    #>
     begin {
         $Color = @{}
         $Color.Error = $PSStyle.Foreground.FromRgb('#ce6060')
@@ -10,6 +20,12 @@ function minimal.prompt.render.crumbs {
         $Color.Fg = $PSStyle.Foreground.FromRgb('#9e9e9e')
     }
     process {
+        $innerConfig = @{
+            hideSameLocation = $true
+        }
+
+        $isSameDir = (get-item .).FullName -eq $script:__bagLastLocation.FullName
+        $script:__bagLastLocation = (get-item .)
         $NumErrors = $global:Error.Count
         @(
 
@@ -24,7 +40,15 @@ function minimal.prompt.render.crumbs {
                 $Color.FgDim
             }
 
-            (Get-Location) -split '\\' | Join-String -sep ' ⊢ '
+            $renderLocation =  (Get-Location) -split '\\' | Join-String -sep ' ⊢ '
+            if($isSameDir) {
+                '🐧'
+            } else {
+                $renderLocation
+            }
+            # if(-not $innerConfig.hideSameLocation -and -not $isSameDir) {
+            #     $renderLocation
+            # }
             $PSStyle.Reset
             "`n"
             ''
@@ -46,7 +70,7 @@ function minimal.Prompt {
 
 function prompt {
     # todo: capture previous prompt
-    minimal.Prompt 
+    minimal.Prompt
 }
 
 

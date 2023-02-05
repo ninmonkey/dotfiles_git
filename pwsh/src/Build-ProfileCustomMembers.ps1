@@ -11,12 +11,12 @@ $DescLoc = '. Source: {0}' -f @(
 
 
 $eaSilent = @{ ErrorAction = 'ignore' }
-$PROFILE
-| Add-Member @eaSilent -PassThru -Force -NotePropertyMembers @{
+
+ $NotePropertyMembers_hash = @{
     Nin      = @{
         DotfilesRoot = Get-Item -ea ignore $Env:Nin_Dotfiles
         DataRoot     = Get-Item -ea ignore $Env:Nin_Data
-        Legacy       = [Colections.Generic.List[Object]]@(
+        Legacy       = [Collections.Generic.List[Object]]@(
             Get-ChildItem env:\legacy_* @eaSilent
         )
         Env          = @{
@@ -50,6 +50,9 @@ $PROFILE
         # Less / ...
     }
 } | Out-Null
+$PROFILE
+| Add-Member @eaSilent -PassThru -Force -NotePropertyMembers $NotePropertyMembers_hash
+| out-null
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
@@ -84,6 +87,10 @@ $splat_Show = @{
     Set-Alias @splat_Show 'Impo' -Value 'Import-Module' -Description "Impo. ${DescLoc}"
     Set-Alias @splat_Show 'Ls' -Value 'Get-ChildItem' -Description "gci. ${DescLoc}"
     Set-Alias @splat_Show 'Sc' -Value 'Set-Content' -Description "set content. ${DescLoc}"
+
+    Set-Alias 's' -Value 'Select-Object' -PassThru  -Description "Select-Object abbr. ${DescLoc}"
+    Set-Alias 'fcc' 'ninmonkey.console\Format-ControlChar' -PassThru  -Description "Format-ControlChar abbr. ${DescLoc}"
+
 ) | Join-String -sep ', ' -SingleQuote -op 'set alias ' DisplayName
 | Join-String -op "SetBy: '<${PSSCommandPath}>'`n" { $_ }
 
