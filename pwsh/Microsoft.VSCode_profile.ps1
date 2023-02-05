@@ -1,4 +1,13 @@
-"enter ==> Profile: docs/Microsoft.VsCode_profile.ps1/ => Pid: '${pid}'" | Write-Warning
+# vscode only
+"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | write-warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath);  <# 2023.02 #>
+
+
+
+write-warning "$PSCommandPath => Merge into 2021\dotfiles_git\powershell\profile.ps1"
+. (gi -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1')
+
+"enter ==> Profile: docs/Microsoft.VsCode_profile.ps1/ => Pid: '${pid}' $($PSCommandPath)" | Write-Warning
+
 $VsCodeProfileCfg = @{
     AlwaysInvokeNormalProfile = $true
 }
@@ -38,3 +47,8 @@ if ($VsCodeProfileCfg.AlwaysInvokeNormalProfile) {
 Import-CommandSuite
 
 "exit  <== Profile: docs/Microsoft.VsCode_profile.ps1/ => Pid: '${pid}'" | Write-Warning
+write-warning "$PSCommandPath => Merge into 2021\dotfiles_git\powershell\profile.ps1"
+
+
+
+"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | write-warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath);  <# 2023.02 #>

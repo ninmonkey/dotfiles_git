@@ -1,5 +1,10 @@
-# full restart of main pwsh profile: 2022-11-30
-# main entry for regular pwsh
+# non-debug
+"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: CurrentUserCurrentHost" | write-warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath);  <# 2023.02 #>
+
+$PSDefaultParameterValues['*:verbose'] = $True
+
+# full restart of main pwsh profile: 2023-02-01
+
 @(
     Set-Alias 'label' -Value 'get-date' -Force -ea ignore -Description 'to prevent ever referencing exe' -PassThru
     Set-Alias 's' -Value 'select-object' -Force -ea ignore -Description 'Sort-Object shorthand' -PassThru
@@ -7,6 +12,15 @@
 | Join-String -sep ', ' -SingleQuote -op 'set alias ' DisplayName
 | Join-String -op "SetBy: '<${PSSCommandPath}>'`n" { $_ }
 
+
+# disable for now, because shell integration breaks it
+# & {
+# $hasFunc = (Get-PSReadLineKeyHandler -Bound -Unbound | ForEach-Object Function ) -contains 'ShowCommandHelp'
+# if ($hasFunc) {
+# Set-PSReadLineKeyHandler -Key 'f11' -Function
+Set-PSReadLineKeyHandler -Key 'f12' -Function ShowCommandHelp
+# }
+# }
 
 @'
 prev profile:
@@ -92,7 +106,7 @@ function __safe_globalPrompt {
     )
 }
 
-Import-Module ninmonkey.console -force
+Import-Module ninmonkey.console -Force
 
 function prompt.spartanBeforeJaykulConfig {
     @(
@@ -132,7 +146,100 @@ function prompt.spartanBeforeJaykulConfig {
     ) | Join-String -sep ''
 }
 
+function prof.prompt.forScreenshot {
+    # function prompt {
+    @( # save: potential prompt for posting code'
+
+        $PSVersionTable.PSVersion.ToString()
+        | Join-String -op (' ' * 15 -join '' ) {
+
+            @(
+                $PSStyle.Foreground.FromRgb(68, 68, 68)
+                'sdf'
+            ) -join '' }
+
+            (Get-Location).tostring() -split '\\'
+        | Select-Object -Last 4
+        | Join-String -sep ' -> '
+
+        "`n"
+        '{0}' -f @(
+            ''
+        ) #-join ''
+    ) | Join-String -sep ''
+    # }
+}
+'📚 <<todo: move to dotfiles >> ==> 🤖 ==>  C:\Users\cppmo_000\SkyDrive\Documents\PowerShell\Microsoft.PowerShell_profile.ps1/1876d08c-7ac3-4caa-a084-efdb208f1884' | Write-Warning
 
 "exit  <== Profile: docs/Microsoft.PowerShell_profile.ps1/ => Pid: '${pid}'" | Write-Warning
 $global:temp_old_prompt = $Function:prompt
 $function:prompt = ( Get-Item 'function:prompt.spartanBeforeJaykulConfig' )
+
+
+function prof.switchPromptStyle {
+    param(
+        [ArgumentCompletions('BeforeJaykul', 'ForScreens')]
+        [string]$Name,
+
+        [switch]$PopRevertOld
+    )
+    if ($PopRevertOld) {
+        return
+    }
+
+    $global:temp_old_tier2_prompt = $global:Function:prompt
+
+    switch ($Name) {
+        'BeforeJaykul' {
+            # duplicate, to be replace later anyway, so don't worry about it
+            $nextStyle = 'prompt.spartanBeforeJaykulConfig'
+            $func? = ( Get-Item "function:$NextStyle" )
+
+            if ( $Func? ) {
+                $global:function:prompt = $Func?
+            }
+            else {
+                'Something failed using: "{0}" . {1}' -f @(
+                    $NextStyle
+                    $func?
+                )
+                | Write-Error # -ea 'stop'
+                break
+            }
+        }
+        'ForScreens' {
+            $nextStyle = 'prof.prompt.forScreenshot'
+            $global:function:prompt = ( Get-Item "function:$NextStyle" )
+
+            if ( $Func? ) {
+                $global:function:prompt = $Func?
+            }
+            else {
+                'Something failed using: "{0}" . {1}' -f @(
+                    $NextStyle
+                    $func?
+                )
+                | Write-Error # -ea 'stop'
+                break
+            }
+        }
+        default {
+            throw "Unhandled type: '$Name'"
+        }
+    }
+}
+
+'📚🐱‍🐉 enter ==> other ==>  C:\Users\cppmo_000\SkyDrive\Documents\PowerShell\Microsoft.PowerShell_profile.ps1/b1e69efa-48c1-43aa-87ef-1eb0d9f05600' | Write-Warning
+'profile is importing: <file:///H:\data\2022\Pwsh\buffer\misc-others\maybe new BatPreview wrapper - 2023-01 - iter4.ps1>'
+| Write-Warning
+if ($true) {
+    Write-Warning '🐱‍🐉Config: BatIter4: disable loading'
+}
+else {
+
+    . (Get-Item -ea 'continue' ('H:\data\2022\Pwsh\buffer\misc-others\maybe new BatPreview wrapper - 2023-01 - iter4.ps1'))
+}
+
+$PSDefaultParameterValues.remove('*:verbose')
+
+"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: CurrentUserCurrentHost" | write-warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath);  <# 2023.02 #>
