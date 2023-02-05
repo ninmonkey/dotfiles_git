@@ -1,0 +1,71 @@
+{
+    "folders": [
+        {
+            "name": "👍 dotfiles ⇦ nin 2021",
+            "path": "."
+        },
+        {
+            "name": "ref ⇦ Indented-Automation",
+            "path": "G:\\2021-github-downloads\\PowerShell\\Indented-Automation\\Indented.Profile\\Indented.Profile"
+        },
+        {
+            "name": "ref ⇦ SeeminglyScience",
+            "path": "G:\\2021-github-downloads\\dotfiles\\SeeminglyScience"
+        },
+        {
+            "name": "ref ⇦ Jaykul",
+            "path": "G:\\2021-github-downloads\\dotfiles\\Jaykul_Profile"
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "*.json": "jsonc",
+            "*.ps1xml": "xml",
+            "*.wixproj": "xml",
+            "*.mproj": "xml",
+            "*.odc": "html",
+            ".batrc": "shellscript",
+            ".ripgreprc": "shellscript",
+            "nuget.config": "xml"
+        },
+        "files.defaultLanguage": "${activeEditorLanguage}",
+        "xml.fileAssociations": [
+            {
+                "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd",
+                "pattern": "**/*.Format.ps1xml"
+            },
+            {
+                "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Types.xsd",
+                "pattern": "**/*.Types.ps1xml"
+            }
+        ],
+        "powershell.scriptAnalysis.enable": true,
+        "workbench.settings.editor": "json",
+        "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+        "markdownlint.config": {
+            "MD028": false,
+            "MD025": {
+                "front_matter_title": ""
+            }
+        }
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "CollectDotfiles.ps1 ⇢ ",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/collect_dotfiles.ps1",
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "Pester",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "Invoke-Pester",
+                "cwd": "${workspaceFolder}"
+            }
+        ]
+    }
+}

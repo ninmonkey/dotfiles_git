@@ -1,0 +1,120 @@
+{
+    /*
+
+    this is config for this folder, it is not my global user settings.json
+
+    */
+    "[markdown]": {
+        "files.trimTrailingWhitespace": false,
+        "editor.wordWrap": "on",
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+    },
+    "prettier.printWidth": 140,
+    "prettier.tabWidth": 4,
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+    },
+    "[json]": {
+        // "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        // "editor.formatOnType": true,
+        // "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        // "editor.semanticHighlighting.enabled": true,
+        // "editor.maxTokenizationLineLength": 20000
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+    },
+    // "editor.definitionLinkOpensInPeek": false,
+    "[jsonc]": {
+        // "editor.defaultFormatter": "esbenp.prettier-vscode", // removes trainling by default
+        // default to allow jsonc syntax
+        "editor.defaultFormatter": "vscode.json-language-features",
+        // "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        // "editor.formatOnType": true,
+        "editor.formatOnSaveMode": "file",
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+    },
+    // "terminal.integrated.shell.windows": "pwsh.exe",
+    "terminal.integrated.shell.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "terminal.integrated.shellArgs.windows": [
+        "-NoLogo"
+    ],
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": false,
+    "files.associations": {
+        "*.json": "jsonc",
+        // powershell
+        "*.ps1xml": "xml",
+        // microsoft / vs studio
+        "*.wixproj": "xml",
+        "*.mproj": "xml",
+        "*.odc": "html",
+        // ripgrep, bat
+        ".batrc": "shellscript",
+        ".ripgreprc": "shellscript",
+        "nuget.config": "xml",
+    },
+    "files.defaultLanguage": "${activeEditorLanguage}",
+    "files.trimTrailingWhitespace": true,
+    "files.exclude": {
+        "*.exe": true,
+        "**/*.lnk": true,
+        "*.pbix": true,
+        "*.zip": true,
+        "**/__pycache__": true,
+        "**/.mypy_cache": true,
+        "**/*.py[co]": true,
+        "**/node_modules": true,
+        "**/venv": true
+    },
+    "search.exclude": {
+        "*.log": true,
+        // "*.mez": true,
+        "*.lnk": true,
+    },
+    // "powershell.scriptAnalysis.settingsPath": "C:\\Users\\cppmo_000\\Documents\\2020\\dotfiles_git\\vs code profiles\\user\\PSScriptAnalyzerSettings.psd1",
+    // schema for Powershell
+    "xml.fileAssociations": [
+        {
+            "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd",
+            "pattern": "**/*.Format.ps1xml"
+        },
+        {
+            "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Types.xsd",
+            "pattern": "**/*.Types.ps1xml"
+        }
+    ],
+    "powershell.scriptAnalysis.enable": true,
+    "[toml]": {
+        // "editor.snippetSuggestions": "inline",
+        // "editor.suggest.snippetsPreventQuickSuggestions": true,
+        // "editor.suggest.showSnippets": true,
+    },
+    "workbench.settings.editor": "json",
+    // "workbench.settings.settingsSearchTocBehavior": "filter",
+    "[powershell]": {
+        "editor.snippetSuggestions": "none",
+        "files.encoding": "utf8bom",
+        "editor.semanticHighlighting.enabled": false, // some themes break this
+        "editor.formatOnSaveMode": "file",
+        "editor.formatOnSave": true,
+        // "editor.formatOnPaste": false, // sometimes an issue in PS1
+        "editor.formatOnPaste": true,
+        "editor.formatOnType": false, // currently it's NYI
+        "files.autoGuessEncoding": false,
+        "editor.detectIndentation": false, // required for tabsize
+        "editor.tabSize": 4,
+        // if autoIndent is set to 'full' it breaks indentation on 'move line up/down'
+        "editor.autoIndent": "advanced",
+        /*
+
+        test: temp disable formatting to see if it's crashing the PSIT
+        */
+        // "editor.formatOnPaste": false,
+        // "editor.formatOnType": false, // currently it's NYI
+        // "editor.formatOnSave": false, // currently it's NYI
+    },
+}

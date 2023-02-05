@@ -1,0 +1,85 @@
+Name,Case,Whole Word,Path,Diacritic,Regex,Sort,Descending,Filter,Search,Index,File List,Host,Link Type,Macro,Key,View
+"screen2gif     with highlighting",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","( ""X:\2020-data-secondary\screen to gif"" ) !ext:png          ( |( code|vs|file| fzf | shell | wt | term | completer|cli|command|line ) )",0,"","",1,,,240
+"[image] newest powershell screenshots ",0,0,0,0,0,"Date Modified",1,"EVERYTHING","( (path:ww:""C:\Users\cppmo_000\Downloads\screen caps delete after month\save these"" | path:ww:""C:\Users\cppmo_000\Downloads\screen caps delete after month"" | ""C:\Users\cppmo_000\Documents\2020\powershell"" ) pic: )",0,"","",1,,,128
+"[image] newest ninmonkeys.com",0,0,0,0,0,"Date Modified",1,"EVERYTHING","( (path:ww:""C:\Users\cppmo_000\Documents\2020"" path:""ninmonkeys.com"" ) pic: )",0,"","",1,,,256
+"cur images: pic:  ( ""C:\Users\cppmo_000\Documents\2020\powershell\"" |  ""C:\Users\cppmo_000\Documents\2020\ninmonkeys.com ┐ wip"" | ""C:\Users\cppmo_000\Documents\2020\ninmonkeys"" | ""C:\Users\cppmo_000\Documents\2020\Power BI""  )",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","pic:  ( ""C:\Users\cppmo_000\Documents\2020\powershell\"" |  ""C:\Users\cppmo_000\Documents\2020\ninmonkeys.com ┐ wip"" | ""C:\Users\cppmo_000\Documents\2020\ninmonkeys"" | ""C:\Users\cppmo_000\Documents\2020\Power BI""  )",0,"","",1,,,256
+"dm:today        (   PBI and Ps1   )",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","dm:last48hours       (   type_PowerBI: | type_ps1: | pic:        )",0,"","",1,"booknow",,0
+"2020: dm:today",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","2020: dm:today",0,"","",1,,,0
+"Newest ( as preview )",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","2020: dm:last4hours",0,"","",1,"recent_images",,128
+"[2] 2020: da:last4hours",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)","2020: da:last4hours",0,"","",1,,,0
+"[1] projects: dot",0,0,0,0,0,"Date Modified",1,"EVERYTHING","projects: dot",0,"","",1,,,0
+"2019: + this week",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: ext:md;py;sql;js;json datemodified:thisweek ext_md: ext_sql: ext_py: ext_js: ext_ts: ext_db: ext_config: linux:",0,"","",1,,,0
+"Dir: (2019:)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","path:wholeword:""C:\Users\cppmo_000\Documents\2019\""",0,"","",1,"2019",,0
+"linux: config files",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Program Files\Git"" ext_config:",0,"","",1,,,0
+"todo: syntax for 'startswith' and 'endswith' for .bash or *.exe, etc",0,0,0,0,0,"Name",1,"EVERYTHING","C:\Program Files\Git ext:sh;exe;py;bin",0,"","",1,,,0
+"Downloads",0,0,0,0,0,"Name",1,"EVERYTHING","C:\Users\cppmo_000\Downloads ",0,"","",1,,,0
+"firefox profile .sqlite and db",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\AppData\Roaming\Mozilla\Firefox\Profiles\0omkont2.nin2018 file: ext_db:",0,"","",1,,,0
+"modified today",0,0,0,0,0,"Date Modified",1,"Ignore .git\","C:\Users\cppmo_000\Documents\2019\ datemodified:today",0,"","",1,,,0
+"sublime3 config",0,0,0,0,0,"Path",0,"EVERYTHING","""C:\Users\cppmo_000\AppData\Roaming\Sublime Text 3\Packages"" mark sett",0,"","",1,,,0
+"~ type:python for func calls, ex ""content:pprint""",0,0,0,0,0,"Name",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ ext:py;sh;md !path:venv !path:env !path:.git content:pprint",0,"","",1,,,0
+"corval work git -- recent changes",0,0,0,0,0,"Date Modified",1,"EVERYTHING","dir_work: novenv: ext_sql: ext_py: ext_webdev: ext_powershell: ext:py;md;sql;ps1  datemodified:last2weeks",0,"","",1,,,0
+"Portal: recent changes",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Documents\2019\corval-work\portal"" ext_work: ext_py: ext_webdev: ext_config: datemodified:last2weeks",0,"","",1,,,0
+"2019 recent (with ext filters on)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ !folder:.git ext:py;md;ps1;sh;rust;cpp;js;jpg;jpeg;png;gif;xcf;json;sql;zip",0,"","",1,,,0
+"Folder contains .config or .png",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\python child:config|child:png !path:.git !path:site-packages",0,"","",1,,,0
+"Find Empty Folders",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents !path:.git !path:site-packages folder: empty:",0,"","",1,,,0
+"Special Shell dirs",0,0,0,0,0,"Date Modified",1,"EVERYTHING","shell:appdata|shell:desktop|shell:downloads|shell:system|shell:ProgramFiles count:100",0,"","",1,,,0
+"Find deep directories >= 10",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019 parents:>=10 folder: !path:.git !path:venv",0,"","",1,,,0
+"ninmonkeys.com : recent changes",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ninmonkeys.com  !path:.git",0,"","",1,,,0
+"Event Viewer Crash Search",0,0,0,0,0,"Date Created",1,"EVERYTHING","C:\ProgramData\Microsoft\Windows\WER\ReportArchive\ ext:wer utf16content:Terminal",0,"","",1,,,0
+"modified: since last month",0,0,0,0,0,"Date Modified",1,"EVERYTHING","c:\users\cppmo_000\ datemodified:lastmonth..thismonth",0,"","",1,,,0
+"test: wingit search",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Downloads\terminal-master\terminal-master\"" dm:last2weeks ext:cpp;py;sql;md;txt;h;jpg;png !file:window console",0,"","",1,,,0
+"test: firefox config",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\AppData\Roaming\Mozilla\Firefox\Profiles\0omkont2.nin2018 dm:today ext:json;sqlite !path:storage",0,"","",1,,,0
+"merge debug/utils .py",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ ext:md;py util|debug|repl|ipython",0,"","",1,,,0
+"%appdata% filters",0,0,0,0,0,"Name",1,"EVERYTHING","%appdata%\ ext:ini;conf;json;sqlite !path:node_modules !file:Mozilla\Firefox\Profiles\ !file:Code\User\WorkspaceStorage\",0,"","",1,,,0
+"size:>125mb",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ size:>125mb",0,"","",1,,,0
+"(ext:zip size:>5mb)|(ext:png size:>10mb)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ (ext:zip size:>5mb)|(ext:png size:>10mb)",0,"","",1,,,0
+"find virtual-env directories: ",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ path:venv\|path:env\|path:site-packages\|path:__pycache__\ folder:",0,"","",1,,,0
+"image search dimensions:200x200..2000x2000 bitdepth:24",0,0,0,0,0,"Date Modified",0,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ path:ninmonk pic: height:>100 width:>100 dimensions:200x200..2000x2000 bitdepth:24",0,"","",1,,,0
+"user/pictures type:pic",0,0,0,0,0,"Date Modified",1,"EVERYTHING","path:%userprofile%\pictures pic:",0,"","",1,,,0
+"writing ARG",0,0,0,0,0,"Date Modified",1,"EVERYTHING","dir_ARG: novenv:",0,"","",1,,,0
+"writing ninmonkeys.com",0,0,0,0,0,"Date Modified",1,"EVERYTHING","dir_ninmonkeys.com: novenv:",0,"","",1,,,0
+"2019: only  top level dirs",0,0,0,0,0,"Date Modified",1,"EVERYTHING","parent:%userprofile%\Documents\2019",0,"","",1,,,0
+"dated filenames/folders",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: str_date:",0,"","",1,,,0
+"(wip) unicode codepoints",0,0,0,0,0,"Run Count",1,"EVERYTHING","2019: no_venv: ext_py: typing content:main (utf8content:m) (utf8content:⇽)",0,"","",1,,,0
+"unicode queries       utf8:file:(⇽|🐈)",0,0,0,0,0,"Date Modified",1,"EVERYTHING"," ext_py:          utf8:file:(⇽|🐈 utf8:content:⁅     utf8:content:#8261                     2019: no_venv: ""C:\Users\cppmo_000\Documents\2019\python\PoC\PoC_1-offs\1-off wip""",0,"","",1,,,0
+"wip : jor : unicode escape",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: ""C:\Users\cppmo_000\Documents\2019\python\PoC\PoC_1-offs\1-off wip"" utf8:file:🐈 file:regex:""e 🐈""   file:regex:"".exe 🐈.*""  file:"".exe 🐈"" utf8:file:regex:"".exe [\x{2028}]+"" ",0,"","",1,,,0
+"2019 changes: last 2 weeks..today",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: dm:last2weeks..today ",0,"","",1,,,0
+"grant1: SQL search",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\github\corval\SQL"" ext:sql case:SM content:""ScopePriority"" ",0,"","",1,,,0
+"path: PoC and Python",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: path:poc path:python",0,"","",1,,,0
+"temp -- find REPL code",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: ext:md;py ipython|repl|debug",0,"","",1,,,0
+"Python (last 3 days)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: dm:last3days ext:py",0,"","",1,,,0
+"Desktop/downloads: recent items",0,0,0,0,0,"Date Modified",1,"EVERYTHING","shell:downloads|shell:desktop no_venv: dm:last2weeks",0,"","",1,,,0
+"recent screenshots",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: screenshots: no_venv: dm:last2weeks",0,"","",1,,,0
+"epic games : listinglauncher",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\""|""d:\""|""F:\""|""g:\"" path:ww:Epic|path:ww:""Epic Games""|path:ww:""UT4 Epic Games"" ext:exe",0,"","",1,,,0
+"ninmonkeys.com: ",0,0,0,0,0,"Date Modified",1,"EVERYTHING","ninmonkeys.com: ",0,"","",1,,,0
+"path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ live""    |    path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ wip""    |    path:ww:""%userprofile%\Documents\2019\ninmonkeys.com""",0,0,0,0,0,"Date Modified",1,"EVERYTHING","path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ live""    |    path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ wip""    |    path:ww:""%userprofile%\Documents\2019\ninmonkeys.com""",0,"","",1,"all ┐ ninmonkeys.com",,0
+"Find LGHUB config files",0,1,0,0,0,"Date Modified",1,"EVERYTHING","""%localappdata%\LGHUB"" | ""%appdata%\LGHUB"" | ""%programfiles%\LGHUB"" !no_ext:",0,"","",1,,,0
+"2020: | 2019: ",0,1,0,0,0,"Date Modified",1,"EVERYTHING","2020: | 2019: ",0,"","",1,,,0
+"dirs: Factorio",0,1,0,0,0,"Date Modified",1,"EVERYTHING","%appdata% | %localappdata% | ""C:\Program Files (x86)\Steam\steamapps\common\Factorio"" factorio",0,"","",1,,,0
+"Changes in the last 15 minutes: Userprofile",0,1,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\"" dm:last15minutes",0,"","",1,"recent15minutes",,0
+"2020-06 - ext:pbix;ps1  !path:ww:"".vscode""",0,0,0,0,0,"Date Modified",1,"EVERYTHING","ext:pbix;ps1  !path:ww:"".vscode""",0,"","",1,,,0
+"""C:\Users\cppmo_000\.vscode\extensions"" dm:last7minutes",0,0,0,0,0,"Date Modified",1,"EVERYTHING","( ""C:\Users\cppmo_000\.vscode\extensions"" dm:last7minutes )",0,"","",1,"vscode_recent",,0
+"vscode recent",0,0,0,0,0,"Date Modified",0,"EVERYTHING","( %userprofile%\.vscode dm:last15minutes )",0,"","",1,,,0
+"vscode: log folders",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)","( ""%userprofile%\.vscode"" | ""%appdata%\Code""  )    ext:log",0,"","",1,"log_vscode",,0
+"recent code - dm:last3days ext:xlsx;md;pq;psq;png;json;pbix ",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","dm:last3days ext:xlsx;md;pq;psq;png;json;pbix ",0,"","",1,,,0
+"temp",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\.vscode\extensions\ms-vscode.powershell-preview-2020.7.0\logs"" dm:last2hours content:""Microsoft.PowerShell.EditorServices.Services.PowerShellContextService: Execution abort requested...""",0,"","",1,,,0
+"temp2",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""c"": ext:log dm:last3hours ( code | vs | Power )",0,"","",1,,,0
+"PowerBI: (nin.com and my_github)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","no_git: ( path:""C:\Users\cppmo_000\Documents\2020\ninmonkeys.com ┐ main\Power BI\"" | path:""C:\Users\cppmo_000\Documents\2020\Power BI\my_github\Ninmonkey.PowerQueryLib"" | path:""C:\Users\cppmo_000\Documents\2020\Power BI\my_github\Ninmonkey.PowerQueryLib-ExampleReports"" )",0,"","",1,,,0
+"PBI traces ( newest)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App\Traces\""     dm:last10minutes",0,"","",1,,,0
+"( Power BI 2019 - 2020 )",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","( path:""C:\Users\cppmo_000\Documents\2020\Power BI"" path:""C:\Users\cppmo_000\Documents\2019"" | path:""C:\Users\cppmo_000\Documents\2020"" ) ext:pq;pbix ",0,"","",1,,,0
+"[image] newest | plus downloads folder",0,0,0,0,0,"Date Modified",1,"EVERYTHING","(2020: pic: ) | ( (path:ww:""C:\Users\cppmo_000\Downloads\screen caps delete after month\save these"" | path:ww:""C:\Users\cppmo_000\Downloads\screen caps delete after month"" | ""C:\Users\cppmo_000\Documents\2020\powershell"" ) pic: )",0,"","",1,,,256
+"ext:code-workspace 2020:",0,0,0,0,0,"Date Modified",1,"EVERYTHING","ext:code-workspace 2020:",0,"","",1,,,0
+"last",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2020: ext:ps1 ( da:last2weeks | dm:last2weeks )",0,"","",1,,,0
+"2021-FindDLL  ( ext:dll ) ( path:ww:%ProgramFiles% | path:ww:""%ProgramFiles(x86)%"" | ( ( path:ww:""%ProgramFiles%\WindowsApps"" path:""Microsoft.MicrosoftPowerBIDesktop"" )) )",0,0,0,0,0,"Date Modified",1,"dotnet Assembly","( ext:dll ) ( path:ww:%ProgramFiles% | path:ww:""%ProgramFiles(x86)%"" | ( ( path:ww:""%ProgramFiles%\WindowsApps"" path:""Microsoft.MicrosoftPowerBIDesktop"" )) )",0,"","",1,,,0
+"cur : pwsh completers",0,0,0,0,0,"Date Modified",1,"EVERYTHING","ext:ps1 dm:last3months ( comple | auto | dynamic )",0,"","",1,,,0
+"cur: consolidate stuff",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","""C:\Users\cppmo_000\Documents\2020\powershell\consolidate""",0,"","",1,,,0
+"( 2021: | 2020: ) dm:last48hours",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","( 2021: | 2020: ) dm:last48hours",0,"","",1,,,0
+"(ext:png dm:last10minutes) | (( 2021: | 2020: ) ext:pbix;pq;png dm:thisweek ext:png )",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","(ext:png dm:last10minutes) | (( 2021: | 2020: ) ext:pbix;pq;png dm:thisweek ext:png )",0,"","",1,,,0
+"(ext:png;pbix;md dm:last100minutes) | (( 2021: | 2020: ) ext:pbix;pq;png dm:thisweek ext:png )",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","(ext:png;pbix;md dm:last100minutes) | (( 2021: | 2020: ) ext:pbix;pq;png dm:thisweek ext:png )",0,"","",1,,,0
+"ext:pbix ( | dm:last3months)",0,0,0,0,0,"Name",0,"Everything (almost, with filters)     def:","ext:pbix ( | dm:last3months)",0,"","",1,,,0
+"( ext:ps1;md | 2021: | 2021: ) dm:last4weeks ( prop | form | xml )",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","( ext:ps1;md | 2021: | 2021: ) dm:last4weeks ( prop | form | xml )",0,"","",1,,,0
+"recent screenshots --- 2021-05",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","( ext:png dm:today path:ww:documents )  | ( ""C:\Users\cppmo_000\Documents\2021\reporting_bugs"" ext:png;gif)",0,"","",1,,,176
+"ext:pbix;pq odata",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","ext:pbix;pq odata",0,"","",1,,,0
+"screenshot cli dump",0,0,0,0,0,"Date Modified",1,"Everything (almost, with filters)     def:","""C:\Users\cppmo_000\Documents\2021\Screenshots Dump\"" ",0,"","",1,,,256
+"export_filelist:       "".git""  folders",0,0,0,0,0,"Path",0,"EVERYTHING","folder:ww:"".git"" folder: !path:""$Recycle.Bin""",0,"","",1,,,0
+"find decent images -- ext:png;jpg;gif (width:>300 | height:>300)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Documents\2021\"" ext:png;jpg;gif (width:>300 | height:>300)",0,"","",1,,,256

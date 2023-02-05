@@ -1,0 +1,46 @@
+Name,Case,Whole Word,Path,Diacritic,Regex,Sort,Descending,Filter,Search,Index,File List,Host,Link Type,Macro,Key,View
+"2019: + this week",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: ext:md;py;sql;js;json datemodified:thisweek ext_md: ext_sql: ext_py: ext_js: ext_ts: ext_db: ext_config: linux:",0,"","",1,,,0
+"Dir: (2019:)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","path:wholeword:""C:\Users\cppmo_000\Documents\2019\""",0,"","",1,"2019",,0
+"linux: config files",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Program Files\Git"" ext_config:",0,"","",1,,,0
+"todo: syntax for 'startswith' and 'endswith' for .bash or *.exe, etc",0,0,0,0,0,"Name",1,"EVERYTHING","C:\Program Files\Git ext:sh;exe;py;bin",0,"","",1,,,0
+"Downloads",0,0,0,0,0,"Name",1,"EVERYTHING","C:\Users\cppmo_000\Downloads ",0,"","",1,,,0
+"firefox profile .sqlite and db",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\AppData\Roaming\Mozilla\Firefox\Profiles\0omkont2.nin2018 file: ext_db:",0,"","",1,,,0
+"modified today",0,0,0,0,0,"Date Modified",1,"Ignore .git\","C:\Users\cppmo_000\Documents\2019\ datemodified:today",0,"","",1,,,0
+"sublime3 config",0,0,0,0,0,"Path",0,"EVERYTHING","""C:\Users\cppmo_000\AppData\Roaming\Sublime Text 3\Packages"" mark sett",0,"","",1,,,0
+"~ type:python for func calls, ex ""content:pprint""",0,0,0,0,0,"Name",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ ext:py;sh;md !path:venv !path:env !path:.git content:pprint",0,"","",1,,,0
+"corval work git -- recent changes",0,0,0,0,0,"Date Modified",1,"EVERYTHING","dir_work: novenv: ext_sql: ext_py: ext_webdev: ext_powershell: ext:py;md;sql;ps1  datemodified:last2weeks",0,"","",1,,,0
+"Portal: recent changes",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Documents\2019\corval-work\portal"" ext_work: ext_py: ext_webdev: ext_config: datemodified:last2weeks",0,"","",1,,,0
+"2019 recent (with ext filters on)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ !folder:.git ext:py;md;ps1;sh;rust;cpp;js;jpg;jpeg;png;gif;xcf;json;sql;zip",0,"","",1,,,0
+"Folder contains .config or .png",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\python child:config|child:png !path:.git !path:site-packages",0,"","",1,,,0
+"Find Empty Folders",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents !path:.git !path:site-packages folder: empty:",0,"","",1,,,0
+"Special Shell dirs",0,0,0,0,0,"Date Modified",1,"EVERYTHING","shell:appdata|shell:desktop|shell:downloads|shell:system|shell:ProgramFiles count:100",0,"","",1,,,0
+"Find deep directories >= 10",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019 parents:>=10 folder: !path:.git !path:venv",0,"","",1,,,0
+"ninmonkeys.com : recent changes",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ninmonkeys.com  !path:.git",0,"","",1,,,0
+"Event Viewer Crash Search",0,0,0,0,0,"Date Created",1,"EVERYTHING","C:\ProgramData\Microsoft\Windows\WER\ReportArchive\ ext:wer utf16content:Terminal",0,"","",1,,,0
+"modified: since last month",0,0,0,0,0,"Date Modified",1,"EVERYTHING","c:\users\cppmo_000\ datemodified:lastmonth..thismonth",0,"","",1,,,0
+"test: wingit search",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\Users\cppmo_000\Downloads\terminal-master\terminal-master\"" dm:last2weeks ext:cpp;py;sql;md;txt;h;jpg;png !file:window console",0,"","",1,,,0
+"test: firefox config",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\AppData\Roaming\Mozilla\Firefox\Profiles\0omkont2.nin2018 dm:today ext:json;sqlite !path:storage",0,"","",1,,,0
+"merge debug/utils .py",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ ext:md;py util|debug|repl|ipython",0,"","",1,,,0
+"%appdata% filters",0,0,0,0,0,"Name",1,"EVERYTHING","%appdata%\ ext:ini;conf;json;sqlite !path:node_modules !file:Mozilla\Firefox\Profiles\ !file:Code\User\WorkspaceStorage\",0,"","",1,,,0
+"size:>125mb",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ size:>125mb",0,"","",1,,,0
+"(ext:zip size:>5mb)|(ext:png size:>10mb)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ (ext:zip size:>5mb)|(ext:png size:>10mb)",0,"","",1,,,0
+"find virtual-env directories: ",0,0,0,0,0,"Date Modified",1,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ path:venv\|path:env\|path:site-packages\|path:__pycache__\ folder:",0,"","",1,,,0
+"image search dimensions:200x200..2000x2000 bitdepth:24",0,0,0,0,0,"Date Modified",0,"EVERYTHING","C:\Users\cppmo_000\Documents\2019\ path:ninmonk pic: height:>100 width:>100 dimensions:200x200..2000x2000 bitdepth:24",0,"","",1,,,0
+"user/pictures type:pic",0,0,0,0,0,"Date Modified",1,"EVERYTHING","path:%userprofile%\pictures pic:",0,"","",1,,,0
+"writing ARG",0,0,0,0,0,"Date Modified",1,"EVERYTHING","dir_ARG: novenv:",0,"","",1,,,0
+"writing ninmonkeys.com",0,0,0,0,0,"Date Modified",1,"EVERYTHING","dir_ninmonkeys.com: novenv:",0,"","",1,,,0
+"2019: only  top level dirs",0,0,0,0,0,"Date Modified",1,"EVERYTHING","parent:%userprofile%\Documents\2019",0,"","",1,,,0
+"dated filenames/folders",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: str_date:",0,"","",1,,,0
+"(wip) unicode codepoints",0,0,0,0,0,"Run Count",1,"EVERYTHING","2019: no_venv: ext_py: typing content:main (utf8content:m) (utf8content:⇽)",0,"","",1,,,0
+"unicode queries       utf8:file:(⇽|🐈)",0,0,0,0,0,"Date Modified",1,"EVERYTHING"," ext_py:          utf8:file:(⇽|🐈 utf8:content:⁅     utf8:content:#8261                     2019: no_venv: ""C:\Users\cppmo_000\Documents\2019\python\PoC\PoC_1-offs\1-off wip""",0,"","",1,,,0
+"wip : jor : unicode escape",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: ""C:\Users\cppmo_000\Documents\2019\python\PoC\PoC_1-offs\1-off wip"" utf8:file:🐈 file:regex:""e 🐈""   file:regex:"".exe 🐈.*""  file:"".exe 🐈"" utf8:file:regex:"".exe [\x{2028}]+"" ",0,"","",1,,,0
+"2019 changes: last 2 weeks..today",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: dm:last2weeks..today ",0,"","",1,,,0
+"grant1: SQL search",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\github\corval\SQL"" ext:sql case:SM content:""ScopePriority"" ",0,"","",1,,,0
+"path: PoC and Python",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: path:poc path:python",0,"","",1,,,0
+"temp -- find REPL code",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: ext:md;py ipython|repl|debug",0,"","",1,,,0
+"Python (last 3 days)",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: no_venv: dm:last3days ext:py",0,"","",1,,,0
+"Desktop/downloads: recent items",0,0,0,0,0,"Date Modified",1,"EVERYTHING","shell:downloads|shell:desktop no_venv: dm:last2weeks",0,"","",1,,,0
+"recent screenshots",0,0,0,0,0,"Date Modified",1,"EVERYTHING","2019: screenshots: no_venv: dm:last2weeks",0,"","",1,,,0
+"epic games : listinglauncher",0,0,0,0,0,"Date Modified",1,"EVERYTHING","""C:\""|""d:\""|""F:\""|""g:\"" path:ww:Epic|path:ww:""Epic Games""|path:ww:""UT4 Epic Games"" ext:exe",0,"","",1,,,0
+"ninmonkeys.com: ",0,0,0,0,0,"Date Modified",1,"EVERYTHING","ninmonkeys.com: ",0,"","",1,,,0
+"path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ live""    |    path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ wip""    |    path:ww:""%userprofile%\Documents\2019\ninmonkeys.com""",0,0,0,0,0,"Date Modified",1,"EVERYTHING","path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ live""    |    path:ww:""%userprofile%\Documents\2020\ninmonkeys.com ┐ wip""    |    path:ww:""%userprofile%\Documents\2019\ninmonkeys.com""",0,"","",1,"all ┐ ninmonkeys.com",,0

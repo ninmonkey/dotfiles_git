@@ -1,0 +1,35 @@
+# see: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file
+
+# Case: -s, -i, -S
+# --case-sensitive
+--ignore-case
+# --smart-case
+--color=always
+
+--type-add
+powerbi:*.{csv,json,sql,jsonc,pq}*
+# Don't let ripgrep vomit really long lines to my terminal, and show a preview.
+# --max-columns=150
+#
+--max-columns=500
+# what does previou do? I think it's [x more items]
+--max-columns-preview
+
+# to over-write .gitignore, use .ignore     : !log
+# https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#automatic-filtering
+#
+
+## Add my 'web' type.
+#--type-add
+#web:*.{html,css,js}*
+#
+## Using glob patterns to include/exclude files or folders
+#--glob=!git/*
+#
+## or
+#--glob
+#!git/*
+#
+## Set the colors.
+#--colors=line:none
+#--colors=line:style:bold

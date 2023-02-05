@@ -1,0 +1,1051 @@
+{
+    /*
+
+### Sect: About
+
+    Profile:            Jake, Desktop.
+    Original Rewrite:   2021-05-07
+    This is the *very* verbose version of the config file
+
+    Generate Table Of Contents using:
+        rg '\s*###*\s*(SubSect|Sect):\s*(?P<Title>.*$)' -- "$src"
+    or
+        rg '\s*###*\s*(S\w+):\s*(?P<Title>.*$)' -- "$src"
+
+    */
+    /*
+### Sect: Config Settings to Experiment with
+
+    */
+    // what's new: Auto close task terms: https://code.visualstudio.com/updates/v1_57#_automatically-close-task-terminals
+    // what's new: in terminal profile: https://code.visualstudio.com/updates/v1_57#_terminal-profile-improvements
+    //
+    // what's new: trust: https://code.visualstudio.com/updates/v1_57#_workspace-trust
+    "editor.suggest.preview": true,
+    "editor.suggest.showDeprecated": true,
+    "notebook.editorOptionsCustomizations": {},
+    "security.workspace.trust.emptyWindow": true,
+    "security.workspace.trust.enabled": true,
+    "security.workspace.trust.startupPrompt": "once",
+    "security.workspace.trust.untrustedFiles": "prompt",
+    // "extensions.supportUntrustedWorkspaces": { },
+    /*
+
+    allowing pre-trusted API extensions
+
+    "extensions.supportUntrustedWorkspaces": {
+        "esbenp.prettier-vscode": {
+            "supported": true,
+            "version": "6.4.0"
+        },
+    },
+    */
+    // will this prevent prompt from synapse (venv) automatically changing your prompt
+    "python.analysis.typeCheckingMode": "basic",
+    "python.terminal.activateEnvInCurrentTerminal": false,
+    "python.terminal.activateEnvironment": false,
+    "debug.openExplorerOnEnd": true,
+    "debug.focusWindowOnBreak": true,
+    "editor.selectionHighlight": true,
+    "editor.autoSurround": "languageDefined",
+    "editor.autoClosingBrackets": "beforeWhitespace",
+    "editor.autoClosingOvertype": "always",
+    "editor.trimAutoWhitespace": true,
+    "editor.dragAndDrop": true,
+    // "editor.codeActionsOnSave":{
+    //     "source.fixAll": true,
+    //     "source.organizeImports": true
+    // },
+    "debug.console.wordWrap": true,
+    "debug.console.historySuggestions": false, // may huge impact on removing 'spam' in debug's intellisense
+    "debug.console.closeOnEnd": true,
+    "debug.console.collapseIdenticalLines": true,
+    "editor.copyWithSyntaxHighlighting": true,
+    "editor.codeLensFontFamily": "'arial', 'cascadia code'", // this changes "run tests" inside .ps1 pester blocks
+    "editor.codeLensFontSize": 14,
+    "editor.codeLens": true,
+    // "editor.cursorSurroundingLines": 10,
+    // "editor.cursorSurroundingLinesStyle": "all",
+    "editor.columnSelection": false,
+    "editor.find.seedSearchStringFromSelection": true,
+    "editor.find.cursorMoveOnType": true,
+    "editor.fontLigatures": true,
+    "editor.folding": true,
+    "editor.foldingHighlight": true, //collapsed folded blocks highlight the single line
+    "editor.foldingStrategy": "auto",
+    "editor.showFoldingControls": "mouseover", // hide icons until you hover the gutter
+    "editor.highlightActiveIndentGuide": true, // highight **just one** specific line-block (the current block)
+    // "editor.fontWeight": "normal", // bold 300, 900,
+    "editor.hover.delay": 300, // 10, 710,
+    "editor.hover.enabled": true, // false,
+    // "editor.hover.sticky": false,
+    "editor.inlineHints.enabled": true, // does what? doesn't seem to be "run tests" or "linting"
+    "editor.inlineHints.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+    "editor.lightbulb.enabled": true,
+    // "editor.occurrencesHighlight": true,
+    // "editor.overviewRulerBorder": true, // overview does what?
+    // "editor.hideCursorInOverviewRuler": true, // does what?
+    "editor.minimap.enabled": true,
+    //
+    // mode: small right
+    "editor.minimap.renderCharacters": true,
+    "editor.minimap.maxColumn": 70,
+    //
+    // mode: renderBlocks wide
+    "editor.minimap.renderCharacters": false,
+    // "debug.focusWindowOnBreak": true,
+    "editor.minimap.maxColumn": 140,
+    // "editor.minimap.scale": 2, // nice on large monitor
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.showSlider": "mouseover",
+    //
+    // mode: small left
+    "editor.minimap.side": "left",
+    "editor.minimap.maxColumn": 70,
+    "editor.linkedEditing": true,
+    "editor.matchBrackets": "near",
+    "editor.matchBrackets": "always", // shows the block you're in, without touching bracket
+    // "editor.minimap.size": ,
+    // "editor.inlineHints.fontSize": 0,
+    // "editor.padding.bottom": 0,
+    // "editor.padding.top": 0,
+    "editor.parameterHints.cycle": true,
+    "editor.parameterHints.enabled": true,
+    "editor.peekWidgetDefaultFocus": "tree",
+    // "editor.quickSuggestions": false | true | Obj
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "diffEditor.ignoreTrimWhitespace": true,
+    // more: "diffEditor.*"
+    // "workbench.editor.limit.value": 10,
+    // 20 more: "workbench.editor.*"
+    // "workbench.editor.untitled.hint": "text",
+    // "explorer.openEditors.sortOrder": "alphabetical",
+    // "editor.stickyTabStops": false,
+    "diffEditor.wordWrap": "inherit",
+    "editor.wrappingStrategy": "simple",
+    /*
+    Can I make person JSON config rules?
+
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/myfile"
+            ],
+            "url": "schemaURL"
+        }
+    ],
+    */
+    /*
+    html.format.wrapAttributes
+        "aligned-multiple"              // Wrap when line length is exceeded, align attributes vertically.
+        "auto"                          // Wrap attributes only when line length is exceeded.
+        "force"                         // Wrap each attribute except first
+        "force-aligned"                 // Wrap each attribute except first and keep aligned.
+        "force-expand-multiline         // Wrap each attribute
+        "preserve",                     // Preserve wrapping of attributes
+        "preserve-aligned",             // Preserve wrapping of attributes but align
+
+        */
+    "html.format.wrapAttributes": "auto",
+    "editor.definitionLinkOpensInPeek": true,
+    /*
+    this mode is a bit crazy, adds a dynamic pane
+    showing your 'calculated defaults' relative the selected file on
+    the right (user/workspace/folder)
+    */
+    "workbench.settings.useSplitJSON": true,
+    "workbench.settings.useSplitJSON": false,
+    "window.newWindowDimensions": "offset",
+    "window.confirmBeforeClose": "keyboardOnly", // https://code.visualstudio.com/updates/v1_51#_prevent-accidental-close
+    "window.restoreWindows": "all",
+    "window.restoreWindows": "preserve",
+    "workbench.startupEditor": "gettingStarted",
+    "workbench.welcomePage.walkthroughs.openOnInstall": true,
+    "workbench.settings.openDefaultSettings": false,
+    /*
+
+###### SubSect: Truly Experimental
+
+    */
+    "search.experimental.searchInOpenEditors": true,
+    "python.insidersChannel": "weekly",
+    /*
+
+###### SubSect: Notebooks: ⇢ .ipynb, Jupyter, nteract, ...
+
+    see also settings:
+        powershell.notebooks.*
+
+    /*
+    "notebook.breadcrumbs.showCodeCells": and
+    "notebook.outline.showCodeCells":
+            https://code.visualstudio.com/updates/v1_53#_outline-and-breadcrumbs
+
+        */
+    "notebook.breadcrumbs.showCodeCells": true,
+    "notebook.outline.showCodeCells": true,
+    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
+    /*
+
+###### SubSect: Editor ⇢ Tabs, Pins, Icons, Decorations
+
+    */
+    "workbench.editor.showTabs": false,
+    "workbench.editor.showTabs": true, // default
+    "workbench.editor.showIcons": false,
+    "workbench.editor.showIcons": true, // default
+    // see: <https://code.visualstudio.com/updates/v1_53#_wrap-tabs>
+    "workbench.editor.wrapTabs": false, // default
+    // "workbench.editor.tabSizing": "shrink", // super important if you 'wrapTabs'
+    // "workbench.editor.tabSizing": "fit", // super important if you 'wrapTabs'
+    "workbench.editor.tabSizing": "fit", // super important if you 'wrapTabs'
+    // "workbench.editor.wrapTabs": true,
+    /*
+    "workbench.editor.pinnedTabSizing":
+    Controls the sizing of pinned editor tabs. Pinned tabs are sorted to the beginning of all opened tabs and typically do not close until unpinned. This value is ignored when #workbench.editor.showTabs# is disabled.
+    "compact":      A pinned tab will show in a compact form with only icon or first letter of the editor name.
+    "normal":       [default] A pinned tab inherits the look of non pinned tabs.
+    "shrink":       A pinned tab shrinks to a compact fixed size showing parts of the editor name.
+    */
+    "workbench.editor.pinnedTabSizing": "shrink",
+    "workbench.editor.pinnedTabSizing": "normal", // default
+    "workbench.editor.decorations.colors": true,
+    "workbench.editor.decorations.badges": true,
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+    /*
+
+###### SubSect: Searching
+
+    */
+    /*
+
+    "search.mode":
+            Default search mode
+
+            The search.mode setting is now available to allow configuring what search UI commands like Search: Find in Files, and the explorer's Find in Folder... and Find in Workspace context menu entries use,
+
+        "view"             Search in the search view, either in the panel or sidebar.
+        "newEditor"        Search in a new search editor
+        "reuseEditor"      Search in an existing search editor if present, otherwise in a new search editor
+
+    */
+    // "search.mode": "view",
+    // "search.mode": "reuseEditor",
+    "search.searchEditor.doubleClickBehaviour": "goToLocation", // "openLocationToSide", "goToLocation"
+    "search.searchEditor.defaultNumberOfContextLines": 1, // grep -C <n>
+    "search.searchEditor.reusePriorSearchConfiguration": true,
+    "search.mode": "newEditor",
+    "powershell.codeFormatting.whitespaceBetweenParameters": false,
+    "editor.snippetSuggestions": "none",
+    "editor.links": true,
+    // "editor.glyphMargin": true,
+    // "editor.fontWeight": "normal",
+    // schema for Powershell
+    /*
+
+### Sect: Real Config Starts Here
+
+    */
+    /*
+
+### Sect: Suggestions, Intellisence, Autocomplete, Completers
+
+    */
+    "editor.suggest.insertMode": "insert",
+    "workbench.settings.openDefaultSettings": false,
+    "editor.quickSuggestionsDelay": 10,
+    "editor.wordBasedSuggestionsMode": "allDocuments",
+    "editor.wordBasedSuggestionsMode": "matchingDocuments", // "allDocuments" "currentDocuments", "matchingDocuments"
+    /*
+
+    editor: suggest
+        https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
+
+    */
+    "editor.wordBasedSuggestions": true,
+    "editor.suggest.showWords": false, // first test
+    "editor.suggest.showKeywords": true,
+    // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
+    // "editor.suggestSelection": "recentlyUsedByPrefix",
+    // "editor.suggestSelection": "first",
+    "editor.suggestSelection": "recentlyUsed",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "editor.suggest.showStatusBar": true, // https://code.visualstudio.com/updates/v1_51#_status-bar-for-suggestions
+    // "editor.suggest.insertMode":"insert", // https://code.visualstudio.com/updates/v1_51#_move-cursor-to-select-suggestions
+    // "editor.colorDecorators": true,
+    "editor.suggest.filterGraceful": true,
+    "editor.suggest.localityBonus": true,
+    // "editor.acceptSuggestionOnEnter": "smart",
+    "editor.suggest.showFields": true,
+    // "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.links": true,
+    /*
+
+### Sect: Clipboard: Copy Paste
+
+    */
+    "terminal.integrated.copyOnSelection": false, // this might be the cause of the copy paste issues
+    // "editor.copyWithSyntaxHighlighting": true,
+    "editor.emptySelectionClipboard": false,
+    /*
+
+### Sect: Git, Github
+
+    */
+    /*
+    "git:*"
+        <https://code.visualstudio.com/updates/v1_53#_git-new-settings>
+        "git.autofetch"
+        "git.ignoreRebaseWarning"
+        "git.requireGitUserConfig"
+    */
+    // "git.autofetch": false,           // all | true | false
+    "git.ignoreRebaseWarning": false, // [default]false | true
+    "git.requireGitUserConfig": true, // [def]true | false
+    /*
+
+### Sect: Log Levels and Trace / tracing
+
+    */
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    "powerquery.trace.server": "off",
+    "powerquery.trace.server": "verbose",
+    "python.analysis.logLevel": "Warning", // error/warnining/info/trace
+    // "powershell editor services.trace.server": "verbose",
+    // "powershell editor services.trace.server": "diagnostic",
+    /*
+
+### Sect: Language Config
+
+    */
+    // "markdown.extension.orderedList.autoRenumber": true,
+    "[python]": {
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ],
+        // "editor.quickSuggestions": {
+        //     "strings": true
+        // },
+        "editor.semanticHighlighting.enabled": true,
+        "editor.wordBasedSuggestions": false,
+        "editor.defaultFormatter": "ms-python.vscode-pylance",
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "modifications",
+        "editor.formatOnType": false,
+    },
+    "[jsonc]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false
+    },
+    "[json]": {
+        "editor.quickSuggestions": {
+            "strings": true,
+        },
+        // "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        // "editor.formatOnType": true,
+        "editor.formatOnPaste": false,
+        "editor.semanticHighlighting.enabled": true,
+        // "editor.maxTokenizationLineLength": 20000
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+    },
+    "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
+    "[xml]": {
+        "editor.formatOnSave": true,
+        /* for formatting, try these depending on what's installed
+        */
+        "editor.defaultFormatter": "esbenp.prettier-vscode", // prettier
+        "editor.defaultFormatter": "vscode.html-language-features", // built-in
+        "editor.defaultFormatter": "redhat.vscode-xml",
+    },
+    "[html]": {
+        // "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.suggest.insertMode": "replace",
+        "gitlens.codeLens.scopes": [
+            "document"
+        ],
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    // "powershell.powerShellDefaultVersion": "",
+    "[powershell]": {
+        "editor.formatOnSave": true,
+        // "editor.snippetSuggestions": "none",
+        "files.encoding": "utf8bom",
+        "editor.formatOnSaveMode": "file",
+        "editor.formatOnPaste": true,
+        "editor.formatOnType": false, // currently it's NYI in the extension
+        "files.autoGuessEncoding": false,
+        "editor.detectIndentation": false, // required for tabsize
+        "editor.tabSize": 4,
+        // if autoIndent is set to 'full' it breaks indentation on 'move line up/down'
+        "editor.autoIndent": "advanced",
+        "editor.semanticHighlighting.enabled": true,
+    },
+    "[markdown]": {
+        // "editor.defaultFormatter": "vscode.markdown-language-features",
+        // "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+        // "editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced",
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": false,
+        "editor.formatOnSave": true,
+        // "editor.formatOnType": true,
+        /* hard line breaks in MD are declared using two trailing spaces */
+        "files.trimTrailingWhitespace": false,
+    },
+    "[csv]": {
+        "editor.wordWrap": "off",
+        // "files.trimFinalNewlidnes": true,
+        "files.insertFinalNewline": false,
+    },
+    "[powerquery]": {
+        "editor.formatOnSave": false,
+        "editor.semanticHighlighting.enabled": true,
+        // "editor.semanticHighlighting.enabled": false,
+        // todo: edit theme
+    },
+    "[log]": {
+        "editor.wordWrap": "on",
+        "editor.wrappingIndent": "deepIndent",
+        "editor.wrappingStrategy": "simple",
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        // "editor.formatOnType": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+    },
+    "prettier.printWidth": 140,
+    "prettier.tabWidth": 4,
+    "git.showPushSuccessNotification": true,
+    "terminal.integrated.drawBoldTextInBrightColors": true,
+    // "editor.quickSuggestions": {
+    //     "other": true,
+    //     "comments": false,
+    //     "strings": false
+    // },
+    /*
+
+###### SubSect: Extension: ⇢ Markdown
+
+    section: Markdown + related MD extensins
+
+    */
+    // Controls the font family used in the markdown preview.
+    // "markdown.preview.fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif",
+    // // Controls the font size in pixels used in the markdown preview.
+    // "markdown.preview.fontSize": 14,
+    // // Controls the line height used in the markdown preview. This number is relative to the font size.
+    // "markdown.preview.lineHeight": 1.6,
+    "markdown-preview-enhanced.codeBlockTheme": "auto.css",
+    // "markdown-preview-enhanced.configPath": "a",
+    "markdown-preview-enhanced.automaticallyShowPreviewOfMarkdownBeingEdited": false,
+    "markdown-preview-enhanced.enableEmojiSyntax": true,
+    // "markdown-preview-enhanced.enableExtendedTableSyntax": false,
+    // "markdown-preview-enhanced.frontMatterRenderingOption": "table",
+    "markdownlint.run": "onType",
+    "markdownlint.config": {
+        // "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/master/schema/markdownlint-config-schema.json",
+        "ul-indent": true,
+        "ul-style": true,
+        // "blank_lines":
+        // "no-bare-urls": true
+    },
+    // https: //github.com/eamodio/vscode-gitlens/wiki/Custom-Formatting#commit-tokens
+    // "gitlens.hovers.detailsMarkdownFormat": "${avatar} &nbsp;__${author}__, ${ago} &nbsp; _(${date})_ \n\n${message}\n\n${commands}",
+    "markdownlint.ignore": [
+        // "a"
+    ],
+    "markdownlint.customRulesAlwaysAllow": [],
+    // "markdown"
+    "markdownlint.customRules": [
+        // "f"
+    ],
+    /*
+###### SubSect: Extension: ⇢ mypy ( todo: sort / cleanup / test these)
+
+    */
+    "debug.openDebug": "openOnDebugBreak",
+    "editor.wordWrapColumn": 140,
+    "terminal.integrated.fontFamily": "cascadia code, fira code retina, cascadia code, consolas",
+    "gitlens.mode.active": "zen",
+    "debug.openDebug": "openOnDebugBreak",
+    "editor.wordWrapColumn": 140,
+    "terminal.integrated.fontFamily": "cascadia code, fira code retina, cascadia code, consolas",
+    "gitlens.mode.active": "zen",
+    "terminal.integrated.rendererType": "auto",
+    // "workbench.editor.focusRecentEditorAfterClose": true,
+    "workbench.quickOpen.closeOnFocusLost": false,
+    "gitlens.views.repositories.files.layout": "list",
+    // "editor.suggest.statusBar.visible": true,
+    // "editor.formatOnSave": true,
+    // "editor.formatOnPaste": true,
+    // "editor.formatOnType": true,
+    // "terminal.integrated.fontSize": 12,
+    // "terminal.integrated.inheritEnv": false,
+    "codepoint.statusbar": "description",
+    "workbench.quickOpen.closeOnFocusLost": false,
+    // "editor.suggest.statusBar.visible": true,
+    // "editor.formatOnSave": true,
+    // "editor.formatOnPaste": true,
+    // "editor.formatOnType": true,
+    // "editor.largeFileOptimizations": false,
+    // "python.linting.mypyEnabled": true,
+    // "debug.inlineValues": true,
+    /*
+    test: mypy:
+
+    sdfssfdsf
+
+
+    config: https://mypy.readthedocs.io/en/latest/config_file.html
+
+    */
+    // "mypy.configFile": "",
+    /*
+    "mypy.executable": "",
+    "mypy.targets": [
+        "."
+    ],
+    /*
+
+    test: python
+
+    */
+    /*
+    "python.linting.mypyArgs": [
+        "--ignore-missing-imports",
+        "--follow-imports=silent",
+        "--show-column-numbers"
+    ],
+    "pythonlinting.mypyCategorySeverity.error": "Warning",
+    "python.linting.mypyCategorySeverity.note": "Warning",
+    */
+    // "python.linting.mypyPath": "mypy",
+    // "python.linting.mypyPath": "mypy",
+    // "python.analysis.memory.keepLibraryAst": false,
+    // "python.analysis.errors": false,
+    // "python.analysis.errors": [],\
+    /*
+
+###### SubSect: Extension: ⇢ markdown
+
+    */
+    "markdown.extension.orderedList.autoRenumber": true,
+    /*
+
+###### SubSect: Extension: ⇢ "ms-vscode.powershell[-preview]"
+
+
+    */
+    // "powershell.notebooks.saveMarkdownCellsAs": "LineComment",
+    "powershell.notebooks.showToggleButton": true,
+    "powershell.notebooks.saveMarkdownCellsAs": "BlockComment",
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.whitespaceBetweenParameters": false,
+    "powershell.promptToUpdatePowerShell": false,
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.integratedConsole.suppressStartupBanner": true,
+    /*
+
+###### SubSect: Extension: ⇢ xml "redhat.vscode-xml"
+
+    */
+    // schema for Powershell
+    "xml.fileAssociations": [
+        {
+            "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd",
+            "pattern": "**/*.Format.ps1xml"
+        },
+        {
+            "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Types.xsd",
+            "pattern": "**/*.Types.ps1xml"
+        }
+    ],
+    /*
+
+###### SubSect: Extension: ⇢ dotnet / C#: 'csharpextensions'
+
+    */
+    "csharpextensions.privateMemberPrefix": "_",
+    "csharpextensions.useThisForCtorAssignments": false,
+    /*
+
+### Sect: Files ⇢ Associations, Overrides, Exclusions
+
+    */
+    "files.defaultLanguage": "${activeEditorLanguage}",
+    "files.trimTrailingWhitespace": true,
+    "editor.renderLineHighlight": "all",
+    /*
+
+###### SubSect: EditorA ViewType Overrides / File Type Overrides
+
+
+    applies schemas to PowerShell '.Format.ps1xml' and '.Types.ps1xml'
+*/
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb"
+    },
+    /*
+
+###### SubSect: Files ⇢ Files.Associations
+
+    */
+    "files.defaultLanguage": "${activeEditorLanguage}",
+    "files.trimTrailingWhitespace": true,
+    "editor.renderLineHighlight": "all",
+    // "editor.renderLineHighlightOnlyWhenFocus": true,
+    "workbench.commandPalette.preserveInput": true,
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": false,
+    "files.associations": {
+        // these have higher precendence than extensions
+        "*.dax": "sql",
+        "*.json": "jsonc",
+        // powershell
+        "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
+        // microsoft / vs studio
+        "*.wixproj": "xml",
+        "*.mproj": "xml",
+        "*.odc": "html",
+        // ripgrep, bat
+        ".batrc": "shellscript",
+        ".ripgreprc": "shellscript",
+        "nuget.config": "xml",
+    },
+    /*
+
+###### SubSect: Files ⇢ Files.Exclude
+
+    */
+    // [1] files by extensions
+    "files.exclude": {
+        "**/*.lnk": true
+    },
+    // [2] files with multiple extensions
+    "files.exclude": {
+        "**/*.{ext1,ext2,ext3}": true
+    },
+    // [3] files with siblings by name
+    "files.exclude": {
+        "**/*.source-extension": {
+            "when": "$(basename).target-extension"
+        }
+    },
+    // [4] folder by name (any location)
+    "files.exclude": {
+        "**/name": true
+    },
+    // [5] folder by name (top level)
+    "files.exclude": {
+        "name": true
+    },
+    // [6] folders with multiple names (by level)
+    "files.exclude": {
+        "{folder1,folder2,folder3}": true
+    },
+    // [7] default value
+    "files.exclude": {
+        "**/*.lnk": true, // this was still showing .lnk in top-bar breadcrumb navigation list
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true
+    },
+    // default value
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true
+    },
+    // "files.exclude": {
+    //     "**/*.exe": true,
+    //     "**/*.lnk": true,
+    //     "**/*.pbix": true,
+    //     "**/*.zip": true,
+    //     // venv, cache, or compiled
+    //     "**/*.py[co]": true,
+    //     "**/__pycache__": true,
+    //     "**/node_modules": true,
+    //     "**/.mypy_cache": true,
+    //     "**/venv": true,
+    // },
+    /*
+
+###### SubSect: Files ⇢ Search.Exclude
+
+    */
+    "search.exclude": {
+        // "**/*.mez": true,
+        "**/*.lnk": true,
+        "**/*.log": true,
+    },
+    "breadcrumbs.filePath": "off",
+    "breadcrumbs.filePath": "last", // theme-tag: minimalism
+    "breadcrumbs.filePath": "on", // theme-tag: information
+    "breadcrumbs.enabled": false, // theme-tag: minimalism,
+    "breadcrumbs.enabled": true, //
+    "breadcrumbs.icons": false, // theme-tag: minimalism
+    "breadcrumbs.icons": true, // doesn't seem to change much, not even outline
+    /*
+
+### Sect: Unsorted / misc / to go through
+
+    */
+    "python.formatting.provider": "black",
+    // "editor.renderControlCharacters": true,
+    // "editor.fontLigatures": true,
+    "workbench.editor.labelFormat": "medium",
+    "vscode-json-editor.theme": "dark",
+    "python.pythonPath": "C:\\Users\\cppmo_000\\AppData\\Local\\Microsoft\\WindowsApps\\python3.9.exe",
+    "python.jediEnabled": false,
+    /* debug and verbose logging settings */
+    // "powershell editor services.trace.server": "verbose",
+    // "powershell editor services.trace.server": "diagnostic",
+    /* ... */
+    // "terminal.integrated.automationShell.windows": "",
+    // "terminal.integrated.fontWeight": ,
+    "terminal.integrated.cwd": "",
+    "terminal.integrated.detectLocale": "auto",
+    "terminal.integrated.env.windows": {},
+    "terminal.integrated.unicodeVersion": "11",
+    // "editor.autoIndent": false,
+    "python.formatting.provider": "black",
+    // "editor.renderControlCharacters": true,
+    // "editor.fontLigatures": true,
+    "workbench.editor.labelFormat": "medium",
+    "vscode-json-editor.theme": "dark",
+    "python.pythonPath": "c:\\Users\\cppmo_000\\Documents\\2020\\python\\one_offs\\Heroes of the Storm stats\\venv\\Scripts\\python.exe",
+    "python.languageServer": "Pylance",
+    /* debug and verbose logging settings */
+    // "powershell editor services.trace.server": "verbose",
+    // "powershell editor services.trace.server": "diagnostic",
+    "powerquery.trace.server": "verbose",
+    /* ... */
+    "editor.wordWrap": "on",
+    // "terminal.integrated.automationShell.windows": "",
+    // "terminal.integrated.fontWeight": ,
+    // "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": false,
+    // use 'find in selection' only if lines are selected
+    "editor.find.autoFindInSelection": "multiline",
+    // "editor.find.seedSearchStringFromSelection": true,
+    // "debug.focusWindowOnBreak": true,
+    "debug.allowBreakpointsEverywhere": true,
+    "debug.console.closeOnEnd": true,
+    // "breadcrumbs.enabled": true, // extra row on toolbar on tabs
+    // "breadcrumbs.showArrays": true,
+    "search.useReplacePreview": true,
+    // "explorer.sortOrder": "modified", // nice for log files
+    "editor.renderLineHighlightOnlyWhenFocus": true,
+    "editor.renderControlCharacters": true,
+    "breadcrumbs.symbolSortOrder": "type",
+    "editor.wordWrapColumn": 160,
+    "editor.wrappingIndent": "deepIndent",
+    "editor.detectIndentation": false,
+    "editor.fontSize": 16,
+    "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+    // "editor.trimAutoWhitespace": true,
+    // "diffEditor.ignoreTrimWhitespace": true,
+    // "editor.suggest.maxVisibleSuggestions": 15, : this is obsolete as of 2020-11
+    // "html.autoClosingTags": true,
+    // "powershell.enableProfileLoading": true,
+    "workbench.settings.editor": "json",
+    // "workbench.settings.enableNaturalLanguageSearch": false,
+    // "workbench.settings.settingsSearchTocBehavior": "filter",
+    // "workbench.editor.labelFormat": "long",
+    // "editor.cursorWidth": 60,
+    "editor.cursorBlinking": "smooth", // "smooth",
+    // "editor.cursorStyle": "block-outline",
+    "editor.cursorStyle": " underline",
+    /* cursor config for screenshots */
+    "editor.cursorBlinking": "solid", // "smooth",
+    "editor.cursorStyle": "block-outline",
+    // "editor.cursorSurrounding"underline"s": 50,
+    // "terminal.integrated.cursorWidth": 1,
+    // "terminal.integrated.cursorWidth": 1,
+    // "editor.hideCursorInOverviewRuler": false,
+    "docsView.documentationView.updateMode": "live",
+    // "debug.console.historySuggestions": true,
+    // makes left click instant
+    "editor.cursorSmoothCaretAnimation": false,
+    // "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
+    // "powershell.developer.bundledModulesPath": "",
+    "powershell.integratedConsole.suppressStartupBanner": false,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    //
+    "powershell.codeFormatting.whitespaceAroundPipe": true,
+    // "powershell.buttons.showPanelMovementButtons": true,
+    // "powershell.buttons.showRunButtons": true,
+    // "powershell.codeFolding.showLastLine": true,
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+    // "powershell.codeFormatting.ignoreOneLineBlock": true,
+    // "powershell.codeFolding.enable": true,
+    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1", # relative workspace, else global:
+    "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
+    "powershell.scriptAnalysis.enable": true,
+    // "powershell.powerShellDefaultVersion": "",
+    // "[toml]": {
+    // "editor.snippetSuggestions": "inline",
+    // "editor.suggest.snippetsPreventQuickSuggestions": true,
+    // "editor.suggest.showSnippets": true,
+    // },
+    // "editor.autoClosingBrackets": "beforeWhitespace",
+    "workbench.list.automaticKeyboardNavigation": true,
+    // "python.autoComplete.addBrackets": false,
+    // "terminal.integrated.automationShell.linux": null,
+    /*
+
+### Sect: Terminal Config
+
+    */
+    /*
+
+docs: <https://code.visualstudio.com/docs/editor/integrated-terminal#_windows>
+    examples:
+        // CMD, Win PS, GitBash, and WSL
+        "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe"
+        // PowerShell
+        "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+        // Git Bash
+        "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\git-cmd.exe",
+        "terminal.integrated.shellArgs.windows": [ "--command=usr/bin/bash.exe", "-l", "-i" ]
+        // Bash on Ubuntu (on Windows)
+        "terminal.integrated.shell.windows": "C:\\Windows\\System32\\bash.exe"
+    */
+    // "terminal.integrated.cwd": "c:\\data\\jake",
+    "terminal.integrated.commandsToSkipShell": [
+        "workbench.action.files.newUntitledFile",
+        "workbench.action.toggleSidebarVisibility",
+        "workbench.action.showAllSymbols",
+    ],
+    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\git-bash.exe",
+    // "terminal.integrated.shell.linux": "C:\\Windows\\System32\\cmd.exe",
+    // // "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
+    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    // "terminal.external.windowsExec": "powershell",
+    // "terminal.integrated.shellArgs.windows": [
+    // "-nop"
+    // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    // ],
+    "terminal.integrated.rendererType": "canvas",
+    // "terminal.integrated.fontSize": 12,
+    // "terminal.integrated.inheritEnv": false
+    // "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    // "terminal.integrated.shell.windows": "C:\\Windows\\System32\\bash.exe"
+    /*
+
+    external term
+        was using: // "terminal.external.windowsExec": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+
+    */
+    "terminal.external.windowsExec": "wt",
+    // "terminal.explorerKind": "external",
+    // "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "terminal.integrated.shell.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "terminal.integrated.shellArgs.windows": [
+        "-NoLogo"
+    ],
+    /*
+
+### Sect: Custom Colors/Themes/Fonts/Styles/CSS
+
+    */
+    /*
+
+###### SubSect: Window title templates
+    see more: '//dotfiles_git/vscode/settings_global/Example Config Options ⇢ Window.Title Format Strings.json'
+
+    */
+    // output: NinMonkey.Console ⁞ settings.json ⁞ c:\foo\bar
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}|${separator}${activeFolderMedium}",
+    // output: NinMonkey.Console ⁞ settings.json ⁞ bar
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderShort}",
+    // output: settings.json <- bar
+    "window.title": "${activeEditorShort}$ <- ${activeFolderShort}",
+    // output: Format-FileSize.ps1 ⇽ [public]
+    "window.title": "${activeEditorShort}$ ⇽ ${activeFolderShort}",
+    // output: Invoke-IPython.ps1 [native_wrapper] ⁞ NinMonkey.Console (Workspace)
+    "window.title": "${dirty}${activeEditorShort}$ [${activeFolderShort}]${separator}${rootName}",
+    // output: NinMonkey.Console (Workspace) ⁞ Invoke-IPython.ps1 ⁞ public\native_wrapper
+    "window.title": "${dirty}${rootName}${separator}${activeEditorShort}${separator}${activeFolderMedium}",
+    // "window.title": "${dirty}${rootName} ┐ ${activeEditorShort}$ ⇽ ${folderName}",
+    "window.titleSeparator": " ⁞ ", // or: ┐ ⇽
+    /*
+
+###### SubSect: Workbench theme overrides
+
+        docs: <https://code.visualstudio.com/api/references/theme-color>
+    */
+    "workbench.colorCustomizations": {
+        // highlight 'active' window, without being too bold
+        "window.activeBorder": "#a75715e3", // pretty bright
+        "window.activeBorder": "#a857ff85", // pretty bright
+        // "window.inactiveBorder": "#a7b67080",
+        // "statusBar.border": "magenta",
+        "window.inactiveBorder": "#a7b67000",
+        // "tree.indentGuidesStroke": "#ff0000"
+        // "debugView.valueChangedHighlight": "#ff0000"
+        // "diffEditor.insertedTextBackground": "#ff0000",
+        // "diffEditor.insertedTextBorder": "#ff0000",
+        // "diffEditor.removedTextBackground": "#ff0000",
+        // "diffEditor.border": "#ff0000",
+        // "window.inactiveBorder": "#ff000069",
+        // "editorCursor.foreground": "#ff0000"
+        // "editorCursor.background": "#ff0000"
+        /*
+            editor find
+        */
+        /*
+        "editor.findMatchBackground": "#ff0000",
+        "editor.findMatchBorder": "#ff0000",
+        "editor.findMatchHighlightBackground": "#ff0000",
+        "editor.findRangeHighlightBackground": "#ff0000",
+        "editor.findMatchHighlightBorder": "#ff0000",
+        "editor.findRangeHighlightBorder": "#ff0000",
+        "editorOverviewRuler.findMatchForeground": "#ff0000",
+        "searchEditor.findMatchBackground": "#ff0000",
+        "searchEditor.findMatchBorder": "#ff0000",
+        "editor.snippetFinalTabstopHighlightBorder": "#ff0000",
+        "editor.snippetFinalTabstopHighlightBackground": "#ff0000",
+        "editorOverviewRuler.modifiedForeground": "#ff0000",
+        */
+    },
+    /*
+
+###### Sect: font-sizes and font properties
+
+    */
+    "gitlens.views.compare.files.layout": "tree",
+    // "jupyter.interactiveWindowMode": "perFile",
+    "editor.suggestLineHeight": 18, // 14, -- you'll want it ≥ 'editor.suggestFontSize'
+    "editor.suggestFontSize": 16, //14, // for zoom -1
+    // for zoom = 0
+    "debug.console.fontSize": 14,
+    "debug.console.fontSize": 16,
+    // "editor.fontSize": 14, // for zoom -0
+    "editor.fontSize": 17, //18 16, // for zoom -1
+    "editor.fontSize": 15, // for zoom -0
+    // "editor.suggestFontSize": 12, // for zoom 0
+    // "terminal.integrated.fontSize": 15, // for zoom -1
+    "terminal.integrated.fontSize": 14, //12, // for zoom 0
+    "debug.console.fontFamily": "'cascadia code', cascadia m0ono, Fira Code Retina, Consolas, Fira Code Bold",
+    "notebook.experimental.useMarkdownRenderer": true,
+    "notebook.diff.enablePreview": true,
+    "debug.inlineValues": "auto",
+    "terminal.integrated.allowChords": true,
+    "terminal.integrated.automationShell.windows": null,
+    "terminal.integrated.allowWorkspaceConfiguration": false,
+    "terminal.integrated.defaultProfile.windows": null,
+    "terminal.integrated.enableFileLinks": true,
+    "terminal.integrated.environmentChangesIndicator": "warnonly",
+    "terminal.integrated.environmentChangesRelaunch": true,
+    // "terminal.integrated.fontWeight": "500",
+    "terminal.integrated.experimentalUseTitleEvent": false, // An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals
+    "terminal.integrated.cursorBlinking": false,
+    // "terminal.integrated.cursorStyle": "line", # no like.
+    "terminal.integrated.cursorStyle": "underline",
+    "terminal.integrated.cursorStyle": "block",
+    "terminal.integrated.altClickMovesCursor": true, // sometimes wonky
+    "terminal.integrated.localEchoStyle": "dim", // ?
+    "terminal.integrated.localEchoStyle": "underlined", // ?
+    "terminal.integrated.experimentalLinkProvider": true,
+    "terminal.integrated.rightClickBehavior": "copyPaste",
+    "terminal.integrated.sendKeybindingsToShell": false,
+    "terminal.integrated.tabs.enabled": true,
+    "terminal.integrated.tabs.location": "left",
+    "terminal.integrated.wordSeparators": " ()[]{}',\"`─", // default changes per-language
+    "terminal.integrated.tabs.focusMode": "doubleClick",
+    "terminal.integrated.inheritEnv": true,
+    "terminal.integrated.useWslProfiles": true,
+    "terminal.integrated.tabs.hideCondition": "singleTerminal",
+    "terminal.integrated.tabs.showActiveTerminal": "always",
+    "terminal.integrated.tabs.showActiveTerminal": "singleTerminal",
+    "terminal.integrated.tabs.showActiveTerminal": "never",
+    "terminal.integrated.tabs.showActiveTerminal": "singleTerminalOrNarrow",
+    "terminal.integrated.localEchoLatencyThreshold": 30,
+    "terminal.integrated.cursorWidth": 2,
+    "terminal.integrated.localEchoExcludePrograms": [ // default
+        "vim",
+        "vi",
+        "nano",
+        "tmux"
+    ],
+    "debug.terminal.clearBeforeReusing": false,
+    "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
+    // "editor.fontFamily": "'consolas', 'verdana', 'fira code', consolas,  'cascadia code', 'cascadia mono', verdana, 'consolas', arial, cascadia mono, Fira Code Retina, Fira Code, FIra Code Bold, Fira Code L1ht, Fira Code Retina, Consolas, 'Courier New', monospace",
+    /*
+        run command: 'Switch Font'
+    */
+    // "font-switcher.enableLivePreview": true,
+    // "font-switcher.fontFamily": "Arial, Cascadia Code, Cascadia Code PL, Cascadia Mono, Cascadia Mono PL, Consolas, Courier New, Fira Code, Fira Code Bold, Fira Code Retina, Fira Code Retina, Fira Code, Monospace, Verdana",
+    "font-switcher.fontFamily": "'Arial', 'Cascadia Code', 'Cascadia Code PL', 'Cascadia Mono', 'Cascadia Mono PL', 'Consolas', 'Courier New', 'Fira Code', 'Fira Code Bold', 'Fira Code Retina', 'Fira Code Retina', 'Fira Code', 'Monospace', 'Verdana'",
+    // "font-switcher.fontFamily": "Fira Code Retina, Consolas, DejaVu Sans Mono, monospace",
+    /*
+
+###### SubSect: Semantic highlighting
+
+    */
+    "csharp.semanticHighlighting.enabled": true,
+    "editor.semanticHighlighting.enabled": true, // or "ConfiguredByTheme"
+    "editor.semanticTokenColorCustomizations": {
+        // per-theme
+        "[Default Dark+]": {
+            "enabled": true,
+            "rules": {
+                // single value
+                "parameter": "#d4d4d4",
+                // vs many
+                "parameter": {
+                    "foreground": "#ff0000",
+                    "foreground": "#464545", // nintheme
+                    "underline": true,
+                    "bold": true,
+                    "italic": true,
+                    "fontStyle": "italic bold underline",
+                },
+            }
+        },
+        // "variable": "#fae",
+        // "variable": "#9dccfe",
+        // or global
+        "enabled": true,
+        "rules": {
+            /*
+            "parameter": "#d4d4d4",
+            "variable": "#9dccfe"
+            "xmlDocCommentAttributeQuotes": "#ff0000",
+            "*.builtin": {
+                "foreground": "#FF0000",
+                "fontStyle": "bold"
+            }
+            */
+        }
+    },
+    "oneDarkPro.bold": true,
+    "pesterExplorer.autoDiscoverOnOpen": true,
+    "editor.renderWhitespace": "trailing",
+    "powershell.codeFormatting.pipelineIndentationStyle": "None",
+    // snippets
+    "snippets.viewer.showBuiltInExtensionSnippets": false,
+    "jupyter.exportWithOutputEnabled": true,
+    "workbench.colorTheme": "Codesong",
+}

@@ -1,0 +1,2 @@
+# ref: <https://git-scm.com/docs/gitattributes>
+# ttributes that should affect all repositories for a single user should be placed in a file specified by the core.attributesFile configuration option

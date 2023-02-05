@@ -1,0 +1,393 @@
+{
+    "workbench.enablePreviewFeatures": true,
+    "powershell.promptToUpdatePowerShell": false,
+    "datasource.connectionGroups": [
+        {
+            "name": "localhost.dev",
+            "id": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+            "parentId": "C777F06B-202E-4480-B475-FA416154D458",
+            "color": "#98AFC7",
+            "description": ""
+        },
+        {
+            "name": "ROOT",
+            "id": "C777F06B-202E-4480-B475-FA416154D458",
+            "color": "#98AFC7",
+            "description": ""
+        }
+    ],
+    "datasource.connections": [
+        {
+            "options": {
+                "connectionName": "localhost",
+                "server": "NIN8\\SQL2019",
+                "database": "BikeStores",
+                "authenticationType": "Integrated",
+                "user": "",
+                "password": "",
+                "applicationIntent": "ReadWrite",
+                "connectTimeout": "3",
+                "connectRetryCount": "1",
+                "connectRetryInterval": "3",
+                "applicationName": "azdata",
+                "originalDatabase": "BikeStores",
+                "groupId": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+                "databaseDisplayName": "BikeStores"
+            },
+            "groupId": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+            "providerName": "MSSQL",
+            "savePassword": true,
+            "id": "a1c888f1-42ac-48ea-854f-8bbbed9a35bb"
+        },
+        {
+            "options": {
+                "connectionName": "localhost",
+                "server": "NIN8\\SQL2019",
+                "database": "",
+                "authenticationType": "Integrated",
+                "user": "",
+                "password": "",
+                "applicationIntent": "ReadWrite",
+                "connectTimeout": "10",
+                "connectRetryCount": "1",
+                "connectRetryInterval": "10",
+                "applicationName": "azdata",
+                "groupId": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+                "databaseDisplayName": ""
+            },
+            "groupId": "08f6848b-dfae-4b9c-9f5f-1a2bb8a47e52",
+            "providerName": "MSSQL",
+            "savePassword": true,
+            "id": "2965e388-683c-469d-99fb-c46692a1ce8f"
+        }
+    ],
+    "editor.autoClosingBrackets": "always",
+    /*
+
+    section: fonts
+
+        want bolder?
+            'cascadia code pl'
+                is darker than the base one
+                
+
+        don't like bold?
+            'fira code'
+
+        if too light use
+            'fira code' 500
+
+        
+    */
+    "editor.fontFamily": "'cascadia code pl', 'fira code', 'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'fira code', 'cascadia code','fira code', 'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "consolas, 'Cascadia code', 'cascadia code','fira code', 'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "'Cascadia code pl', 'cascadia code','fira code', 'cascadia code pl', Consolas, 'Courier New', monospace",
+    "editor.fontSize": 18,
+    "editor.fontSize": 16,
+    // "editor.fontWeight": "500",
+    "workbench.colorCustomizations": {
+        // new built-in bracket colors
+        // "editorBracketMatch.background": "#29b0c2",
+        // custom for addons:
+        "errorLens.errorBackground": "#e4545400",
+        "errorLens.errorMessageBackground": "#e4545400",
+        "errorLens.errorForeground": "#ff646400",
+        "errorLens.warningBackground": "#ff942f00",
+        "errorLens.warningForeground": "#fa973a00",
+        "errorLens.warningMessageBackground": "#fff00000",
+        "debugConsole.sourceForeground": "#7bff00", // # where is this?
+        "statusBar.debuggingBackground": "#ff000021", // fav: very darkred # while debug
+        // "debugConsole.errorForeground": "#ff0000",
+        /*
+        Section: [workbench.colorCustomizations]
+            git
+
+        */
+        // "gitDecoration.addedResourceForeground": "#ff00cc",
+        // "gitDecoration.conflictingResourceForeground": "#ff00cc",
+        // "gitDecoration.deletedResourceForeground": "#ff00cc",
+        // "gitDecoration.ignoredResourceForeground": "#ff00cc",
+        // "gitDecoration.modifiedResourceForeground": "#ed9230",
+        // "gitDecoration.renamedResourceForeground": "#ff00cc",
+        // "gitDecoration.stageDeletedResourceForeground": "#ff00cc",
+        // "gitDecoration.stageModifiedResourceForeground": "#ed923074", //modifies [tab] colors
+        // "gitDecoration.submoduleResourceForeground": "#ff00cc",
+        // "gitDecoration.untrackedResourceForeground": "#f97fe0a3", // [tab]
+        /*
+        Section: [workbench.colorCustomizations]
+            addon: gitlens
+
+        */
+        // "gitlens.gutterBackgroundColor": "#ff0000",
+        // "gitlens.trailingLineBackgroundColor": "#ff000072",
+        // "gitlens.lineHighlightBackgroundColor": "#ff000072",
+        // highlight 'active' window, without being too bold
+        "window.activeBorder": "#a75715e3", // pretty bright
+        "window.activeBorder": "#a857ff85", // pretty bright
+        // "window.inactiveBorder": "#a7b67080",
+        // "statusBar.border": "magenta",
+        "window.inactiveBorder": "#a7b67000",
+        "editorRuler.foreground": "#ff4081",
+        "editorRuler.foreground": "#774958",
+        // "tree.indentGuidesStroke": "#ff0000"
+        // "debugView.valueChangedHighlight": "#ff0000"
+        // "diffEditor.insertedTextBackground": "#ff0000",
+        // "diffEditor.insertedTextBorder": "#ff0000",
+        // "diffEditor.removedTextBackground": "#ff0000",
+        // "diffEditor.border": "#ff0000",
+        // "window.inactiveBorder": "#ff000069",
+        // "editorCursor.foreground": "#ff0000"
+        // "editorCursor.background": "#ff0000"
+        /*
+              editor find
+          */
+        /*
+          "editor.findMatchBackground": "#ff0000",
+          "editor.findMatchBorder": "#ff0000",
+          "editor.findMatchHighlightBackground": "#ff0000",
+          "editor.findRangeHighlightBackground": "#ff0000",
+          "editor.findMatchHighlightBorder": "#ff0000",
+          "editor.findRangeHighlightBorder": "#ff0000",
+          "editorOverviewRuler.findMatchForeground": "#ff0000",
+          "searchEditor.findMatchBackground": "#ff0000",
+          "searchEditor.findMatchBorder": "#ff0000",
+          "editor.snippetFinalTabstopHighlightBorder": "#ff0000",
+          "editor.snippetFinalTabstopHighlightBackground": "#ff0000",
+          "editorOverviewRuler.modifiedForeground": "#ff0000",
+          */
+        "errorLens.warningMessageBackground": "#2f323813",
+        "errorLens.warningMessageBackground": "#ff880000",
+        "errorLens.warningMessageBackground": "#ff942f19", // # def
+        "errorLens.warningMessageBackground": "#ff88001e",
+        "errorLens.warningMessageBackground": "#5f2d448c", // interesting pinkish
+        "errorLens.warningMessageBackground": "#362B1F", // default ?
+        "errorLens.warningMessageBackground": "#362b1f6b", // dim
+        "errorLens.warningBackground": "#ff000000", // invisible BG
+        "errorLens.errorForeground": "#ff0000b6",
+        "errorLens.errorForeground": "#f77777ad", // peach
+        "errorLens.errorForeground": "#f77777ad",
+        // "errorLens.errorMessageBackground": "#c8ff02e8",
+        "errorLens.errorMessageBackground": "#332424", // default:#332424
+        "errorLens.errorMessageBackground": "#e4545419",
+        "errorLens.errorBackground": "#362b1f6b", // default:#332424
+        "errorLens.errorBackground": "#362b1f34", // dim
+        "errorLens.warningForeground": "#F2962D", // orange default
+        "errorLens.warningForeground": "#f2962d32", // default -> dim 2x
+        "errorLens.warningForeground": "#f2962d6c", // default -> dim 1x
+        // custom dim theme
+        "editorBracketHighlight.foreground1": "#ffffff80", // dim gray
+        "editorBracketHighlight.foreground1": "#ffd780", // # dim
+        "editorBracketHighlight.foreground1": "#ffd780", // #def
+        "editorBracketHighlight.foreground2": "#da70d6", //def
+        "editorBracketHighlight.foreground2": "#da70d686", // dim
+        "editorBracketHighlight.foreground3": "#179fff", // def
+        "editorBracketHighlight.foreground3": "#179f80", // dim
+        // default cycles after 3
+        "editorBracketHighlight.foreground4": "#ff0065", // magenta
+        "editorBracketHighlight.foreground4": "#ffffff80", // dim gray
+        // "editorBracketHighlight.foreground5": "#ff0080",
+        // "editorBracketHighlight.foreground5": "#ff0040",
+        // "editorBracketHighlight.foreground6": "#ff0040",
+        // "editorBracketHighlight.foreground6": "#ff0040",
+        //sep
+        // "editorBracketHighlight.unexpectedBracket.foreground": "#ff1212cc",
+        "editorBracketMatch.border": "#888888",
+        // work bench tests
+        // "editorLineNumber.foreground": "#ff0000",
+        // "editorLineNumber.foreground": "#487285", // dim: blueish foreground color
+        "editorLineNumber.foreground": "#858585", // default: gray fade
+        "editorLineNumber.foreground": "#858585a1", // dim
+        "editorLineNumber.foreground": "#4e4e4ea1", // default: gray fade
+        // "editorLineNumber.activeForeground": "#609AB2", // blueish foreground color
+        // "editorLineNumber.activeForeground": "#6ad4ee",
+        "editorLineNumber.activeForeground": "#c6c6c6", // def: fg
+        "editorLineNumber.activeForeground": "#929292", // dim
+        // new: 2021-12
+        "editorWarning.foreground": "#00fff252", // main squiggle
+        "editorWarning.foreground": "#00fff200", // main squiggle
+    },
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.pester.debugOutputVerbosity": "Detailed",
+    "powershell.codeFormatting.alignPropertyValuePairs": false,
+    "markdown.links.openLocation": "beside",
+    "markdown.preview.fontSize": 12,
+    "markdown.preview.openMarkdownLinks": "inEditor",
+    "editor.matchBrackets": "always",
+    "editor.fontLigatures": true,
+    "editor.formatOnSave": true,
+    /*
+
+    section: ipynb / notebooks
+
+        "notebook.enableIncrementalGridRendering": false,
+        
+    */
+    "notebook.enableIncrementalGridRendering": true,
+    "[powershell]": {
+        "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
+        "editor.semanticHighlighting.enabled": true,
+        "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
+    },
+    "editor.rulers": [
+        80,
+        120
+    ],
+    // "testing.gutterEnabled": true,
+    "editor.acceptSuggestionOnEnter": "smart",
+    "workbench.commandPalette.history": 50,
+    "workbench.commandPalette.preserveInput": true,
+    "workbench.editor.limit.enabled": false,
+    "workbench.editor.limit.perEditorGroup": false,
+    "workbench.editor.limit.value": 10,
+    "editor.renderLineHighlight": "all",
+    "[jsonc][json]": {
+        "workbench.colorCustomizations": {
+            "editorWarning.foreground": "#00fff200", // hide main squiggle
+        },
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace"
+    },
+    "workbench.commandPalette.history": 50,
+    /*
+
+    for screen cast 
+        
+        clean up ui
+
+    */
+    "editor.suggest.showInlineDetails": true,
+    "problems.showCurrentInStatus": false,
+    "problems.decorations.enabled": false,
+    "editor.lineNumbers": "interval",
+    "outline.problems.badges": false,
+    "outline.problems.badges": false,
+    "outline.problems.enabled": false,
+    "mssql.intelliSense.enableQuickInfo": true,
+    "outline.problems.colors": true,
+    /* 
+
+    misc continue 
+
+    */
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "workbench.editorAssociations": {
+        "*.{sqlplan}": "workbench.editor.executionplan"
+    },
+    "workbench.colorTheme": "Default Dark Azure Data Studio",
+    // "mssql.query.queryGovernorCostLimit": -1,
+    "sql.defaultEngine": "MSSQL",
+    /*
+    Set keybinding workbench.action.query.shortcut1 to run the shortcut
+        text as a procedure call or query execution. Any selected text in the
+        query editor will be passed as a parameter at the end of your query, or
+        you can reference it with {arg
+    
+    */
+    "sql.query.shortcut1": "sp_help",
+    "sql.query.shortcut1": "",
+    "screencastMode.onlyKeyboardShortcuts": true,
+    "screencastMode.mouseIndicatorSize": 30,
+    "screencastMode.verticalOffset": 10,
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": true,
+    "workbench.editor.labelFormat": "medium",
+    // older defaults
+    "editor.autoClosingOvertype": "always",
+    "mssql.format.alignColumnDefinitionsInColumns": true,
+    "mssql.format.datatypeCasing": "lowercase",
+    "mssql.format.keywordCasing": "lowercase",
+    "mssql.format.placeCommasBeforeNextStatement": true,
+    "editor.autoClosingOvertype": "auto",
+    "mssql.format.alignColumnDefinitionsInColumns": true,
+    "mssql.format.datatypeCasing": "lowercase",
+    "mssql.format.keywordCasing": "lowercase",
+    /* 
+    [1] formatting toggle mode
+    */
+    "mssql.format.alignColumnDefinitionsInColumns": true,
+    "mssql.format.datatypeCasing": "lowercase",
+    "mssql.format.keywordCasing": "lowercase",
+    "mssql.format.placeSelectStatementReferencesOnNewLine": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    /* 
+    [2] formatting toggle mode
+    */
+    "mssql.format.alignColumnDefinitionsInColumns": true,
+    "mssql.format.datatypeCasing": "uppercase",
+    "mssql.format.keywordCasing": "uppercase",
+    "mssql.format.placeSelectStatementReferencesOnNewLine": false,
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    /* 
+    [3] all merged
+    */
+    "[sql]": {
+        "workbench.colorCustomizations": {
+            "editorWarning.foreground": "#00fff27f", // partial  main squiggle
+        },
+        // "editor.autoClosingBrackets": "beforeWhitespace"// [ "languageDefined" | "beforeWhitespace" | "always" | "never" ]
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        "editor.autoClosingBrackets": "beforeWhitespace", // [ "languageDefined" | "beforeWhitespace" | "always" | "never" ]
+        "editor.autoClosingOvertype": "auto",
+        "editor.autoClosingDelete": "always", // not sure when
+        "editor.autoClosingQuotes": "languageDefined",
+        "editor.autoIndent": "advanced",
+        "editor.autoSurround": "brackets",
+        "editor.suggest.insertMode": "insert",
+        "editor.codeLens": true,
+        "editor.suggest.preview": true,
+        "editor.suggest.filterGraceful": true,
+        "editor.suggest.previewMode": "subwordSmart",
+        "editor.suggest.localityBonus": true,
+        "editor.suggest.shareSuggestSelections": true,
+        "editor.suggest.snippetsPreventQuickSuggestions": true,
+        "editor.suggestSelection": "recentlyUsed",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": false
+        },
+        "editor.tabCompletion": "onlySnippets", // ab complete snippets when their prefix match. Works best when 'quickSuggestions' aren't enabled
+        "editor.quickSuggestionsDelay": 2000,
+        "editor.acceptSuggestionOnCommitCharacter": true,
+        "editor.inlineSuggest.enabled": true,
+        "editor.inlineSuggest.mode": "subwordSmart",
+        "editor.inlineSuggest.mode": "subword",
+        "editor.inlineSuggest.mode": "prefix",
+        "editor.snippetSuggestions": "bottom",
+        "editor.wordBasedSuggestions": true,
+        "editor.wordBasedSuggestionsMode": "matchingDocuments",
+    },
+    "editor.wordBasedSuggestionsMode": "matchingDocuments",
+    "editor.rename.enablePreview": true,
+    "editor.quickSuggestionsDelay": 1000,
+    "editor.autoClosingOvertype": "always",
+    "editor.autoClosingOvertype": "auto", // enable type through [] ? [ "auto" | "always" | "none" ]
+    "workbench.hover.delay": 500,
+    /* 
+    [1] SQL formatter capitalized
+    */
+    "mssql.format.alignColumnDefinitionsInColumns": false, // [ true | false ]
+    "mssql.format.alignColumnDefinitionsInColumns": true, // [ true | false ]
+    "mssql.format.datatypeCasing": "uppercase", // [ "upper" | "lower" | "none" ]
+    "mssql.format.datatypeCasing": "lowercase", // [ "upper" | "lower" | "none" ]
+    "mssql.format.keywordCasing": "uppercase", // [ "upper" | "lower" | "none" ]
+    "mssql.format.keywordCasing": "lowercase", // [ "upper" | "lower" | "none" ]
+    "mssql.format.placeCommasBeforeNextStatement": true, // 
+    "mssql.format.placeCommasBeforeNextStatement": false, // 
+    "mssql.format.placeSelectStatementReferencesOnNewLine": true, // [ true | false ]
+    "mssql.format.placeSelectStatementReferencesOnNewLine": false, // [ true | false ]
+    /* 
+    [2] SQL formatter capitalized
+    */
+    "editor.codeLens": false,
+    "editor.colorDecorators": true
+}

@@ -1,0 +1,13 @@
+**/*.lock
+**/*.lnk
+**/*.exe
+**/*.zip
+**/*.pyc
+**/*.min.js
+**/*.min.css
+# **/*.log ?
+desktop.ini
+everythingSearch/debug.log
+*.dll
+vscode/config-minimalism-ish/.input/*
+nin.Bookmark.txt

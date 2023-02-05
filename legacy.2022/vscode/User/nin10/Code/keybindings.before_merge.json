@@ -1,0 +1,461 @@
+// Place your key bindings in this file to override the defaults
+[
+    /*
+        Rules are evaluated bottom to top, choosing the first binding that matches the 'when' expression. (ie: )
+
+
+    ## Top level cheatsheet pages, ie: best root links only
+
+        - Contexts and operators: https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+            - list of contexts
+            - list of operators
+            - custom 'in' conditions
+
+        - defaults + rich commands: https://code.visualstudio.com/docs/getstarted/keybindings#_rich-languages-editing
+
+        - ctrl+shift+p : inspec0t contexts at runtime
+        - 'Developer: Toggle Keyboard Shortcuts Troubleshooting'
+
+
+    ## Docs:
+        - your own addon: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
+
+
+        - schema of keybindings.json: https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-rules
+
+        - built-ins: https://code.visualstudio.com/api/references/commands
+        - when filtering: https://code.visualstudio.com/api/references/when-clause-contexts
+        - virtual key codes: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
+        - build-in contexts
+            https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+
+        - dev tool: https://code.visualstudio.com/docs/getstarted/keybindings#_troubleshooting-keybindings
+        - inspect enumerates all valid keys, to get contexts dynamically at runtime
+            ctrl+shift+P
+            https://code.visualstudio.com/api/references/when-clause-contexts#inspect-context-keys-utility
+
+        - more contexts and quote
+            https://code.visualstudio.com/api/references/when-clause-contexts#activefocused-view-or-panel-when-clause-context
+            https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+            > The list here isn't exhaustive and you can find other when clause contexts by searching and filtering in the Keyboard Shortcuts editor (Preferences: Open Keyboard Shortcuts) or reviewing the Default Keybindings JSON file (Preferences: Open Default Keyboard Shortcuts (JSON)).
+
+        - new: don't quit if no editors are open <https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened>
+
+    ## Refactoring Keybind actions
+        - custom binding to refactor https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions
+
+            ex:
+
+                {
+                    "key": "ctrl+shift+r ctrl+e",
+                    "command": "editor.action.codeAction",
+                    "args": {
+                        "kind": "refactor.extract.function"
+                        "apply": "first" // [ ifSingle | first | never]
+                    }
+                }
+
+            > When a Code Action keybinding is configured with "preferred": true, only preferred Quick Fixes and refactorings are shown. A preferred Quick Fix addresses the underlying error, while a preferred refactoring is the most common refactoring choice. For example, while multiple refactor.extract.constant refactorings may exist, each extracting to a different scope in the file, the preferred refactor.extract.constant refactoring is the one that extracts to a local variable.
+
+            > This keybinding uses "preferred": true to create a refactoring that always tries to extract the selected source code to a constant in the local scope:
+
+                {
+                    "key": "shift+ctrl+e",
+                    "command": "editor.action.codeAction",
+                    "args": {
+                        "kind": "refactor.extract.constant",
+                        "preferred": true,
+                        "apply": "ifsingle"
+                    }
+                }
+
+    - rich commands https://code.visualstudio.com/docs/getstarted/keybindings#_rich-languages-editing
+
+
+    ## Operators
+
+        'in' operator: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
+            Why?
+            >  if you wanted to add a context menu command to folders that contain a certain type of file (or something that can't be statically known), you can now use the in operator to achieve it.
+            ex:
+                "command": "ext.doSpecial",
+                "when": "explorerResourceIsFolder && resourceFilename in ext.supportedFolders"
+
+        regex match operator:
+            https://code.visualstudio.com/docs/getstarted/keybindings#_conditional-operators
+            standard ops, and
+
+        ex:
+            "when": "resourceFilename =~ /docker/"
+
+    | operator | symbol | Example                                 |
+    | -------- | ------ | --------------------------------------- |
+    | Matches  | =~     | "resourceScheme =~ /^untitled$|^file$/" |
+
+
+    ## Examples:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+
+    ## New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
+        - <https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened>
+
+
+    */
+    // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
+    {
+        // opens a new term in the editor area, but in a side
+        "key": "ctrl+numpad5",
+        "command": "workbench.view.extensions",
+        "when": "editorTextFocus",
+        // "args": "",
+    },
+    {
+        "key": "ctrl+numpad6",
+        "command": "workbench.action.toggleMaximizedPanel",
+        "when": ""
+    },
+    {
+        // opens a new term in the editor area, but in a side
+        "key": "ctrl+numpad4",
+        "command": "workbench.action.createTerminalEditor",
+        "when": "editorTextFocus",
+    },
+    /*
+    See also:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+    New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
+    */
+    {
+        // from: https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened
+        "key": "ctrl+w",
+        "command": "workbench.action.closeWindow",
+        "when": "!editorIsOpen && !multipleEditorGroups"
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "PowerShell.ShowAdditionalCommands",
+        // "when": "editorLangId == 'powershell'"
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+.",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "Invoke-DocumentRefactor"
+        },
+        "when": "editorLangId == 'powershell'",
+    },
+    /*
+
+    ### Sect: Better Align
+
+           tags: addon
+
+        docs:
+            https://marketplace.visualstudio.com/items?itemName=wwm.better-align
+            alignment.surroundSpace : {
+  "colon"      : [0, 1], // The first number specify how much space to add to the left, can be negative.
+                         // The second number is how much space to the right, can be negative.
+  "assignment" : [1, 1], // The same as above.
+  "arrow"      : [1, 1], // The same as above.
+  "comment"    : 2       // Special how much space to add between the trailing comment and the code.
+                         // If this value is negative, it means don't align the trailing comment.
+}
+    */
+    {
+        // "key": "ctrl+cmd+=",
+        "key": "ctrl+numpad1",
+        "command": "editor.action.duplicateSelection",
+        "when": "editorTextFocus && !editorReadonly",
+        // "args": []
+    },
+    {
+        // "key": "ctrl+cmd+=",
+        "key": "ctrl+numpad2",
+        "command": "wwm.aligncode",
+        "when": "editorTextFocus && !editorReadonly"
+        // "args": ""
+    },
+    /*
+
+    [section]: Debugging
+
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+alt+enter",
+        "command": "notebook.cell.execute",
+        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-notebook.cell.execute",
+        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
+    },
+    {
+        "key": "ctrl+alt+enter",
+        "command": "jupyter.runcurrentcell",
+        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-jupyter.runcurrentcell",
+        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
+    },
+    {
+        "key": "alt+enter",
+        "command": "notebook.cell.executeAndSelectBelow",
+        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
+    },
+    {
+        "key": "shift+enter",
+        "command": "-notebook.cell.executeAndSelectBelow",
+        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
+    },
+    {
+        /* manually opt in to languages  */
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        // "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'swift'"
+        "when": "editorTextFocus"
+    },
+    {
+        //jump to breakpoints (only in the text editor)
+        "key": "ctrl+alt+numpad2",
+        "command": "editor.debug.action.goToNextBreakpoint",
+        "when": "editorTextFocus"
+    },
+    // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.createTerminalEditorSided",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+numpad1",
+        "command": "editor.debug.action.goToPreviousBreakpoint",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+alt+j",
+        "command": "code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-markdown.extension.editing.toggleBold",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == 'markdown'"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "editor.action.joinLines"
+    },
+    /*
+
+    ### Sect: Everything above is 2021-12 or older
+
+
+
+    */
+    /*
+
+    ### Sect: Regex keybing
+
+           tags: regex
+
+
+    [ex] Quick fix uses a regex
+    {
+        "key": "shift+alt+.",
+        "command": "editor.action.autoFix",
+        "when": "editorTextFocus && !editorReadonly && supportedCodeAction =~ /(\\s|^)quickfix\\b/"
+    },
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>)
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>:<otherwise>)
+
+
+        (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
+    */
+    /*
+    [section]: Debugging
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "-workbench.action.terminal.openNativeConsole",
+        "when": "!terminalFocus"
+    },
+    // {
+    //     "key": "ctrl+w", //
+    //     "command": "-workbench.action.terminal.killEditor",
+    //     "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
+    // },
+    {
+        "key": "ctrl+shift+k ctrl+shift+b",
+        "command": "editor.action.selectToBracket"
+    },
+    // {
+    //     "key": "ctrl+alt+l",
+    //     "command": "bookmarks.list"
+    // },
+    /*
+
+    ### Sect: Start of optional 2022/01
+       tags: optional
+
+       carries over from 2021
+
+    */
+    /*
+    added new from the data dir configs
+    */
+    /* this bind/hotkey is what breaks multiline pasting */
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "workbench.action.problems.focus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorLangId == 'json' || editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-bookmarks.jumpToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "-bookmarks.jumpToNext",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+numpad5",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "bookmarks.list"
+    },
+    {
+        "key": "shift+alt+j",
+        "command": "-bookmarks.expandSelectionToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+l",
+        "command": "-bookmarks.expandSelectionToNext",
+        "when": "editorTextFocus"
+    },
+    /*
+
+    ### Sect: Start of 2022/01
+
+        - contains Correct 'ctr+w' fix
+
+    */
+    // test: don't close terminal consoles
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.closeWindow",
+        // "when": "terminalFocus || terminalEditorFocus"
+    },
+    /*
+    ctrl+w may fires these:
+        workbench.action.closeWindow            // Close Window
+        workbench.action.closeGroup             // null
+        workbench.action.closeActiveEditor      //View: Close Editor
+        workbench.action.terminal.killEditor    //Terminal: Kill the Active Terminal in Editor Area
+
+    related examples:
+        // Keybindings that are complementary
+        { "key": "f5",              "command": "workbench.action.debug.continue", "when": "inDebugMode" },
+        { "key": "f5",              "command": "workbench.action.debug.start",    "when": "!inDebugMode" },
+    */
+    /* initial wide net test */
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeWindow", // Close Window
+    // },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeGroup", // null
+    // },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeActiveEditor", //View: Close Editor
+    // },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.terminal.killEditor", //Terminal: Kill the Active Terminal in Editor Area
+    },
+    /*
+
+    ### Sect: from SeeminglySci's profile
+
+        tags: SeeminlySci, Powershell, PSEditorServices
+
+    */
+    {
+        "key": "alt+shift+s",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ConvertToSplatExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "alt+shift+n",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "AddResolvedNamespace"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "alt+shift+m",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ExpandMemberExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+]

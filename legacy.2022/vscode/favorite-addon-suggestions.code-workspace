@@ -1,0 +1,80 @@
+{
+    /*
+
+    this is a list of saved extensions. nothing else.
+    */
+    "folders": [
+        {
+            "path": "."
+        },
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/": true,
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            // quality: Must Have
+            "sleistner.vscode-fileutils",
+            "svipas.control-snippets",
+            "eamodio.gitlens", // gitlens
+            "yzhang.markdown-all-in-one",
+            "powerquery.vscode-powerquery",
+            "christian-kohler.path-intellisense",
+            "ms-vscode.powershell-preview",
+            "github.remotehub",
+            "randomfractalsinc.snippets-viewer",
+            "hbenl.vscode-test-explorer",
+            "redhat.vscode-xml", // for powershell too
+            /*
+            Must have, Language Specific:
+
+            Powershell
+            */
+            "tylerleonhardt.vscode-inline-values-powershell",
+            "tylerleonhardt.vscode-pester-test-adapter",
+            /*
+            Python
+            */
+            "ms-python.vscode-pylance",
+            /*
+            c# / powershell / dotnet
+            */
+            "icsharpcode.ilspy-vscode",
+            // I am testing out:
+            "nortakales.quick-regex-replacer",
+            // CSV
+            "mechatroner.rainbow-csv",
+            // typescript
+            "ms-vscode.vscode-typescript-tslint-plugin",
+            // quality: Check out
+            "adrieankhisbe.vscode-ndjson",
+            "stansw.vscode-odata",
+            "visualstudioexptteam.vscodeintellicode",
+            "patbenatar.advanced-new-file",
+            "github.vscode-pull-request-github",
+            "ms-dotnettools.vscode-dotnet-runtime", // gives C#, ps1 notebooks.
+            // quality Optional
+            "donjayamanne.githistory",
+            "file-icons.file-icons",
+            "evan-buss.font-switcher",
+            "ms-dotnettools.csharp",
+            "octref.vscode-json-transform",
+            "medo64.code-point",
+            "dotjoshjohnson.xml",
+            // color themes
+            "arcticicestudio.nord-visual-studio-code",
+            "arcticicestudio.nord-visual-studio-code",
+            // icon themes (competing)
+            "pkief.material-icon-theme",
+            "equinusocio.vsc-material-theme",
+            "equinusocio.vsc-community-material-theme",
+            "pkief.material-icon-theme",
+            "equinusocio.vsc-material-theme",
+            "ms-vscode.test-adapter-converter" // is a dependency
+            //remote / WSL
+            // WIP
+        ]
+    }
+}
