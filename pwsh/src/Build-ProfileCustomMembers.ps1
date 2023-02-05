@@ -1,7 +1,5 @@
 ﻿"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
-[Collections.Generic.List[]]$x = @( $stuff  )
-
 $Env:BAT_CONFIG_PATH = Get-Item (Join-Path $Env:Nin_Dotfiles 'cli/bat/.batrc')
 $Env:LESS = '-R'
 $Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
@@ -91,37 +89,34 @@ $splat_Show = @{
 
 
 
+"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath )
 return
-throw 'ShouldNeverREach'
+throw 'ShouldNeverReach'
 Write-Warning 'early exit'
 
-# Env-Vars are all caps because some apps check for env vars case-sensitive
-# double check that profile isn't failing to set the global env vars
+# # Env-Vars are all caps because some apps check for env vars case-sensitive
+# # double check that profile isn't failing to set the global env vars
 
-$Env:Pager ??= 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
+# $Env:Pager ??= 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 
-# now function:\help tests for the experimental feature and gcm on $ENV:PAger
-$Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
+# # now function:\help tests for the experimental feature and gcm on $ENV:PAger
+# $Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
 
-$ENV:PAGER = 'bat'
+# $ENV:PAGER = 'bat'
 
-$ENV:PYTHONSTARTUP = Get-Item -ea continue "${Env:Legacy_Nin_Dotfiles}/cli/python/nin-py3-x-profile.py"
+# $ENV:PYTHONSTARTUP = Get-Item -ea continue "${Env:Legacy_Nin_Dotfiles}/cli/python/nin-py3-x-profile.py"
 
-# if (! (Test-Path $Env:BAT_CONFIG_PATH)) {
-#     $maybeRelative = Get-Item $Env:Nin_Dotfiles\cli\bat\.batrc #@eaIgnore
-#     if ($maybeRelative) {
-#         $Env:BAT_CONFIG_PATH = $MaybeRelativePath
-#     }
-# }
+# # if (! (Test-Path $Env:BAT_CONFIG_PATH)) {
+# #     $maybeRelative = Get-Item $Env:Nin_Dotfiles\cli\bat\.batrc #@eaIgnore
+# #     if ($maybeRelative) {
+# #         $Env:BAT_CONFIG_PATH = $MaybeRelativePath
+# #     }
+# # }
 
-<#
-bat
-    --force-colorization --pager <command>
-    --pager "Less -RF"
-    #>
-
-
-
-
+# <#
+# bat
+#     --force-colorization --pager <command>
+#     --pager "Less -RF"
+#     #>
 "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
