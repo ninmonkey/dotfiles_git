@@ -46,6 +46,29 @@ function quickHist {
         }
     }
 }
+function prof.hack.dumpExcel {
+    # super quick hack, do not use
+    [Alias('out-xl', 'to-xl')]
+    [CmdletBinding()]
+    param(
+        [Parameter()]
+        [string]$TableName = 'default',
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange( $InputObject )
+    }
+    end {
+        $items
+        | Export-Excel -work 'a' -table $TableName -AutoSize -Show -Append #-Verbose -Debug
+    }
+}
+
 function fix.PsModulePath {
     <#
     .SYNOPSIS

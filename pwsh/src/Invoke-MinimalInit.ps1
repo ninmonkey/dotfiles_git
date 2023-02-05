@@ -31,9 +31,6 @@ function minimal.prompt.render.crumbs {
         ) -join ''
     }
 }
-
-Set-PSReadLineOption -ContinuationPrompt ''
-
 function minimal.Prompt {
     param(
 
@@ -47,5 +44,12 @@ function minimal.Prompt {
 }
 # ⟞⊢
 
-function prompt { minimal.Prompt }
+function prompt {
+    # todo: capture previous prompt
+    minimal.Prompt 
+}
+
+
+Set-PSReadLineOption -ContinuationPrompt ''
+
 

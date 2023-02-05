@@ -1,7 +1,10 @@
-# shared (all3)
+# shared (all 3)
 "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: AllUsersCurrentHost" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
 
+# toggle /w env var
+$PSDefaultParameterValues['*:verbose'] = $True
+$PSDefaultParameterValues.Remove('*:verbose')
 
 
 

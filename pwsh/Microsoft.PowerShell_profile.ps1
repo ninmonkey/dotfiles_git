@@ -84,9 +84,6 @@ Write-Warning 'not finished, wt profile still loads profile, see: <C:\Users\cppm
 
 "enter ==> Profile: docs/Microsoft.PowerShell_profile.ps1/ => Pid: ( $PSCOmmandpath ) '${pid}'" | Write-Warning
 # $PSDefaultParameterValues['Import-Module:Verbose'] = $true
-$PSDefaultParameterValues['Update-Module:Verbose'] = $true
-$PSDefaultParameterValues['Install-Module:Verbose'] = $true
-
 
 
 <#

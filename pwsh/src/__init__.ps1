@@ -1,4 +1,6 @@
-﻿[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
+﻿"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 Import-Module Pansies
 [PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
 [Console]::OutputEncoding | Join-String -op 'Console::OutputEncoding ' | Write-Verbose
@@ -7,6 +9,7 @@ $PSStyle.OutputRendering = 'ansi'
 $base = Get-Item $PSScriptRoot
 . (Get-Item -ea 'stop' (Join-Path $Base 'Build-ProfileCustomMembers.ps1'))
 . (Get-Item -ea 'stop' (Join-Path $Base 'Invoke-MinimalInit.ps1'))
+. (Get-Item -ea 'stop' (Join-Path $Base 'autoloadNow_butRefactor.ps1'))
 
 
 
@@ -18,3 +21,5 @@ $base = Get-Item $PSScriptRoot
 
 
 Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
+
+"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
