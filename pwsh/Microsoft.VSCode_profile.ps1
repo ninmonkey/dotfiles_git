@@ -4,13 +4,8 @@
 
 
 
+'Import-CommandSuite ... ' | Write-Verbose
 Import-CommandSuite -Verbose -Debug
-
-
-
-
-
-
 
 "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 return
