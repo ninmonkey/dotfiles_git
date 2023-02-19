@@ -75,7 +75,6 @@ $Env:PSModulePath = @(
 )
 | Write-Verbose
 
-
 # $PSDefaultParameterValues['Import-Module:Verbose'] = $true
 $PSDefaultParameterValues['Update-Module:Verbose'] = $true
 $PSDefaultParameterValues['Install-Module:Verbose'] = $true
@@ -84,13 +83,6 @@ $PSDefaultParameterValues['Set-ClipBoard:PassThru'] = $true
 # $Env:Nin_PSModulePath = "$Env:Nin_Home\Powershell\My_Github" | Get-Item -ea ignore # should be equivalent, but left the fallback just in case
 # $Env:Nin_PSModulePath ??= "$Env:UserProfile\SkyDrive\Documents\2021\Powershell\My_Github"
 
-$splat_Show = @{
-    PassThru = $true
-}
-
-$splat_Show = @{
-    PassThru = $true
-}
 $splat_Show = @{
     PassThru = $true
 }
@@ -108,7 +100,8 @@ $splat_Show = @{
 
 ) | Join-String -sep "`n    " -op "Set alias: `n    " DisplayName
 | Join-String -op "<${PSSCommandPath}>`n" { $_ }
-| Join-String -op "${fg:a4dcf1}"
+| write-verbose
+# | Join-String -op "${fg:a4dcf1}"
 # | Write-ConsoleColorZd -Fg '#a4dcf1'
 
 
