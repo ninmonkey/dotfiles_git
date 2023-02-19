@@ -16,8 +16,6 @@ $DescLoc = '. Source: {0}' -f @(
     $PSCommandPath | Join-String -DoubleQuote
 )
 
-
-
 $NotePropertyMembers_hash = @{
     Nin      = @{
         DotfilesRoot = Get-Item @eaSilent $Env:Nin_Dotfiles
@@ -65,8 +63,8 @@ else {
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
-    'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
-
+    'C:\Users\cppmo_000\SkyDrive\Documents\
+    2021\powershell\My_Github'
     'E:\PSModulePath_2022'
     'E:\PSModulePath_base\all'
     $Env:PSModulePath
@@ -115,29 +113,19 @@ $splat_Show = @{
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
-return
-throw 'ShouldNeverReach'
-Write-Warning 'early exit'
 
-# # Env-Vars are all caps because some apps check for env vars case-sensitive
-# # double check that profile isn't failing to set the global env vars
 
 # $Env:Pager ??= 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
-
 # # now function:\help tests for the experimental feature and gcm on $ENV:PAger
 # $Env:Pager = 'less -R' # check My_Github/CommandlineUtils for- better less args
-
 # $ENV:PAGER = 'bat'
-
 # $ENV:PYTHONSTARTUP = Get-Item -ea continue "${Env:Legacy_Nin_Dotfiles}/cli/python/nin-py3-x-profile.py"
-
 # # if (! (Test-Path $Env:BAT_CONFIG_PATH)) {
 # #     $maybeRelative = Get-Item $Env:Nin_Dotfiles\cli\bat\.batrc #@eaIgnore
 # #     if ($maybeRelative) {
 # #         $Env:BAT_CONFIG_PATH = $MaybeRelativePath
 # #     }
 # # }
-
 # <#
 # bat
 #     --force-colorization --pager <command>
