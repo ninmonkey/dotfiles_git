@@ -1,13 +1,43 @@
-# /h:/ vscode only
-"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
-
-
-
+$global:__ninBag ??= @{}
+$global:__ninBag.Profile ??= @{}
+$global:__ninBag.Profile.MainEntry_VSCode = $PSCommandPath | Get-Item
 
 'Import-CommandSuite ... ' | Write-Verbose
 Import-CommandSuite -Verbose -Debug
 
-"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+# /h:/ vscode only
+if ($global:__nin_enableTraceVerbosity) {  "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; }  [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+<#
+$DescLoc = '. Source: {0}' -f @(
+    $PSCommandPath | Join-String -DoubleQuote
+)
+$splat_Show = @{
+    PassThru = $true
+}
+@(
+    already set in <file:///H:\data\2023\dotfiles.2023\pwsh\src\Build-ProfileCustomMembers.ps1>
+    Set-Alias 'fcc' 'ninmonkey.console\Format-ControlChar' -PassThru -Description "Format-ControlChar abbr. ${DescLoc}"
+    Set-Alias 's' -Value 'Select-Object' -PassThru -Description "Select-Object abbr. ${DescLoc}"
+    Set-Alias @splat_Show 'cl' -Value 'Set-ClipBoard'
+    Set-Alias @splat_Show 'Cl' -Value 'Set-ClipBoard' -Description "Set Clipboard. ${DescLoc}"
+    Set-Alias @splat_Show 'fromJson' -Value 'ConvertFrom-Json'
+    Set-Alias @splat_Show 'gcl' -Value 'Get-ClipBoard'
+    Set-Alias @splat_Show 'Gcl' -Value 'Get-ClipBoard' -Description "Get Clipboard. ${DescLoc}"
+    Set-Alias @splat_Show 'impo' -Value 'Import-Module'
+    Set-Alias @splat_Show 'Impo' -Value 'Import-Module' -Description "Impo. ${DescLoc}"
+    Set-Alias @splat_Show 'Json' -Value 'ConvertTo-Json'
+    Set-Alias @splat_Show 'ls' -Value 'Get-ChildItem'
+    Set-Alias @splat_Show 'Ls' -Value 'Get-ChildItem' -Description "gci. ${DescLoc}"
+    Set-Alias @splat_Show 'sc' -Value 'Set-Content'
+    Set-Alias @splat_Show 'Sc' -Value 'Set-Content' -Description "set content. ${DescLoc}"
+) | Join-String -sep ', ' -SingleQuote -op 'set alias ' DisplayName
+| Join-String -op "SetBy: '<${PSSCommandPath}>'`n" { $_ }
+#>
+
+
+if ($global:__nin_enableTraceVerbosity) {  "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 return
 
 
@@ -21,6 +51,10 @@ return
 
 
 
+
+<#
+
+dead
 
 
 
@@ -54,33 +88,36 @@ Write-Warning 'next: new PSModulePath'
     | Join-String -DoubleQuote
 ) | Write-Host -ForegroundColor blue
 
-$splat_Show = @{
-    PassThru = $true
-}
-@(
-    Set-Alias @splat_Show 'ls' -Value 'Get-ChildItem' # unless nin is imported
-    Set-Alias @splat_Show 'sc' -Value 'Set-Content' # unless nin is imported
-    Set-Alias @splat_Show 'cl' -Value 'Set-ClipBoard'
-    Set-Alias @splat_Show 'gcl' -Value 'Get-ClipBoard'
-    Set-Alias @splat_Show 'impo' -Value 'Import-Module'
-) | Join-String -sep ', ' -SingleQuote -op 'set alias ' DisplayName
-| Join-String -op "SetBy: '<${PSSCommandPath}>'`n" { $_ }
 
 
-"enter ==> dotsourcing: ==> Pid: '${pid}' regularProfile; (from: Microsoft.VsCode_profile.ps1)" | Write-Warning
+
+if ($global:__nin_enableTraceVerbosity) { "enter ==> dotsourcing: ==> Pid: '${pid}' regularProfile; (from: Microsoft.VsCode_profile.ps1)" | Write-Debug }
 
 if ($VsCodeProfileCfg.AlwaysInvokeNormalProfile) {
     . ( Join-Path -Path "${Env:UserProfile}/skydrive/Documents/PowerShell" -ChildPath 'Microsoft.Powershell_profile.ps1'
         | Get-Item -ea 'continue' ) *>$null
 }
-"exit  <== dotsourcing: <== Pid: '${pid}' regularProfile; (from: Microsoft.VsCode_profile.ps1)" | Write-Warning
+if ($global:__nin_enableTraceVerbosity) { "exit  <== dotsourcing: <== Pid: '${pid}' regularProfile; (from: Microsoft.VsCode_profile.ps1)" | Write-Warning }
 
-'Import: => Import-CommandSuite ... ' | Write-Verbose
+if ($global:__nin_enableTraceVerbosity) {
+    'Import: => Import-CommandSuite ... ' | Write-Verbose
+}
 Import-CommandSuite
 
-"exit  <== Profile: docs/Microsoft.VsCode_profile.ps1/ => Pid: '${pid}'" | Write-Warning
-Write-Warning "$PSCommandPath => Merge into 2021\dotfiles_git\powershell\profile.ps1"
+if ($global:__nin_enableTraceVerbosity) {
+    "exit  <== Profile: docs/Microsoft.VsCode_profile.ps1/ => Pid: '${pid}'"
+    | Write-Warning
+}
+if ($global:__nin_enableTraceVerbosity) {
+    "$PSCommandPath => Merge into 2021\dotfiles_git\powershell\profile.ps1"
+    | Write-Debug
+}
 
 
 
-"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+if ($global:__nin_enableTraceVerbosity) {
+"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning;
+}
+[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+#>

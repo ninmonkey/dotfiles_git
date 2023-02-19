@@ -1,6 +1,13 @@
-﻿"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+﻿$global:__ninBag ??= @{}
+$global:__ninBag.Profile ??= @{}
+$global:__ninBag.Profile.DynamicProfileMembers = $PSCommandPath | Get-Item
 
-$Env:BAT_CONFIG_PATH = Get-Item (Join-Path $Env:Nin_Dotfiles 'cli/bat/.batrc')
+$eaSilent = @{ ErrorAction = 'silentlyContinue' }
+$eaNone = @{ ErrorAction = 'ignore' }
+
+if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+$Env:BAT_CONFIG_PATH = Get-Item @eaSilent (Join-Path $Env:Nin_Dotfiles 'cli/bat/.batrc')
 $Env:LESS = '-R'
 $Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'
 $Env:Pager = 'bat'
@@ -10,50 +17,51 @@ $DescLoc = '. Source: {0}' -f @(
 )
 
 
-$eaSilent = @{ ErrorAction = 'ignore' }
 
- $NotePropertyMembers_hash = @{
+$NotePropertyMembers_hash = @{
     Nin      = @{
-        DotfilesRoot = Get-Item -ea ignore $Env:Nin_Dotfiles
-        DataRoot     = Get-Item -ea ignore $Env:Nin_Data
+        DotfilesRoot = Get-Item @eaSilent $Env:Nin_Dotfiles
+        DataRoot     = Get-Item @eaSilent $Env:Nin_Data
         Legacy       = [Collections.Generic.List[Object]]@(
-            Get-ChildItem env:\legacy_* @eaSilent
+            Get-ChildItem env:\legacy_* @eaNone
         )
         Env          = @{
-            Root   = Get-Item @eaSilent 'h:\env'
-            Code   = Get-Item @eaSilent 'H:\env\code'
-            Ivy    = Get-Item @eaSilent 'H:\env\code-insider'
-            Python = Get-Item @eaSilent 'H:\env\py'
-            Scoop  = Get-Item @eaSilent 'H:\env\scoop'
+            Root   = Get-Item @eaNone 'h:/env'
+            Code   = Get-Item @eaNone 'H:/env/code'
+            Ivy    = Get-Item @eaNone 'H:/env/code-insider'
+            Python = Get-Item @eaNone 'H:/env/py'
+            Scoop  = Get-Item @eaNone 'H:/env/scoop'
 
         }
-        # = @{
-        #     # H:\env\code
-        #     # H:\env\code-insider
-        #     # H:\env\py
-        #     # H:\env\scoop
-        # }
     }
 
     Dotfiles = @{
         Fzf              = '<nyi>'
-        Bat              = Get-Item ($env:BAT_CONFIG_PATH)
+        # Bat              = Get-Item @eaSilent $env:BAT_CONFIG_PATH
+        Bat              = $env:BAT_CONFIG_PATH
         Rg               = '<nyi>'
         Git              = '<nyi>'
         PSScriptAnalyzer = '<nyi>'
         Pester           = '<nyi>'
         Aws              = '<nyi>'
         Bash             = [object[]]@(
-            Get-ChildItem @eaSilent -Path ~ *bash*
+            Get-ChildItem @eaNone -Path ~ *bash*
         )
 
         # Less / ...
     }
 } | Out-Null
-$PROFILE
-| Add-Member @eaSilent -PassThru -Force -NotePropertyMembers $NotePropertyMembers_hash
-| out-null
-write-warning '$Profile.AddMember is failing'
+if ($null -eq $NotePropertyMembers_hash) {
+    if ($global:__nin_enableTraceVerbosity) {
+        Write-Warning '🎌hash is null'
+        Write-Warning '$Profile.AddMember is failing'
+    }
+}
+else {
+    $PROFILE
+    | Add-Member -PassThru -Force -NotePropertyMembers $NotePropertyMembers_hash
+    | Out-Null
+}
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
@@ -67,7 +75,7 @@ $Env:PSModulePath = @(
 'Updated PSModulePath: 🐧 {0}' -f @(
     $Env:PSModulePath
 )
-| Write-Warning
+| Write-Verbose
 
 
 # $PSDefaultParameterValues['Import-Module:Verbose'] = $true
@@ -81,24 +89,32 @@ $PSDefaultParameterValues['Set-ClipBoard:PassThru'] = $true
 $splat_Show = @{
     PassThru = $true
 }
+
+$splat_Show = @{
+    PassThru = $true
+}
+$splat_Show = @{
+    PassThru = $true
+}
 @(
 
     Set-Alias @splat_Show 'Cl' -Value 'Set-ClipBoard' -Description "Set Clipboard. ${DescLoc}"
+    Set-Alias @splat_Show 'fcc' 'ninmonkey.console\Format-ControlChar' -PassThru -Description "Format-ControlChar abbr. ${DescLoc}"
+    Set-Alias @splat_Show 'FromJson' 'ConvertFrom-Json' -PassThru -Description "Format-ControlChar abbr. ${DescLoc}"
     Set-Alias @splat_Show 'Gcl' -Value 'Get-ClipBoard' -Description "Get Clipboard. ${DescLoc}"
     Set-Alias @splat_Show 'Impo' -Value 'Import-Module' -Description "Impo. ${DescLoc}"
+    Set-Alias @splat_Show 'Json' 'ConvertTo-Json' -PassThru -Description "Format-ControlChar abbr. ${DescLoc}"
     Set-Alias @splat_Show 'Ls' -Value 'Get-ChildItem' -Description "gci. ${DescLoc}"
+    Set-Alias @splat_Show 's' -Value 'Select-Object' -PassThru -Description "Select-Object abbr. ${DescLoc}"
     Set-Alias @splat_Show 'Sc' -Value 'Set-Content' -Description "set content. ${DescLoc}"
 
-    Set-Alias 's' -Value 'Select-Object' -PassThru  -Description "Select-Object abbr. ${DescLoc}"
-    Set-Alias 'fcc' 'ninmonkey.console\Format-ControlChar' -PassThru  -Description "Format-ControlChar abbr. ${DescLoc}"
-
-) | Join-String -sep ', ' -SingleQuote -op 'set alias ' DisplayName
-| Join-String -op "SetBy: '<${PSSCommandPath}>'`n" { $_ }
+) | Join-String -sep "`n    " -op "Set alias: `n    " DisplayName
+| Join-String -op "<${PSSCommandPath}>`n" { $_ } | Write-ConsoleColorZd -Fg '#a4dcf1'
 
 
 
-"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
-'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath )
+if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 return
 throw 'ShouldNeverReach'
 Write-Warning 'early exit'
@@ -127,4 +143,4 @@ Write-Warning 'early exit'
 #     --force-colorization --pager <command>
 #     --pager "Less -RF"
 #     #>
-"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>

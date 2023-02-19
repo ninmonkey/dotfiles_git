@@ -1,4 +1,7 @@
-﻿
+﻿$global:__ninBag ??= @{}
+$global:__ninBag.Profile ??= @{}
+$global:__ninBag.Profile.PromptBasic = $PSCommandPath | gi
+
 function minimal.prompt.render.crumbs {
     <#
     .synopsis
@@ -68,6 +71,9 @@ function minimal.Prompt {
     ) | Join-String
 }
 # ⟞⊢
+
+
+
 
 function prompt {
     # todo: capture previous prompt
