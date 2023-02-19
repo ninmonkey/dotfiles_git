@@ -1,8 +1,11 @@
-"⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`" of Env:Nin_Dotfiles" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
-throw 'ShouldNeverReach'
+
+"Include old stuff ??
+    '<${PSCommandPath}>'" | write-host -fore green
+
+if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`" of Env:Nin_Dotfiles" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+# throw 'ShouldNeverReach'
 
 '📚 enter ==> profile ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning
-
 "enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCommandpath ) '${pid}'" | Write-Warning
 
 $Env:PSModulePath = @(
@@ -1089,9 +1092,10 @@ function prof.previewChain {
 }
 # prof.previewChain -WhatIf
 
-'📚 exit <== profile <==  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning
 
-'📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e' | Write-Warning
+if ($global:__nin_enableTraceVerbosity) {   '📚 exit <== profile <==  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning  }
+
+if ($global:__nin_enableTraceVerbosity) {   '📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e' | Write-Warning }
 
 . (Get-Item -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\prototype\git - find unchangedrepo\git - find non-commit repos.ps1')
 
@@ -1099,6 +1103,8 @@ $PSDefaultParameterValues.Remove('*:verbose')
 $PROFILE | Add-Member -NotePropertyName 'currentUserAllHosts_nin' -NotePropertyValue (Get-Item $PSCOmmandpath) -Force -ea 'ignore' -PassThru | Out-Null
 . G:\temp\ai\prompt.minimal.ps1
 
+"redundant imports came from here
+    '<${PSCommandPath}>'" | write-host -fore green
 
 
-"⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+if ($global:__nin_enableTraceVerbosity) {   "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>

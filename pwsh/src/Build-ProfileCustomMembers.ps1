@@ -107,7 +107,9 @@ $splat_Show = @{
     Set-Alias @splat_Show 'Sc' -Value 'Set-Content' -Description "set content. ${DescLoc}"
 
 ) | Join-String -sep "`n    " -op "Set alias: `n    " DisplayName
-| Join-String -op "<${PSSCommandPath}>`n" { $_ } | Write-ConsoleColorZd -Fg '#a4dcf1'
+| Join-String -op "<${PSSCommandPath}>`n" { $_ }
+| Join-String -op "${fg:a4dcf1}"
+# | Write-ConsoleColorZd -Fg '#a4dcf1'
 
 
 
