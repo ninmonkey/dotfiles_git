@@ -5,6 +5,8 @@ $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.__init__' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
 
+$VerbosePreference = 'continue'
+
 [Collections.Generic.List[Object]]$__all_PSModulePaths = $ENV:PSmodulePath -split ';'
 | Sort-Object -Unique
 

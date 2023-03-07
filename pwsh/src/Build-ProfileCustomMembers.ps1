@@ -7,6 +7,8 @@ $eaNone = @{ ErrorAction = 'ignore' }
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
+write-verbose 'to strip/refactor/rewrite: <file:///C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1>'
+
 $Env:BAT_CONFIG_PATH = Get-Item @eaSilent (Join-Path $Env:Nin_Dotfiles 'cli/bat/.batrc')
 $Env:LESS = '-R'
 $Env:Pager = 'less' # todo: autodetect 'bat' or 'less', fallback  on 'git less'

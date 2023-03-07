@@ -1,19 +1,52 @@
 ﻿$global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
-$global:__ninBag.Profile.AutoLoad_ToRefactor = $PSCommandPath | gi
+$global:__ninBag.Profile.AutoLoad_ToRefactor = $PSCommandPath | Get-Item
 
-if($global:__nin_enableTraceVerbosity) {  "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
 # Import-module ninmonkey.console -DisableNameChecking *>$null
 
-function xL.Window.CloseAll {
-    # close all open excel windows
-    # synopsis closes all excel windows allowing them to save, without triggering the save prompt or safety mode
-    $Ps = Get-Process *Excel* -ea ignore
-    if($PS) {
-        $ps.CloseMainWindow()
+
+function b.wrapLikeWildcard {
+    <#
+    .SYNOPSIS
+        converts like-patterns to always wrap wildcards
+    .example
+        'cat', 'CAT*' | b.wrapLikeWildcard
+        '*cat*', '*cat*
+    #>
+    process {
+        @( '*', $_.ToLower(), '*') -join '' -replace '\^\*{2}', '*' -replace '\*{2}$', '*'
     }
 }
+
+
+function b.Text.WrapString {
+    <#
+    .EXAMPLE
+        b.Text.WrapString ('a'..'z' -join '_') -MaxWidth 10
+
+            a_b_c_d_e_
+            f_g_h_i_j_
+            k_l_m_n_o_
+            p_q_r_s_t_
+            u_v_w_x_y_
+            z
+    #>
+    param(
+        [Alias('Text')]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$InputText,
+
+        [Alias('Cols')]
+        [int]$MaxWidth = 120
+    )
+    $regex_charCount = '(.{', $MaxWidth, '})' -join ''
+    # $InputText -join "`n" -split '(.{80})' -join "`n" -replace '\n+', "`n"
+    $InputText -join "`n" -split $regex_charCount -join "`n" -replace '\n+', "`n"
+}
+
+
 function nin.addProp {
     [Alias('n.Prop')]
     [CmdletBinding(DefaultParameterSetName = 'addSingleProperty')]
@@ -58,6 +91,59 @@ function nin.addProp {
 
 
 }
+function One {
+    # [Alias('First')]
+    <#
+    .SYNOPSIS
+        sugar for: Select first 1
+    #>
+    # one of the rare cases where Input is useful without the dangers
+    $Input | Select-Object -first 1
+}
+
+function b.fm {
+    <#
+    .SYNOPSIS
+        Find member, sugar to show full name, and enforce wildcard
+    .EXAMPLE
+        Pwsh> $eis | b.fm fetch
+
+
+    #>
+    param( [string]$Pattern, [bool]$WithoutSmartCase )
+    process {
+        if (-not $WithoutSmartCase) {
+            $Patter = $Pattern.ToLower()
+        }
+        $pattern = $pattern | b.wrapLikeWildcard
+        # $pattern = @( '*', $patter.ToLower(), '*') -join '' -replace '\^\*{2}', '*'
+
+        if ($Pattern) {
+            $_ | Find-Member $Pattern | Sort-Object Name | Format-Table Name, DisplayString
+        }
+        else {
+            $_ | Find-Member | Sort-Object Name | Format-Table Name, DisplayString
+        }
+    }
+}
+
+
+function b.getAll.Props {
+    # for all, get all common props
+    <#
+        .SYNOPSIS
+        get a distinct list of all properties of all objects piped
+        .example
+            gi . | b.getAll.Props
+        #>
+    $items = $input
+
+    @(foreach ($x in $items) {
+            $x.PSObject.Properties.Name
+        }) | Sort-Object -Unique
+}
+
+
 
 
 function Test-ModuleWasModified {
@@ -176,7 +262,7 @@ class GhRepoListRecord {
         $this.OwnerPair, $this.Description, $this.IsPublic, $this.When = $line -split '\t'
         $this.Owner, $this.Name = $this.OwnerPair -split '/'
 
-        if( [string]::IsNullOrEmpty($this.Description) ) {
+        if ( [string]::IsNullOrEmpty($this.Description) ) {
             $this.Description = '[empty]'
         }
     }
@@ -187,7 +273,7 @@ class GhRepoListRecord {
 }
 
 $script:____gh_state ??= @{
-    QueryCache = @{}
+    QueryCache    = @{}
     RepoDescCache = @{}
 }
 function Get-GHRepoList {
@@ -245,7 +331,7 @@ function Get-GHRepoList {
         if ($Owner) { $Owner }
         '--source'
         '--no-archived'
-        if($Limit) {
+        if ($Limit) {
             '--limit'
             $Limit
         }
@@ -263,11 +349,11 @@ function Get-GHRepoList {
     if ( -not $cache.ContainsKey($Owner) ) {
         $rawResponse = gh @ghArgs
         $cache[$Owner] = $rawResponse
-        'fetching...' | write-host
+        'fetching...' | Write-Host
     }
-    $Cache[$Owner] -split '\r?\n' | %{
+    $Cache[$Owner] -split '\r?\n' | ForEach-Object {
         [GhRepoListRecord]::new( $_ )
-    } | sort -Property When -Descending
+    } | Sort-Object -Property When -Descending
 
 }
 
@@ -285,9 +371,9 @@ function renderPreviewForRepoDescription {
     param( [string]$RepoName )
 
     $cache = $script:__fzfPreviewCache
-    if( -not $cache.ContainsKey($RepoName) ) {
+    if ( -not $cache.ContainsKey($RepoName) ) {
         '{0} is not cached, requesting...'
-        | write-warning
+        | Write-Warning
 
         $renderResponse = & gh @(
             'repo'
@@ -358,7 +444,7 @@ function prof.hack.dumpExcel {
     }
     end {
         $items
-        | Export-Excel -work $TableName -table "${TableName_t}" -AutoSize -Show  -TableStyle Light2 #-Verbose -Debug
+        | Export-Excel -work $TableName -table "${TableName_t}" -AutoSize -Show -TableStyle Light2 #-Verbose -Debug
     }
 }
 
@@ -374,14 +460,14 @@ function quickHist {
         'Number' {
             Get-History
             | Sort-Object -Unique -Stable CommandLine
-            | Join-String -sep (hr 1) {
+            | Join-String -sep (Hr 1) {
                 "{0}`n{1}" -f @(
                     $_.Id, $_.CommandLine )
             }
         }
         'Duplicates' {
             Get-History
-            | Join-String -sep (hr 1) {
+            | Join-String -sep (Hr 1) {
                 "{0}`n{1}" -f @(
                     $_.Id, $_.CommandLine )
             }
@@ -390,10 +476,96 @@ function quickHist {
         default {
             Get-History
             | Sort-Object -Unique -Stable CommandLine
-            | Join-String CommandLine -sep (hr 1)
+            | Join-String CommandLine -sep (Hr 1)
         }
     }
 }
 
-if($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+function prof.renderEvent {
+    <#
+    .EXAMPLE
+    PS> Get-event | prof.renderEvent
+
+    ChangeType FullPath             Name
+    ---------- --------             ----
+    Changed g:\temp\xl\other.png other.png
+
+    ComputerName     :
+    RunspaceId       : 061c6c83-4651-48a0-8716-e557e04b1670
+    EventIdentifier  : 5
+    Sender           : System.IO.FileSystemWatcher
+    SourceEventArgs  : System.IO.FileSystemEventArgs
+    SourceArgs       : {System.IO.FileSystemWatcher, other.png}
+    SourceIdentifier : b3288091-6a90-4d98-9f5f-324a74ee139b
+    TimeGenerated    : 2/25/2023 4:34:57 PM
+    MessageData      :
+
+    #>
+    param()
+    process {
+        $_ | fl
+        $_.SourceEventArgs | ft -auto
+    }
+}
+
+# usage: Get-event | prof.renderEvent
+
+if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+if ($false) {
+    $script:__warnCache ??= @{}
+    [Collections.Generic.List[Object]]$script:__warnInfoDetails = @()
+
+    function warnOnce {
+        # warn once withing spam
+        [CmdletBinding(defaultparametersetname = 'Warn')]
+        param(
+            [Parameter(Mandatory, Position = 0, ParameterSetName = 'Warn')]
+            [string]$Message,
+
+            # If message is long, use a key instead of the full body
+            [string]$KeyName = $Null,
+
+            # instead of writing
+            [Alias('GetHistory')]
+            [Parameter(ParameterSetName = 'GetHistory', Mandatory)]
+            [switch]$PassThru ,
+
+            [Parameter(ParameterSetName = 'Warn')]
+            [hashtable]$Options
+        )
+        if ($PassThru) {
+            return $script:__warnInfoDetails
+        }
+        # if(-not $script:__warnCache ) {
+        #     $state = $script:__warnCache = @{}
+        # }
+        $Config = $Options ?? @{
+            UsingToast = $true
+        }
+        $state = $script:__warnCache
+        $key = $KeyName ?? $Message
+        if ($state.ContainsKey( $key )) {
+            return
+        }
+        Write-Warning $Message
+        if ($Config.UsingToast) {
+            b.ToastIt -Title 'warnOnce' -Text $Message
+        }
+        $state[$key] = $true
+
+        $meta = [pscustomobject]@{
+            PSTypeName       = 'singleWarn.InvocationInfoDetails.nin'
+            Message          = $Message
+            KeyName          = $KeyName ?? $Message
+            Line             = $MyInvocation.Line
+            ScriptLineNumber = $MyInvocation.ScriptLineNumber
+            ScriptName       = $MyInvocation.ScriptName
+            PSCommandPath    = $MyInvocation.PSCommandPath
+            When             = Get-Date
+        }
+        $script:__warnInfoDetails.Add( $meta )
+        # not actually used just a quick hack to use set
+    }
+}
 
