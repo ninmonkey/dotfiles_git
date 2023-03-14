@@ -18,7 +18,7 @@ function nin.PSModulePath.Clean {
         [switch]$PassThru
     )
 
-    write-warning "todo: ensure duplicates are removed: $PSCOmmandPath"
+    Write-Warning "todo: ensure duplicates are removed: $PSCOmmandPath"
 
     $records = $Env:PSMODulePath -split ([IO.Path]::PathSeparator)
     | Where-Object { $_ } # drop false and empty strings
@@ -55,37 +55,55 @@ function nin.PSModulePath.Add {
         # [string[]]$GroupName
     )
 
-    write-warning "todo: ensure duplicates are removed: $PSCOmmandPath"
+    $Env:PSModulePath -split ([IO.Path]::PathSeparator) | Join-String -op "`n- " -sep "`n- " -DoubleQuote
+    | Join-String -op 'start: ' | Write-Debug
+
+    Write-Warning 'todo: ensure duplicates are removed'
 
     foreach ($curPath in $LiteralPath) {
         $Item = $curPath
         if ($RequireExists) {
             $Item = Get-Item -ea stop $curPath
         }
-        Join-String -inp $Item 'adding: "{0}" to $PSModulePath'
+        $records = $Env:PSModulePath -split ([IO.Path]::PathSeparator)
+        if ($records -contains $Item) { continue }
+
+        Join-String -inp $Item -FormatString 'Adding Path: <{0}>' | Write-Verbose
+
         if ($AddToFront) {
             $Env:PSModulePath = @(
-                $curPath
+                $Item
                 $Env:PSModulePath
             ) | Join-String -sep ([IO.Path]::PathSeparator)
         }
         else {
             $Env:PSModulePath = @(
                 $Env:PSModulePath
-                $curPath
+                $Item
             ) | Join-String -sep ([IO.Path]::PathSeparator)
         }
+
+        # Join-String -inp $Item 'adding: "{0}" to $PSModulePath'
+
     }
+    $Env:PSModulePath -split ([IO.Path]::PathSeparator) | Join-String -op "`n- " -sep "`n- " -DoubleQuote
+    | Join-String -op 'end  : ' | Write-Debug
 }
-function nin.PSModulePath.AddNamed {
+function nin.PSModulePath.AddNamedGroup {
     <#
     .synopsis
         either add a group of custom PSModulePaths by GrupName else full name
+    .example
+        nin.PSModulePath.AddNamedGroup -GroupName AWS, JumpCloud   -verbose -debug4
+    .example
 
     .example
-        nin.AddPSModulePathGroup -LiteralPath 'H:\data\2023\pwsh\PsModules\ExcelAnt\Output' -verbose -debug
-    .example
-        nin.AddPSModulePathGroup AWS, JumpCloud -verbose -debug
+        nin.PSModulePath.Clean
+        nin.PSModulePath.AddNamedGroup -GroupName AWS, JumpCloud   -verbose -debug
+        nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
+            'E:\PSModulePath.2023.root\Main'
+            'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
+        )
     #>
     [CmdletBinding(DefaultParameterSetName = 'GroupName')]
     param(
@@ -103,17 +121,14 @@ function nin.PSModulePath.AddNamed {
     switch ( $PSCmdlet.ParameterSetName ) {
         'GroupName' {
             foreach ($item in $GroupName) {
-                Join-String -inp $Item -FormatString 'Adding Path: <{0}>' | Write-Verbose
-                $Env:PSModulePath = @(
-                    $Env:PSModulePath
-                    Join-Path 'E:\PSModulePath.2023.root' $Item
-                ) -join ([IO.Path]::PathSeparator)
-
+                $mappedGroupPath = Join-Path 'E:\PSModulePath.2023.root' $Item
+                nin.PSModulePath.Add -LiteralPath $mappedGroupPath -RequireExist -verbose -debug
             }
             continue
         }
 
         'LiteralPath' {
+            nin.PSModulePath.Add -LiteralPath $LiteralPath -RequireExist -verbose -debug
             continue
         }
         default { throw "UnhandledSwitch ParameterSetItem: $Switch" }
@@ -121,11 +136,20 @@ function nin.PSModulePath.AddNamed {
 }
 
 nin.PSModulePath.Clean
-# nin.AddPSModulePathGroup -GroupName AWS, JumpCloud   -verbose -debug
+# nin.PSModulePath.AddNamed -GroupName AWS, JumpCloud   -verbose -debug
 nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
     'E:\PSModulePath.2023.root\Main'
     'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
+    'H:/data/2023/pwsh/PsModules'
 )
+
+write-warning 'maybe imports'
+nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
+    'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
+    'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
+)
+    # 'E:\PSModulePath_base\all'
+    # 'E:\PSModulePath_2022'
 
 #$Env:PSModulePath -join ([IO.Path]::PathSeparator), (gi 'E:\PSModulePath.2023.root\JumpCloud')
 # nin.AddPSModulePath Main -Verbose -Debug
