@@ -1,0 +1,137 @@
+# Jake 2020-06
+
+# <h1> required
+--pcre2
+# --smart-case        # -S
+# --case-sensitive    # -s
+--ignore--case      # -i
+# insensitive unless capital exists
+# --with-filename
+# -v, --invert-match
+# --max-filesize 50K or --max-filesize 80M # units: K, M, G
+
+# <h2> tier2
+
+
+# --json Enable printing results in a JSON Lines format.
+
+
+# --files-with-matches, --files-without-matches
+# --files
+# --json
+# --count, --count-matches
+# --max-filesize 200M # units: K, M, G
+# --mmap
+# -v, --invert-match
+# --context
+# -r, --replace <replacement_text>
+
+# <h1> special searches
+    # --search-zip
+    # -a, --text # treat binary as text
+        # captures $5 or named $foo
+    # --unrestricted
+        # 1 = ignore .gitignore files
+        # 2 = hidden files and dir
+        # 3 = binary files
+
+# --no-ignore-vcs, --ignore-vcs
+# --no-ignore-global
+# --ignore-parent
+# --no-ignore-dot
+# --no-ignore-parent
+# --no-ignore-messages
+    # Don't respect version control ignore files (.gitignore, etc.). This implies
+    # --no-ignore-parent for VCS files. Note that .ignore files will continue to b
+    # respected.
+    # This flag can be disabled with the --ignore-vcs flag.
+
+# <h1>  custom types
+# --type-add 'src:include:cpp,py,md' --type-add 'src:*.foo'
+# -t, --type <type>
+# --type-not
+# --type-list
+# --sortr < path | modified | accessed | created | none >
+# --sortr < path | modified | accessed | created | none > # same butr descending order
+
+# -M, --max-columns <num>
+# -M, --max-columns-preview <num>
+
+# -n, --line-number # 1-based
+# -x, --line-regexp # anchor matches (compare to word)
+    # oaverrides: --word-regexpp
+
+# -m, --max-count <num> # num matching lines per file searched
+# --max-depth <num> # directory depth, 0 is explicit paths only
+# --no-ignore-global
+# --ignore-global
+    # Don't respect ignore files that come from "global" sources such as git's
+    # `core.excludesFile` configuration option (which defaults to
+    # `$HOME/.config/git/ignore`).
+
+# --passthru # equal to: '$|foo'
+# --multiline-dotall,
+# --line-buffered
+# -U, --multiline
+        # Enable matching across multiple lines.
+
+        # When multiline mode is enabled, ripgrep will lift the restriction that a match
+        # cannot include a line terminator. For example, when multiline mode is not
+        # enabled (the default), then the regex '\p{any}' will match any Unicode
+        # codepoint other than '\n'. Similarly, the regex '\n' is explicitly forbidden,
+        # and if you try to use it, ripgrep will return an error. However, when multiline
+        # mode is enabled, '\p{any}' will match any Unicode codepoint, including '\n',
+        # and regexes like '\n' are permitted.
+# -I, --no-filename
+    # --with-filename
+# --no-config # ignore RIPGREP_CONFIG_PATH
+# --no-heading
+# --no-heading, --heading
+    # Don't group matches by each file. If --no-heading is provided in addition to
+    # the -H/--with-filename flag, then file paths will be printed as a prefix for
+    # every matched line. This is the default mode when not printing to a terminal.
+
+    # This overrides the --heading flag.
+# --no-config
+#    Never read configuration files. When this flag is present, ripgrep will not
+#    respect the RIPGREP_CONFIG_PATH environment variable.
+
+#    If ripgrep ever grows a feature to automatically read configuration files in
+#    pre-defined locations, then this flag will also disable that behavior as well.
+
+# --N, --no-line-number
+# --no-message
+
+# --no-mmap, --map
+
+# --pcre2-unicode
+# --no-pcre2-unicode
+# -o, --only-matching
+# -p, --pretty # equivalent: --color always --heading --line-number
+# stats
+# --pre <COMMAND>
+# --pre-glob <GLOB>
+    # use with --pre
+
+
+# -q, --quiet # print nothing, stop on match; with --files : stop finding after first
+
+# --path-separator <SEPARATOR>
+
+# -P, --pcre2 # and --pcre2-version
+
+
+# null-paths
+# -0, --null
+# --null-data
+
+
+
+# --threads <num>
+
+# --trim # strip ascii whitespace at start/end
+
+# --word-regexp
+
+
+

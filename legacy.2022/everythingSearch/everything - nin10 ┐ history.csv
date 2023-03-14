@@ -1,0 +1,317 @@
+Search,Search Count,Last Search Date
+"asana !downloads:",4,132718132904500821
+"!downloads: !path:skydrive",1,132718132400472328
+"asana",4,132718115640945105
+"ext:pq;pbit;pbix !path:x: !github: ( web | bin | uniq | http ) !skydrive:",2,132718094967405172
+"ext:pq;pbit;pbix !path:x: !github: ( web | bin | uniq | ) !skydrive:",1,132718061102438437
+"ext:pq;pbit;pbix !path:x: !github: ( web | bin | uniq ) !skydrive:",1,132718061013816922
+"ext:pq;pbit;pbix !path:x: !github: ( web | bin | uniq )",1,132718060057775437
+"ext:pq;pbit;pbix !path:x: !github: ( web | bin | uniq",1,132718060011198871
+"ext:pq;pbit;pbix !path:x: !github:",1,132718059415081185
+"ext:pq;pbit;pbix web",1,132718052191267742
+"ext:pq;pbit;pbix 2021-01-20 case insensitive excel import.pbix",1,132718051940042891
+"ext:pq;pbit 2021-01-20 case insensitive excel import.pbix",1,132718051778890191
+"ext:pq;pbit x:",1,132718051541776938
+"ext:pq;pbit",1,132718051130162683
+"ext:pbix def: ignore_programdata:",3,132718049675998760
+"ext:pbix dm:last3days",7,132716242928021087
+"ext:pbix def:",1,132715240954366681
+"ext:ps1 (alert|alarm)",2,132714406748762873
+"""%UserProfile%\Documents\2021\Powershell"" !ww:"".git"" ( ww:"".vscode"" ) ",1,132714406612136699
+"ext:ps1",11,132714387318327813
+"       (gran | canyon|)  ext:png;jpg;jpeg ",3,132714356198466698
+"ext:pq;pbix dm:last3months me:",1,132713976014552946
+"( ext:ps1 ( env | venv ) me: )    | ( ext:ps1 dm:last3days)",3,132713975821147707
+"ext:ps1 ( env | venv ) me:",2,132713931285421158
+"""c:\""  !appdata:  !programdata: ",1,132713890232925472
+"""c:\""  !appdata:   path:ww:""c:\windows\""",1,132713889666359610
+"""c:\""  !appdata:                               ",1,132713888542503545
+"!path:ww:""c:\Program Files\Mozilla Firefox"" !appdata:   ",1,132713887882259748
+"!appdata:   !path:ww:""C:\Program Files\Microsoft OneDrive"" locallow",1,132713815220858894
+"!appdata:   !path:ww:""C:\Program Files\Microsoft OneDrive""",1,132713814797441377
+"appdata:   !path:ww:""C:\Program Files\Microsoft OneDrive""",2,132713814616530084
+"ext:ps1 dm:today !github:",2,132713814069041619
+"onedr",1,132713812010878531
+"ath:ww""%userProfile%\App",1,132713811290768071
+"( path:ww:%appdata% | path:ww:%localappdata% )",1,132713810184250678
+"dm:last3hours",3,132713644486038099
+"""%UserProfile%\Documents\2021\Powershell\buffer\"" ",1,132713637181261567
+"( file:one | path:onenote | onenote)",1,132712175490864377
+"( me: ) ext:ps1;md ( path:readline | content:readline)",3,132711806810767768
+"ext:ps1;md me: ext:ps1 dm:last301days",2,132711113277275692
+"ext:ps1;md me: ext:ps1 dm:last300days",2,132710180943112815
+"ext:ps1 measure-ch",1,132709359432243304
+"c:\users\cppmo_000\.",1,132709354553881743
+"path:ww"":C:\Users\cppmo_000""",1,132709354048605624
+"ext:ps1;md me: path:wrap",3,132709353822758463
+"chris web",1,132708498648996260
+"battlefield 4 (!path:""Heroes of the Storm"")",3,132708475864289691
+"ext:ps1 me:",2,132708454517403930
+"battlefield 4 (!""heroes of the storm"")",1,132707893758476673
+"battlefield 4",1,132707892835470206
+"ext:ps1;md dm:last3hours",2,132707884911586883
+"ext:ps1 dm:last1hours",1,132707749801273493
+"path:""node_modules"" !""c:\$Recycle""",1,132707673434741446
+"path:""node_modules""",1,132707673237528218
+"""node_modules""",1,132707673115990592
+"node_modules",1,132707673026208078
+"dm:last3weeks !path:""j:\"" (( wizard of coast ) | mtga )",1,132707635180600861
+"path:mtg dm:last3weeks !path:""j:\""",1,132707633663960849
+"path:mtg dm:last3weeks",1,132707633232262440
+"ripgreprc !path:x",1,132707625724478473
+"ripgreprc",1,132707625436622428
+"ext:ps1;md psreadline",6,132707567888798656
+"ext:ps1 dm:last3hours",1,132706184775416188
+"!x:\ ext:ps1;md ( psreadline | path:psreadline ) !path:eztheme",2,132706184708360976
+"!x:\ ext:ps1;md ( psreadline | path:psreadline )",1,132706147907806389
+"!x:\ ext:ps1;md psreadline",1,132706147638187363
+"path:windowsterminal ext:json",1,132706129623480256
+"windowsterminal",1,132706129430218059
+"ext:ps1 profile ninse",2,132706038754558894
+"ext:gif dm:today",2,132704862996118456
+"ext:ps1 git !path:x",1,132704273940026649
+"ext:ps1 git",2,132704267460905661
+"!path:x ext:ps1 !github:",2,132704267306522116
+"ext:ps1 !github:",1,132703464428283498
+"ext:code-workspace ( path:2020 | path:2021 ) ext:pbix",1,132703462407591277
+"ext:code-workspace ( path:2020 | path:2021 )",3,132703462346745484
+"node_Modules dm:thisyear",1,132702493740019623
+"node_Modules",1,132702492626780376
+"ext:ps1 dm:last7days content:shouldpr",2,132702472974602093
+"ext:ps1 git mer path:buf",1,132699892256747891
+"ext:ps1 git mer",1,132699891414175096
+"ext:ps1 merge",1,132699865419525834
+"ext:pbix",48,132699864969807535
+"folder:portal",2,132699147077771126
+"folder:"".git"" path:corval",1,132698956017281678
+"settings.json",3,132698955576080170
+".egstore path:satis",2,132698806523793559
+"ww:settings.json path: dm:last7days",3,132698244506965894
+"ww:settings.json path:",1,132698202225181517
+"ww:settings.json path: ",1,132698202070285591
+"ww:settings.json ",1,132698201155761518
+"profile.json",1,132698200379274999
+"folder:ww:"".git"" folder: !path:""$Recycle.Bin""",2,132698199987999735
+"ext:ps1 scope",1,132697998040297430
+"ext:ps1 path",6,132697997965887900
+"folder:ww:"".git"" folder:",1,132697992792331930
+"file:wholeword:""/.git""",1,132697991092572663
+"wholeword:.git folder: ",2,132697990501405393
+"folder:"".git""",1,132697989860032872
+"dm:today",5,132697973408409584
+"ext:ps1;md;pq;pbix;xlsx;csv;json dm:last78hours me: dm:today",1,132695462931248483
+"ext:ps1;md;pq;pbix;xlsx;csv;json dm:last78hours me:",1,132695450958326583
+"ext:ps1;md;pq;pbix;xlsx;csv;json dm:last78hours",1,132695450667856533
+"ext:ps1 me: fileNonAscii:",1,132695410801761634
+"ext:pbix power query lib",2,132695409936998606
+"vscode powerquery",1,132694797291028065
+"ext:csv",6,132694797199374739
+"ext:csv !downloads:",1,132693943466966409
+"path:portal work",1,132693929302973671
+"ext:png dm:today",2,132693928991130689
+"folder: dm:today bug",1,132693253080412568
+"ext:pbix;pq dm:today",3,132693248468165383
+"ext:pbix dm:today",10,132693213805957651
+"ext:ps1 dm:today",9,132693211040815544
+"ext:ps1 dm:last72hours",1,132693202237958034
+"path:spotify ext:json   !downloads:",2,132693197091698671
+"path:spotify ext:json   !downloads: path:""%LocalAppData%\Packages\Spotify""",1,132693191876481313
+"ext:pbix ",6,132693189904407028
+"path:spotify ext:json  ",1,132693179729235444
+"path:spotify ext:json",2,132693178408873066
+"ext:pbix dm:last2minutes",3,132693178284790942
+"g:\2021 path:dot",1,132692952136321441
+"g:\2021 seemin",1,132692952053633767
+"dm:last2minutes",1,132692808059908762
+"path:ww:""%UserProfile%\Microsoft\Power BI Desktop Store\""",1,132692807746888322
+"ext:pbix;ps1;pq;md dm:last48hours !github:",1,132692403274726860
+"ext:pbix;ps1;pq;md dm:last48hours",2,132692402961713007
+"path:power path:bi !github:",1,132692402847984319
+"ext:pbix;ps1",2,132692391052103443
+"ext:ps1 path:buffer",2,132692272070614573
+"ancestry expor",2,132692232843471061
+"ext:pbix;pq;ps1;md dm:today",2,132692152085555718
+"path:ww:""C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App"" content:""11eaa305-36a2-4638-8f51-854ccb1d0dd5""",1,132692082410280924
+"ext:ps1;md dm:today",1,132692081645223523
+"ext:xlsx data",2,132691418457718123
+"C:\Users\cppmo_000\Documents\2019\ ext:py;sh;md !path:venv !path:env !path:.git content:pprint",2,132691162307180575
+"ext:png waia",1,132691162162357311
+"ext:csv path:dmv",1,132691158432456279
+"ext:log",4,132691096351877573
+"%userprofile%\Documents      ext:pbix",1,132690645873085746
+"ext:ps1    dm:thisweek  ",2,132690640165729669
+"ext:log dm:last3minutes",1,132690638596791769
+"ext:ps1    dm:thisweek",1,132690637217232480
+"ext:pbix;pq    web",2,132690634835214738
+"ext:ps1 appx",1,132690601183045939
+"ext:pbix button",1,132690584418466978
+"ext:md;ps1",2,132689722776588945
+"ext:pbix date",2,132689407093995383
+"ext:png;ps1 dm:today",3,132688749213744013
+"ext:pbix;pq (( web | req | http | text ) | )",2,132687712892765964
+"ext:pbix;pq ( web | req | http | )",1,132687712702851421
+"( cheat) ext:pq;pbix",1,132687706678364171
+"(power | ext:pbix | |measure) svg ext:pbix;pq;md",2,132687706362293468
+"(power | ext:pbix | |measure) svg",1,132687612760614635
+"purchase log",2,132687593974682771
+"ext:pbix inspect",2,132687181981226288
+"path:ww:G:\2020-github-downloads dfink",2,132686061199486615
+"path:ww:G:\2020-github-downloads ext:json;md;pbix;png;pq;ps1",3,132685895792817710
+"ext:json;md;pbix;png;pq;ps1 -path .",1,132685893861243672
+"path:ww:C:\Users\cppmo_000\Documents\2020\powershell\MyModules_Github\Dev.Nin\public dm:today ext:json;md;pbix;png;pq;ps1",1,132685893006295023
+"dm:today ext:json;md;pbix;png;pq;ps1 -path ~",1,132685891017886960
+"dm:today ext:json;md;pbix;png;pq;ps1",2,132685890882937762
+"ext:ps1 property",3,132685278063536071
+"%userprofile%\.vscode grammar",1,132685263661240506
+"ext:ps1 dm:last13days content:commandtype",2,132685207776549874
+"ext:ps1 dm:last3days content:commandtype",4,132684386344453571
+"ext:ps1 property (set|list) c:\",1,132684369233571893
+"ext:ps1 smart alias",1,132683655076514448
+"ext:ps1 dm:yesterday | dm:today",3,132683654988761284
+"( ext:ps1 dm:thisweek) content:$cat",1,132683395018833148
+"( ext:ps1 dm:thisweek) content:cat",1,132683394909952917
+"( ext:ps1 dm:today test)",1,132683394007305194
+"( ext:gif;jpg;jpeg;png dm:last3hours  )",1,132683377059950149
+"( ext:gif;png dm:last3hours  )",1,132683376862679948
+"(ext:ps1 dm:last3days ( find  )) | ( ext:gif;png dm:last3hours  )",1,132683376588581607
+"(ext:ps1 dm:last3days) find n",1,132683368671334719
+"(ext:ps1 dm:last3days) path:ninmonkey.console",1,132683367292003297
+"(ext:ps1 dm:last3days) content:get-command",1,132683364022678419
+"(ext:ps1 dm:last3days) Get-Nin",1,132683363626244390
+"(ext:ps1 dm:last3days) hel",1,132683362928286803
+"ext:ps1 dm:last3days",4,132683356041677590
+"ext:ps1 dm:yesterday | dm:today |(siabled dm:last3days)",3,132683301391516299
+"code-workspace🐒 Ninmonkey.PowerQueryLib.code-workspace",1,132683300729572770
+"code-workspace",1,132683300282783875
+"ext:ps1 dm:today content:env:psmodule",1,132682867942322526
+"path:""dotfiles_git\vscode"" settings",1,132682656009470498
+"ext:ps1 completer ",3,132682585831858312
+"ext:ps1 validate",1,132681008430140155
+"ext:ps1 prop custom",3,132681008210157464
+"ext:ps1 ",1,132680872283947041
+"ext:ps1 prop sele",1,132680862469106323
+"ext:ps1 using scri",1,132680816970728669
+"ext:pbix image",5,132680816768384167
+"ext:xlsx",3,132679916968989159
+"ext:pbix;pq dead",1,132679907568998174
+"ext:pbix split",1,132679836570400268
+"ext:pbix dax",1,132679092417352099
+"ext:pbix Base64",1,132678383588954468
+"SamplePSReadLineProfile.ps1",6,132677603759172704
+"ext:ps1 event",2,132676039560966763
+"ext:pbix dm:thisweek",2,132675628530795207
+"(pwsh | powershell)                       (!ext:log;js;css; )",1,132675592696592379
+"(pwsh | powershell) ( path:code )                              (!ext:log;js;css; )",1,132675586832739698
+"pwsh ( path:code )",1,132675585643926775
+"ext:exe pwsh",1,132675585325768415
+"ext:png;xcf dm:last2days perf",3,132675585188428155
+"ext:pq (rand | gener)",1,132675526028478003
+"ext:pbix inline",4,132675511344797560
+"ext:png dm:last2days perf",1,132675465328126697
+"ext:ps1 code dot",1,132674907772319108
+"""X:\2020-data-secondary\screen to gif""           ( |( file:power | file:fzf shell | wt | term |   increment||comple ) ) path:""x:\"" ( !ext:png  ) inc",3,132674907405496534
+"""X:\2020-data-secondary\screen to gif""           ( |( file:power | file:fzf shell | wt | term | comple ) ) path:""x:\""",1,132674797209014236
+"ext:ps1 validateset",2,132674795967917106
+"""X:\2020-data-secondary\screen to gif""           ( |( file:power | file:fzf shell | wt | term | comple ) ) complete",1,132674674029843343
+"""X:\2020-data-secondary\screen to gif""           ( | power | shell | wt | term )",1,132674673630059803
+"""X:\2020-data-secondary\screen to gif""           ( | )",1,132674673499845958
+"""X:\2020-data-secondary\screen to gif""",1,132674673332795224
+"""X:\2020-data-secondary\screen to gif"" valid",2,132674665397230063
+"""X:\2020-data-secondary\screen to gif"" ",1,132674664649050131
+"X:\2020-data-secondary\screen to gif""",1,132674663804174994
+"ext:gif ",1,132674663663911992
+"ext:json settings path:code path:dotfile",2,132674663543363422
+"ext:json settings path:code",1,132674139624158754
+"backup path:code ext:json",1,132673942184751910
+"path:overwatch",2,132673877991713511
+"path:dwarf  ( path:newbie | )",1,132673261213735663
+"asana ",2,132673230944739612
+"asana | (dad)  ",2,132672930368359142
+"asana | (dad)  !( %appdata%  (path:ww:""CachedData"" | path:ww:""CacheStorage"" )  ",1,132672927503752879
+"asana | (dad)  ( %appdata%  ""CachedData"" )",1,132672926184658968
+"ext:ps1;pbix;pq dm:last5hours",2,132672918905409322
+"ext:pbix;pq dm:last5hours",2,132672463150135334
+"ext:pbix dm:last5minutes",2,132672457912412219
+"""C:\Users\cppmo_000\Documents\2021\Screenshots Dump\"" ",4,132670724576947123
+"ext:ps1 dm:yesterday",2,132670376307473533
+"""C:\Users\cppmo_000\Documents\2021\Screenshots Dump\Future UX\"" ",3,132669832808505788
+"""C:\Users\cppmo_000\Documents\2021\Screenshots Dump\Future UX\2021-02\Format-ColorString 2021-02-02\"" ",3,132669832796299815
+"""C:\Users\cppmo_000\Documents\2021\Screenshots Dump\Future UX\2021-06\"" ",1,132669832609762762
+"ext:pbix (culture | german)",2,132669714783116803
+"ext:pbix path:metadata (path:dump|)                ( !path:""C:\Users\cppmo_000\Documents\2021\Power BI\Buffer\2021-06\globals shared metadata combine"" )",2,132669547406027278
+"ext:pbix path:metadata (path:dump|)",1,132669499612686696
+"ext:pbix path:metadata ",1,132669498648105352
+"ext:ps1 dm:last21minutes",2,132669498297003496
+"ext:ps1 dm:last1minutes",1,132668970122483838
+"dm:last31days path:ninmonk !path:%localappdata%",1,132668923776208771
+"ext:ps1; dm:last3days",2,132668923451194543
+"ext:ps1;pq;py;pbi dm:last30days path:buffer",1,132668832972839598
+"ext:ps1; dm:last30days",1,132668832753871387
+"ext:ps1 dm:last2days",2,132668073478001808
+"ext:pbix color",3,132666947232322625
+"ext:png;jpg;jpeg path:tartarus",1,132666121974109845
+"ext:pbix (path:enter | path:data | path:json )",2,132666121841566532
+"(elephant | pbi) ext:png ",4,132666049408971958
+"ext:pbix enter",1,132666041667632626
+"elephant ext:png",1,132665220424618796
+"ext:gif;mp4 netstat",2,132665220359397184
+"ext:pbix;pq ( random | path:random )",2,132664448032831290
+"ext:pbix;pq (odata |)",6,132664290556622181
+"( !path:firefox  dm:last1minutes      ) ( light | file:lghub | )             ( !path:spot !path:onedrive !path:onenote )",1,132663736932573785
+"( !path:firefox  dm:last1minutes      ) ( light | file:lghub | )             ( !path:spot )",1,132663736100082731
+"( !path:firefox  dm:last3minutes      ",1,132663566785490389
+"dm:last3minutes      ( !path:firefox)",1,132663565794385673
+"star wars ",1,132662677037590557
+"ext:pbix;pq odata",3,132662643200356790
+"ext:pbix;pq",4,132661989313120447
+"ext:pbix dm:last20seconds",1,132661988355055830
+"%localappdata%\GithubDesktop file:ww:git",1,132661810905820455
+"%localappdata%\GithubDesktop",1,132661810103324991
+"'app-2.8.1/resources/app/static/github.sh'",2,132661809014027153
+"path:ww:""C:\Users\cppmo_000\Downloads"" ( ext:pdf )",1,132661729209335320
+"""C:\Users\cppmo_000\Downloads"" ( ext:mp3;ogg;oog;flac;zip;7zip ) ( sound)",1,132661728425801844
+"ext:pbix array",5,132661727518418365
+"( path:music | path:OST ) ( ext:mp3;mp4;ogg;oog;flac )",1,132661684150535603
+"ext:ps1 array slow",1,132656712073499445
+"path:power path:shell path:format",2,132656507914394294
+"( dm:last45seconds ) ( logi | path:logi | lghub | path:lghub |)",4,132655948964667845
+"( dm:last90seconds ) ( logi | path:logi | lghub | path:lghub |)",1,132655870509378223
+"( path:%userprofile%\Documents\2020 | path:%userprofile%\Documents\2020 )   ext:ps1 ",7,132655866331315631
+"dm:last900seconds",1,132655827951448116
+"dm:yesterday ext:ps1",1,132654015778914223
+"ext:png;jpg;jpeg ( waiaas | path:waiaas )",2,132653469653046840
+"ext:png;jpg;jpeg waiaas",1,132653327213049797
+"ext:code-workspace cheat nin",2,132653327012523394
+"ext:pq table json",1,132650530588791158
+"ext:pbix;pq;md ( ( table | type | record ) | ( dm:last72hours ) )",6,132650530511647352
+"ext:pbix trans",1,132649957200458739
+"ext:pbix dm:last2weeks",1,132649954821318112
+"ext:pq;pbix ( table | type | record ) | ( dm:yesterday )",1,132648802531414129
+"ext:pbix ( ( table | type | record ) | ( dm:last72hours ) )",1,132648801906534024
+"ext:pbix ( table | type | record )",3,132648801419900730
+"ext:pbix ( error | http | status )",1,132648093631072157
+"ext:pbix ( error | http | status )w",1,132648093581940859
+"dm:last7days ext:dax",2,132648036665409298
+"dm:last48hours ext:pbix;xlsx;pq;dax",2,132644824562882301
+"dm:last300minutes ext:pbix;xlsx;pq",2,132644822730363986
+"dm:last20minutes ext:pbix",2,132644669560989555
+"dm:today ext:pbix",7,132644397339930405
+"ext:dax",1,132644390864119856
+"ext:pq content:""Table.TransformRows""",2,132644390816063191
+"( ext:png dm:today path:ww:documents )  | ( ""C:\Users\cppmo_000\Documents\2021\reporting_bugs"" ext:png;gif)",3,132643849906496467
+"ext:png dm:today path:ww:documents",1,132643711329520564
+"ext:zip dm:today",2,132643711185013650
+"ext:txt factor",1,132643563018532267
+"ext:txt",1,132643557028253291
+"ext:pq !path:fork content:help",2,132643556951165963
+"ext:pq content:help",1,132643058617885661
+"regex:[^\x00-\x7f]",3,132643058399720828
+"2019: no_venv: ext_py: typing content:main (utf8content:m) (utf8content:⇽)",2,132643012238540905
+"""C:\Program Files\Git"" ext_config:",2,132643012073486369
+" ext_py:          utf8:file:(⇽|🐈 utf8:content:⁅     utf8:content:#8261                     2019: no_venv: ""C:\Users\cppmo_000\Documents\2019\python\PoC\PoC_1-offs\1-off wip""",2,132643012019193684
+"ext:pbix measure",2,132642991240596781
+"path:factorio ext:ps1",2,132642204058043053
+"ext:log dm:today rout",1,132641011202903009
+"ext:log dm:today",1,132641011102273298
+"ext:pbix butt",1,132640901402382951
+"ext:code-workspace powershell",2,132640325345789561

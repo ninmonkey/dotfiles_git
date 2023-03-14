@@ -1,0 +1,76 @@
+# profile: Jake, desktop, 2022-04
+--force-colorization
+--plain # keep colors, remove extras like line numbers
+#
+# see bat-extras
+#    for examples: <https://github.com/eth-p/bat-extras/tree/master/doc>
+#   <https://github.com/eth-p/bat-extras/blob/master/src/batman.sh>
+# env var docs:
+#       - https://github.com/sharkdp/bat#customization
+# new themes and filetype associations <https://github.com/sharkdp/bat#adding-new-themes>
+#
+#
+# run `bat --help` to get a list of all possible configuration options.
+#
+# Specify desired highlighting theme (e.g. "TwoDark"). Run `bat --list-themes`
+# for a list of all available themes
+# --theme="TwoDark"
+# --theme="zenburn"
+--theme="Coldark-Dark"
+# --theme="Gruvbox-dark"
+# --theme="base16-256"
+
+
+# Note: By default, if the pager is set to less (and no command-line options are specified), bat will pass the following command line options to the pager: -R/--RAW-CONTROL-CHARS, -F/--quit-if-one-screen
+# set BAT_PAGER
+#     --RAW-CONTROL-CHARS
+#     --quit-if-one-screen
+
+# Which env vars are built in?
+# You can combine bat with git show to view an older version of a given file with proper syntax highlighting:
+
+#    # git show v0.6.0:src/main.rs | bat -l rs
+#     if "$OPT_COLOR"; then
+#         BAT_ARGS+=("--color=always" "--decorations=always")
+#     else
+#         BAT_ARGS+=("--color=never" "--decorations=never")
+#     fi
+
+#     if [[ -z "${BAT_STYLE+x}" ]]; then
+#         export BAT_STYLE="grid"
+#     fi
+
+## limit long files : fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'
+
+# --paging=never
+# --paging=never
+
+# Enable this to use italic text on the terminal. This is not supported on all
+# terminal emulators (like tmux, by default):
+# --italic-text=always
+
+# Uncomment the following line to disable automatic paging:
+#--paging=never
+
+# Uncomment the following line if you are using less version >= 551 and want to
+# enable mouse scrolling support in `bat` when running inside tmux. This might
+# disable text selection, unless you press shift.
+# --pager="--RAW-CONTROL-CHARS --quit-if-one-screen --mouse" # test if this is good for windows?
+
+# better: set $Env:BAT_PAGER = 'less -RF'
+# better: set $Env:BAT_PAGER = 'less -RF'
+
+# Syntax mappings: map a certain filename pattern to a language.
+#   Example 1: use the C++ syntax for .ino files
+#   Example 2: Use ".gitignore"-style highlighting for ".ignore" files
+--map-syntax "*.ino:C++"
+--map-syntax ".ignore:Git Ignore"
+# nuget / visual studio related
+--map-syntax *.nuspec:xml
+# powershell
+--map-syntax *.ps1xml:xml
+# fake powerquery
+--map-syntax *.pq:sql
+
+# example filepath rule. (this is built in)
+#--map-syntax='/etc/apache2/**/*.conf:Apache Conf'
