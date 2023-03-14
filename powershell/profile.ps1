@@ -7,7 +7,7 @@ if($global:__nin_enableTraceVerbosity) { "enter ==> Profile: docs/profile.ps1/ =
 
 $Env:PAGER = 'bat'
 
-throw 'ShouldNeverReach'
+# throw 'ShouldNeverReach'
 
 $Env:PSModulePath = @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
@@ -19,38 +19,7 @@ $Env:PSModulePath = @(
 ) | Join-String -sep ';'
 
 
-function quickHist {
-    [Alias('prof.quickHistory')]
-    [CmdletBinding()]
-    param(
-        [ArgumentCompletions('Default', 'Number', 'Duplicate')]
-        [string]$Template
-    )
-    # Quick, short, without duplicates
-    switch ($Template) {
-        'Number' {
-            Get-History
-            | Sort-Object -Unique -Stable CommandLine
-            | Join-String -sep (hr 1) {
-                "{0}`n{1}" -f @(
-                    $_.Id, $_.CommandLine )
-            }
-        }
-        'Duplicates' {
-            Get-History
-            | Join-String -sep (hr 1) {
-                "{0}`n{1}" -f @(
-                    $_.Id, $_.CommandLine )
-            }
-        }
 
-        default {
-            Get-History
-            | Sort-Object -Unique -Stable CommandLine
-            | Join-String CommandLine -sep (hr 1)
-        }
-    }
-}
 function prof.hack.dumpExcel {
     # super quick hack, do not use
     [Alias('out-xl', 'to-xl')]
