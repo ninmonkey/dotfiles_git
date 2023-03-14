@@ -1,12 +1,288 @@
 ﻿# $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
-# $VerbosePreference = 'silentlyContinue'
+$VerbosePreference = 'silentlyContinue'
 
-# include some dev psmodule paths
-$Env:PSModulePath = @(
-    $Env:PSModulePath
+function nin.PSModulePath.Clean {
+    <#
+    .SYNOPSIS
+        -1] remove invalid paths
+        -2] remove duplicate paths, preserving sort order
+        -3] remove any all-whitespace values
+        -4] remove obsolete import path from 2021
+    .EXAMPLE
+        nin.CleanPSModulePath
+    #>
+    [CmdletBinding()]
+    param(
+        # return the new value
+        [switch]$PassThru
+    )
+
+    write-warning "todo: ensure duplicates are removed: $PSCOmmandPath"
+
+    $records = $Env:PSMODulePath -split ([IO.Path]::PathSeparator)
+    | Where-Object { $_ } # drop false and empty strings
+    | Where-Object { -not [String]::IsNullOrWhiteSpace( $_ ) } # drop blank
+
+    $records | Join-String -op "initial: `n" -FormatString "`n- {0}" | Write-Debug
+    # $records | Join-String -op "`n- " -sep "`n- " -DoubleQuote | write-verbose
+    # $records | Join-String -op 'Was:' | Write-Debug
+
+    $records = $records
+    | Where-Object { $_ -notmatch ([Regex]::Escape('C:\Users\cppmo_000\SkyDrive\Documents\2021')) }
+
+    $records | Join-String -op "initial: `n" -FormatString "`n- {0}" | Write-Debug
+
+    $finalPath = $records | Join-String -sep ([IO.Path]::PathSeparator)
+
+    $finalPath | Join-String -op 'finalPath = ' | Write-Verbose
+    if ($PassThru) {
+        return $finalPath
+    }
+}
+
+function nin.PSModulePath.Add {
+    [CmdletBinding()]
+    param(
+        [ArgumentCompletions('E:\PSModulePath.2023.root')]
+        [Parameter(Mandatory, Position = 0)]
+        [string[]]$LiteralPath,
+        [switch]$RequireExist,
+
+        # prefix rather than add to end?
+        [Alias('ToFront')]
+        [switch]$AddToFront
+        # [string[]]$GroupName
+    )
+
+    write-warning "todo: ensure duplicates are removed: $PSCOmmandPath"
+
+    foreach ($curPath in $LiteralPath) {
+        $Item = $curPath
+        if ($RequireExists) {
+            $Item = Get-Item -ea stop $curPath
+        }
+        Join-String -inp $Item 'adding: "{0}" to $PSModulePath'
+        if ($AddToFront) {
+            $Env:PSModulePath = @(
+                $curPath
+                $Env:PSModulePath
+            ) | Join-String -sep ([IO.Path]::PathSeparator)
+        }
+        else {
+            $Env:PSModulePath = @(
+                $Env:PSModulePath
+                $curPath
+            ) | Join-String -sep ([IO.Path]::PathSeparator)
+        }
+    }
+}
+function nin.PSModulePath.AddNamed {
+    <#
+    .synopsis
+        either add a group of custom PSModulePaths by GrupName else full name
+
+    .example
+        nin.AddPSModulePathGroup -LiteralPath 'H:\data\2023\pwsh\PsModules\ExcelAnt\Output' -verbose -debug
+    .example
+        nin.AddPSModulePathGroup AWS, JumpCloud -verbose -debug
+    #>
+    [CmdletBinding(DefaultParameterSetName = 'GroupName')]
+    param(
+        [ArgumentCompletions('AWS', 'Disabled', 'JumpCloud', 'Main')]
+        [Parameter(Mandatory, Position = 0, ParameterSetName = 'GroupName')]
+        [string[]]$GroupName,
+
+        [Alias('PSPath', 'Path', 'Name')]
+        [Parameter(Mandatory, ParameterSetName = 'LiteralPath', ValueFromPipelineByPropertyName)]
+        $LiteralPath
+    )
+    $Env:PSModulePath -split ([IO.Path]::PathSeparator) | Join-String -op "`n- " -sep "`n- " -DoubleQuote
+    | Join-String -op 'Was:' | Write-Debug
+
+    switch ( $PSCmdlet.ParameterSetName ) {
+        'GroupName' {
+            foreach ($item in $GroupName) {
+                Join-String -inp $Item -FormatString 'Adding Path: <{0}>' | Write-Verbose
+                $Env:PSModulePath = @(
+                    $Env:PSModulePath
+                    Join-Path 'E:\PSModulePath.2023.root' $Item
+                ) -join ([IO.Path]::PathSeparator)
+
+            }
+            continue
+        }
+
+        'LiteralPath' {
+            continue
+        }
+        default { throw "UnhandledSwitch ParameterSetItem: $Switch" }
+    }
+}
+
+nin.PSModulePath.Clean
+# nin.AddPSModulePathGroup -GroupName AWS, JumpCloud   -verbose -debug
+nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
+    'E:\PSModulePath.2023.root\Main'
     'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
-) -join ';'
+)
+
+#$Env:PSModulePath -join ([IO.Path]::PathSeparator), (gi 'E:\PSModulePath.2023.root\JumpCloud')
+# nin.AddPSModulePath Main -Verbose -Debug
+# nin.Ass
+
+# # include some dev psmodule paths
+# $Env:PSModulePath = @(
+#     $Env:PSModulePath
+#     'E:\PSModulePath.2023.root\Main'
+#     'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
+# ) -join ([IO.Path]::PathSeparator)
+
+function Help.Example {
+    <#
+    .SYNOPSIS
+        sugar for getting help, future: unify as one command
+    .EXAMPLE
+        gcm get-help | Help.Param showwindow, role
+    #>
+    $Input | Get-Help -exam
+}
+function Help.Online {
+    <#
+    .SYNOPSIS
+        sugar for getting help, future: unify as one command
+    .EXAMPLE
+        gcm get-help | Help.Param showwindow, role
+    #>
+    $Obj = $Input
+    try {
+        $Query = Get-Command $Obj | Get-Help -Online -ea stop
+        if ($Query) { return $query }
+    }
+    catch {
+        $uri = Get-Command $Obj | ForEach-Object Module | ForEach-Object ProjectUri
+        Write-Information " ↳ url: $Uri"
+        if ($uri) { Start-Process '$uri' }
+
+    }
+}
+function Help.Param {
+    <#
+    .EXAMPLE
+        gcm get-help | Help.Param showwindow, role
+    #>
+    param( [string[]]$ParamPatterns )
+    $Input | Get-Help -Param $ParamPatterns
+    # foreach($x in $Input) { Get-Help -param $_ }
+}
+
+function Write-NancyCountOf {
+    <#
+    .SYNOPSIS
+        Count the number of items in the pipeline, ie: @( $x ).count
+    .EXAMPLE
+        ,@('a'..'e' + 0..3) | CountIt -Out-Null
+        @('a'..'e' + 0..3) | CountIt -Out-Null
+
+        # outputs
+        1 items
+        9 items
+    #>
+    # [CmdletBinding()]
+    # [Alias('Len', 'Len🧛‍♀️')] # warning this breaks crrent parameter sets
+    [Alias(
+        'CountOf', 'Len',
+        '-OutNull',
+        '🧛' # puns are fun
+    )]
+    param(
+        [switch]$Extra,
+
+        # Also consume output (pipe to null)
+        [switch]${Out-Null}
+    )
+    begin {
+        [int]$totalCount = 0
+        [COllections.Generic.List[Object]]$Items = @()
+    }
+    process { $Items.Add( $_ ) }
+    end {
+        if ( ${out-Null}.IsPresent) {
+            $items | Out-Null # redundant?
+        }
+        else {
+            $items
+        }
+        $colorBG = $PSStyle.Background.FromRgb('#362b1f')
+        $colorFg = $PSStyle.Foreground.FromRgb('#e5701c')
+        $colorFg = $PSStyle.Foreground.FromRgb('#f2962d')
+        @(
+            $ColorFg
+            $ColorBg
+            '{0} items' -f @(
+                $items.Count
+            )
+            $PSStyle.Reset
+            # $PSStyle.Foreground.FromRgb('#e5701c')
+            "${fg:gray60}"
+            if ($Extra) {
+                ' {0} of {1}' -f @(
+                    ($Items)?.GetType().Name ?? "[`u{2400}]"
+                    # $Items.GetType().Name ?? ''
+                    # @($Items)[0].GetType().Name ?? ''
+                    @($Items)[0]?.GetType() ?? "[`u{2400}]"
+                )
+            }
+            $PSStyle.Reset
+        ) -join ''
+        | Write-Information -infa 'Continue'
+
+
+    }
+}
+
+function aws.Gci.Templates {
+    <#
+    .SYNOPSIS
+        quickly dump clickable filepaths to yaml, etc.
+    .NOTES
+        future: write urls shorter than the full filepath
+        that would make screen space so, so much cleaner
+        using url escapes (or even psstyle?)
+    #>
+    param(
+        [string]$Path = '.',
+        [switch]$Relative,
+        [object[]]$ExtraArgs,
+        [string[]]$Extensions = 'yml'
+    )
+    $fdArgs = @(
+        $Extensions | ForEach-Object {
+            '-e', $_
+        }
+        '--search-path'
+        if (-not $Relative) { '--absolute-path' }
+        '--search-path', (Get-Item $Path -ea stop)
+        if ($ExtraArgs) { $ExtraArgs }
+        '--color=always'
+    )
+    $fdArgs | Join-String -sep ' ' -op 'fd ' | Write-Information -infa 'continue'
+
+    & 'fd' @fdArgs
+}
+
+function GoCl {
+    <#
+    .SYNOPSIS
+    [profile] If it's an item, go to it from the clipboard
+    #>
+    $script:__lastGo = Get-Clipboard | Get-Item -ea stop
+    Goto $script:__lastGo
+    'jumped to {0}' -f @(
+        $script:__lastGo | Write-Information -infa 'continue'
+    )
+    | Write-Information
+}
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 $PSStyle.OutputRendering = [Management.Automation.OutputRendering]::Ansi # wip dev,nin: todo:2022-03 # Keep colors when piping Pwsh in 7.2
@@ -43,7 +319,7 @@ function Remove-Lie {
     'Removed Lie: {0}. Remaining Lies: {1}' -f @(
         $Name
         $script:xlr8r.Keys.count
-    )| Write-Information -infa 'continue'
+    ) | Write-Information -infa 'continue'
 }
 function New-Lie {
     <#
@@ -64,7 +340,7 @@ function New-Lie {
     #         ($Name -as 'type')
     #     ))
 
-    write-warning '80% implemented, to fininsh.'
+    Write-Warning '80% implemented, to fininsh.'
 
     '{0} isType: {1}, asType: {2}' -f @(
         $TypeInfo
@@ -195,66 +471,7 @@ function Gl {
     git log
 }
 
-function CountIt {
-    <#
-    .SYNOPSIS
-        Count the number of items in the pipeline, ie: @( $x ).count
-    .EXAMPLE
-        ,@('a'..'e' + 0..3) | CountIt -Out-Null
-        @('a'..'e' + 0..3) | CountIt -Out-Null
 
-        # outputs
-        1 items
-        9 items
-    #>
-    # [CmdletBinding()]
-    # [Alias('Len', 'Len🧛‍♀️')] # warning this breaks crrent parameter sets
-    param(
-        [switch]$Extra,
-
-        # Also consume output (pipe to null)
-        [switch]${Out-Null}
-    )
-    begin {
-        [int]$totalCount = 0
-        [COllections.Generic.List[Object]]$Items = @()
-    }
-    process { $Items.Add( $_ ) }
-    end {
-        if( ${out-Null}.IsPresent) {
-            $items | out-null # redundant?
-        } else {
-            $items
-        }
-        $colorBG = $PSStyle.Background.FromRgb('#362b1f')
-        $colorFg = $PSStyle.Foreground.FromRgb('#e5701c')
-        $colorFg = $PSStyle.Foreground.FromRgb('#f2962d')
-        @(
-            $ColorFg
-            $ColorBg
-            '{0} items' -f @(
-                $items.Count
-            )
-            $PSStyle.Reset
-            # $PSStyle.Foreground.FromRgb('#e5701c')
-            "${fg:gray60}"
-            if ($Extra) {
-                ' {0} of {1}' -f @(
-                    ($Items)?.GetType().Name ?? "[`u{2400}]"
-                    # $Items.GetType().Name ?? ''
-                    # @($Items)[0].GetType().Name ?? ''
-                    @($Items)[0]?.GetType() ?? "[`u{2400}]"
-                )
-            }
-            $PSStyle.Reset
-        ) -join ''
-        | Write-Information -infa 'Continue'
-
-
-    }
-}
-New-Alias 'Len🧛' -value CountIt
-New-Alias 'Len' -value CountIt
 function fAll {
     <#
     .SYNOPSIS
@@ -306,6 +523,20 @@ function prof.Html.Table.FromHash {
     # '</table>'
 
 }
+
+function prof.Io2 {
+    <#
+    .EXAMPLE
+        $now = get-date
+        $d = (get-date) - $now
+        $d | io | ft Name, Value, *
+    #>
+    param( $d )
+    $d | io | Format-Table Name, Value, *
+}
+
+
+
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
