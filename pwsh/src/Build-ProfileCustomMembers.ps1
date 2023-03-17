@@ -63,19 +63,19 @@ else {
     | Out-Null
 }
 
-$Env:PSModulePath = @(
-    'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
-    'C:\Users\cppmo_000\SkyDrive\Documents\
-    2021\powershell\My_Github'
-    'E:\PSModulePath_2022'
-    'E:\PSModulePath_base\all'
-    $Env:PSModulePath
-) | Join-String -sep ';'
+# $Env:PSModulePath = @(
+#     # 'H:\data\2023\pwsh\PsModules' # should already be in there
+#     # 'E:\PSModulePath_base\all'
+#     # 'E:\PSModulePath_2022'
+#     # 'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
+#     # 'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
+#     $Env:PSModulePath
+# ) | Join-String -sep ';'
 
-'Updated PSModulePath: 🐧 {0}' -f @(
-    $Env:PSModulePath
-)
-| Write-Verbose
+# 'Updated PSModulePath: 🐧 {0}' -f @(
+#     $Env:PSModulePath
+# )
+# | Write-Verbose
 
 # $PSDefaultParameterValues['Import-Module:Verbose'] = $true
 $PSDefaultParameterValues['Update-Module:Verbose'] = $true

@@ -2,6 +2,91 @@
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
+write-warning 'finish: nin.Help.Command.OutMarkdown'
+function nin.Help.Command.OutMarkdown {
+    <#
+    .SYNOPSIS
+        export docs when help -online fails
+    .notes
+
+        future items:
+            - [ ] make a command listing index page / TOC
+            - [ ] markdown AST or markdown to HTML
+            - [ ] make related links to html page work
+            - [ ] dynamic compile using transpiler ?
+    #>
+    # [Alias()]
+    [CmdletBinding()]
+    param(
+        # list of commands to generate docs for
+        [Alias('ResolvedCommand', 'ReferencedCommand', 'Name')] # todo arg tranform type to CmdInfo
+        [Parameter(Mandatory, Position=0
+            # , ValueFromPipeline, ValueFromPipelineByPropertyName
+        )]
+        [object[]]$InputObject
+    )
+    begin {
+        "Finish Help command markdown: $PSCommandPath" | write-warning
+        $tmpRoot = Get-Item .
+        $ManCfg = @{
+            Root   = Get-Item .
+            Export = @{
+                Root = Get-Item 'h:\temp\manpage' -ea stop
+            }
+        }
+        function __write.markdown.fromCmdHelp {
+            param(
+                $Command,
+                $Namespace,
+
+                $PrintToHost
+            )
+            $destRoot = Join-Path $ManCfg.Export.Root |  gi -ea stop
+
+            New-Item -Path $DestRoot -ItemType Directory -Force -ea ignore -Name $Namespace
+            $CmdPathTemplate = '{0}/{1}-{2}.md' # Namespace/Noun-ActualCmd
+            $CmdPathTemplate = '{0}/{2}.md' # Namespace/Command
+
+            $finalPath = Join-path $destRoot ($CmdPathTemplate -f @(
+                $Namespace
+                $Command
+            ))
+
+            $template
+            | Set-Content -Path $finalPath -Force -ea 'continue' -passThru:$printToHost
+
+            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | Write-Verbose
+            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | write-information -infa 'Continue'
+        }
+    }
+    process {
+        # gcm -m AWSPowerShellLambdaTemplate
+        foreach($cur in $InputObject) {
+            $cur | join-string 'Exporting Command: {0}' -SingleQuote -prop Name
+        }
+        return
+
+        # foreach($CmdName in $InputObject) {
+        # # wait-debugger
+        #         $CmdName | join-string 'Exporting Command: {0}' -SingleQuote -prop Name
+        #         | write-verbose
+        # }
+    }
+    end {
+        # Get-ChildItem -Path $ManCfg.Export.Root -file *md
+        Get-ChildItem -Path $ManCfg.Export.Root -file
+        | sort-object -Property ModuleName, Name
+        | Join-String -format '- <file:///{0}> ' -sep "`n" -op "Wrote:`n" {
+            '{0} \ {1}' -f @(
+                $_.ModuleName ?? "<`u{2400}>"
+                $_.Name ?? "<`u{2400}>"
+            )
+        }
+    }
+
+}
+# $_cmds = Get-Command -m AwsLambdaPSCore
+# nin.Help.Command.OutMarkdown -Debug -verbose -inputobject $_cmds
 function nin.PSModulePath.Clean {
     <#
     .SYNOPSIS
@@ -143,13 +228,13 @@ nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
     'H:/data/2023/pwsh/PsModules'
 )
 
-write-warning 'maybe imports'
+Write-Warning 'maybe imports'
 nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
     'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
     'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
 )
-    # 'E:\PSModulePath_base\all'
-    # 'E:\PSModulePath_2022'
+# 'E:\PSModulePath_base\all'
+# 'E:\PSModulePath_2022'
 
 #$Env:PSModulePath -join ([IO.Path]::PathSeparator), (gi 'E:\PSModulePath.2023.root\JumpCloud')
 # nin.AddPSModulePath Main -Verbose -Debug

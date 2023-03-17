@@ -1,6 +1,8 @@
 ﻿$global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
-$global:__ninBag.Profile.PromptBasic = $PSCommandPath | gi
+$global:__ninBag.Profile.PromptBasic = $PSCommandPath | Get-Item
+$global:__ninBag.Profile.PrevErrorCount = 0
+
 
 function minimal.prompt.render.crumbs {
     <#
@@ -26,10 +28,17 @@ function minimal.prompt.render.crumbs {
         $innerConfig = @{
             hideSameLocation = $true
         }
-
         $isSameDir = (Get-Item .).FullName -eq $script:__bagLastLocation.FullName
         $script:__bagLastLocation = (Get-Item .)
+
+        $global:__ninBag.Profile.PrevErrorCount = $NumErrors
+
+        # todo: not quite working
         $NumErrors = $global:Error.Count
+        $isNewErrors = $NumErrors -ne $global:__ninBag.Profile.PrevErrorCount
+        $global:__ninBag.Profile.PrevErrorCount = $numErrors
+
+
         @(
 
             $Color.FgDim
@@ -38,9 +47,11 @@ function minimal.prompt.render.crumbs {
             | Join-String PSVersion -op 'Pwsh ' -os '> '
 
             if ( $NumErrors ) {
-                $Color.Error
-                '[{0}] ' -f @($NumErrors)
-                $Color.FgDim
+                if ($IsNewErrors) {
+                    $Color.Error
+                    '[{0}] ' -f @($NumErrors)
+                    $Color.FgDim
+                }
             }
 
             $renderLocation = (Get-Location) -split '\\' | Join-String -sep ' ⊢ '
