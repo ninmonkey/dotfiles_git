@@ -2,7 +2,7 @@
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
-write-warning 'finish: nin.Help.Command.OutMarkdown'
+Write-Warning 'finish: nin.Help.Command.OutMarkdown'
 function nin.Help.Command.OutMarkdown {
     <#
     .SYNOPSIS
@@ -20,13 +20,13 @@ function nin.Help.Command.OutMarkdown {
     param(
         # list of commands to generate docs for
         [Alias('ResolvedCommand', 'ReferencedCommand', 'Name')] # todo arg tranform type to CmdInfo
-        [Parameter(Mandatory, Position=0
+        [Parameter(Mandatory, Position = 0
             # , ValueFromPipeline, ValueFromPipelineByPropertyName
         )]
         [object[]]$InputObject
     )
     begin {
-        "Finish Help command markdown: $PSCommandPath" | write-warning
+        "Finish Help command markdown: $PSCommandPath" | Write-Warning
         $tmpRoot = Get-Item .
         $ManCfg = @{
             Root   = Get-Item .
@@ -41,28 +41,28 @@ function nin.Help.Command.OutMarkdown {
 
                 $PrintToHost
             )
-            $destRoot = Join-Path $ManCfg.Export.Root |  gi -ea stop
+            $destRoot = Join-Path $ManCfg.Export.Root | Get-Item -ea stop
 
             New-Item -Path $DestRoot -ItemType Directory -Force -ea ignore -Name $Namespace
             $CmdPathTemplate = '{0}/{1}-{2}.md' # Namespace/Noun-ActualCmd
             $CmdPathTemplate = '{0}/{2}.md' # Namespace/Command
 
-            $finalPath = Join-path $destRoot ($CmdPathTemplate -f @(
-                $Namespace
-                $Command
-            ))
+            $finalPath = Join-Path $destRoot ($CmdPathTemplate -f @(
+                    $Namespace
+                    $Command
+                ))
 
             $template
-            | Set-Content -Path $finalPath -Force -ea 'continue' -passThru:$printToHost
+            | Set-Content -Path $finalPath -Force -ea 'continue' -PassThru:$printToHost
 
             $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | Write-Verbose
-            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | write-information -infa 'Continue'
+            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | Write-Information -infa 'Continue'
         }
     }
     process {
         # gcm -m AWSPowerShellLambdaTemplate
-        foreach($cur in $InputObject) {
-            $cur | join-string 'Exporting Command: {0}' -SingleQuote -prop Name
+        foreach ($cur in $InputObject) {
+            $cur | Join-String 'Exporting Command: {0}' -SingleQuote -prop Name
         }
         return
 
@@ -74,8 +74,8 @@ function nin.Help.Command.OutMarkdown {
     }
     end {
         # Get-ChildItem -Path $ManCfg.Export.Root -file *md
-        Get-ChildItem -Path $ManCfg.Export.Root -file
-        | sort-object -Property ModuleName, Name
+        Get-ChildItem -Path $ManCfg.Export.Root -File
+        | Sort-Object -Property ModuleName, Name
         | Join-String -format '- <file:///{0}> ' -sep "`n" -op "Wrote:`n" {
             '{0} \ {1}' -f @(
                 $_.ModuleName ?? "<`u{2400}>"
@@ -290,6 +290,13 @@ function Write-NancyCountOf {
     .SYNOPSIS
         Count the number of items in the pipeline, ie: @( $x ).count
     .EXAMPLE
+        gci | CountOf # outputs files as normal *and* counts
+        'a'..'e' | Null🧛  # count only
+        'a'..'e' | Null🧛  # labeled
+        'a'..'e' | Null🧛 -Extra  # count only /w type names
+        'a'..'e' | Null🧛 -Extra -Name 'charList'  # labeled type names
+
+    .EXAMPLE
         ,@('a'..'e' + 0..3) | CountIt -Out-Null
         @('a'..'e' + 0..3) | CountIt -Out-Null
 
@@ -301,11 +308,26 @@ function Write-NancyCountOf {
     # [Alias('Len', 'Len🧛‍♀️')] # warning this breaks crrent parameter sets
     [Alias(
         'CountOf', 'Len',
-        '-OutNull',
-        '🧛' # puns are fun
+        # '🧛Of',
+        # 'Len',
+        # '-OutNull', # works, but does not generate completions
+        '🧛', # puns are fun
+        # 'Out-Null🧛',
+        'Null🧛' # puns are fun
     )]
+    [CmdletBinding()]
     param(
+        [Parameter(ValueFromPipeline)]
+        [object]$InputObject,
+
+        # Show type names of collection and items
+        [Alias('TypeOf')]
         [switch]$Extra,
+
+        # optionally label numbers
+        [Alias('Name', 'Label')]
+        [Parameter(Position = 0)]
+        [string]$CountLabel,
 
         # Also consume output (pipe to null)
         [switch]${Out-Null}
@@ -314,10 +336,12 @@ function Write-NancyCountOf {
         [int]$totalCount = 0
         [COllections.Generic.List[Object]]$Items = @()
     }
-    process { $Items.Add( $_ ) }
+    process { $Items.Add( $InputObject ) }
     end {
-        if ( ${out-Null}.IsPresent) {
-            $items | Out-Null # redundant?
+        $null = 0
+        # wait-debugger
+        if ( ${Out-Null}.IsPresent -or $PSCmdlet.MyInvocation.InvocationName -match 'null|(Out-?Null)') {
+            # $items | Out-Null # redundant?
         }
         else {
             $items
@@ -325,13 +349,32 @@ function Write-NancyCountOf {
         $colorBG = $PSStyle.Background.FromRgb('#362b1f')
         $colorFg = $PSStyle.Foreground.FromRgb('#e5701c')
         $colorFg = $PSStyle.Foreground.FromRgb('#f2962d')
+        $colorBG_count = $PSStyle.Background.FromRgb('#362b1f')
+        $colorFg_count = $PSStyle.Foreground.FromRgb('#f2962d')
+        $colorFg_label = $PSStyle.Foreground.FromRgb('#4cc5f0')
+        $colorBG_label = $PSStyle.Background.FromRgb('#376bce')
         @(
-            $ColorFg
-            $ColorBg
-            '{0} items' -f @(
+
+            $render_count = '{0} items' -f @(
                 $items.Count
             )
-            $PSStyle.Reset
+            if ($CountLabel) {
+                @(
+                    $colorFg_label, $colorBG_label
+                    $CountLabel
+                    # $PSStyle.Reset
+                    $ColorFg_count
+                    $ColorBg_count
+                    $render_count
+                ) -join ''
+            }
+            else {
+                $ColorFg_count
+                $ColorBg_count
+                $render_count
+            }
+
+            # $PSStyle.Reset
             # $PSStyle.Foreground.FromRgb('#e5701c')
             "${fg:gray60}"
             if ($Extra) {
