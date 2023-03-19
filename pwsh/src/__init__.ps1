@@ -295,6 +295,16 @@ function Write-NancyCountOf {
         'a'..'e' | Null🧛  # labeled
         'a'..'e' | Null🧛 -Extra  # count only /w type names
         'a'..'e' | Null🧛 -Extra -Name 'charList'  # labeled type names
+    .EXAMPLE
+        for unit test
+
+            . $redot
+            $stuff = 'a'..'c'
+            $stuff | CountOf
+            $stuff | Null🧛
+
+            $stuff | CountOf -Label 'Count' -Extra
+            $stuff | Null🧛 -Label 'Null' -Extra
 
     .EXAMPLE
         ,@('a'..'e' + 0..3) | CountIt -Out-Null

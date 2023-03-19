@@ -240,6 +240,12 @@ function Err {
         [switch]$IncludeCount
     )
     $TotalErrorCount = $global:error.count
+        if ($IncludeCount) {
+        'Had {0} errors before clearing' -f @(
+            $TotalErrorCount
+        ) | Write-Information -infa 'continue'
+    }
+
     'Had {0} Errors' -f @(
         $TotalErrorCount
     ) | Write-Verbose
@@ -252,13 +258,6 @@ function Err {
     }
 
     if ( $Clear ) { $global:error.Clear() }
-
-    if ($IncludeCount) {
-        'Had {0} errors before clearing' -f @(
-            $TotalErrorCount
-        ) | Write-Information -infa 'continue'
-    }
-
     return $global:error | Select-Object -First $Num
 }
 

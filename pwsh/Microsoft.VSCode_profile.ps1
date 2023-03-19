@@ -1,7 +1,7 @@
 # Previously included: '<file:///C:\Users\cppmo_000\SkyDrive\Documents\PowerShell\Microsoft.PowerShell_profile.ps1>'
 
 # main entry point for VS Code
-gi $PSCommandPath | Join-String -f 'loading: {0}' -doubleQuote
+gi $PSCommandPath | Join-String -f 'loading: "<file:///{0}>"' #-doubleQuote
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; }  [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
