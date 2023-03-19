@@ -98,7 +98,7 @@ function One {
         sugar for: Select first 1
     #>
     # one of the rare cases where Input is useful without the dangers
-    $Input | Select-Object -first 1
+    $Input | Select-Object -First 1
 }
 
 function b.fm {
@@ -233,19 +233,32 @@ function Err {
         [switch]$TotalCount,
 
         [Alias('HasAny')]
-        [switch]$TestHasAny
+        [switch]$TestHasAny,
+
+        # write-information
+        [Alias('ShowCount')]
+        [switch]$IncludeCount
     )
+    $TotalErrorCount = $global:error.count
+    'Had {0} Errors' -f @(
+        $TotalErrorCount
+    ) | Write-Verbose
+
     if ($TestHasAny) {
-        return ($global:error.count -gt 0)
+        return ($TotalErrorCount -gt 0)
     }
     if ($TotalErrorCount) {
-        return $global:error.count
+        return $TotalErrorCount
     }
 
-    if ( $Clear) { $global:error.Clear() }
-    if ($num -le $global:error.count ) {
-        "Number of Errors: $($global:error.count)" | Write-Verbose
+    if ( $Clear ) { $global:error.Clear() }
+
+    if ($IncludeCount) {
+        'Had {0} errors before clearing' -f @(
+            $TotalErrorCount
+        ) | Write-Information -infa 'continue'
     }
+
     return $global:error | Select-Object -First $Num
 }
 
@@ -503,8 +516,8 @@ function prof.renderEvent {
     #>
     param()
     process {
-        $_ | fl
-        $_.SourceEventArgs | ft -auto
+        $_ | Format-List
+        $_.SourceEventArgs | Format-Table -auto
     }
 }
 
