@@ -2,6 +2,83 @@
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
+Write-Warning 'move aws completer to typewriter'
+Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
+    <#
+    .SYNOPSIS
+        minimal aws autocompleter
+    .link
+        https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-completion.html
+    #>
+    param($commandName, $wordToComplete, $cursorPosition)
+    $env:COMP_LINE = $wordToComplete
+    if ($env:COMP_LINE.Length -lt $cursorPosition) {
+        $env:COMP_LINE = $env:COMP_LINE + ' '
+    }
+    $env:COMP_POINT = $cursorPosition
+    aws_completer.exe | ForEach-Object {
+        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    }
+    Remove-Item Env:\COMP_LINE
+    Remove-Item Env:\COMP_POINT
+}
+
+function pickOne {
+    [CmdletBinding(positionalbinding = $false)]
+    param(
+        # input object[s] to select, for fzf
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+
+    )
+    begin {
+        $BinFzf = Get-Command fzf -ea stop -CommandType application
+        [Collections.Generic.List[Objedct]]$items = @()
+    }
+    process {
+        write-warning 'wait, feature drift. one func does capture. other gets newest by type.'
+        $items.AddRange($InputObject)
+    }
+    end {
+        [Collections.Generic.List[Object]]$argsFzf = @(
+            '--ansi'
+            # '-m'
+        )
+        $query = $global:LastPick = $items
+        | & $BinFzf @argsFzf
+
+        $query | Select-Object -First 1
+        #| Select-Object -First 1
+    }
+}
+
+function GoClip {
+    [Alias('prof.GoClippy')]
+    [CmdletBinding()]
+    param()
+    $script:LastClip = Get-Clipboard | Get-Item -ea Stop
+    Goto $script:LastClip
+    'jump => {0}' -f @(
+        $script:LastClip | Join-String -DoubleQuote
+    )
+}
+function aws.abbrKeyName {
+    [OutputType('System.String')]
+    param(
+        # strings to truncate, from the pipeline
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [string]$KeyName,
+        # max char length/count
+        [int]$MaxCols = 14
+    )
+    process {
+        if ($KeyName.Length -gt $MaxCols) {
+            return $KeyName.Substring(0, $MaxCols)
+        }
+        return $KeyName
+    }
+}
+
 Write-Warning 'finish: nin.Help.Command.OutMarkdown'
 function nin.Help.Command.OutMarkdown {
     <#

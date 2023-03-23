@@ -1,6 +1,6 @@
 # missing:
 ## Temp Excel/word files
-
+**/*.aws-build
 *.lnk
 *.exe
 *.log
