@@ -2,6 +2,8 @@
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
+Set-PSReadLineKeyHandler -Chord "Ctrl+f" -Function ForwardWord
+
 Write-Warning 'move aws completer to typewriter'
 Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
     <#
@@ -21,6 +23,83 @@ Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
     }
     Remove-Item Env:\COMP_LINE
     Remove-Item Env:\COMP_POINT
+}
+
+
+
+function Add-StreamingLogs {
+
+    <#
+    .SYNOPSIS
+    pipe log files, add-content -passthru does not run until the end
+
+    .DESCRIPTION
+
+    using (get|add)-content with a piped log file can end up waiting
+    until you end otherwise cancel the pipeline
+    .EXAMPLE
+    gi |
+    .NOTES
+    General notes
+    .link
+        https://devblogs.microsoft.com/powershell-community/mastering-the-steppable-pipeline/
+    #>
+    [CmdletBinding()]
+    param(
+        # if directly piped top
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [Parameter(Mandatory, ValueFromPipeline )]
+        [string[]]$InputText,
+
+        # else by filename
+        [Parameter()]
+        [string]$LogFilePath
+
+        # [switch]$WithoutPassThru
+
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+
+    }
+    process {
+        # $if($WithoutPassThru.IsPresent) {
+        #     $usingPassthru = -not $WinthoutPassThru
+        #     $false
+        # }
+        # else {
+            # $WithoutPassThru = $true
+        # }
+        # '=> ' | Out-Host
+        foreach ($Line in $InputText) {
+            if($null -eq $line) { continue }
+            # $line
+            # [Console]::Write('.') #
+            # '.' | Out-Host
+            # $Line
+            # sleep -ms 100
+            $Line | Add-Content 'temp:\appending.log' -PassThru
+             #-PassThru: #$( -not $WithoutPassThru )
+
+            # $Line | Add-Content './inner.log' #-PassThru
+            # $Line
+        }
+        # steppable pipeline pipe text
+
+
+        # if ($LogFilePath) {
+        #     $InputText | Add-Content -Path $LogFilePath -PassThru
+        # }
+        # else {
+        #     $InputText
+        # }
+    }
+    end {
+        'done' | Write-Host -fg green
+
+    }
 }
 
 function pickOne {
