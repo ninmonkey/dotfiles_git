@@ -2,7 +2,15 @@
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
-Set-PSReadLineKeyHandler -Chord "Ctrl+f" -Function ForwardWord
+Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
+
+
+function Export.Pipe {
+    Import-Module pipescript -MaximumVersion 0.2.2 -Scope Global -PassThru
+    $pattern = '*.ps.md'
+    Export-Pipescript -InputPath $pattern
+}
+
 
 Write-Warning 'move aws completer to typewriter'
 Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
@@ -70,18 +78,18 @@ function Add-StreamingLogs {
         #     $false
         # }
         # else {
-            # $WithoutPassThru = $true
+        # $WithoutPassThru = $true
         # }
         # '=> ' | Out-Host
         foreach ($Line in $InputText) {
-            if($null -eq $line) { continue }
+            if ($null -eq $line) { continue }
             # $line
             # [Console]::Write('.') #
             # '.' | Out-Host
             # $Line
             # sleep -ms 100
             $Line | Add-Content 'temp:\appending.log' -PassThru
-             #-PassThru: #$( -not $WithoutPassThru )
+            #-PassThru: #$( -not $WithoutPassThru )
 
             # $Line | Add-Content './inner.log' #-PassThru
             # $Line
@@ -115,7 +123,7 @@ function pickOne {
         [Collections.Generic.List[Objedct]]$items = @()
     }
     process {
-        write-warning 'wait, feature drift. one func does capture. other gets newest by type.'
+        Write-Warning 'wait, feature drift. one func does capture. other gets newest by type.'
         $items.AddRange($InputObject)
     }
     end {
