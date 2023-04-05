@@ -4,19 +4,61 @@ $VerbosePreference = 'silentlyContinue'
 
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
+function Export.PipeScript {
+    [alias('prof.Build.Pipescript')]
+    param(
+        [ArgumentCompletions(
+            '*-*.ps',
+            '*-*.ps.*',
+            '*.ps.md',
+            'subPath/*.ps.*',
+            'subPath/*-*.ps.ps1',
+            '*-*.ps.ps1'
+        )]
+        [Parameter(Position = 0)]
+        [String[]]$InputPath,
+        [switch]$All
+    )
+    #
+    # Import-Module pipescript -MaximumVersion 0.2.2 -Scope Global -PassThru
+    Import-Module pipescript -Scope Global -PassThru
+    if ($All) {
+        Export-Pipescript
+        return
+    }
 
-function Export.Pipe {
-    Import-Module pipescript -MaximumVersion 0.2.2 -Scope Global -PassThru
-    $pattern = '*.ps.md'
+    # $pattern = '*.ps.md'
+    $pattern = '*.ps.*'
     Export-Pipescript -InputPath $pattern
 }
 
+# function Export.Pipe {
+#     throw 'deprecated'
+#     Import-Module pipescript -MaximumVersion 0.2.2 -Scope Global -PassThru
+#     $pattern = '*.ps.md'
+#     Export-Pipescript -InputPath $pattern
+# }
+
+function Code.File.Get.End {
+    # jump to  bottom of file, using number outside limits
+    [CmdletBinding()]
+    param(
+        [ArgumentCompletions(
+            'G:\temp\aws_raw.log'
+        )]
+        [Parameter(Mandatory, position = 0)]
+        [string]$PathName
+    )
+    $TargetFile = Get-Item -ea stop $PathName
+    $renderPath = '{0}:{1}' -f @( gi  -ea stop $TargetFile ;   99999999; )
+    & code @('--goto',  $renderPath )
+}
 
 Write-Warning 'move aws completer to typewriter'
 Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
     <#
     .SYNOPSIS
-        minimal aws autocompleter
+        minimal aws autocompleter: to TYPEWRITER
     .link
         https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-completion.html
     #>
@@ -34,6 +76,242 @@ Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
 }
 
 
+function Join.Lines {
+
+    # [Text.StringBuilder]::new(@(
+    #     $Input
+    # ))
+    $Input | Join-String -sep "`n"
+}
+
+
+function Get-PipeNames.Prof {
+    <#
+    .SYNOPSIS
+    list top level pipes
+
+    .DESCRIPTION
+    find top level, named pipes
+
+    .EXAMPLE
+
+        Pwsh> Pipes.List
+
+    .NOTES
+    A regular user will get permission errors on a lot of them, or fail on 'Get-Item' for other reasons
+    try -silent
+    #>
+    [OutputType(
+        '[System.String[]]', '[FileSystemInfo[]]'
+    )]
+    [Alias(
+        'Pipes.List',
+        'IO.Pipe.List'
+    )]
+    [cmdletbinding()]
+    param(
+        [switch]$AsObject, [switch]$Silent
+    )
+    if ($PassThru) {
+        $getItemSplat = @{
+            ErrorAction = $Silent ? 'ignore' : 'continue'
+        }
+
+        return [System.IO.Directory]::GetFiles('\\.\pipe\')
+        | Get-Item @getItemSplat
+    }
+    return [System.IO.Directory]::GetFiles('\\.\pipe\')
+}
+
+function nin.Tablify.FromText__iter0 {
+    <#
+    .SYNOPSIS
+    takes text from the pipeline, usually a native command
+
+    .DESCRIPTION
+    Converts Output from Native Commands. Many are easy to parse columns, because they use \t delimiters
+
+            <<to replace with future 'ConvertTo-MdTableFromStdout_toCleanup' >>
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+    - [ ] currently first line is header. argument could skip that.
+
+    # todo: steppable ?
+    - [ ] Future: Support input as Objects, table from properties
+    - [ ] Future: Support input as hashtables, table from key value pairs
+    - [ ] check out how pipescript defines how its objects serialize, secifically to markdown files
+    #>
+    [Alias(
+        # 'xl.Format.MdTableFromStdoutConsole',
+        # 'nin.Tablify.FromText',
+        'prof.nin.Tablify.FromText'
+        # 'xl.Tablify.Md.FromStdout'
+    )]
+    [CmdletBinding(DefaultParameterSetName = 'FromPipeline')]
+    param(
+        # raw text piped in
+        # use? [AllowNull()]
+        # [AllowEmptyCollection()]
+        # [AllowEmptyString()]
+
+        [Alias('InputObject')]
+        [Parameter(Mandatory, ValueFromPipeline, parameterSetName = 'FromPipeline')]
+        [Parameter(Mandatory, Position = 0, ParameterSetName = 'FromParam')]
+        [string[]]$InputText,
+
+        [switch]$NoHeader
+    )
+    begin {
+        if ($NoHeader) { throw 'nyi: insert blank header, so the first record doesn''t become the header' }
+        # todo: steppable ?
+        [Text.StringBuilder]$StrBuild = [String]::Empty
+        [Collections.Generic.List[Object]]$Lines = @()
+
+    }
+    process {
+        $Lines.AddRange( @( $InputObject ))
+        # [void]$StrBuild.AppendJoin($InputText, "`n")
+    }
+    end {
+
+        # gh run list
+        $Lines
+        | ForEach-Object {
+            $segments = $_ -split '\t'
+            $colCount = $segments.count
+            $segments | Join-String -op '| ' -os ' |' -sep ' | '
+            if ($IsFirst) {
+                $IsFirst = $false
+                @('-' * $colCount -join '' -split '') # column row
+                | Join-String -sep ' | '
+            }
+
+        } | Join-String -sep "`n"
+
+    }
+}
+
+'did not import ?: {0}' -f $PSCommandPath
+| Write-Warning
+
+
+# broke.nin.MdTable ( gh repo list ) # gh run list | ForEach-Object {
+#     $segments = $_ -split '\t'
+#     $colCount = $segments.count
+#     $segments | Join-String -op '| ' -os ' |' -sep ' | '
+#     if ($IsFirst) {
+#         $IsFirst = $false
+#         @('-' * $colCount -join '' -split '') # column row
+#         | Join-String -sep ' | '
+#     }
+
+# } | Join-String -sep "`n"
+function old.Get-LoadedModuleVersions {
+    <#
+    .SYNOPSIS
+        quick dump both versions
+    .EXAMPLE
+        get-module | ? name -match 'pipe|git|logger'
+    .description
+    was
+    Import-Module PipeScript, PipeWorks, HelpOut -PassThru
+    | Join-String -p { '{0} = {1}' -f @( $_.Name ; $_.Version; )} -sep ', '
+    #>
+    [Alias('nin.PSModule.GetExactVersions')]
+    [CmdletBinding()]
+    param(
+        [Alias('Modules')]
+        [Parameter(valuefrompipeline, position = 0)]
+        $InputObject
+    )
+
+    throw 'deprecated, see ExcelAnt\Format-ExcelAntExactModuleVersions.ps1'
+
+    # if($InputObject) {
+    #    $query = $InputObject | Sort-object Name
+    # } else {
+    #     $query = Get-Module | Sort-Object Name
+    # }
+
+    # $query
+    # | Join-String -p { '{0} = {1}' -f @( $_.Name ; $_.Version; ) } -sep ",`n" -single
+    # # | Join-String -p { '{0} = {1}' -f @( $_.Name ; $_.Version; ) } -sep ', ' -single
+
+    # # $goal = 'import-module PipeScript -RequiredVersion 0.3.4'
+    # # Get-Module
+    # # | Sort-Object Name
+    # hr
+
+    # $query
+    # | Join-String -p {
+    #     'Import-Module {0} -RequiredVersion = {1}' -f @(
+    #         $_.Name | Join-String -single
+    #         $_.Version | Join-String -single
+    #     )
+    # } -sep "`n"
+    # Import-Module -RequiredVersion 'sd' -Name 'sdf'
+}
+function prof.Get-LinuxManPage {
+    <#
+    .SYNOPSIS
+    invokes 'man' pages from linux through WSL
+
+    .DESCRIPTION
+    if your env vars are set right
+    WSL pipes ansi colors to pwsh
+    which then pages it with bat or less
+
+    it's just like the in person invoke
+
+    .EXAMPLE
+        # ex: wsl --exec man uname
+    .NOTES
+        uses the native command 'wsl'
+
+    #>
+    [CmdletBinding()]
+    [Alias('man', 'Help.Linux')]
+    param(
+        [ArgumentCompletions(
+            'fd', 'rg', 'cat', 'ls', 'man', 'less', 'bat', 'vim', 'gvim'
+        )]
+        [Alias('Name', 'BaseName')]
+        [Parameter(Mandatory)]
+        [string[]]$Command,
+
+        # all remaining query terms, passed as is if wanted
+        [Alias('ArgsList', 'QueryRest')]
+        [Parameter(
+            Mandatory = $false,
+            ValueFromPipeline = $false,
+            ValueFromRemainingArguments
+        )]
+        [object[]]$Query,
+
+        [switch]$WhatIf
+    )
+
+    # pipeline nyi
+    $Command
+    | Join-String -f '=> man "{0}"'
+    | Write-Information -infa 'Continue'
+
+    $query ?? ''
+    | Join-String -f '=> query: "{0}"'
+    | Write-Information -infa 'Continue'
+
+    if ($WhatIf) { return }
+
+    # ex: wsl --exec man uname
+    & 'wsl' @(
+        '--exec'
+        'man'
+        $Command
+    )
+}
 
 function Add-StreamingLogs {
 
@@ -172,7 +450,7 @@ function nin.Help.Command.OutMarkdown {
     .SYNOPSIS
         export docs when help -online fails
     .notes
-
+        2023-04-04
         future items:
             - [ ] make a command listing index page / TOC
             - [ ] markdown AST or markdown to HTML
@@ -439,12 +717,69 @@ function Help.Online {
 
     }
 }
+function Collect.Distinct {
+    <#
+    .SYNOPSIS
+
+    .DESCRIPTION
+    Long description
+
+    .EXAMPLE
+
+        get-aduser *
+        | CollectUnique CompanyName
+        | Join-string -sep ', '
+
+        where **all** values are output without filter
+        but only distinct records are saved.
+
+    .NOTES
+    General notes
+    #>
+    throw 'nyi'
+}
 function Help.Param {
     <#
+    .SYNOPSIS
+        directly wrap 'Get-Help -Parameter [names[]]'
     .EXAMPLE
         gcm get-help | Help.Param showwindow, role
+    .example
+        # compare with
+            gcm help | get-help -Parameter shoWwindow
+            gcm get-help | get-help -Parameter shoWwindow
+
+        # json info is simple
+            gcm help | One | to->Json -Depth 3
+
+    types:
+        gcm 'gcm' | get-help -Parameter *
+            [PSCustomObject] as [MamlCommandHelpInfo#parameter]
+
+    .NOTES
+    future:
+    - [ ] no errors. if no parameters, show all
+    - [ ] throttle by unique values
+
+    notes:
+
+        MamlCommandHelpInfo#parameter
     #>
-    param( [string[]]$ParamPatterns )
+    param(
+        [string[]]$ParamPatterns,
+
+
+        # Behavior changes like when using
+        #   'Get-Help' verses 'Help'
+        # ie: it should page better
+        [switch]$UsingDefaultPager
+    )
+    if ($UsingDefaultPager ) {
+        $Input | help $ParamPatterns
+        return
+
+    }
+
     $Input | Get-Help -Param $ParamPatterns
     # foreach($x in $Input) { Get-Help -param $_ }
 }
@@ -504,11 +839,16 @@ function Write-NancyCountOf {
         [string]$CountLabel,
 
         # Also consume output (pipe to null)
-        [switch]${Out-Null}
+        [switch]${Out-Null},
+
+        [ArgumentCompletions(
+            '@{ LabelFormatMode = "SpaceClear" }'
+        )][hashtable]$Options
     )
     begin {
         [int]$totalCount = 0
         [COllections.Generic.List[Object]]$Items = @()
+        $Config = $Options
     }
     process { $Items.Add( $InputObject ) }
     end {
@@ -534,13 +874,35 @@ function Write-NancyCountOf {
             )
             if ($CountLabel) {
                 @(
-                    $colorFg_label, $colorBG_label
-                    $CountLabel
-                    # $PSStyle.Reset
-                    $ColorFg_count
-                    $ColorBg_count
-                    $render_count
-                ) -join ''
+                    $LabelFormatMode = 'SpaceClear'
+
+                    switch ($Config.LabelFormatMode) {
+                        'SpaceClear' {
+                            $colorFg_label, $colorBG_label
+                            # style 1
+                            $CountLabel
+                            $PSStyle.Reset
+                            ' ' # space before, between, or last color?
+
+                            $ColorFg_count
+                            $ColorBg_count
+                            $render_count
+                        }
+                        default {
+                            $colorFg_label, $colorBG_label
+                            # style 1
+                            $CountLabel
+                            '' # space before, between, or last color?
+                            # $PSStyle.Reset
+                            $PSStyle.Reset
+                            $ColorFg_count
+                            $ColorBg_count
+                            $render_count
+
+                        }
+                    }
+                )
+                $renderLabel -join ''
             }
             else {
                 $ColorFg_count

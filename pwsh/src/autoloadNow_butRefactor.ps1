@@ -6,6 +6,81 @@ if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCo
 
 # Import-module ninmonkey.console -DisableNameChecking *>$null
 
+@'
+Quick hack to cover this for now
+VERBOSE: Cannot find provider 'PowerShellGet' under the specified path.
+VERBOSE: Importing package provider 'PowerShellGet'.
+VERBOSE: Checking for updates for module 'PipeScript'.
+'@  | Write-Debug
+nin.psmodulePath.AddNamedGroup Main
+
+$setAliasSplat = @{
+    Name        = '.fmt.md.TableRow'
+    Value       = '_fmt_mdTableRow'
+    Description = 'experiment with a new command namespace: ''.fmt'''
+    ErrorAction = 'ignore'
+}
+
+Set-Alias @setAliasSplat
+function _fmt_mdTableRow {
+    <#
+    .EXAMPLE
+    PS> 'a'..'e' | _fmt_mdTableRow
+
+        | a | b | c | d | e |
+
+    .EXAMPLE
+    PS> 'Name', 'Length', 'FullName' | _fmt_mdTableRow
+
+        | Name | Length | FullName |
+    .EXAMPLE
+        (get-date).psobject.properties
+        | %{
+            @(
+                $_.Name
+                $_.Value
+                ($_.Value)?.GetType() ?? "`u{2400}"
+
+            )  | _fmt_mdTableRow
+        }
+
+    #Output:
+        | DisplayHint | DateTime | Microsoft.PowerShell.Commands.DisplayHintType |
+        | DateTime | Wednesday, April 5, 2023 5:55:57 PM | string |
+        | Date | 04/05/2023 00:00:00 | datetime |
+        | Day | 5 | int |
+        | DayOfWeek | Wednesday | System.DayOfWeek |
+        | DayOfYear | 95 | int |
+        | Hour | 17 | int |
+        | Kind | Local | System.DateTimeKind |
+        | Millisecond | 258 | int |
+        | Microsecond | 715 | int |
+        | Nanosecond | 300 | int |
+        | Minute | 55 | int |
+        | Month | 4 | int |
+        | Second | 57 | int |
+        | Ticks | 638163141572587153 | long |
+        | TimeOfDay | 17:55:57.2587153 | timespan |
+        | Year | 2023 | int |
+    #>
+    param(
+        [Parameter(ValueFromPipeline)]
+        [String[]]$InputText
+    )
+    begin {
+        $lines = @()
+    }
+    process {
+        foreach ($line in $InputText) {
+            $LineS += $line
+        }
+    }
+    end {
+
+        # $lines | Join-String -sep ' | ' -op '| ' -os " |`n"
+        $lines | Join-String -sep ' | ' -op '| ' -os ' |'
+    }
+}
 
 function b.wrapLikeWildcard {
     <#
@@ -240,7 +315,7 @@ function Err {
         [switch]$IncludeCount
     )
     $TotalErrorCount = $global:error.count
-        if ($IncludeCount) {
+    if ($IncludeCount) {
         'Had {0} errors before clearing' -f @(
             $TotalErrorCount
         ) | Write-Information -infa 'continue'

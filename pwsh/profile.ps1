@@ -49,6 +49,57 @@ $PROFILE | Add-Member -NotePropertyMembers @{
 } -Force -PassThru #-ea Ignore
 # $PROFILE | Add-Member -NotePropertyMembers $global:__ninBag.Profile.PSModulePath -force  -passthru #-ea Ignore
 
+function __aws.sam.InvokeAndPipeLog {
+    param(
+        [string]$LogBase = 'g:\temp',
+        [string]$LogName = 'aws_raw.log',
+        [switch]$WithoutStdout,
+        [switch]$NeverOpenLog,
+
+        [switch]$NeverTruncateLog
+    )
+    $FullLogPath = Join-Path $LogBase $LogName
+    if (-not(Test-Path $FullLogPath) -and -not $NeverTruncateLog) {
+        New-Item $LogBase -Name $LogName -ItemType file -Force -ea ignore
+    }
+    (Get-Item $FullLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
+
+    if (-not $NeverOpenLog) {
+        code -g (Get-Item $FullLogPath)
+    }
+    & sam build --debug --parallel --use-container --cached --skip-pull-image --profile BDG *>&1
+    | StripAnsi # Pwsh7.3 pipes color from STDERROR
+    | ForEach-Object {
+        $addContentSplat = @{
+            PassThru = -not $WithoutStdout
+            Path     = $FullLogPath
+        }
+        $_ | Add-Content @addContentSplat
+    }
+    (Get-Item $FullLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
+
+    New-BurntToastNotification -Text 'SAM Build Complete', "$FullLogPath"
+
+    $target = $FullLogPath | Gi -ea stop
+
+    $FullCleanLogPath = Join-Path $Target.Directory ($target.BaseName + '.cleaned.log')
+    # $FullCleanLogPath = $FullLogPath | gi | % BaseName
+
+    # todo: make it pipe as a stream, not requiring end.
+    # cleanup
+    gc $FullLogPath | ?{
+        $shouldKeep = $true
+        $FoundIgnoreCopySource = $_ -match ('^' + [Regex]::Escape('Copying source file (/tmp/samcli/source/'))
+        $FoundIgnoreCopyMeta = $_ -match ('^' + [Regex]::Escape('Copying directory metadata from source (/tmp/samcli/source/'))
+        $FoundOthers = $_ -match '^(Copying source file|Copying directory metadata from source)'
+
+        if($FoundIgnoreCopyMeta -or $FoundIgnoreCopySource) { $ShouldKeep = $false}
+        if($FoundOthers) { $shouldKeep = $false}
+        return $shouldKeep
+     } | Add-Content -path $FullCleanLogPath
+
+     (Get-Item $FullCleanLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
+}
 
 function Test-AnyTrueItems {
     <#
@@ -82,15 +133,16 @@ function Test-AnyTrueItems {
         $AnyIsTrue = $false
     }
     process {
-        foreach($item in $INputObject) {
-            if($BlanksAreFalse) {
+        foreach ($item in $INputObject) {
+            if ($BlanksAreFalse) {
                 $test = [string]::isnullorwhitespace($item)
                 # or $item -replace '\w+', ''
-            } else {
+            }
+            else {
                 $test = [bool]$item
             }
             #
-            if($Test) {
+            if ($Test) {
                 $AnyIsTrue = $true
             }
         }
