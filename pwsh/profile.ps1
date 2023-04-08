@@ -2,6 +2,13 @@ $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 
+
+# $env:EDITOR = 'nvim'
+
+$OutputEncoding =
+    [Console]::OutputEncoding =
+    [Console]::InputEncoding  = [System.Text.UTF8Encoding]::new()
+
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
     # 'H:\data\2023\pwsh\PsModules\Ninmonkey.Console\zeroDepend_autoloader\logging.Write-NinLogRecord.ps1'
@@ -80,23 +87,23 @@ function __aws.sam.InvokeAndPipeLog {
 
     New-BurntToastNotification -Text 'SAM Build Complete', "$FullLogPath"
 
-    $target = $FullLogPath | Gi -ea stop
+    $target = $FullLogPath | Get-Item -ea stop
 
     $FullCleanLogPath = Join-Path $Target.Directory ($target.BaseName + '.cleaned.log')
     # $FullCleanLogPath = $FullLogPath | gi | % BaseName
 
     # todo: make it pipe as a stream, not requiring end.
     # cleanup
-    gc $FullLogPath | ?{
+    Get-Content $FullLogPath | Where-Object {
         $shouldKeep = $true
         $FoundIgnoreCopySource = $_ -match ('^' + [Regex]::Escape('Copying source file (/tmp/samcli/source/'))
         $FoundIgnoreCopyMeta = $_ -match ('^' + [Regex]::Escape('Copying directory metadata from source (/tmp/samcli/source/'))
         $FoundOthers = $_ -match '^(Copying source file|Copying directory metadata from source)'
 
-        if($FoundIgnoreCopyMeta -or $FoundIgnoreCopySource) { $ShouldKeep = $false}
-        if($FoundOthers) { $shouldKeep = $false}
+        if ($FoundIgnoreCopyMeta -or $FoundIgnoreCopySource) { $ShouldKeep = $false }
+        if ($FoundOthers) { $shouldKeep = $false }
         return $shouldKeep
-     } | Add-Content -path $FullCleanLogPath
+    } | Add-Content -Path $FullCleanLogPath
 
      (Get-Item $FullCleanLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
 }

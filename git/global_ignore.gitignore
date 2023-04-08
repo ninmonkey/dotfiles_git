@@ -17,3 +17,6 @@
 #venv_discord-bot/**
 # default test-explorer path
 /TestExplorerResults.xml
+
+# Jekyll (build artifacts)
+**/_site/*

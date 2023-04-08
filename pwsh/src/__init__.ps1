@@ -123,6 +123,27 @@ function Get-PipeNames.Prof {
     return [System.IO.Directory]::GetFiles('\\.\pipe\')
 }
 
+function join.Md.TableRow {
+    # forgive my $input usage
+    $input | Join-String -sep ' | ' -op '| ' -os ' |' { $_ ? $_ : "`u{2400}" }
+}
+
+function Write-GHRepoSummary {
+    param(
+         [string]$Owner
+    )@(
+        'name', 'desc', 'visible', 'date' | join.Md.TableRow
+        '.', '.', '.', '.' | Join.Md.TableRow
+        & gh repo list $Owner
+        | select -first 5
+        | ForEach-Object {
+            $_ -split '\t' | join.Md.TableRow
+        } | Join-String -sep "`n"
+    ) | Join-String -sep "`n"
+}
+
+Write-GHRepoSummary 'Microsoft'
+
 function nin.Tablify.FromText__iter0 {
     <#
     .SYNOPSIS
@@ -194,8 +215,8 @@ function nin.Tablify.FromText__iter0 {
     }
 }
 
-'did not import ?: {0}' -f $PSCommandPath
-| Write-Warning
+# 'did not import ?: {0}' -f $PSCommandPath
+# | Write-Warning
 
 
 # broke.nin.MdTable ( gh repo list ) # gh run list | ForEach-Object {
@@ -665,15 +686,16 @@ function nin.PSModulePath.AddNamedGroup {
 nin.PSModulePath.Clean
 # nin.PSModulePath.AddNamed -GroupName AWS, JumpCloud   -verbose -debug
 nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
-    'E:\PSModulePath.2023.root\Main'
-    'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
+    'E:/PSModulePath.2023.root\Main'
+    'H:/data/2023/pwsh/PsModules/ExcelAnt/Output'
+    'H:/data/2023/pwsh/PsModules/TypeWriter/Build'
     'H:/data/2023/pwsh/PsModules'
 )
 
 Write-Warning 'maybe imports'
 nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
-    'C:\Users\cppmo_000\SkyDrive\Documents\2022\client_BDG\self\bdg_lib'
-    'C:\Users\cppmo_000\SkyDrive\Documents\2021\powershell\My_Github'
+    'C:/Users/cppmo_000/SkyDrive/Documents/2022/client_BDG/self/bdg_lib'
+    'C:/Users/cppmo_000/SkyDrive/Documents/2021/powershell/My_Github'
 )
 # 'E:\PSModulePath_base\all'
 # 'E:\PSModulePath_2022'
@@ -1015,6 +1037,8 @@ function New-Lie {
         TypeInfo lies, type accellerator , lies.
     .EXAMPLE
         $xlr8r::Add( 'Lie', ([System.Collections.Generic.List`1]) )
+    .NOTES
+        future: Get-Lies. show lies. (or, at least the user's lies)
     #>
     param(
         #New alias
