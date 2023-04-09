@@ -6,13 +6,134 @@ if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCo
 
 # Import-module ninmonkey.console -DisableNameChecking *>$null
 
+Import-Module Pipeworks -PassThru # can register fail if the module is not yet imported? (ie: break the alias)
 
+New-Lie -Name 'sma.CompletionRes' -TypeInfo ([System.Management.Automation.CompletionResult])
+New-Lie -Name 'sma.CompletionResType' -TypeInfo ([System.Management.Automation.CompletionResultType])
+
+$script:____zTestConn ??= Get-SQLTable -ConnectionStringOrSetting 'AzureSqlConnectionString'
+
+function .fmt.Convert.PipeworksTable.ToWord {
+    <#
+    .example
+
+        [int] id
+        [nvarchar] name
+        [varchar] start_ip_addres
+        [varchar] end_ip_address
+        [datetime] create_date
+        [datetime] modify_date
+    #>
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $TableInput
+    )
+    # begin {
+    #     [Collections.Generic.List[Object]]$Items = @()
+    # }
+    # process {
+    #     $Items.AddRange( $TableInput )
+    # }
+    end {
+        foreach ($i in 0..($TableInput.Columns.Count - 1)) {
+            '[{0}] {1}' -f @(
+                $TableInput.DataTypes[ $i ]
+                $first.Columns[ $i ]
+            )
+        }
+    }
+}
 
 function completer.ValidCompletions.For.SelectSql.TableName {
+    <#
+    .SYNOPSIS
+    enumerate valid table names for Select-Sql
+
+    .DESCRIPTION
+    valid table names
+    .notes
+        naming, verbose but completes fast, Like
+
+        input:
+            *.for.*sql<tab>
+        completionResult
+            completer.ValidCompletions.For.SelectSql.TableName
+
+    .EXAMPLE
+        PS> Get-SQLTable -ConnectionStringOrSetting (Get-SecureSetting -Name <tab> -Decrypted -ValueOnly)
+    .EXAMPLE
+    Ps> completer.ValidCompletions.For.SelectSql.TableName
+    name1
+    name2
+    ...
+    name9
+
+    .NOTES
+    General notes
+    #>
     [Alias('completer.ValidCompletions.For.SelectSql.TableName.Pipeworks')]
-    param()
-    Import-Module Pipeworks
-    Pipeworks\Get-SecureSetting | ForEach-Object Name | Sort-Object -Unique
+    param(
+        [switch]$AsText
+    )
+    Import-Module Pipeworks -PassThru | Out-Null
+    # Pipeworks\Get-SecureSetting | ForEach-Object Name | Sort-Object -Unique
+
+    # basic
+    if ($AsText) {
+        return (Pipeworks\Get-SQLTable).TableName | Sort-Object -Unique
+    }
+    <#
+       To customize your own custom options, pass a hashtable to CompleteInput, e.g.
+         return [System.Management.Automation.CommandCompletion]::CompleteInput($inputScript, $cursorColumn,
+             @{ RelativeFilePaths=$false }
+    #>
+
+
+
+    Pipeworks\Get-SQLTable | ForEach-Object {
+        $completionText = $completionText | Join-String -op 'comple: '
+        # $listItemText = 'lit' | Join-String -op 'Lit: '
+        # $toolTip = $completionText | Join-String -op 'tip: '
+
+
+        $listItemText = '[{0}].[{1}]' -f @(
+            $_.TableSchema
+            $_.TableName
+        )
+
+        $Tooltip = @(
+            '[{0}].[{1}]' -f @(
+                $_.TableSchema
+                $_.TableName
+            )
+        )
+
+        $render = ($_.Columns -join ', ')
+        $truncMax = [Math]::Min( $render.Length, 80 )
+        $renderTrunc = $render.substring(0, $truncMax )
+        $renderTrunc
+        @{ truncMax = $TruncMax;  RenderTrunc = $renderTrunc ; Render = $Render }
+        | write-debug
+
+        $Tooltip += '> ', $renderTrunc -join ''
+
+        return [System.Management.Automation.CompletionResult]::new(
+            <# completionText: #> $completionText ?? $_,
+            <# listItemText: #> $listItemText ?? $_,
+            <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
+            <# toolTip: #> $toolTip ?? $_ )
+    }
+
+}
+
+function .fmt.convert.LikeToRegex {
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [string]$LikeExpression
+    )
+
+    $accum = $LikeExpression -replace '\*', '.*'
+    return $accum
 }
 
 
@@ -20,13 +141,15 @@ $SB_completer_PipeWorks_SelectSqlTableName = {
 
     <#
      .SYNOPSIS
-     Completer Suggests key names for Get-SecureSetting
+     attach completer Completer Suggests key names for Get-SecureSetting
 
      .DESCRIPTION
      Long description
 
-     .EXAMPLE
-     Ps>
+    .EXAMPLE
+    PS> Get-SQLTable -ConnectionStringOrSetting (Get-SecureSetting -Name <tab> -Decrypted -ValueOnly)
+    .link
+        completer.ValidCompletions.For.SelectSql.TableName
 
 }
  #>
@@ -38,8 +161,60 @@ $SB_completer_PipeWorks_SelectSqlTableName = {
         $fakeBoundParameters # @{}
     )
 
-    completer.ValidCompletions.For.Pipeworks.SecureSetting | ForEach-Object {
-        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    <#
+    Next,Step, actually filter on input
+        currently *always* returns all
+
+        ex input:
+            sql -FromTable *git*demo*
+        meaning this recieves
+            *git*demo*
+    #>
+    Import-Module Pipeworks -PassThru -ea ignore | Out-Null # good or bad to ensure import? perf concerns?
+
+
+
+    completer.ValidCompletions.For.SelectSql.TableName
+    | Where-Object {
+        if(-not $WordToComplete) { return $true } # else blanks skip this function
+        # try regex matching instgead of like
+        $regex = .fmt.convert.LikeToRegex -LikeExpression $wordToComplete
+        return ($_ -match $regex)
+    }
+    # | ?{ $_ -match 'pssvg' }
+    | ForEach-Object {
+
+
+        <#
+        Expected values
+            $_, $commandName = 'Select-Sql'
+                current completion from parent
+            $parameterName = 'FromTable'
+            $wordToComplete = '*git*demo*' or blank
+            $fakeBoundParameters = @{}
+            $commandAst = type [CommandAst]
+                tostring = 'Select-SQL -FromTable'
+
+
+    also check out
+        $PSCmdlet.MyInvocation.MyCommand.ScriptBlock
+
+
+    $PSCmdlet.MyInvocation.BoundParameters
+            Key          Value
+            ---          -----
+            inputScript  sql -FromTable *toa
+            cursorColumn 19
+            options
+
+
+    #>
+        # next: tool,tip shows column names
+        [System.Management.Automation.CompletionResult]::new(
+            <# completionText: #> $completionText ?? $_,
+            <# listItemText: #> $listItemText ?? $_,
+            <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
+            <# toolTip: #> $toolTip ?? $_ )
     }
 }
 
@@ -55,7 +230,7 @@ $cBg = $PSStyle.Background.FromRgb('#c99067')
 
 $registerArgumentCompleterSplat = @{
     CommandName   = 'Select-Sql'
-    ParameterName = 'TableName'
+    ParameterName = 'FromTable'
     ScriptBlock   = $SB_completer_PipeWorks_SelectSqlTableName
 }
 'registerCompleter: {0} -{1}' -f @(
@@ -107,9 +282,9 @@ $SB_completer_PipeWorks_SecureSetting = {
 # Register-ArgumentCompleter -CommandName Get-SQLTable -ParameterName ConnectionStringOrSetting -ScriptBlock $NewSB
 # Register-ArgumentCompleter -CommandName Pipeworks\Get-SecureSetting -ParameterName Name -ScriptBlock $NewSB -Verbose
 $registerArgumentCompleterSplat = @{
-    CommandName = 'Get-SecureSetting'
+    CommandName   = 'Get-SecureSetting'
     ParameterName = 'Name'
-    ScriptBlock = $SB_completer_PipeWorks_SecureSetting
+    ScriptBlock   = $SB_completer_PipeWorks_SecureSetting
 }
 
 'registerCompleter: {0} -{1}' -f @(
