@@ -91,6 +91,7 @@ function completer.ValidCompletions.For.SelectSql.TableName {
 
 
     Pipeworks\Get-SQLTable | ForEach-Object {
+        $curTable = $_
         $completionText = $completionText | Join-String -op 'comple: '
         # $listItemText = 'lit' | Join-String -op 'Lit: '
         # $toolTip = $completionText | Join-String -op 'tip: '
@@ -112,16 +113,25 @@ function completer.ValidCompletions.For.SelectSql.TableName {
         $truncMax = [Math]::Min( $render.Length, 80 )
         $renderTrunc = $render.substring(0, $truncMax )
         $renderTrunc
-        @{ truncMax = $TruncMax;  RenderTrunc = $renderTrunc ; Render = $Render }
-        | write-debug
+        @{ truncMax = $TruncMax; RenderTrunc = $renderTrunc ; Render = $Render }
+        | Write-Debug
 
-        $Tooltip += '> ', $renderTrunc -join ''
+        if ($false) {
+            $Tooltip += '> ', $renderTrunc -join ''
+            return [System.Management.Automation.CompletionResult]::new(
+                <# completionText: #> $curTable.TableName ?? $_,
+                <# listItemText: #> $curTable.TableName ?? $_,
+                <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
+                <# toolTip: #> $curTable.TableName )
 
-        return [System.Management.Automation.CompletionResult]::new(
-            <# completionText: #> $completionText ?? $_,
-            <# listItemText: #> $listItemText ?? $_,
-            <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
-            <# toolTip: #> $toolTip ?? $_ )
+        }
+        if ($true) {
+            return [System.Management.Automation.CompletionResult]::new(
+                <# completionText: #> 'a',  #$completionText,
+                <# listItemText: #> 'b',
+                <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
+                <# toolTip: #> 'c' )
+        }
     }
 
 }
@@ -176,7 +186,7 @@ $SB_completer_PipeWorks_SelectSqlTableName = {
 
     completer.ValidCompletions.For.SelectSql.TableName
     | Where-Object {
-        if(-not $WordToComplete) { return $true } # else blanks skip this function
+        if (-not $WordToComplete) { return $true } # else blanks skip this function
         # try regex matching instgead of like
         $regex = .fmt.convert.LikeToRegex -LikeExpression $wordToComplete
         return ($_ -match $regex)
@@ -209,12 +219,15 @@ $SB_completer_PipeWorks_SelectSqlTableName = {
 
 
     #>
+        $completionText = 'compl'
+        $listItemText = 'lit'
+        $toolTip = 'tip'
         # next: tool,tip shows column names
         [System.Management.Automation.CompletionResult]::new(
-            <# completionText: #> $completionText ?? $_,
-            <# listItemText: #> $listItemText ?? $_,
+            <# completionText: #> $completionText,
+            <# listItemText: #> $listItemText,
             <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
-            <# toolTip: #> $toolTip ?? $_ )
+            <# toolTip: #> $toolTip )
     }
 }
 
@@ -231,6 +244,20 @@ $cBg = $PSStyle.Background.FromRgb('#c99067')
 $registerArgumentCompleterSplat = @{
     CommandName   = 'Select-Sql'
     ParameterName = 'FromTable'
+    ScriptBlock   = $SB_completer_PipeWorks_SelectSqlTableName
+}
+'registerCompleter: {0} -{1}' -f @(
+    $registerArgumentCompleterSplat.CommandName
+    $registerArgumentCompleterSplat.ParameterName
+)
+| Join-String -op $cFg -os $PSStyle.Reset
+| Write-Information -infa 'continue'
+
+Register-ArgumentCompleter @registerArgumentCompleterSplat
+
+$registerArgumentCompleterSplat = @{
+    CommandName   = 'Get-SqlTable'
+    ParameterName = 'TableName'
     ScriptBlock   = $SB_completer_PipeWorks_SelectSqlTableName
 }
 'registerCompleter: {0} -{1}' -f @(
