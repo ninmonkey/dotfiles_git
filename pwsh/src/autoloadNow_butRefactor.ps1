@@ -15,7 +15,7 @@ VERBOSE: Checking for updates for module 'PipeScript'.
 nin.psmodulePath.AddNamedGroup Main
 
 $setAliasSplat = @{
-    Name        = '.fmt.md.TableRow'
+    Name        = '.fmt.md.TableRow0'
     Value       = '_fmt_mdTableRow'
     Description = 'experiment with a new command namespace: ''.fmt'''
     ErrorAction = 'ignore'
@@ -83,6 +83,7 @@ function _fmt_mdTableRow {
 }
 
 function b.wrapLikeWildcard {
+
     <#
     .SYNOPSIS
         converts like-patterns to always wrap wildcards
@@ -108,6 +109,8 @@ function b.Text.WrapString {
             u_v_w_x_y_
             z
     #>
+    [Alias('Join.WrapText')]
+    [CmdletBinding()]
     param(
         [Alias('Text')]
         [Parameter(Mandatory, Position = 0)]
@@ -218,7 +221,54 @@ function b.getAll.Props {
         }) | Sort-Object -Unique
 }
 
+New-Alias '.fmt.Html.Table' -Value 'Html.Table.Convert.FromHash' -ea ignore
 
+function Format-Html.Table.FromHashtable {
+    <#
+    .SYNOPSIS
+    Short description
+
+    .DESCRIPTION
+    Long description
+
+    .PARAMETER InputHashtable
+    Parameter description
+
+    .EXAMPLE
+            .fmt.html.Table
+
+    .NOTES
+    General notes
+    #>
+    [CmdletBinding()]
+    [Alias(
+        # namespaces experiment.
+        'Convert.Html.Table.FromHash',
+        'Html.Table.Convert.FromHash',
+        'Html.Table.FromHashtable',
+        '.fmt.Html.Table'
+    )]
+    param(
+        [Parameter(Mandatory)]
+        [hashtable]$InputHashtable
+    )
+    $renderBody = $InputHashTable.GetEnumerator() | ForEach-Object {
+        '<tr><td>{0}</td><td>{1}</td></tr>' -f @(
+            $_.Key ?? '?'
+            $_.Value ?? '?'
+        )
+
+    } | Join-String -sep "`n"
+    $renderFinal = @(
+        '<table>'
+        $renderBody
+        '</table>'
+    ) | Join-String -sep "`n"
+    return $renderFinal
+    # '<table>'
+    # '</table>'
+
+}
 
 
 function Test-ModuleWasModified {

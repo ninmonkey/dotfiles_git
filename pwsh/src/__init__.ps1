@@ -123,8 +123,57 @@ function Get-PipeNames.Prof {
     return [System.IO.Directory]::GetFiles('\\.\pipe\')
 }
 
+$setAliasSplat = @{
+    Name        = '.fmt.md.TableRow'
+    Value       = 'join.Md.TableRow'
+    Description = 'experiment with a new command namespace: ''.fmt'''
+    ErrorAction = 'ignore'
+}
+
+Set-Alias @setAliasSplat
+
 function join.Md.TableRow {
-    # forgive my $input usage
+    <#
+        .EXAMPLE
+    PS> 'a'..'e' | _fmt_mdTableRow
+
+        | a | b | c | d | e |
+
+    .EXAMPLE
+    PS> 'Name', 'Length', 'FullName' | _fmt_mdTableRow
+
+        | Name | Length | FullName |
+    .EXAMPLE
+        (get-date).psobject.properties
+        | %{
+            @(
+                $_.Name
+                $_.Value
+                ($_.Value)?.GetType() ?? "`u{2400}"
+
+            )  | _fmt_mdTableRow
+        }
+
+    #Output:
+        | DisplayHint | DateTime | Microsoft.PowerShell.Commands.DisplayHintType |
+        | DateTime | Wednesday, April 5, 2023 5:55:57 PM | string |
+        | Date | 04/05/2023 00:00:00 | datetime |
+        | Day | 5 | int |
+        | DayOfWeek | Wednesday | System.DayOfWeek |
+        | DayOfYear | 95 | int |
+        | Hour | 17 | int |
+        | Kind | Local | System.DateTimeKind |
+        | Millisecond | 258 | int |
+        | Microsecond | 715 | int |
+        | Nanosecond | 300 | int |
+        | Minute | 55 | int |
+        | Month | 4 | int |
+        | Second | 57 | int |
+        | Ticks | 638163141572587153 | long |
+        | TimeOfDay | 17:55:57.2587153 | timespan |
+        | Year | 2023 | int |
+    #>
+    # forgive my $input usage. use '_fmt_mdTableRow' instead.
     $input | Join-String -sep ' | ' -op '| ' -os ' |' { $_ ? $_ : "`u{2400}" }
 }
 
@@ -1052,7 +1101,7 @@ function New-Lie {
     #         ($Name -as 'type')
     #     ))
 
-    Write-Warning '80% implemented, to fininsh.'
+    write-verbose '80% implemented, to fininsh.'
 
     '{0} isType: {1}, asType: {2}' -f @(
         $TypeInfo
