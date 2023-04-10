@@ -6,8 +6,8 @@ $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 # $env:EDITOR = 'nvim'
 
 $OutputEncoding =
-    [Console]::OutputEncoding =
-    [Console]::InputEncoding  = [System.Text.UTF8Encoding]::new()
+[Console]::OutputEncoding =
+[Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
 
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
@@ -172,18 +172,20 @@ $PSDefaultParameterValues.Remove('*:verbose')
 # root entry point
 . (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1' ))
 
+## completers
 
+<#
+- see: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4>
+- native command sample: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4#example-3-register-a-custom-native-argument-completer>
+#>
 
-
-
+# root entry point
+. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/autoloadNow_ArgumentCompleter-butRefactor.ps1' ))
 
 
 if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 return
-
-
-
 
 if ($global:__nin_enableTraceVerbosity) { "enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCOmmandpath ) '${pid}'" | Write-Warning }
 . (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1')
