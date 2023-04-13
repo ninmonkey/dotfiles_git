@@ -2,6 +2,13 @@
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
+[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
+
+'Encoding: [Console Input/Output: {0}, {1}, $OutputEncoding: {2}]' -f @(
+    # alternate:  @( [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding ) -replace 'System.Text', ''
+    @(  [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding | ForEach-Object WebName )
+) | Write-Verbose -Verbose
+
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
 function Export.PipeScript {
@@ -39,6 +46,125 @@ function Export.PipeScript {
 #     Export-Pipescript -InputPath $pattern
 # }
 
+'finish: nin.Help.Command.OutMarkdown: dotfiles/src/__init__.ps1'
+function nin.Help.Command.OutMarkdown {
+    <#
+    .SYNOPSIS
+        export docs when help -online fails
+    .notes
+        2023-04-04
+        future items:
+            - [ ] make a command listing index page / TOC
+            - [ ] markdown AST or markdown to HTML
+            - [ ] make related links to html page work
+            - [ ] dynamic compile using transpiler ?
+    #>
+    # [Alias()]
+    [CmdletBinding()]
+    param(
+        # list of commands to generate docs for
+        [Alias('ResolvedCommand', 'ReferencedCommand', 'Name')] # todo arg tranform type to CmdInfo
+        [Parameter(Mandatory, Position = 0
+            # , ValueFromPipeline, ValueFromPipelineByPropertyName
+        )]
+        [object[]]$InputObject
+    )
+    begin {
+        "Finish Help command markdown: $PSCommandPath" | Write-Warning
+        $tmpRoot = Get-Item .
+        $ManCfg = @{
+            Root   = Get-Item .
+            Export = @{
+                Root = Get-Item 'h:\temp\manpage' -ea stop
+            }
+        }
+        function __write.markdown.fromCmdHelp {
+            param(
+                $Command,
+                $Namespace,
+
+                $PrintToHost
+            )
+            $destRoot = Join-Path $ManCfg.Export.Root | Get-Item -ea stop
+
+            New-Item -Path $DestRoot -ItemType Directory -Force -ea ignore -Name $Namespace
+            $CmdPathTemplate = '{0}/{1}-{2}.md' # Namespace/Noun-ActualCmd
+            $CmdPathTemplate = '{0}/{2}.md' # Namespace/Command
+
+            $finalPath = Join-Path $destRoot ($CmdPathTemplate -f @(
+                    $Namespace
+                    $Command
+                ))
+
+            $template
+            | Set-Content -Path $finalPath -Force -ea 'continue' -PassThru:$printToHost
+
+            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | Write-Verbose
+            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | Write-Information -infa 'Continue'
+        }
+    }
+    process {
+        # gcm -m AWSPowerShellLambdaTemplate
+        foreach ($cur in $InputObject) {
+            $cur | Join-String 'Exporting Command: {0}' -SingleQuote -prop Name
+        }
+        return
+
+        # foreach($CmdName in $InputObject) {
+        # # wait-debugger
+        #         $CmdName | join-string 'Exporting Command: {0}' -SingleQuote -prop Name
+        #         | write-verbose
+        # }
+    }
+    end {
+        # Get-ChildItem -Path $ManCfg.Export.Root -file *md
+        Get-ChildItem -Path $ManCfg.Export.Root -File
+        | Sort-Object -Property ModuleName, Name
+        | Join-String -format '- <file:///{0}> ' -sep "`n" -op "Wrote:`n" {
+            '{0} \ {1}' -f @(
+                $_.ModuleName ?? "<`u{2400}>"
+                $_.Name ?? "<`u{2400}>"
+            )
+        }
+    }
+
+}
+function prof.Html.Table.FromHash {
+    <#
+    .SYNOPSIS
+        render html table
+    .example
+        $selectEnvVarKeys = 'TMP', 'TEMP', 'windir'
+        $selectKeysOnlyHash = @{}
+        ls env: | ?{
+            $_.Name -in @($selectEnvVarKeys)
+        } | %{ $selectKeysOnlyHash[$_.Name] = $_.Value}
+
+        prof.Html.Table.FromHash $SelectKeysOnlyHash
+
+        #>
+    param(
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory)]
+        [hashtable]$InputHashtable
+    )
+    $renderBody = $InputHashTable.GetEnumerator() | ForEach-Object {
+        '<tr><td>{0}</td><td>{1}</td></tr>' -f @(
+            $_.Key ?? '?'
+            $_.Value ?? '?'
+        )
+
+    } | Join-String -sep "`n"
+    $renderFinal = @(
+        '<table>'
+        $renderBody
+        '</table>'
+    ) | Join-String -sep "`n"
+    return $renderFinal
+    # '<table>'
+    # '</table>'
+
+}
 function Code.File.Get.End {
     # jump to  bottom of file, using number outside limits
     [CmdletBinding()]
@@ -50,11 +176,11 @@ function Code.File.Get.End {
         [string]$PathName
     )
     $TargetFile = Get-Item -ea stop $PathName
-    $renderPath = '{0}:{1}' -f @( gi  -ea stop $TargetFile ;   99999999; )
-    & code @('--goto',  $renderPath )
+    $renderPath = '{0}:{1}' -f @( Get-Item -ea stop $TargetFile ; 99999999; )
+    & code @('--goto', $renderPath )
 }
 
-Write-Warning 'move aws completer to typewriter'
+## todo: Write-Warning 'move aws completer to typewriter'
 Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
     <#
     .SYNOPSIS
@@ -178,20 +304,28 @@ function join.Md.TableRow {
 }
 
 function Write-GHRepoSummary {
+    <#
+    .SYNOPSIS
+        summarzie GH repos, and export the newest as a markdown table
+    .EXAMPLE
+        Write-GHRepoSummary 'Microsoft'
+    .EXAMPLE
+        Write-GHRepoSummary 'ninmonkey'
+
+    #>
     param(
-         [string]$Owner
+        [string]$Owner
     )@(
         'name', 'desc', 'visible', 'date' | join.Md.TableRow
         '.', '.', '.', '.' | Join.Md.TableRow
         & gh repo list $Owner
-        | select -first 5
+        | Select-Object -First 5
         | ForEach-Object {
             $_ -split '\t' | join.Md.TableRow
         } | Join-String -sep "`n"
     ) | Join-String -sep "`n"
 }
 
-Write-GHRepoSummary 'Microsoft'
 
 function nin.Tablify.FromText__iter0 {
     <#
@@ -336,6 +470,8 @@ function prof.Get-LinuxManPage {
 
     it's just like the in person invoke
 
+    .EXAMPLE
+        man grep
     .EXAMPLE
         # ex: wsl --exec man uname
     .NOTES
@@ -514,89 +650,7 @@ function aws.abbrKeyName {
     }
 }
 
-Write-Warning 'finish: nin.Help.Command.OutMarkdown'
-function nin.Help.Command.OutMarkdown {
-    <#
-    .SYNOPSIS
-        export docs when help -online fails
-    .notes
-        2023-04-04
-        future items:
-            - [ ] make a command listing index page / TOC
-            - [ ] markdown AST or markdown to HTML
-            - [ ] make related links to html page work
-            - [ ] dynamic compile using transpiler ?
-    #>
-    # [Alias()]
-    [CmdletBinding()]
-    param(
-        # list of commands to generate docs for
-        [Alias('ResolvedCommand', 'ReferencedCommand', 'Name')] # todo arg tranform type to CmdInfo
-        [Parameter(Mandatory, Position = 0
-            # , ValueFromPipeline, ValueFromPipelineByPropertyName
-        )]
-        [object[]]$InputObject
-    )
-    begin {
-        "Finish Help command markdown: $PSCommandPath" | Write-Warning
-        $tmpRoot = Get-Item .
-        $ManCfg = @{
-            Root   = Get-Item .
-            Export = @{
-                Root = Get-Item 'h:\temp\manpage' -ea stop
-            }
-        }
-        function __write.markdown.fromCmdHelp {
-            param(
-                $Command,
-                $Namespace,
 
-                $PrintToHost
-            )
-            $destRoot = Join-Path $ManCfg.Export.Root | Get-Item -ea stop
-
-            New-Item -Path $DestRoot -ItemType Directory -Force -ea ignore -Name $Namespace
-            $CmdPathTemplate = '{0}/{1}-{2}.md' # Namespace/Noun-ActualCmd
-            $CmdPathTemplate = '{0}/{2}.md' # Namespace/Command
-
-            $finalPath = Join-Path $destRoot ($CmdPathTemplate -f @(
-                    $Namespace
-                    $Command
-                ))
-
-            $template
-            | Set-Content -Path $finalPath -Force -ea 'continue' -PassThru:$printToHost
-
-            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | Write-Verbose
-            $finalPath | Join-String -op 'Wrote: "{0}"' -sep "`n" | Join-String -sep "`n" | Write-Information -infa 'Continue'
-        }
-    }
-    process {
-        # gcm -m AWSPowerShellLambdaTemplate
-        foreach ($cur in $InputObject) {
-            $cur | Join-String 'Exporting Command: {0}' -SingleQuote -prop Name
-        }
-        return
-
-        # foreach($CmdName in $InputObject) {
-        # # wait-debugger
-        #         $CmdName | join-string 'Exporting Command: {0}' -SingleQuote -prop Name
-        #         | write-verbose
-        # }
-    }
-    end {
-        # Get-ChildItem -Path $ManCfg.Export.Root -file *md
-        Get-ChildItem -Path $ManCfg.Export.Root -File
-        | Sort-Object -Property ModuleName, Name
-        | Join-String -format '- <file:///{0}> ' -sep "`n" -op "Wrote:`n" {
-            '{0} \ {1}' -f @(
-                $_.ModuleName ?? "<`u{2400}>"
-                $_.Name ?? "<`u{2400}>"
-            )
-        }
-    }
-
-}
 # $_cmds = Get-Command -m AwsLambdaPSCore
 # nin.Help.Command.OutMarkdown -Debug -verbose -inputobject $_cmds
 function nin.PSModulePath.Clean {
@@ -734,15 +788,15 @@ function nin.PSModulePath.AddNamedGroup {
 
 nin.PSModulePath.Clean
 # nin.PSModulePath.AddNamed -GroupName AWS, JumpCloud   -verbose -debug
-nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
+nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
     'E:/PSModulePath.2023.root\Main'
     'H:/data/2023/pwsh/PsModules/ExcelAnt/Output'
     'H:/data/2023/pwsh/PsModules/TypeWriter/Build'
     'H:/data/2023/pwsh/PsModules'
 )
 
-Write-Warning 'maybe imports'
-nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
+
+nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
     'C:/Users/cppmo_000/SkyDrive/Documents/2022/client_BDG/self/bdg_lib'
     'C:/Users/cppmo_000/SkyDrive/Documents/2021/powershell/My_Github'
 )
@@ -776,6 +830,8 @@ function Help.Online {
     .EXAMPLE
         gcm get-help | Help.Param showwindow, role
     #>
+    [Alias('Ho')]
+    param()
     $Obj = $Input
     try {
         $Query = Get-Command $Obj | Get-Help -Online -ea stop
@@ -1046,12 +1102,7 @@ function GoCl {
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 $PSStyle.OutputRendering = [Management.Automation.OutputRendering]::Ansi # wip dev,nin: todo:2022-03 # Keep colors when piping Pwsh in 7.2
 
-[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
-'Encoding: [Console Input/Output: {0}, {1}, $OutputEncoding: {2}]' -f @(
-    # alternate:  @( [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding ) -replace 'System.Text', ''
-    @(  [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding | ForEach-Object WebName )
-) | Write-Verbose -Verbose
 
 $base = Get-Item $PSScriptRoot
 . (Get-Item -ea 'continue' (Join-Path $Base 'Build-ProfileCustomMembers.ps1'))
@@ -1085,6 +1136,8 @@ function New-Lie {
     .SYNOPSIS
         TypeInfo lies, type accellerator , lies.
     .EXAMPLE
+        New-Lie -Name 'Lie' -TypeInfo ([System.Collections.Generic.List`1])
+    .EXAMPLE
         $xlr8r::Add( 'Lie', ([System.Collections.Generic.List`1]) )
     .NOTES
         future: Get-Lies. show lies. (or, at least the user's lies)
@@ -1101,8 +1154,6 @@ function New-Lie {
     #         ($Name -as 'type')
     #     ))
 
-    write-verbose '80% implemented, to fininsh.'
-
     '{0} isType: {1}, asType: {2}' -f @(
         $TypeInfo
         $TypeInfo -is 'type'
@@ -1116,8 +1167,11 @@ function New-Lie {
         $TypeInfo
     ) | Write-Information -infa 'continue'
 }
+New-Lie -Name 'List' -TypeInfo ([System.Collections.Generic.List`1])
+New-Lie -Name 'Lie' -TypeInfo ([System.Collections.Generic.List`1])
+New-Lie -Name 'Lyetem' -TypeInfo ([System.Collections.Generic.List`1])
 
-$xlr8r::Add( 'Lie', ([System.Collections.Generic.IList`1]) )
+# $xlr8r::Add( 'Lie', ([System.Collections.Generic.IList`1]) )
 # New-Lie -name 'Lie' -TypeInfo [System.Collections.Generic.iList`1]
 # New-Lie -name 'Lie' -TypeInfo [System.Collections.Generic.List`1]
 
@@ -1248,42 +1302,7 @@ function fAll {
     }
 }
 
-function prof.Html.Table.FromHash {
-    <#
-    .SYNOPSIS
-        render html table
-    .example
-        $selectEnvVarKeys = 'TMP', 'TEMP', 'windir'
-        $selectKeysOnlyHash = @{}
-        ls env: | ?{
-            $_.Name -in @($selectEnvVarKeys)
-        } | %{ $selectKeysOnlyHash[$_.Name] = $_.Value}
 
-        prof.Html.Table.FromHash $SelectKeysOnlyHash
-
-        #>
-    param(
-        [ValidateNotNullOrEmpty()]
-        [Parameter(Mandatory)]
-        [hashtable]$InputHashtable
-    )
-    $renderBody = $InputHashTable.GetEnumerator() | ForEach-Object {
-        '<tr><td>{0}</td><td>{1}</td></tr>' -f @(
-            $_.Key ?? '?'
-            $_.Value ?? '?'
-        )
-
-    } | Join-String -sep "`n"
-    $renderFinal = @(
-        '<table>'
-        $renderBody
-        '</table>'
-    ) | Join-String -sep "`n"
-    return $renderFinal
-    # '<table>'
-    # '</table>'
-
-}
 
 function prof.Io2 {
     <#
