@@ -5,6 +5,11 @@ $global:__ninBag.Profile.AutoLoad_ToRefactor = $PSCommandPath | Get-Item
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`"" | Write-Debug; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.04 #>
 
 # Import-module ninmonkey.console -DisableNameChecking *>$null
+<#
+see also:
+    lazy completer: <https://github.com/Cologler/PSLazyCompletion/blob/master/PSLazyCompletion.psm1>
+
+#>
 
 Import-Module Pipeworks -PassThru # can register fail if the module is not yet imported? (ie: break the alias)
 
@@ -12,6 +17,8 @@ New-Lie -Name 'sma.CompletionRes' -TypeInfo ([System.Management.Automation.Compl
 New-Lie -Name 'sma.CompletionResType' -TypeInfo ([System.Management.Automation.CompletionResultType])
 
 $script:____zTestConn ??= Get-SQLTable -ConnectionStringOrSetting 'AzureSqlConnectionString'
+
+. (gi -ea 'continue' (Join-path $PSScriptRoot 'indentedautomation.find-customArgCompleters.ps1'))
 
 function .fmt.Convert.PipeworksTable.ToWord {
     <#

@@ -6,8 +6,9 @@ $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 # $env:EDITOR = 'nvim'
 
 $OutputEncoding =
-[Console]::OutputEncoding =
-[Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
+    [Console]::OutputEncoding =
+    [Console]::InputEncoding =
+    [System.Text.UTF8Encoding]::new()
 
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
