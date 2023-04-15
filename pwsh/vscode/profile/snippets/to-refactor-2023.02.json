@@ -1,0 +1,111 @@
+{
+    // new snippets started 2023-01-24
+    "parameters ▸ mandatory": {
+        /* first tab: highlight optionals,
+        2nd tab: end
+        */
+        "description": "parameter attribute template: mandatory",
+        "scope": "powershell",
+        "prefix": "param mandatory",
+        "body": [
+            "[Parameter(${1:Mandatory})]$0",
+        ],
+    },
+    "function ▸ CmdletBinding": {
+        /*
+        */
+        "description": "[CmdletBinding()] attribute",
+        "scope": "powershell",
+        "prefix": "CmdletBindng Binding",
+        "body": [
+            "[CmdletBinding(${1:Mandatory})]$0",
+        ],
+    },
+    "function ▸ full template": {
+        /*
+        */
+        "description": "Function full template",
+        "scope": "powershell",
+        "prefix": "function full",
+        "body": [
+            "function ${1:FuncName} {",
+            "    <#",
+            "    .SYNOPSIS",
+            "        .",
+            "    .EXAMPLE",
+            "        .",
+            "    #>",
+            "    [CmdletBinding()]",
+            "    param(",
+            "        $2",
+            "    )",
+            "    begin {}",
+            "    process { $0 }",
+            "    end {}",
+            "}",
+        ],
+    },
+    "debug⁞insert silly trace": {
+        /*
+		quick examples
+			- <https://macromates.com/manual/en/snippets>
+				- choice boxes + cheat sheet vars and <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_choice>
+				- variables: <https://macromates.com/manual/en/environment_variables>
+				- regex special syntax <https://macromates.com/manual/en/regular_expressions#conditional-insertions>
+			- blog on addon <https://www.freecodecamp.org/news/definitive-guide-to-snippets-visual-studio-code/>
+			- addon: <https://marketplace.visualstudio.com/items?itemName=robole.snippets-ranger>
+		*/
+        "scope": "powershell,ps1",
+        "prefix": "debug.tracePath",
+        "body": [
+            // super close but ${identifier} syntax is being interpreted as tabstops
+            // "\"⊢🐸 ↪ enter Pid: '$$pid' `\"$$PSCommandPath`\"\" | write-warning; [Collections.Generic.List[Object]]$$global:__ninPathInvokeTrace ??= @(); $$global:__ninPathInvokeTrace.Add($$PSCommandPath);",
+            "\"⊢🐸 ↪ enter Pid: '$$pid' `\"\\$$PSCommandPath`\"\" | write-warning; [Collections.Generic.List[Object]]$$global:__ninPathInvokeTrace ??= @(); $$global:__ninPathInvokeTrace.Add($$PSCommandPath);  <# 2023.02 #>",
+            "",
+            "${TM_SELECTED_TEXT}",
+            "",
+            "\"⊢🐸 ↩ exit  Pid: '$$pid' `\"$$PSCommandPath`\"\" | write-warning; [Collections.Generic.List[Object]]$$global:__ninPathInvokeTrace ??= @(); $$global:__ninPathInvokeTrace.Add($$PSCommandPath);  <# 2023.02 #>"
+        ],
+        "description": "silly log to console"
+    },
+    "Pwsh⁞Generics.List⁞multiLine": {
+        /*
+
+
+		*/
+        "description": "generics.list.multiLine",
+        "scope": "powershell,ps1,md,markdown",
+        "prefix": "list.generic.multiLine",
+        "body": [
+            "[Collections.Generic.List[Object]]\\$${1:Items} = @(",
+            "",
+            "    ${2:${TM_SELECTED_TEXT}}",
+            "",
+            ")",
+            // "sdf[fdsf", "fdsf]",
+            // "${TM_SELECTED_TEXT}",
+        ],
+    },
+    "Pwsh⁞Generics.List⁞singleLine": {
+        /*
+            [Collections.Generic.List[Object]]$Items = @( <selection> )
+
+		*/
+        "description": "generics.list.singleLine",
+        "scope": "powershell,ps1,md,markdown",
+        "prefix": "list.generic.singleLine",
+        "body": [
+            "[Collections.Generic.List[Object]]\\$${1:Items} = @( ${2:${TM_SELECTED_TEXT}} 3 )",
+            // "sdf[fdsf", "fdsf]",
+            // "${TM_SELECTED_TEXT}",
+        ],
+    },
+    "unicode⁞separator": {
+        // "scope": "powershell,ps1",
+        "prefix": "unicode.delim.separators",
+        "body": [
+            "▸·⇢⁞ ┐⇽▂⁞🐛💻▸⇢📄📁⁞ ┐⇽▂🏠🖧"
+        ],
+        // "description": "silly log to console"
+    },
+}
