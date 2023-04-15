@@ -1163,9 +1163,13 @@ function __normalize.HexString {
 
 
     #>
-    param()
+    param(
+        [Alias('Text', 'Hex', 'HexColor')]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$InputHexString
+    )
     process {
-        $_ -replace '^#+', '' | Join-String -op '#'
+        $InputHexString -replace '^#+', '' | Join-String -op '#'
     }
 }
 
