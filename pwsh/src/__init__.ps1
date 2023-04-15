@@ -1140,6 +1140,67 @@ function Remove-Lie {
         $script:xlr8r.Keys.count
     ) | Write-Information -infa 'continue'
 }
+
+
+function __normalize.HexString {
+    <#
+    .SYNOPSIS
+    normalize hexstrings to always include a hash prefix
+
+    .EXAMPLE
+    PS>
+    '#345', '###324', '123'
+        | __normalize.HexString
+        | Should -beExactly @('#345', '#324', '#123' )
+    .NOTES
+        currently doesn't care how many digits, or which characters are involved
+        future:
+
+    validateMustMatchOneRegex:
+        '#?[\da-fA-F]{6}',
+        '#?[\da-fA-F]{8}'
+        '#?[\da-fA-F]{2,3}' # css allows:
+
+
+    #>
+    param()
+    process {
+        $_ -replace '^#+', '' | Join-String -op '#'
+    }
+}
+
+
+function __saveColor__renderColorName {
+    [Alias('.fmt.color.renderHexName')]
+    [CmdletBinding()]
+    param(
+        [Parameter()]
+        $Name = 'noName',
+
+        [Parameter(Mandatory)]
+        $HexColor
+    )
+    $cleanStr = $HexColor -replace '^#', ''
+    if ($cleanStr.Length -notin @(6, 8)) {
+        throw "Unexpected color, expects 6/8 digits: '$HexColor'"
+    }
+    $HexStr = '#{0}' -f @(
+        $cleanStr
+    )
+
+    $renderColorPair = @{
+        OutputPrefix = $PSStyle.Foreground.FromRgb($HexStr)
+        OutputSuffix = $PSStyle.Reset
+    }
+
+    '{0} = #{1}' -f @(
+        $Name
+        $HexColor
+    ) | Join-String @renderColorPair
+    # | Write-Information -infa 'continue'
+}
+
+
 function SaveColor {
     <#
     .SYNOPSIS
@@ -1152,7 +1213,13 @@ function SaveColor {
     An example
 
     .NOTES
-    General notes
+
+    related, see also:
+        __saveColor__renderColorName
+        __normalize.HexString
+        SaveColor
+        GetColor
+        ImportColor
     #>
     [Alias('NewColor')]
     [CmdletBinding()]
@@ -1164,86 +1231,193 @@ function SaveColor {
 
         [ValidateNotNullOrEmpty()]
         [Parameter(Mandatory, Position = 0)]
-        [string]$HexColor
+        [string]$HexColor,
+
+        [switch]$Strict
 
     )
-
+    $Config = @{
+        AlwaysSaveOnAssign = $true
+    }
     $script:__newColorState ??= @{}
     $state = $script:__newColorState
     if ($state.Keys.Count -eq 0) {
         # warn once
         Write-Warning 'Colors not saved across sessions yet'
     }
-    $cleanStr = $HexColor -replace '^#', ''
+    $cleanStr = $HexColor -replace '^#+', '#' # just one
+    $cleanStr = $HexColor -replace '^#+', '#' # or none
     if ($cleanStr.Length -notin @(6, 8)) {
         throw "Unexpected color, expects 6/8 digits: '$HexColor'"
     }
-    $HexStr = '#{0}' -f @(
+    $HexStr = '{0}' -f @(
         $cleanStr
     )
     if ($State.ContainsKey($Name)) {
-        if ($State[$Name] -eq $HexStr) {
+        if ($State[$Name] -ne $HexStr) {
             #no change, no error
+            __saveColor__renderColorName -Name $Name -HexColor $HexColor
+            | Join-String -op 'Different Color AlreadyExists!'
+            | Write-Verbose
+            # | Write-Verbose -Verbose
+            if ($Strict) {
+                # or the inverse, using force?
+                throw 'Different color already exists'
+            }
         }
-        throw 'Color already exists'
+        else {
+            __saveColor__renderColorName -Name $Name -HexColor $HexColor
+            | Join-String -op 'Same Color Already Saved. '
+            | Write-Verbose -Verbose
+        }
     }
 
-    $state['Name'] = $HexStr
-    'saved: {0} = {1}' -f @(
-        $Name
-        $HexColor
-    ) | Join-String -op $PSStyle.Foreground.FromRgb($HexStr) -os $PSStyle.Reset
-    | Write-Information -infa 'continue'
+    $state[ $Name  ] = $HexStr
+
+    __saveColor__renderColorName -Name $Name -HexColor $HexColor
+    | Join-String -op 'Saved '
+    | Write-Information -infa 'Continue'
+
+    # 'save colors'
+    if($Config.AlwaysSaveOnAssign) {
+        GetColor -Json
+        | Set-Content -Path (Join-Path $Env:Nin_Dotfiles 'store' 'saved_colors.json')
+    }
+
+
+    # 'saved: {0} = {1}' -f @(
+    #     $Name
+    #     $HexColor
+    # ) | Join-String -op $PSStyle.Foreground.FromRgb($HexStr) -os $PSStyle.Reset
+    # | Write-Information -infa 'continue'
 }
 
 NewColor -Name 'blue.dim' '3c77d3'
 NewColor -Name 'green.dim' '73b254'
 
+function ImportColor {
+    [CmdletBinding()]
+    param(
 
+        [switch]$ClearCurrent,
+        [switch]$ListAll
+    )
+    $script:__newColorState ??= @{}
+    $state = $script:__newColorState
+    if($ClearCurrent) {
+        $state.clear()
+    }
+
+    $Path = Join-Path $Env:Nin_Dotfiles 'store' 'saved_colors.json'
+    $jsonConfig? = Get-Item -ea 'ignore' $Path
+    if(-not $jsonConfig?) {
+        throw ($Path | Join-String -f 'No saved colors at {0}!')
+    }
+
+    $json = Get-Content -Path $JsonConfig?
+    $json | ConvertFrom-Json
+    | ForEach-Object {
+        SaveColor -Name $_.Name -HexColor $_.HexColor
+    }
+
+
+    $colorsHash = gc -Path $jsonConfig? | ConvertFrom-Json -AsHashtable
+    $state = $colorsHash
+
+    if($ListAll) {
+        GetColor -ListAll
+    }
+    $state.keys.count | Join-String -f 'Imported {0} colors' | Write-Information -infa 'continue'
+}
 function GetColor {
+    <#
+    .EXAMPLE
+        # Renders color values
+        PS> GetColor -ListAll
+
+            blue = ##234991
+            blue.dim = #3c77d3
+            green.dim = #73b254
+            dark.teal = #2a5153
+            Name = ##73b254
+            5 items
+    .EXAMPLE
+        # as exportable json
+        PS> GetColor -Json
+
+        {   "blue":      "#234991",
+            "blue.dim":  "3c77d3",
+            "green.dim": "73b254",
+            "dark.teal": "2a5153",
+            "Name":      "#73b254" }
+    #>
     [CmdletBinding(DefaultParameterSetName = 'GetColor')]
     param(
         # autocomplete known colors
         [ValidateNotNullOrEmpty()]
-        [Parameter(Mandatory, Position = 0 ,parameterSetName = 'GetColor')]
+        [Parameter(Mandatory, Position = 0 , parameterSetName = 'GetColor')]
         [string]$ColorLabel,
 
         [Parameter(Mandatory, parameterSetName = 'ListOnly')]
-        [switch]$ListAll
+        [switch]$ListAll,
+        [switch]$Loose,
+
+        [Parameter(parameterSetName = 'JsonOnly')]
+        [switch]$Json
     )
 
 
+    $script:__newColorState ??= @{}
     $state = $script:__newColorState
+
     switch ($PSCmdlet.ParameterSetName) {
+        'JsonOnly' {
+            if ($Json) {
+                return $State | ConvertTo-Json -Depth 2
+            }
+        }
         'ListOnly' {
-            $state.keys.count | Join-String -f 'Colors: {0}'
-            $state.Keys | Join-String -sep ', ' |  Write-Information -infa 'continue'
+            $state.Keys | Join-String -sep ', '
+            | Join-String -op ($state.keys.count | Join-String -f 'Colors: {0} = ')
+            | Write-Verbose
+
+            $state.GetEnumerator()
+            | CountOf 6>&1 # optional
+            | ForEach-Object {
+                '{0} => {1}' -f @(
+                    $_.key
+                    $_.Value
+                )
+            } | Join-String -sep "`n" | Write-Verbose
+
+            $state.GEtEnumerator()
+            | CountOf
+            | ForEach-Object {
+                __saveColor__renderColorName -Name $_.key -HexColor $_.Value
+            }
             return
         }
         default { }
     }
-
-
-    if ($ListAll) {
-        $state.GetEnumerator()
-        | CountOf # optional
-        | ForEach-Object {
-            '{0} => {1}' -f @(
-                $_.key
-                $_.Value
-            )
-        }
-        return
-    }
-    # hr
-
     if ($State.ContainsKey($ColorLabel)) {
         return $state[$ColorLabel]
     }
     else {
-        # else soft error, try partial match, if  match is exactly one then use it.
-        throw 'Color not found'
+        if (-not $Loose) {
+            # else soft error, try partial match, if  match is exactly one then use it.
+            throw ('Color not found! Expected: {0}' -f @(
+                    $state.keys -join ', '
+                ))
+        }
+        # 'loose'
+        $key? = $State.Keys -match $ColorLabel | Select-Object -First 1
+        if ($Key?) {
+            return $state[ $Key? ]
+        }
+
     }
+    throw 'Failed to find loose color keys'
+
 }
 
 function New-Lie {
