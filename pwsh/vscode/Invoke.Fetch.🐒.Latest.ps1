@@ -11,7 +11,7 @@ $FetchConfig += @{
     Import = @{
         Profile = @{
             'Settings.json' = Get-Item "$Env:AppData\Code\User\settings.json"
-            'Snippets' = Get-Item "$Env:AppData\Code\User\Snippets"
+            'Snippets'      = Get-Item "$Env:AppData\Code\User\Snippets"
 
         }
     }
@@ -19,7 +19,7 @@ $FetchConfig += @{
         Profile = @{
             # 'Settings.json' = Join-Path $FetchConfig.ExportRoot # 'settings.json'
             'Settings.json' = $FetchConfig.ExportRoot # 'settings.json'
-            'Snippets' = $FetchConfig.ExportRoot  # 'settings.json'
+            'Snippets'      = $FetchConfig.ExportRoot  # 'settings.json'
         }
     }
 }
@@ -229,7 +229,16 @@ if ($true) {
 
 
 
-    Get-ChildItem 'C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets'
+    $copyItemRecurse = @{
+        Path        = $FetchConfig.Import.Profile.'Settings.json'
+        Destination = $FetchConfig.Export.Profile.Snippets.FullName
+        Recurse     = $true
+        PassThru    = $true
+        Verbose     = $true
+        # WhatIf      = $true
+    }
+
+    Copy-Item @copyItemRecurse
 
 }
 if ($false) {
