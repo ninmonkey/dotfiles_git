@@ -1199,136 +1199,6 @@ function __saveColor__renderColorName {
     ) | Join-String @renderColorPair
     # | Write-Information -infa 'continue'
 }
-
-
-function SaveColor {
-    <#
-    .SYNOPSIS
-    Named color aliases, preserved across sessions
-
-    .DESCRIPTION
-    Long description
-
-    .EXAMPLE
-    An example
-
-    .NOTES
-
-    related, see also:
-        __saveColor__renderColorName
-        __normalize.HexString
-        SaveColor
-        GetColor
-        ImportColor
-    #>
-    [Alias('NewColor')]
-    [CmdletBinding()]
-    param(
-        [Alias('Color', 'ColorName', 'Label')]
-        [ValidateNotNullOrEmpty()]
-        [Parameter(Mandatory, Position = 0)]
-        [string]$Name,
-
-        [ValidateNotNullOrEmpty()]
-        [Parameter(Mandatory, Position = 0)]
-        [string]$HexColor,
-
-        [switch]$Strict
-
-    )
-    $Config = @{
-        AlwaysSaveOnAssign = $true
-    }
-    $script:__newColorState ??= @{}
-    $state = $script:__newColorState
-    if ($state.Keys.Count -eq 0) {
-        # warn once
-        Write-Warning 'Colors not saved across sessions yet'
-    }
-    $cleanStr = $HexColor -replace '^#+', '#' # just one
-    $cleanStr = $HexColor -replace '^#+', '#' # or none
-    if ($cleanStr.Length -notin @(6, 8)) {
-        throw "Unexpected color, expects 6/8 digits: '$HexColor'"
-    }
-    $HexStr = '{0}' -f @(
-        $cleanStr
-    )
-    if ($State.ContainsKey($Name)) {
-        if ($State[$Name] -ne $HexStr) {
-            #no change, no error
-            __saveColor__renderColorName -Name $Name -HexColor $HexColor
-            | Join-String -op 'Different Color AlreadyExists!'
-            | Write-Verbose
-            # | Write-Verbose -Verbose
-            if ($Strict) {
-                # or the inverse, using force?
-                throw 'Different color already exists'
-            }
-        }
-        else {
-            __saveColor__renderColorName -Name $Name -HexColor $HexColor
-            | Join-String -op 'Same Color Already Saved. '
-            | Write-Verbose -Verbose
-        }
-    }
-
-    $state[ $Name  ] = $HexStr
-
-    __saveColor__renderColorName -Name $Name -HexColor $HexColor
-    | Join-String -op 'Saved '
-    | Write-Information -infa 'Continue'
-
-    # 'save colors'
-    if($Config.AlwaysSaveOnAssign) {
-        GetColor -Json
-        | Set-Content -Path (Join-Path $Env:Nin_Dotfiles 'store' 'saved_colors.json')
-    }
-
-
-    # 'saved: {0} = {1}' -f @(
-    #     $Name
-    #     $HexColor
-    # ) | Join-String -op $PSStyle.Foreground.FromRgb($HexStr) -os $PSStyle.Reset
-    # | Write-Information -infa 'continue'
-}
-
-NewColor -Name 'blue.dim' '3c77d3'
-NewColor -Name 'green.dim' '73b254'
-
-function ImportColor {
-    [CmdletBinding()]
-    param(
-
-        [switch]$ClearCurrent,
-        [switch]$ListAll
-    )
-    $script:__newColorState ??= @{}
-    $state = $script:__newColorState
-    if($ClearCurrent) {
-        $state.clear()
-    }
-
-    $Path = Join-Path $Env:Nin_Dotfiles 'store' 'saved_colors.json'
-    $jsonConfig? = Get-Item -ea 'ignore' $Path
-    if(-not $jsonConfig?) {
-        throw ($Path | Join-String -f 'No saved colors at {0}!')
-    }
-
-    $json = Get-Content -Path $JsonConfig?
-    $json | ConvertFrom-Json
-    | ForEach-Object {
-        SaveColor -Name $_.Name -HexColor $_.HexColor
-    }
-
-
-    $colorsHash = gc -Path $jsonConfig? | ConvertFrom-Json -AsHashtable
-    $state = $colorsHash
-
-    if($ListAll) {
-        GetColor -ListAll
-    }
-    $state.keys.count | Join-String -f 'Imported {0} colors' | Write-Information -infa 'continue'
-}
 function GetColor {
     <#
     .EXAMPLE
@@ -1418,6 +1288,204 @@ function GetColor {
     }
     throw 'Failed to find loose color keys'
 
+}
+
+function __validate.HexString {
+    <#
+    .SYNOPSIS
+        assert a string is as close to a valid hex str with variations
+    .EXAMPLE
+    PS>
+        '2141j14', '222323', '#12341234', '#12345'
+            | __validate.HexString
+            | Should -BeExactly @($false, $true, $true, $false)
+    #>
+    [Alias(
+        '__assert.valid.HexString',
+        'HexString.ParseExact'
+    )]
+    [CmdletBinding()]
+    param(
+        [Alias('HexString')]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
+        $InputText
+    )
+    begin {
+        $Config = @{
+            AllowedLengths = 6, 8 # 2, 3
+            AlwaysAssert = $false
+        }
+        if($PSCmdlet.MyInvocation.MyCommand.Name -match 'assert') {
+            $Config.AlwaysAssert = $True
+        }
+    }
+    process {
+
+
+
+        $Raw = $InputText
+        $WithoutHash = $Raw -replace '#', ''
+        $Regex = @{
+            AllowedWord = '^#?[\d+a-fA-F]+$'
+            AllowedDigits = '^[\d+a-fA-F]+$'
+        }
+        $ValidLength = $WithoutHash.Length -in @(6, 8)
+        $cases = @(
+            $ValidLength
+            $Raw -match $Regex.AllowedWord
+            $WithoutHash -match $Regex.AllowedDigits
+            $WithoutHash -match $Regex.AllowedWord
+        )
+        $anyFalse = (@($cases) -eq $false).count -gt 0
+
+        if($Config.AlwaysAssert){
+            throw ('AssertIsValidHexString: Failed! "{0}"' -f @(
+                $InputText
+            ))
+        }
+        return -not $AnyFalse
+    }
+}
+
+function SaveColor {
+    <#
+    .SYNOPSIS
+    Named color aliases, preserved across sessions
+
+    .DESCRIPTION
+    Long description
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+
+    related, see also:
+        __saveColor__renderColorName
+        __normalize.HexString
+        SaveColor
+        GetColor
+        ImportColor
+    #>
+    [Alias('NewColor')]
+    [CmdletBinding()]
+    param(
+        [Alias('Color', 'ColorName', 'Label')]
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Name,
+
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$HexColor,
+
+        [switch]$Strict
+
+    )
+    $Config = @{
+        AlwaysSaveOnAssign = $true
+    }
+    $script:__newColorState ??= @{}
+    $state = $script:__newColorState
+
+    $cleanStr = $HexColor -replace '^#+', '#' # just one
+    $cleanStr = $HexColor -replace '^#+', '#' # or none
+    $cleanStr = __normalize.HexString -HexColor $HexColor
+    $cleanDigits = $cleanStr -replace '#+', ''
+    if ($cleanDigits.Length -notin @(6, 8)) {
+        # Wait-Debugger
+        Write-Error "Unexpected color, expects 6/8 digits: '$HexColor'"
+        return
+    }
+    $HexStr = '{0}' -f @(
+        $cleanDigits
+    )
+    if ($State.ContainsKey($Name)) {
+        if ($State[$Name] -ne $HexStr) {
+            #no change, no error
+            __saveColor__renderColorName -Name $Name -HexColor $HexColor
+            | Join-String -op 'Different Color AlreadyExists!'
+            | Write-Verbose
+            # | Write-Verbose -Verbose
+            if ($Strict) {
+                # or the inverse, using force?
+                throw 'Different color already exists'
+            }
+        }
+        else {
+            __saveColor__renderColorName -Name $Name -HexColor $HexColor
+            | Join-String -op 'Same Color Already Saved. '
+            | Write-Verbose #-Verbose
+        }
+    }
+
+    $state[ $Name  ] = $HexStr
+
+    __saveColor__renderColorName -Name $Name -HexColor $HexColor
+    | Join-String -op 'Saved '
+    | Write-Information -infa 'Continue'
+
+    # 'save colors'
+    if ($Config.AlwaysSaveOnAssign) {
+        GetColor -Json
+        | Set-Content -Path (Join-Path $Env:Nin_Dotfiles 'store' 'saved_colors.json')
+    }
+
+
+    # 'saved: {0} = {1}' -f @(
+    #     $Name
+    #     $HexColor
+    # ) | Join-String -op $PSStyle.Foreground.FromRgb($HexStr) -os $PSStyle.Reset
+    # | Write-Information -infa 'continue'
+}
+
+# SaveColor -Name 'blue' '#234991'
+# SaveColor -Name 'blue.dim' '#3c77d3'
+# SaveColor -Name 'green.dim' '#73b254'
+# SaveColor -Name 'dark.teal' '#2a5153'
+# SaveColor -Name 'green' '#73b254'
+
+# SaveColor -Name 'blue' '234991'
+# SaveColor -Name 'blue.dim' '3c77d3'
+# SaveColor -Name 'green.dim' '73b254'
+# SaveColor -Name 'dark.teal' '2a5153'
+# SaveColor -Name 'green' '73b254'
+
+
+
+function ImportColor {
+    [CmdletBinding()]
+    param(
+
+        [switch]$ClearCurrent,
+        [switch]$ListAll
+    )
+    $script:__newColorState ??= @{}
+    $state = $script:__newColorState
+    if ($ClearCurrent) {
+        $state.clear()
+    }
+
+    $Path = Join-Path $Env:Nin_Dotfiles 'store' 'saved_colors.json'
+    $jsonConfig? = Get-Item -ea 'ignore' $Path
+    if (-not $jsonConfig?) {
+        throw ($Path | Join-String -f 'No saved colors at {0}!')
+    }
+
+    $json = Get-Content -Path $JsonConfig?
+    $json | ConvertFrom-Json
+    | ForEach-Object {
+        SaveColor -Name $_.Name -HexColor $_.HexColor
+    }
+
+
+    $colorsHash = Get-Content -Path $jsonConfig? | ConvertFrom-Json -AsHashtable
+    $state = $colorsHash
+
+    if ($ListAll) {
+        GetColor -ListAll
+    }
+    $state.keys.count | Join-String -f 'Imported {0} colors' | Write-Information -infa 'continue'
 }
 
 function New-Lie {

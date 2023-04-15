@@ -1,7 +1,7 @@
 {
-  "blue": "#234991",
-  "blue.dim": "3c77d3",
-  "green.dim": "73b254",
+  "blue": "234991",
   "dark.teal": "2a5153",
-  "Name": "#73b254"
+  "green": "73b254",
+  "blue.dim": "3c77d3",
+  "green.dim": "73b254"
 }
