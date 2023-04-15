@@ -1317,9 +1317,9 @@ function __validate.HexString {
     begin {
         $Config = @{
             AllowedLengths = 6, 8 # 2, 3
-            AlwaysAssert = $false
+            AlwaysAssert   = $false
         }
-        if($PSCmdlet.MyInvocation.MyCommand.Name -match 'assert') {
+        if ($PSCmdlet.MyInvocation.MyCommand.Name -match 'assert') {
             $Config.AlwaysAssert = $True
         }
     }
@@ -1330,7 +1330,7 @@ function __validate.HexString {
         $Raw = $InputText
         $WithoutHash = $Raw -replace '#', ''
         $Regex = @{
-            AllowedWord = '^#?[\d+a-fA-F]+$'
+            AllowedWord   = '^#?[\d+a-fA-F]+$'
             AllowedDigits = '^[\d+a-fA-F]+$'
         }
         $ValidLength = $WithoutHash.Length -in @(6, 8)
@@ -1342,10 +1342,10 @@ function __validate.HexString {
         )
         $anyFalse = (@($cases) -eq $false).count -gt 0
 
-        if($Config.AlwaysAssert){
+        if ($Config.AlwaysAssert) {
             throw ('AssertIsValidHexString: Failed! "{0}"' -f @(
-                $InputText
-            ))
+                    $InputText
+                ))
         }
         return -not $AnyFalse
     }
@@ -1354,15 +1354,17 @@ function __validate.HexString {
 function SaveColor {
     <#
     .SYNOPSIS
-    Named color aliases, preserved across sessions
-
-    .DESCRIPTION
-    Long description
+    Named color aliases, persists across sessions
 
     .EXAMPLE
-    An example
+    PS> SaveColor -Name 'orange.dark3' -HexColor '352b1e'
+    PS> SaveColor -Name 'blue.dim' '3c77d3'
 
     .NOTES
+    Default file location:
+
+        Join-Path $Env:Nin_Dotfiles 'store/saved_colors.json'
+
 
     related, see also:
         __saveColor__renderColorName
@@ -1432,6 +1434,9 @@ function SaveColor {
     # 'save colors'
     if ($Config.AlwaysSaveOnAssign) {
         GetColor -Json
+        | ConvertFrom-Json -AsHashtable
+        | Ninmonkey.Console\Sort-Hashtable -SortBy Key
+        | ConvertTo-Json -Depth 2
         | Set-Content -Path (Join-Path $Env:Nin_Dotfiles 'store' 'saved_colors.json')
     }
 
@@ -1443,11 +1448,66 @@ function SaveColor {
     # | Write-Information -infa 'continue'
 }
 
-# SaveColor -Name 'blue' '#234991'
-# SaveColor -Name 'blue.dim' '#3c77d3'
-# SaveColor -Name 'green.dim' '#73b254'
-# SaveColor -Name 'dark.teal' '#2a5153'
-# SaveColor -Name 'green' '#73b254'
+@(
+    SaveColor -Name 'blue' '#234991'
+    SaveColor -Name 'blue.dim' '#3c77d3'
+    SaveColor -Name 'blue.gray' '#2e3440'
+    SaveColor -Name 'green.dim' '#73b254'
+    SaveColor -Name 'teal.bright' '#3d7679'
+    SaveColor -Name 'teal.bright2' '#63c0c5'
+    SaveColor -Name 'teal' '#2a5153'
+    SaveColor -Name 'teal.dark' '#2a5153'
+    SaveColor -Name 'green' '#73b254'
+    SaveColor -Name 'orange.dark3' -HexColor '#352b1e'
+    SaveColor -Name 'tan' -HexColor '#816949'
+    SaveColor -Name 'tan.dark2' -HexColor '#4d3f2c'
+    SaveColor -Name 'tan.dark3' -HexColor '#352b1e'
+) | Out-Null
+
+<#
+generate a bunch of grays
+#>
+# & {
+#     # generate defaults
+#     0..100
+#     | Where-Object { $_ % 5 -eq 0 }
+#     | ForEach-Object {
+#         $percent = $_
+#         $Key = 'Gray.{0}' -f @( $percent )
+
+#         $mod = $percent / 100
+#         $component = 255 * $Mod -as 'int' | ForEach-Object tostring 'x'
+#         $renderHex = '#{0}{0}{0}' -f @( $Component )
+#     }
+
+
+# }
+& { #function __generate.Colors.Gray {
+    param(
+        [ValidateRange(0, 99)]
+        [int]$min = 0,
+
+        [ValidateRange(1, 100)]
+        [int]$max = 100,
+
+        [ValidateRange(1, 99)]
+        [int]$StepSize = 5
+    )
+    $min..$Max # 0..100
+    | Where-Object { $_ % $StepSize -eq 0 }
+    | ForEach-Object {
+        $percent = $_
+        $Key = 'Gray.{0:d2}' -f @( $percent )
+
+        $mod = $percent / 100
+        $component = 255 * $Mod -as 'int' | ForEach-Object tostring 'x2'
+        $renderHex = '#{0}{0}{0}' -f @( $Component )
+        '{0} => {1} ' -f @( $key, $renderHex )
+        SaveColor -Name $Key -HexColor $RenderHex
+        | Out-Null
+    }
+} *>&1 | Out-Null
+
 
 # SaveColor -Name 'blue' '234991'
 # SaveColor -Name 'blue.dim' '3c77d3'
@@ -1458,6 +1518,10 @@ function SaveColor {
 
 
 function ImportColor {
+    <#
+    .SYNOPSIS
+        bulk load man colors
+    #>
     [CmdletBinding()]
     param(
 
@@ -1466,6 +1530,11 @@ function ImportColor {
     )
     $script:__newColorState ??= @{}
     $state = $script:__newColorState
+
+    $Path
+    | Join-String -f 'ImportingFrom: {0}'
+    | Write-Verbose
+
     if ($ClearCurrent) {
         $state.clear()
     }
@@ -1476,12 +1545,14 @@ function ImportColor {
         throw ($Path | Join-String -f 'No saved colors at {0}!')
     }
 
-    $json = Get-Content -Path $JsonConfig?
-    $json | ConvertFrom-Json
-    | ForEach-Object {
-        SaveColor -Name $_.Name -HexColor $_.HexColor
+    # $json = Get-Content -Path $JsonConfig?
+    # $json | ConvertFrom-Json
+    # | ForEach-Object {
+    #     SaveColor -Name $_.Name -HexColor $_.HexColor
+    # }
+    Get-Content -Path $jsonConfig? | ConvertFrom-Json -AsHashtable | ForEach-Object GetEnumerator | ForEach-Object {
+        SaveColor -Name $_.key -HexColor $_.Value
     }
-
 
     $colorsHash = Get-Content -Path $jsonConfig? | ConvertFrom-Json -AsHashtable
     $state = $colorsHash
