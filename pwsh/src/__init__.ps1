@@ -1124,6 +1124,7 @@ function Remove-Lie {
         [Parameter(Mandatory, Position = 0)]$TypeInfo
     )
 
+    throw 'does not remove, is internally cached, jborean''s patch might have fixed that, or at least shows whether it''s a new type'
     # $script:xlr8r ??= [psobject].assembly.gettype('System.Management.Automation.TypeAccelerators')
     $script:xlr8r::Remove($TypeInfo)
     'Removed Lie: {0}. Remaining Lies: {1}' -f @(
@@ -1131,6 +1132,75 @@ function Remove-Lie {
         $script:xlr8r.Keys.count
     ) | Write-Information -infa 'continue'
 }
+function SaveColor {
+    <#
+    .SYNOPSIS
+    Named color aliases, preserved across sessions
+
+    .DESCRIPTION
+    Long description
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+    General notes
+    #>
+    [CmdletBinding()]
+    param(
+        [Alias('Color', 'ColorName', 'Label')]
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Name,
+
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$HexColor
+
+    )
+
+    $script:__newColorState ??= @{}
+    $state = $script:__newColorState
+    if ($script:__newColorState.Keys.Count -eq 0) { # warn once
+        Write-Warning 'Colors not saved across sessions yet'
+    }
+    $cleanStr = $HexColor -replace '^#', ''
+    if ($cleanStr.Length -notin @(6, 8)) {
+        throw "Unexpected color, expects 6/8 digits: '$HexColor'"
+    }
+    $HexStr = '#{0}' -f @(
+        $cleanStr
+    )
+
+    $script:__newColorState['Name'] = $HexStr
+    'saved: {0} = {1}' -f @(
+        $Name
+        $HexColor
+    ) | Join-String -op $PSStyle.Foreground.FromRgb($HexStr) -os $PSStyle.Reset
+    | Write-Information -infa 'continue'
+}
+
+NewColor -Name 'blue.dim' '3c77d3'
+NewColor -Name 'green.dim' '73b254'
+
+
+function GetColor {
+    param(
+        # autocomplete known colors
+        [Parameter(Mandatory, Position = 0, ValidateNotNullOrEmpty)]
+        [string]$ColorLabel
+    )
+
+    $state = $script:__newColorState
+    if ($State.ContainsKey($ColorLabel)) {
+        return $state[$ColorLabel]
+    }
+    else {
+        # else soft error, try partial match, if  match is exactly one then use it.
+        throw 'Color not found'
+    }
+}
+
 function New-Lie {
     <#
     .SYNOPSIS
@@ -1167,9 +1237,10 @@ function New-Lie {
         $TypeInfo
     ) | Write-Information -infa 'continue'
 }
+
 New-Lie -Name 'List' -TypeInfo ([System.Collections.Generic.List`1])
-New-Lie -Name 'Lie' -TypeInfo ([System.Collections.Generic.List`1])
-New-Lie -Name 'Lyetem' -TypeInfo ([System.Collections.Generic.List`1])
+New-Lie 'Rune' -TypeInfo ([Text.Rune])
+
 
 # $xlr8r::Add( 'Lie', ([System.Collections.Generic.IList`1]) )
 # New-Lie -name 'Lie' -TypeInfo [System.Collections.Generic.iList`1]
