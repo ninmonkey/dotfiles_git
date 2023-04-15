@@ -230,7 +230,7 @@ if ($true) {
 
 
     $copyItemRecurse = @{
-        Path        = $FetchConfig.Import.Profile.'Settings.json'
+        Path        = $FetchConfig.Import.Profile.'Snippets'
         Destination = $FetchConfig.Export.Profile.Snippets.FullName
         Recurse     = $true
         PassThru    = $true
@@ -238,7 +238,19 @@ if ($true) {
         # WhatIf      = $true
     }
 
-    Copy-Item @copyItemRecurse
+    # wait-debugger
+    # Copy-Item @copyItemRecurse
+    $itemsCopied_snippets = Copy-Item @copyItemRecurse -PassThru # not recurse here
+
+    $itemsCopied_snippets | CountOf | Status.WroteFile?
+    # experimenting, this breaks if folder exists, because division. this breaks on directories
+    # & { ($itemsCopied_snippets | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'copied files: {0:n2} mb' }
+    # this works
+    (
+        $itemsCopied_snippets | Measure-Object -Sum Length
+    ).Sum / 1mb | Join-String -FormatString '{0:n2} mb'
+
+    Hr
 
 }
 if ($false) {
