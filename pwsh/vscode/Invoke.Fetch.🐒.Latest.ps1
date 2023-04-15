@@ -3,9 +3,10 @@ Use Chezmoi or something better for profile management
 This is a naive copy
 #>
 $FetchConfig = @{
-    IAm        = Get-Item $PSCommandPath
-    Root       = Get-Item $PSScriptRoot
-    ExportRoot = Get-Item -ea stop (Join-Path $PSSCriptRoot 'profile')
+    IAm                = Get-Item $PSCommandPath
+    Root               = Get-Item $PSScriptRoot
+    ExportRoot         = Get-Item -ea stop (Join-Path $PSSCriptRoot 'profile')
+    EnableDefaultForce = $True
 }
 $FetchConfig += @{
     Import = @{
@@ -185,83 +186,74 @@ function Status.WroteFile {
     # }
 }
 
+function __fetch.invokeDefaults {
+
+    # $result = Copy-Item $copyItemSplat.Path.FullName $copyItemSplat.Destination -Verbose -PassThru #  -WhatIf
+    if ($true) {
+        $copyItemSplat = @{
+            # WhatIf      = $true
+            Path        = $FetchConfig.Import.Profile.'Settings.json'
+
+            # dynamically instead
+            # Destination = Join-Path ($FetchConfig.Export.Profile.'Settings.json'.FullName) 'settings.json'
+            Destination = (
+                Join-Path (
+                    $FetchConfig.Export.Profile.'Settings.json'.FullName) (
+                    'settings.json')
+            )
+            PassThru    = $True
+            Verbose     = $True
+        }
+        Hr
+        $result = Copy-Item @copyItemSplat
+        $itemsCopied = Copy-Item @copyItemSplat -PassThru # not recurse here
+
+        $itemsCopied | CountOf | Status.WroteFile?
+
+        & { ($itemsCopied | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'copied files: {0:n2} mb' }
+        Hr
+
+        $copyItemSplat = @{
+            # WhatIf      = $true
+            Path        = $FetchConfig.Import.Profile.'Settings.json'
+
+            # dynamically instead
+            # Destination = Join-Path ($FetchConfig.Export.Profile.'Settings.json'.FullName) 'settings.json'
+            Destination = (
+                Join-Path (
+                    $FetchConfig.Export.Profile.'Settings.json'.FullName) (
+                    'settings.json')
+            )
+            PassThru    = $True
+            Verbose     = $True
+        }
 
 
-# $result = Copy-Item $copyItemSplat.Path.FullName $copyItemSplat.Destination -Verbose -PassThru #  -WhatIf
-if ($true) {
-    $copyItemSplat = @{
-        # WhatIf      = $true
-        Path        = $FetchConfig.Import.Profile.'Settings.json'
 
-        # dynamically instead
-        # Destination = Join-Path ($FetchConfig.Export.Profile.'Settings.json'.FullName) 'settings.json'
-        Destination = (
-            Join-Path (
-                $FetchConfig.Export.Profile.'Settings.json'.FullName) (
-                'settings.json')
-        )
-        PassThru    = $True
-        Verbose     = $True
+        $copyItemRecurse = @{
+            Path        = $FetchConfig.Import.Profile.'Snippets'
+            Destination = $FetchConfig.Export.Profile.Snippets.FullName
+            Recurse     = $true
+            PassThru    = $true
+            Verbose     = $false
+            Force       = $fetchConfig.EnableDefaultForce
+        }
+
+        # wait-debugger
+        # Copy-Item @copyItemRecurse
+        $itemsCopied_snippets = Copy-Item @copyItemRecurse -PassThru # not recurse here
+
+        $itemsCopied_snippets | CountOf | Status.WroteFile?
+        # experimenting, this breaks if folder exists, because division. this breaks on directories
+        # & { ($itemsCopied_snippets | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'copied files: {0:n2} mb' }
+        # this works
+        (
+            $itemsCopied_snippets | Measure-Object -Sum Length
+        ).Sum / 1mb | Join-String -FormatString '{0:n2} mb'
+
+        Hr
+
     }
-    Hr
-    $result = Copy-Item @copyItemSplat
-    $itemsCopied = Copy-Item @copyItemSplat -PassThru # not recurse here
-
-    $itemsCopied | CountOf | Status.WroteFile?
-
-    & { ($itemsCopied | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'copied files: {0:n2} mb' }
-    Hr
-
-    $copyItemSplat = @{
-        # WhatIf      = $true
-        Path        = $FetchConfig.Import.Profile.'Settings.json'
-
-        # dynamically instead
-        # Destination = Join-Path ($FetchConfig.Export.Profile.'Settings.json'.FullName) 'settings.json'
-        Destination = (
-            Join-Path (
-                $FetchConfig.Export.Profile.'Settings.json'.FullName) (
-                'settings.json')
-        )
-        PassThru    = $True
-        Verbose     = $True
-    }
-
-
-
-    $copyItemRecurse = @{
-        Path        = $FetchConfig.Import.Profile.'Snippets'
-        Destination = $FetchConfig.Export.Profile.Snippets.FullName
-        Recurse     = $true
-        PassThru    = $true
-        Verbose     = $true
-        # WhatIf      = $true
-    }
-
-    # wait-debugger
-    # Copy-Item @copyItemRecurse
-    $itemsCopied_snippets = Copy-Item @copyItemRecurse -PassThru # not recurse here
-
-    $itemsCopied_snippets | CountOf | Status.WroteFile?
-    # experimenting, this breaks if folder exists, because division. this breaks on directories
-    # & { ($itemsCopied_snippets | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'copied files: {0:n2} mb' }
-    # this works
-    (
-        $itemsCopied_snippets | Measure-Object -Sum Length
-    ).Sum / 1mb | Join-String -FormatString '{0:n2} mb'
-
-    Hr
-
 }
-if ($false) {
 
-
-    $itemsCopied = Copy-Item @copyItemSplat -PassThru # not recurse here
-    | CountOf
-    | Status.WroteFile?
-
-
-    & { ($itemsCopied | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'wrote: {0} mb' }
-
-    Hr
-}
+__fetch.invokeDefaults

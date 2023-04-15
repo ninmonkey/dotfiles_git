@@ -1,7 +1,27 @@
+#Requires -Version 7.0
+
 param(
     [Parameter(Mandatory)]
     [string]$Path
 )
+
+@(
+    '::ExportPipeScript::'
+    'I am: {0}' -f @( $PSCommandPath )
+) | Join-String -sep "`n" -os $PSStyle.Reset -f '  > {0}'
+
+$jStr_RedPrefixPaths = @{
+    Separator = "`n"
+    OutputSuffix = $PSStyle.Reset
+    FormatString = '  > {0}'
+    OutputPrefix = $PSStyle.Foreground.FromRgb('#933136')
+}
+
+@(
+    '::ExportPipeScript::'
+    'I am: {0}' -f @( $PSCommandPath )
+) | Join-String @jStr_RedPrefixPaths
+
 <#
 .synopsis
     Experimenting a script runner to export the currently selected file in VS Code
@@ -23,15 +43,15 @@ function invokeTranspileSingleFile {
         [Parameter(Mandatory)]
         [string]$Path
     )
-    if(-not(Test-Path $Path)) {
+    if (-not(Test-Path $Path)) {
         Toast -Text 'Failed, file does not exist!', ($Path | Join-String -double )
         throw @("'Failed, file does not exist!"; ($Path | Join-String -double ))
     }
     $FullPath = $Path | Get-Item
-    $Path | Gi | Join-String -f 'path?: {0}' | write-verbose -verbose
+    $Path | Get-Item | Join-String -f 'path?: {0}' | Write-Verbose -Verbose
 
     # final invoke as
-    Export-PipeScript $target -Verbose -Debug
+    Export-Pipescript $target -Verbose -Debug
 
 
     Toast -Text 'exportPipe', $Path
