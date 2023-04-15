@@ -53,14 +53,14 @@ function __runTest.Status.WroteFile {
     # show examples
 
     'asdf' | Status.WroteFile?
-    hr
+    Hr
     'asdf' | Status.WroteFile? -IncludeFolders
-    hr
-    (gi . ), 'asdf' | Status.WroteFile?
-    hr
-    (gi . ), 'asdf' | Status.WroteFile? -IncludeFolders
-    hr -fg magenta
-    gi . | Status.WroteFile -Verbose
+    Hr
+    (Get-Item . ), 'asdf' | Status.WroteFile?
+    Hr
+    (Get-Item . ), 'asdf' | Status.WroteFile? -IncludeFolders
+    Hr -fg magenta
+    Get-Item . | Status.WroteFile -Verbose
 }
 function Status.WroteFile {
     <#
@@ -86,7 +86,7 @@ function Status.WroteFile {
     [CmdletBinding()]
     param(
         [Alias('PSPath', 'FullName', 'Path')]
-        [Parameter(Mandatory, valuefrompipeline)]
+        [Parameter(Mandatory, ValueFromPipeline)]
         $InputObject,
 
         [switch]$IncludeFolders
@@ -116,7 +116,7 @@ function Status.WroteFile {
         [bool]$IsFolder? = $fileItem?.PSIsContainer ?? $false
         $Color = $Exists? ? $PSStyle.Foreground.Green : $PSStyle.Foreground.Red
         $Color = $IsFolder? ? $PSStyle.foreground.Yellow : $Color
-        $itemOrString = $file? ?? $InputObject
+        $itemOrString = $FileItem? ?? $InputObject
         if (-not $Exists?) {
             'Expected path, does not exist: {0}' -f $InputObject
             | Write-Error
@@ -141,6 +141,8 @@ function Status.WroteFile {
             $PSStyle.Reset
         ) -join ''
 
+        wait-debugger
+
         $PathString
         | Join-String -f 'wrote: <file:///{0}>' -os $PSStyle.Reset
         # }
@@ -163,15 +165,47 @@ function Status.WroteFile {
 
 
 $copyItemSplat = @{
-    Destination = $FetchConfig.Export.Profile
     # WhatIf      = $true
     Path        = $FetchConfig.Import.Profile.'Settings.json'
+
+    # dynamically instead
+    # Destination = Join-Path ($FetchConfig.Export.Profile.'Settings.json'.FullName) 'settings.json'
+    Destination = (
+        Join-Path (
+            $FetchConfig.Export.Profile.'Settings.json'.FullName) (
+            'settings.json')
+    )
+    PassThru    = $True
+    Verbose     = $True
+
+
+
 }
 
-$itemsCopied = Copy-Item @copyItemSplat -PassThru # not recurse here
-& { ($itemsCopied | % Length) / 1mb | % tostring 'n2' | join-string -f 'wrote: {0} mb' }
+# $result = Copy-Item $copyItemSplat.Path.FullName $copyItemSplat.Destination -Verbose -PassThru #  -WhatIf
+if ($true) {
+    hr
+    $result = Copy-Item @copyItemSplat
+    $itemsCopied = Copy-Item @copyItemSplat -PassThru # not recurse here
 
-hr
+    $itemsCopied | CountOf | Status.WroteFile?
+
+    & { ($itemsCopied | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'copied files: {0:n2} mb' }
+    hr
+    return
+}
+if ($false) {
+
+
+    $itemsCopied = Copy-Item @copyItemSplat -PassThru # not recurse here
+    | CountOf
+    | Status.WroteFile?
+
+
+    & { ($itemsCopied | ForEach-Object Length) / 1mb | ForEach-Object tostring 'n2' | Join-String -f 'wrote: {0} mb' }
+
+    Hr
+}
 # Hr
 # $itemsCopied
 # | Status.WroteFile
