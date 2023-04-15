@@ -2,6 +2,59 @@ $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 
+function Test-AnyTrueItems {
+    <#
+    .synopsis
+        Test if any of the items in the pipeline are true
+    .notes
+    # are any of the truthy values?
+    .EXAMPLE
+        tests:
+
+        $true, $false, $false | Test-AnyTrueItems | Should -be $true
+        $null, $null | Test-AnyTrueItems | Should -be $false
+        '', '' | Test-AnyTrueItems | Should -be $false
+        '', '  ' | Test-AnyTrueItems | Should -be $true
+        '', '  ' | Test-AnyTrueItems -BlanksAreFalse | Should -be $true
+    #>
+    [Alias('Test-AnyTrue', 'nin.AnyTrue')]
+    [OutputType('System.boolean')]
+    [CmdletBinding()]
+    param(
+        [Alias('TestBool')]
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        # if string, and blank, then treat as false
+        [switch]$BlanksAreFalse
+    )
+    begin {
+        $AnyIsTrue = $false
+    }
+    process {
+        foreach ($item in $INputObject) {
+            if ($BlanksAreFalse) {
+                $test = [string]::isnullorwhitespace($item)
+                # or $item -replace '\w+', ''
+            }
+            else {
+                $test = [bool]$item
+            }
+            #
+            if ($Test) {
+                $AnyIsTrue = $true
+            }
+        }
+    }
+
+    end {
+        return $AnyIsTrue
+    }
+}
+
+
 
 # $env:EDITOR = 'nvim'
 
@@ -108,59 +161,6 @@ function __aws.sam.InvokeAndPipeLog {
 
      (Get-Item $FullCleanLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
 }
-
-function Test-AnyTrueItems {
-    <#
-    .synopsis
-        Test if any of the items in the pipeline are true
-    .notes
-    # are any of the truthy values?
-    .EXAMPLE
-        tests:
-
-        $true, $false, $false | Test-AnyTrueItems | Should -be $true
-        $null, $null | Test-AnyTrueItems | Should -be $false
-        '', '' | Test-AnyTrueItems | Should -be $false
-        '', '  ' | Test-AnyTrueItems | Should -be $true
-        '', '  ' | Test-AnyTrueItems -BlanksAreFalse | Should -be $true
-    #>
-    [Alias('Test-AnyTrue', 'nin.AnyTrue')]
-    [OutputType('System.boolean')]
-    [CmdletBinding()]
-    param(
-        [Alias('TestBool')]
-        [AllowEmptyCollection()]
-        [AllowNull()]
-        [Parameter(Mandatory, ValueFromPipeline)]
-        [object[]]$InputObject,
-
-        # if string, and blank, then treat as false
-        [switch]$BlanksAreFalse
-    )
-    begin {
-        $AnyIsTrue = $false
-    }
-    process {
-        foreach ($item in $INputObject) {
-            if ($BlanksAreFalse) {
-                $test = [string]::isnullorwhitespace($item)
-                # or $item -replace '\w+', ''
-            }
-            else {
-                $test = [bool]$item
-            }
-            #
-            if ($Test) {
-                $AnyIsTrue = $true
-            }
-        }
-    }
-
-    end {
-        return $AnyIsTrue
-    }
-}
-
 
 
 # shared (all 3)
