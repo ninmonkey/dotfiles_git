@@ -1,6 +1,14 @@
 ﻿# $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
+<#
+custom attributes, more detailed info
+    - [reflection and custom attributes](https://learn.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/accessing-custom-attributes)
+    - [parameter info](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.parameterinfo?view=net-7.0)
+    - [attr tut](https://powershell.one/powershell-internals/attributes/custom-attributes)
+    - more...
+        - [CSharp Advanced Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/reflection-and-attributes/creating-custom-attributes)
+#>
 
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
@@ -1146,6 +1154,7 @@ function SaveColor {
     .NOTES
     General notes
     #>
+    [Alias('NewColor')]
     [CmdletBinding()]
     param(
         [Alias('Color', 'ColorName', 'Label')]
@@ -1161,7 +1170,8 @@ function SaveColor {
 
     $script:__newColorState ??= @{}
     $state = $script:__newColorState
-    if ($script:__newColorState.Keys.Count -eq 0) { # warn once
+    if ($state.Keys.Count -eq 0) {
+        # warn once
         Write-Warning 'Colors not saved across sessions yet'
     }
     $cleanStr = $HexColor -replace '^#', ''
@@ -1171,8 +1181,14 @@ function SaveColor {
     $HexStr = '#{0}' -f @(
         $cleanStr
     )
+    if ($State.ContainsKey($Name)) {
+        if ($State[$Name] -eq $HexStr) {
+            #no change, no error
+        }
+        throw 'Color already exists'
+    }
 
-    $script:__newColorState['Name'] = $HexStr
+    $state['Name'] = $HexStr
     'saved: {0} = {1}' -f @(
         $Name
         $HexColor
@@ -1185,13 +1201,42 @@ NewColor -Name 'green.dim' '73b254'
 
 
 function GetColor {
+    [CmdletBinding(DefaultParameterSetName = 'GetColor')]
     param(
         # autocomplete known colors
-        [Parameter(Mandatory, Position = 0, ValidateNotNullOrEmpty)]
-        [string]$ColorLabel
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0 ,parameterSetName = 'GetColor')]
+        [string]$ColorLabel,
+
+        [Parameter(Mandatory, parameterSetName = 'ListOnly')]
+        [switch]$ListAll
     )
 
+
     $state = $script:__newColorState
+    switch ($PSCmdlet.ParameterSetName) {
+        'ListOnly' {
+            $state.keys.count | Join-String -f 'Colors: {0}'
+            $state.Keys | Join-String -sep ', ' |  Write-Information -infa 'continue'
+            return
+        }
+        default { }
+    }
+
+
+    if ($ListAll) {
+        $state.GetEnumerator()
+        | CountOf # optional
+        | ForEach-Object {
+            '{0} => {1}' -f @(
+                $_.key
+                $_.Value
+            )
+        }
+        return
+    }
+    # hr
+
     if ($State.ContainsKey($ColorLabel)) {
         return $state[$ColorLabel]
     }
