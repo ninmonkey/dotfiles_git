@@ -1389,7 +1389,7 @@ function SaveColor {
 
     )
     $Config = @{
-        AlwaysSaveOnAssign = $true
+        AlwaysSaveOnAssign = $false
     }
     $script:__newColorState ??= @{}
     $state = $script:__newColorState
@@ -1429,7 +1429,7 @@ function SaveColor {
 
     __saveColor__renderColorName -Name $Name -HexColor $HexColor
     | Join-String -op 'Saved '
-    | Write-Information -infa 'Continue'
+    | Write-Information #-infa 'Continue'
 
     # 'save colors'
     if ($Config.AlwaysSaveOnAssign) {
@@ -1453,6 +1453,7 @@ function SaveColor {
     SaveColor -Name 'blue.dim' '#3c77d3'
     SaveColor -Name 'blue.gray' '#2e3440'
     SaveColor -Name 'green.dim' '#73b254'
+    SaveColor -Name 'green.desaturated' '#b7cea1'
     SaveColor -Name 'teal.bright' '#3d7679'
     SaveColor -Name 'teal.bright2' '#63c0c5'
     SaveColor -Name 'teal' '#2a5153'
