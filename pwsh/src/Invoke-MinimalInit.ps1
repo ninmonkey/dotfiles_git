@@ -79,6 +79,11 @@ function minimal.Prompt {
         # ''
         ''
         minimal.prompt.render.crumbs
+
+        # amazon AWS profile set?
+        if (Test-Path env:\AWS_PROFILE) { # appears to never load
+            $Env:AWS_PROFILE | Join-String -f "aws:{0}`n"
+        }
     ) | Join-String
 }
 # ⟞⊢

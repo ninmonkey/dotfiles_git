@@ -14,6 +14,10 @@ VERBOSE: Checking for updates for module 'PipeScript'.
 '@  | Write-Debug
 nin.psmodulePath.AddNamedGroup Main
 
+function nancy.WriteInverse {
+    $Input | Join-String -op $PSStyle.Reverse -os $PSStyle.Reset
+}
+
 $setAliasSplat = @{
     Name        = '.fmt.md.TableRow0'
     Value       = '_fmt_mdTableRow'
@@ -383,7 +387,8 @@ function Err {
     }
 
     if ( $Clear ) { $global:error.Clear() }
-    return $global:error | Select-Object -First $Num
+    if ( $Clear ) { $error.Clear() } # depending if func is in profile or module
+    return $global:error | Select-Object -First $Num | CountOf
 }
 
 
