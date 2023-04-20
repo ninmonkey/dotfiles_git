@@ -35,7 +35,7 @@ $jStr_RedPrefixPaths = @{
 
 Import-Module Pipescript
 Import-Module BurntToast
-Import-Module Powershell-Yaml
+# Import-Module Powershell-Yaml
 
 function invokeTranspileSingleFile {
     param(
@@ -47,17 +47,18 @@ function invokeTranspileSingleFile {
         Toast -Text 'Failed, file does not exist!', ($Path | Join-String -double )
         throw @("'Failed, file does not exist!"; ($Path | Join-String -double ))
     }
-    $FullPath = $Path | Get-Item
-    $Path | Get-Item | Join-String -f 'path?: {0}' | Write-Verbose -Verbose
+    $targetItem = $Path | Get-Item
+    $targetItem | Get-Item | Join-String -f 'TargetItem: path: {0}' | Write-Verbose -Verbose
 
     # final invoke as
-    Export-Pipescript $target -Verbose -Debug
+    $ShortName = $targetItem | Gi | % Name
+    Toast -silent -Text 'exportPipe', "Start: '$shortName', <x of y>"
+    Export-Pipescript $targetItem -Verbose -Debug
 
-
-    Toast -Text 'exportPipe', $Path
 }
 
 invokeTranspileSingleFile -Path $Path
+Toast -Silent -Text 'exportPipe', "Finished all <count> items"
 
 # Import-Module
 # h:\data\2023\dotfiles.2023\pwsh\vscode\editorServicesScripts\ExportPipescript.ps1
