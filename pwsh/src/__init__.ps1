@@ -19,8 +19,28 @@ custom attributes, more detailed info
 
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
+Import-Module 'ugit'
+
+
+## temp include, to move gitlogger to psmodulepath instead
+if ('quick hack, move gitlogger to path PSModules instead') {
+    $wherePath = 'H:\data\2023\pwsh'
+    $env:PSModulePath += ';{0}' -f $wherePath
+    $env:PSModulePath | Join-String -sep "`n" | write-debug
+
+    $Env:PSModulePath = @(
+        $env:PSModulePath -split ';' -notmatch ([regex]::Escape($wherePath))
+        $wherePath
+    ) | Join-String -sep ';'
+
+    $env:PSModulePath  | Join-String -sep "`n" | write-debug
+}
+
 function Export.PipeScript {
-    [alias('prof.Build.Pipescript')]
+    [alias(
+        'prof.Build.Pipescript',
+        'bps.prof'
+    )]
     param(
         [ArgumentCompletions(
             '*-*.ps',
@@ -1116,6 +1136,7 @@ $base = Get-Item $PSScriptRoot
 . (Get-Item -ea 'continue' (Join-Path $Base 'Build-ProfileCustomMembers.ps1'))
 . (Get-Item -ea 'continue' (Join-Path $Base 'Invoke-MinimalInit.ps1'))
 . (Get-Item -ea 'continue' (Join-Path $Base 'autoloadNow_butRefactor.ps1'))
+. (Get-Item -ea 'continue' (Join-Path $Base 'autoload_forDeveloperTools.ps1'))
 
 Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
 
@@ -1652,6 +1673,158 @@ function nin.findNewestItem {
 #
 # test:  Is the default Ctor the non-bom one?
 
+[Collections.Generic.List[Object]][ValidateNotNull()]$global:bpsItems ??= @()
+function bPs.Items {
+    <#
+    .synopsis
+        minimal wrapper that invokes Export-Pipescript with
+    .description
+        To View some of the calculated parameters, use these parameters:
+            -TestOnly
+            -Verbose
+            -Infa 'Continue'
+
+        (Actually it defaults to -Infa 'Continue')
+    .notes
+        see also: <file:///H:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.ps1>
+    .example
+        PS> bPs.Items '*.ps.*' -RelativeToRoot '.'
+    .example
+        PS> bPs.Items '*.ps.md' '.' -WhatIf -Verbose -infa Continue
+    .example
+        PS> bPs.Items '*.ps.*' -WhatIf -Verbose -infa Continue
+    .example
+        PS> bPs.Items '*.ps.*' -RelativeToRoot '.' -WhatIf
+    .example
+        PS> bPs.Items '*/*.ps.html' -RelativeToRoot 'H:/data/2023/pwsh/GitLogger/docs'
+    .link
+        H:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.ps1
+    #>
+    [Alias(
+        'bps.Items.Profile',
+        'bps.🐍',
+        'ssSs🐍'
+    )]
+    [CmdletBinding()]
+    param(
+        # base pattern, assumes '*.ps.*' as a wide default. '*' if you want global default
+        [Alias('Pattern')]
+        [Parameter(Mandatory, Position = 0)]
+        [ArgumentCompletions(
+            "'*/*.ps.*'",
+            "'*.ps.*'",
+            "'*.ps.html'",
+            "'*.ps.md'",
+            "'*.ps.ps1'",
+            "'*'"
+        )]
+        [string]$InputObject = '*.ps.*',
+
+        # export pattern is relative a specific root dir, if not the current one
+        [Alias('RelativeToRoot')]
+        [Parameter(Mandatory, Position = 1)]
+        [ArgumentCompletions(
+            "'.'",
+            "'./docs'",
+            'H:/data/2023/pwsh/GitLogger/docs',
+            'H:/data/2023/pwsh/GitLogger'
+        )]
+        [string]$BaseDirectory = '.',
+
+        # show pattern[s], don't invoke
+        [Alias('TestOnly')]
+        [switch]$WhatIf
+    )
+    $Config = @{
+        ErrorWhenMissingBase = $true
+    }
+    if(-not(Test-path $BaseDirectory)) {
+        'BaseDirectory does not exist: "{0}"' -f @( $BaseDirectory)
+        | write-warning
+    }
+    if($Config.ErrorWhenMissingBase) {
+        $ResolvedRootDir = Get-Item -ea 'stop' $BaseDirectory
+    } else {
+        $ResolvedRootDir = Get-Item -ea 'continue' $BaseDirectory
+    }
+
+    $jstr_prefixedArrowRedLines = @{
+        Separator    = "`n"
+        OutputSuffix = $PSStyle.Reset
+        FormatString = '  > {0}'
+        OutputPrefix = $PSStyle.Foreground.FromRgb('#933136')
+    }
+
+    # $fileGlob = $InputObject ? (Join-Path '*' $InputObject) : $InputObject
+
+    # $resolva
+    # if (Test-Path $BaseDirectory) {
+    #     $resolvedPath = Join-Path (gi -ea stop $BaseDirectory ) '*/*.ps.*'
+    # }
+
+    # Join-Path (gi . ) '*/*.ps.*'
+    $ResolvedInput = $InputObject ?? '*.ps.*'
+    $ResolvedFullPattern = Join-Path $ResolvedRootDir $ResolvedInput
+
+
+    @(
+        "nin::ExportPipeScript:"
+        '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
+        '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
+        '  InputObject      : {0}' -f @( $InputObject ?? '␀')
+        '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
+        '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
+        '  Get-Item "."     : {0}' -f @( Get-Item . )
+    )
+    | Join-String @jstr_prefixedArrowRedLines
+    | Write-Verbose
+
+    @(
+        '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
+        '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
+        '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
+        '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
+        '  Get-Item "."     : {0}' -f @( Get-Item . )
+    )
+    | Join-String @jstr_prefixedArrowRedLines
+    | Join-String -op "`nnin::ExportPipeScript:`n"
+    | write-information -infa 'continue'
+    # | write-information #-infa continue
+
+
+
+    # @(
+    #     'nin::ExportPipeScript'
+    #     '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
+    #     # '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
+    #     # '  InputObject      : {0}' -f @( $InputObject ?? '␀')
+    #     # '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
+    #     '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
+    #     '  Get-Item '.'     : {0}' -f @( Get-Item . )
+    # )
+    # | Join-String @jstr_prefixedArrowRedLines
+    # | Join-String -f '=> Bps: -InpObj {0}' -sep "`n"
+    # | Join-String -sep "`n"
+    # | Write-Information -infa 'Continue'
+    return
+@( Export-Pipescript -InputPath 'H:\data\2023\pwsh\GitLogger\docs\*\*.ps.html' ) | CountOf | Sort-Object FullName -Unique | CountOf
+    $global:bpsItems | Join-String FullName -f "`n - <file:///{0}>" | CountOf
+    return
+
+    if ($WhatIf) { return }
+    if ($BaseDirectory) {
+        $FullRootPattern = Join-Path $BaseDirectory '*/*'
+        Join-Path (Get-Item . ) '*/*.ps.*'
+    }
+
+    $FullPathPattern = '...'
+    $FullpathPattern | Join-String -f '=> Bps: {0}'
+    | Write-Information -infa 'Continue'
+
+    @( Export-Pipescript -InputPath 'H:\data\2023\pwsh\GitLogger\docs\*\*.ps.html' ) | CountOf | Sort-Object FullName -Unique | CountOf
+    $global:bpsItems | Join-String FullName -f "`n - <file:///{0}>" | CountOf
+
+}
 
 function enumerateSupportedEventNames {
     <#
