@@ -2,6 +2,9 @@ $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 
+# move-to-shared
+$env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is missing
+
 function Test-AnyTrueItems {
     <#
     .synopsis
@@ -66,6 +69,7 @@ $OutputEncoding =
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
     # 'H:\data\2023\pwsh\PsModules\Ninmonkey.Console\zeroDepend_autoloader\logging.Write-NinLogRecord.ps1'
+    'H:/data/2023/pwsh/GitLogger'
     $Env:PSModulePath
 ) | Join-String -sep ';'
 

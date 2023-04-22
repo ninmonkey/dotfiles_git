@@ -26,14 +26,14 @@ Import-Module 'ugit'
 if ('quick hack, move gitlogger to path PSModules instead') {
     $wherePath = 'H:\data\2023\pwsh'
     $env:PSModulePath += ';{0}' -f $wherePath
-    $env:PSModulePath | Join-String -sep "`n" | write-debug
+    $env:PSModulePath | Join-String -sep "`n" | Write-Debug
 
     $Env:PSModulePath = @(
         $env:PSModulePath -split ';' -notmatch ([regex]::Escape($wherePath))
         $wherePath
     ) | Join-String -sep ';'
 
-    $env:PSModulePath  | Join-String -sep "`n" | write-debug
+    $env:PSModulePath | Join-String -sep "`n" | Write-Debug
 }
 
 function Export.PipeScript {
@@ -1672,6 +1672,22 @@ function nin.findNewestItem {
 # which actually causes a full exception when it's piped to Get-Item
 #
 # test:  Is the default Ctor the non-bom one?
+function Out-PipescriptDefault {
+    <#
+    .synopsis
+        experimental default formatting operator when used within a pipescript
+    .LINK
+       bPs.Items
+    .LINK
+       Out-PipescriptDefault
+    #>
+    [Alias('Ft.🐍', 'Format-Table.🐍', 'Out-Default.🐍')]
+    param()
+    [PSCustomObject]@{
+        Table = @( $Input )
+    }
+}
+
 
 [Collections.Generic.List[Object]][ValidateNotNull()]$global:bpsItems ??= @()
 function bPs.Items {
@@ -1687,6 +1703,8 @@ function bPs.Items {
         (Actually it defaults to -Infa 'Continue')
     .notes
         see also: <file:///H:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.ps1>
+    .notes
+        warning, *.ps.* implicitly includes invoking *.ps.psd1 files, crashing as of v1.9.9.4
     .example
         PS> bPs.Items '*.ps.*' -RelativeToRoot '.'
     .example
@@ -1699,15 +1717,21 @@ function bPs.Items {
         PS> bPs.Items '*/*.ps.html' -RelativeToRoot 'H:/data/2023/pwsh/GitLogger/docs'
     .link
         H:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.ps1
+    .LINK
+       bPs.Items
+    .LINK
+       Out-PipescriptDefault
     #>
     [Alias(
         'bps.Items.Profile',
-        'bps.🐍',
+        'bPs.🐍',
+        'bPs🐍Ss',
         'ssSs🐍'
     )]
     [CmdletBinding()]
     param(
         # base pattern, assumes '*.ps.*' as a wide default. '*' if you want global default
+        # future: allow an array
         [Alias('Pattern')]
         [Parameter(Mandatory, Position = 0)]
         [ArgumentCompletions(
@@ -1718,7 +1742,7 @@ function bPs.Items {
             "'*.ps.ps1'",
             "'*'"
         )]
-        [string]$InputObject = '*.ps.*',
+        [string[]]$InputObject = '*.ps.*',
 
         # export pattern is relative a specific root dir, if not the current one
         [Alias('RelativeToRoot')]
@@ -1733,96 +1757,145 @@ function bPs.Items {
 
         # show pattern[s], don't invoke
         [Alias('TestOnly')]
-        [switch]$WhatIf
+        [switch]$WhatIf,
+
+        [Alias('PassThru' )]
+        [switch]$List
+
+        # [hashtable]$Options
     )
     $Config = @{
         ErrorWhenMissingBase = $true
-    }
-    if(-not(Test-path $BaseDirectory)) {
-        'BaseDirectory does not exist: "{0}"' -f @( $BaseDirectory)
-        | write-warning
-    }
-    if($Config.ErrorWhenMissingBase) {
-        $ResolvedRootDir = Get-Item -ea 'stop' $BaseDirectory
-    } else {
-        $ResolvedRootDir = Get-Item -ea 'continue' $BaseDirectory
+        bPsItems_AppendOnly  = $false
+        AlwaysRecurse = $true
     }
 
-    $jstr_prefixedArrowRedLines = @{
-        Separator    = "`n"
-        OutputSuffix = $PSStyle.Reset
-        FormatString = '  > {0}'
-        OutputPrefix = $PSStyle.Foreground.FromRgb('#933136')
+    [Collections.Generic.List[Object]]$global:bpsItems ??= @()
+
+
+
+# Export-Pipescript -InputPath '*.ps.*'
+
+    if($null -eq $global:BpsItems) {
+        # should never not exist, unless global scope is different when dotsourcing vs module scoping?
+        [Collections.Generic.List[Object]]$BpsItems = @()
+    }
+    if (-not ($Config.bPsItems_AppendOnly) -and $global:BpsItems.count -gt 0) {
+        $global:BpsItems.Clear()
     }
 
-    # $fileGlob = $InputObject ? (Join-Path '*' $InputObject) : $InputObject
+    $InputObject | ForEach-Object {
+        $CurInputObject = $_
+        if (-not(Test-Path $BaseDirectory)) {
+            'BaseDirectory does not exist: "{0}"' -f @( $BaseDirectory)
+            | Write-Warning
+        }
+        if ($Config.ErrorWhenMissingBase) {
+            $ResolvedRootDir = Get-Item -ea 'stop' $BaseDirectory
+        }
+        else {
+            $ResolvedRootDir = Get-Item -ea 'continue' $BaseDirectory
+        }
 
-    # $resolva
-    # if (Test-Path $BaseDirectory) {
-    #     $resolvedPath = Join-Path (gi -ea stop $BaseDirectory ) '*/*.ps.*'
-    # }
+        $jstr_prefixedArrowRedLines = @{
+            Separator    = "`n"
+            OutputSuffix = $PSStyle.Reset
+            FormatString = '  > {0}'
+            OutputPrefix = $PSStyle.Foreground.FromRgb('#933136')
+        }
 
-    # Join-Path (gi . ) '*/*.ps.*'
-    $ResolvedInput = $InputObject ?? '*.ps.*'
-    $ResolvedFullPattern = Join-Path $ResolvedRootDir $ResolvedInput
+        # $fileGlob = $InputObject ? (Join-Path '*' $InputObject) : $InputObject
+
+        # $resolva
+        # if (Test-Path $BaseDirectory) {
+        #     $resolvedPath = Join-Path (gi -ea stop $BaseDirectory ) '*/*.ps.*'
+        # }
+
+        # Join-Path (gi . ) '*/*.ps.*'
+        $ResolvedInput = $CurInputObject ?? '*.ps.*'
+        $ResolvedFullPattern = Join-Path $ResolvedRootDir $ResolvedInput
 
 
-    @(
-        "nin::ExportPipeScript:"
-        '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
-        '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
-        '  InputObject      : {0}' -f @( $InputObject ?? '␀')
-        '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
-        '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
-        '  Get-Item "."     : {0}' -f @( Get-Item . )
-    )
-    | Join-String @jstr_prefixedArrowRedLines
+        @(
+            'nin::ExportPipeScript:'
+            '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
+            '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
+            '  CurInputObject   : {0}' -f @( $CurInputObject ?? '␀')
+            '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
+            '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
+            '  Get-Item "."     : {0}' -f @( Get-Item . )
+        )
+        | Join-String @jstr_prefixedArrowRedLines
+        | Write-Verbose
+
+        @(
+            # '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
+            '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
+            '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
+            '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
+            '  Get-Item "."     : {0}' -f @( Get-Item . )
+        )
+        | Join-String @jstr_prefixedArrowRedLines
+        | Join-String -op "`nnin::ExportPipeScript:`n"
+        | Write-Information -infa 'continue'
+        # | write-information #-infa continue
+
+
+
+        # @(
+        #     'nin::ExportPipeScript'
+        #     '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
+        #     # '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
+        #     # '  CurInputObject      : {0}' -f @( $CurInputObject ?? '␀')
+        #     # '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
+        #     '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
+        #     '  Get-Item '.'     : {0}' -f @( Get-Item . )
+        # )
+        # | Join-String @jstr_prefixedArrowRedLines
+        # | Join-String -f '=> Bps: -InpObj {0}' -sep "`n"
+        # | Join-String -sep "`n"
+        # | Write-Information -infa 'Continue'
+        # wait-debugger
+        if ($WhatIf) { return }
+
+        # maybe enumerate instead and add
+        $global:BpsItems.AddRange(@(
+                @(
+                    Export-Pipescript -InputPath $ResolvedFullpattern
+                    | Get-Item
+                    | Sort-Object Fullname -unique
+                    # | CountOf '$bPsItems = ' # chunk len
+                )
+                #
+                # below is nice if BpsItems was adding 1 elem at a time. rather than replaced
+                # | CountOf -Label 'Items'
+                # | Sort-Object FullName -Unique
+                # | CountOf -Label 'Distinct'
+            ))
+
+    }
+
+    $global:bpsItems
+    | Get-Item
+    | Sort-Object -Unique FullName
+    | CountOf
+    | Join-String FullName -f '   <file:///{0}>' -sep "`n" -op "wrote:`n"
     | Write-Verbose
 
-    @(
-        '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
-        '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
-        '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
-        '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
-        '  Get-Item "."     : {0}' -f @( Get-Item . )
-    )
-    | Join-String @jstr_prefixedArrowRedLines
-    | Join-String -op "`nnin::ExportPipeScript:`n"
-    | write-information -infa 'continue'
-    # | write-information #-infa continue
+    if($List) { return $global:BpsItems }
+    # if ($BaseDirectory) {
+    #     $FullRootPattern = Join-Path $BaseDirectory '*/*'
+    #     Join-Path (Get-Item . ) '*/*.ps.*'
+    # }
 
-
-
-    # @(
-    #     'nin::ExportPipeScript'
-    #     '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
-    #     # '  ResolvedRootDir  : {0}' -f @( $ResolvedRootDir ?? '␀')
-    #     # '  InputObject      : {0}' -f @( $InputObject ?? '␀')
-    #     # '  ResolvedInput    : {0}' -f @( $ResolvedInput ?? '␀')
-    #     '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
-    #     '  Get-Item '.'     : {0}' -f @( Get-Item . )
-    # )
-    # | Join-String @jstr_prefixedArrowRedLines
-    # | Join-String -f '=> Bps: -InpObj {0}' -sep "`n"
-    # | Join-String -sep "`n"
-    # | Write-Information -infa 'Continue'
-    return
-@( Export-Pipescript -InputPath 'H:\data\2023\pwsh\GitLogger\docs\*\*.ps.html' ) | CountOf | Sort-Object FullName -Unique | CountOf
-    $global:bpsItems | Join-String FullName -f "`n - <file:///{0}>" | CountOf
-    return
-
-    if ($WhatIf) { return }
-    if ($BaseDirectory) {
-        $FullRootPattern = Join-Path $BaseDirectory '*/*'
-        Join-Path (Get-Item . ) '*/*.ps.*'
-    }
-
+    <# orig script:
     $FullPathPattern = '...'
     $FullpathPattern | Join-String -f '=> Bps: {0}'
     | Write-Information -infa 'Continue'
 
     @( Export-Pipescript -InputPath 'H:\data\2023\pwsh\GitLogger\docs\*\*.ps.html' ) | CountOf | Sort-Object FullName -Unique | CountOf
     $global:bpsItems | Join-String FullName -f "`n - <file:///{0}>" | CountOf
+    #>
 
 }
 
