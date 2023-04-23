@@ -1612,26 +1612,24 @@ function New-Lie {
         $TypeInfo
         $TypeInfo -is 'type'
         $TypeInfo -as 'type'
-    ) | Write-Information -infa 'continue'
+    # ) | Write-Information #-infa 'continue'
+    ) | write-verbose #-infa 'continue'
 
     # $script:xlr8r ??= [psobject].assembly.gettype('System.Management.Automation.TypeAccelerators')
     $script:xlr8r::Add($Name, $TypeInfo)
     'New Lie: {0} => {1}' -f @(
         $Name
         $TypeInfo
-    ) | Write-Information -infa 'continue'
+    ) | Write-Information #-infa 'continue'
 }
 
-New-Lie -Name 'List' -TypeInfo ([System.Collections.Generic.List`1])
-New-Lie 'Rune' -TypeInfo ([Text.Rune])
+
 
 
 # $xlr8r::Add( 'Lie', ([System.Collections.Generic.IList`1]) )
 # New-Lie -name 'Lie' -TypeInfo [System.Collections.Generic.iList`1]
 # New-Lie -name 'Lie' -TypeInfo [System.Collections.Generic.List`1]
 
-
-Import-Module 'Pansies'
 [PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
 
 function nin.findNewestItem {
@@ -1764,19 +1762,20 @@ function bPs.Items {
 
         # [hashtable]$Options
     )
+    Write-Warning 'add -Cached' # ignores files when the compiled modified time is newer than the source file name
     $Config = @{
         ErrorWhenMissingBase = $true
         bPsItems_AppendOnly  = $false
-        AlwaysRecurse = $true
+        AlwaysRecurse        = $true
     }
 
     [Collections.Generic.List[Object]]$global:bpsItems ??= @()
 
 
 
-# Export-Pipescript -InputPath '*.ps.*'
+    # Export-Pipescript -InputPath '*.ps.*'
 
-    if($null -eq $global:BpsItems) {
+    if ($null -eq $global:BpsItems) {
         # should never not exist, unless global scope is different when dotsourcing vs module scoping?
         [Collections.Generic.List[Object]]$BpsItems = @()
     }
@@ -1863,7 +1862,7 @@ function bPs.Items {
                 @(
                     Export-Pipescript -InputPath $ResolvedFullpattern
                     | Get-Item
-                    | Sort-Object Fullname -unique
+                    | Sort-Object Fullname -Unique
                     # | CountOf '$bPsItems = ' # chunk len
                 )
                 #
@@ -1882,7 +1881,7 @@ function bPs.Items {
     | Join-String FullName -f '   <file:///{0}>' -sep "`n" -op "wrote:`n"
     | Write-Verbose
 
-    if($List) { return $global:BpsItems }
+    if ($List) { return $global:BpsItems }
     # if ($BaseDirectory) {
     #     $FullRootPattern = Join-Path $BaseDirectory '*/*'
     #     Join-Path (Get-Item . ) '*/*.ps.*'
@@ -1948,6 +1947,33 @@ function enumerateSupportedEventNames {
     }
 }
 
+function glam.Bps.🐍.All {
+    # gitlogger, macro: BuildPipescript
+    # counts are wrong but I don't care for now
+    [Collections.Generic.List[Object]]$all_items = @()
+    $all_items.AddRange(@(
+            Bps.🐍 -InputObject '*.ps.html' -RelativeToRoot 'H:/data/2023/pwsh/GitLogger/docs' -List
+
+        ))
+    $all_items.AddRange(@(
+            Bps.🐍 -InputObject '*.ps.html', '*.ps.*' -RelativeToRoot 'H:/data/2023/pwsh/GitLogger/Azure' -List
+        ))
+
+    $all_items = $all_items | Sort-Object -Unique FullName
+
+    $all_items
+    | Sort-Object -Unique FullName
+    | CountOf
+    | Format-Table -auto
+
+    Toast -Silent -Text 'Glam.BuildPipescript', $(
+        'finished {0} items = {1}' -f @(
+            $all_items.count
+            $all_items.Name | Join-String -sep ', '
+        )
+    )
+}
+
 <#
 super aggresssive functions  #>
 function Gs {
@@ -2000,3 +2026,15 @@ function prof.Io2 {
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
+
+$PSDefaultParameterValues
+@(
+    $pcolor = '#{0}' -f @(GetColor -ColorLabel 'teal.bright')
+    New-Lie -Name 'List' -TypeInfo ([System.Collections.Generic.List`1]) 6>&1
+    New-Lie 'Rune' -TypeInfo ([Text.Rune])  6>&1
+    New-Lie -Name 'color.Rgb' -TypeInfo ([PoshCode.Pansies.RgbColor])  6>&1
+    New-Lie -Name 'color.Lab' -TypeInfo ([PoshCode.Pansies.HunterLabColor])  6>&1
+    New-Lie -Name color.space.Lab -TypeInfo ([PoshCode.Pansies.ColorSpaces.HunterLab])  6>&1
+)
+|Join-String -op $PSStyle.Foreground.FromRgb('#'+(GetColor teal.bright)) -os $PSStyle.Reset -sep "`n"
+# | Join-String -op $PSStyle.Foreground.FromRgb('#515c6b') -os $PSStyle.Reset
