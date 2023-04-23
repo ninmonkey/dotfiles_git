@@ -9,7 +9,7 @@ custom attributes, more detailed info
     - more...
         - [CSharp Advanced Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/reflection-and-attributes/creating-custom-attributes)
 #>
-
+import-module pansies
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
 'Encoding: [Console Input/Output: {0}, {1}, $OutputEncoding: {2}]' -f @(
@@ -2027,7 +2027,7 @@ function prof.Io2 {
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
 
-$PSDefaultParameterValues
+
 @(
     $pcolor = '#{0}' -f @(GetColor -ColorLabel 'teal.bright')
     New-Lie -Name 'List' -TypeInfo ([System.Collections.Generic.List`1]) 6>&1
