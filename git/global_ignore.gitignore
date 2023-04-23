@@ -1,6 +1,6 @@
 # missing:
 ## Temp Excel/word files
-
+**/*.aws-build
 *.lnk
 *.exe
 *.log
@@ -17,3 +17,6 @@
 #venv_discord-bot/**
 # default test-explorer path
 /TestExplorerResults.xml
+
+# Jekyll (build artifacts)
+**/_site/*

@@ -2,9 +2,74 @@ $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 
+# move-to-shared
+$env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is missing
+
+function Test-AnyTrueItems {
+    <#
+    .synopsis
+        Test if any of the items in the pipeline are true
+    .notes
+    # are any of the truthy values?
+    .EXAMPLE
+        tests:
+
+        $true, $false, $false | Test-AnyTrueItems | Should -be $true
+        $null, $null | Test-AnyTrueItems | Should -be $false
+        '', '' | Test-AnyTrueItems | Should -be $false
+        '', '  ' | Test-AnyTrueItems | Should -be $true
+        '', '  ' | Test-AnyTrueItems -BlanksAreFalse | Should -be $true
+    #>
+    [Alias('Test-AnyTrue', 'nin.AnyTrue')]
+    [OutputType('System.boolean')]
+    [CmdletBinding()]
+    param(
+        [Alias('TestBool')]
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        # if string, and blank, then treat as false
+        [switch]$BlanksAreFalse
+    )
+    begin {
+        $AnyIsTrue = $false
+    }
+    process {
+        foreach ($item in $INputObject) {
+            if ($BlanksAreFalse) {
+                $test = [string]::isnullorwhitespace($item)
+                # or $item -replace '\w+', ''
+            }
+            else {
+                $test = [bool]$item
+            }
+            #
+            if ($Test) {
+                $AnyIsTrue = $true
+            }
+        }
+    }
+
+    end {
+        return $AnyIsTrue
+    }
+}
+
+
+
+# $env:EDITOR = 'nvim'
+
+$OutputEncoding =
+    [Console]::OutputEncoding =
+    [Console]::InputEncoding =
+    [System.Text.UTF8Encoding]::new()
+
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
     # 'H:\data\2023\pwsh\PsModules\Ninmonkey.Console\zeroDepend_autoloader\logging.Write-NinLogRecord.ps1'
+    'H:/data/2023/pwsh/GitLogger'
     $Env:PSModulePath
 ) | Join-String -sep ';'
 
@@ -49,6 +114,58 @@ $PROFILE | Add-Member -NotePropertyMembers @{
 } -Force -PassThru #-ea Ignore
 # $PROFILE | Add-Member -NotePropertyMembers $global:__ninBag.Profile.PSModulePath -force  -passthru #-ea Ignore
 
+function __aws.sam.InvokeAndPipeLog {
+    param(
+        [string]$LogBase = 'g:\temp',
+        [string]$LogName = 'aws_raw.log',
+        [switch]$WithoutStdout,
+        [switch]$NeverOpenLog,
+
+        [switch]$NeverTruncateLog
+    )
+    $FullLogPath = Join-Path $LogBase $LogName
+    if (-not(Test-Path $FullLogPath) -and -not $NeverTruncateLog) {
+        New-Item $LogBase -Name $LogName -ItemType file -Force -ea ignore
+    }
+    (Get-Item $FullLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
+
+    if (-not $NeverOpenLog) {
+        code -g (Get-Item $FullLogPath)
+    }
+    & sam build --debug --parallel --use-container --cached --skip-pull-image --profile BDG *>&1
+    | StripAnsi # Pwsh7.3 pipes color from STDERROR
+    | ForEach-Object {
+        $addContentSplat = @{
+            PassThru = -not $WithoutStdout
+            Path     = $FullLogPath
+        }
+        $_ | Add-Content @addContentSplat
+    }
+    (Get-Item $FullLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
+
+    New-BurntToastNotification -Text 'SAM Build Complete', "$FullLogPath"
+
+    $target = $FullLogPath | Get-Item -ea stop
+
+    $FullCleanLogPath = Join-Path $Target.Directory ($target.BaseName + '.cleaned.log')
+    # $FullCleanLogPath = $FullLogPath | gi | % BaseName
+
+    # todo: make it pipe as a stream, not requiring end.
+    # cleanup
+    Get-Content $FullLogPath | Where-Object {
+        $shouldKeep = $true
+        $FoundIgnoreCopySource = $_ -match ('^' + [Regex]::Escape('Copying source file (/tmp/samcli/source/'))
+        $FoundIgnoreCopyMeta = $_ -match ('^' + [Regex]::Escape('Copying directory metadata from source (/tmp/samcli/source/'))
+        $FoundOthers = $_ -match '^(Copying source file|Copying directory metadata from source)'
+
+        if ($FoundIgnoreCopyMeta -or $FoundIgnoreCopySource) { $ShouldKeep = $false }
+        if ($FoundOthers) { $shouldKeep = $false }
+        return $shouldKeep
+    } | Add-Content -Path $FullCleanLogPath
+
+     (Get-Item $FullCleanLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
+}
+
 
 # shared (all 3)
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: AllUsersCurrentHost" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
@@ -60,18 +177,20 @@ $PSDefaultParameterValues.Remove('*:verbose')
 # root entry point
 . (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1' ))
 
+## completers
 
+<#
+- see: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4>
+- native command sample: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4#example-3-register-a-custom-native-argument-completer>
+#>
 
-
-
+# root entry point
+. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/autoloadNow_ArgumentCompleter-butRefactor.ps1' ))
 
 
 if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 return
-
-
-
 
 if ($global:__nin_enableTraceVerbosity) { "enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCOmmandpath ) '${pid}'" | Write-Warning }
 . (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1')

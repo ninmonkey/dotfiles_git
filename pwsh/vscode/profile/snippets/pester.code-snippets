@@ -1,0 +1,133 @@
+{
+    /*
+from: https://github.com/PowerShell/vscode-powershell/blob/main/docs/community_snippets.md#pester
+at: 2022-08-27
+*/
+    "DataTable": {
+        "scope": "powershell",
+        "prefix": "DataTable",
+        "body": [
+            "# Create DataTable Object",
+            "$$table = New-Object system.Data.DataTable $$TableName",
+            "\r# Create Columns",
+            "$$col1 = New-Object system.Data.DataColumn NAME1,([string])",
+            "$$col2 = New-Object system.Data.DataColumn NAME2,([decimal])",
+            "\r#Add the Columns to the table",
+            "$$table.columns.add($$col1)",
+            "$$table.columns.add($$col2)",
+            "\r# Create a new Row",
+            "$$row = $$table.NewRow() ",
+            "\r# Add values to new row",
+            "$$row.Name1 = 'VALUE'",
+            "$$row.NAME2 = 'VALUE'",
+            "\r#Add new row to table",
+            "$$table.Rows.Add($$row)"
+        ],
+        "description": "test this ancient snippet: Creates a Data Table Object"
+    },
+    "Max Length of Datatable": {
+        "scope": "powershell",
+        "prefix": "Max Length of Datatable",
+        "body": [
+            "$$columns = ($$datatable | Get-Member -MemberType Property).Name",
+            "foreach($$column in $$Columns) {",
+            "\t$$max = 0",
+            "\tforeach ($$a in $$datatable){",
+            "\t\tif($$max -lt $$a.$$column.length){",
+            "\t\t\t$$max = $$a.$$column.length",
+            "\t\t}",
+            "\t}",
+            "\tWrite-Output \"$$column max length is $$max\"",
+            "}"
+        ],
+        "description": "test this ancient snippet: Takes a datatable object and iterates through it to get the max length of the string columns - useful for data loads"
+    },
+    "Throw Terminating Error": {
+        "scope": "powershell",
+        "prefix": "error-terminating",
+        "body": [
+            "\\$Exception     = New-Object ${1:System.ArgumentException} (\"${2:Invalid argument provided.}\")\r",
+            "\\$ErrorCategory = [System.Management.Automation.ErrorCategory]::${3:InvalidArgument}\r",
+            "# Exception, ErrorId as [string], Category, and TargetObject (e.g. the parameter that was invalid)\r",
+            "\\$ErrorRecord   = New-Object System.Management.Automation.ErrorRecord(\\$Exception, '${4:InvalidArgument}', \\$ErrorCategory, ${5:\\$null})\r",
+            "\\$PSCmdlet.ThrowTerminatingError(\\$ErrorRecord)"
+        ],
+        "description": "test this ancient snippet: Throw a full terminating error."
+    },
+    "Pester for Parameter": {
+        "scope": "powershell",
+        "prefix": "Param Pester",
+        "body": [
+            "It \"${1:FunctionName} Should have a parameter ${2:ParameterName}\" {",
+            "\t(Get-Command ${1:FunctionName}).Parameters['${2:ParameterName}'].Count | Should -Be 1",
+            "}"
+        ],
+        "description": "Pester Test for Parameter"
+    },
+    "Pester for Mandatory Parameter": {
+        "scope": "powershell",
+        "prefix": "mandatoryParamPester",
+        "body": [
+            "It \"${1:FunctionName} Should have a mandatory parameter ${2:ParameterName}\" {",
+            "\t(Get-Command ${1:FunctionName}).Parameters['${2:ParameterName}'].Attributes.Mandatory | Should -BeTrue",
+            "}"
+        ],
+        "description": "Pester Test for Parameter"
+    },
+    "PesterContext": {
+        "scope": "powershell",
+        "prefix": "Context-Pester",
+        "description": "Pester - Context block",
+        "body": [
+            "Context \"${1:ContextName}\" {",
+            "\t${0:$TM_SELECTED_TEXT}",
+            "}"
+        ]
+    },
+    "PesterContextIt": {
+        "scope": "powershell",
+        "prefix": "Context-It-Pester",
+        "description": "Pester - Context block with nested It block",
+        "body": [
+            "Context \"${1:ContextName}\" {",
+            "\tIt \"${2:ItName}\" {",
+            "\t\t${3:${TM_SELECTED_TEXT:Assertion}}",
+            "\t}$0",
+            "}"
+        ]
+    },
+    "PesterDescribeBlock": {
+        "scope": "powershell",
+        "prefix": "Describe-Pester",
+        "description": "Pester Describe block",
+        "body": [
+            "Describe \"${1:DescribeName}\" {",
+            "\t${0:TM_SELECTED_TEXT}",
+            "}"
+        ]
+    },
+    "PesterDescribeContextIt": {
+        "scope": "powershell",
+        "prefix": "Describe-Context-It-Pester",
+        "description": "Pester Describe block with nested Context & It blocks",
+        "body": [
+            "Describe \"${1:DescribeName}\" {",
+            "\tContext \"${2:ContextName}\" {",
+            "\t\tIt \"${3:ItName}\" {",
+            "\t\t\t${4:${TM_SELECTED_TEXT:Assertion}}",
+            "\t\t}$0",
+            "\t}",
+            "}"
+        ]
+    },
+    "PesterIt": {
+        "scope": "powershell",
+        "prefix": "It-Pester",
+        "description": "Pester - It block",
+        "body": [
+            "It \"${1:ItName}\" {",
+            "\t${2:${TM_SELECTED_TEXT:Assertion}}",
+            "}$0"
+        ]
+    }
+}

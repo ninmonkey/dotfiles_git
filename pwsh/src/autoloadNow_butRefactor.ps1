@@ -6,8 +6,88 @@ if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCo
 
 # Import-module ninmonkey.console -DisableNameChecking *>$null
 
+@'
+Quick hack to cover this for now
+VERBOSE: Cannot find provider 'PowerShellGet' under the specified path.
+VERBOSE: Importing package provider 'PowerShellGet'.
+VERBOSE: Checking for updates for module 'PipeScript'.
+'@  | Write-Debug
+nin.psmodulePath.AddNamedGroup Main
+
+function nancy.WriteInverse {
+    $Input | Join-String -op $PSStyle.Reverse -os $PSStyle.Reset
+}
+
+$setAliasSplat = @{
+    Name        = '.fmt.md.TableRow0'
+    Value       = '_fmt_mdTableRow'
+    Description = 'experiment with a new command namespace: ''.fmt'''
+    ErrorAction = 'ignore'
+}
+
+Set-Alias @setAliasSplat
+function _fmt_mdTableRow {
+    <#
+    .EXAMPLE
+    PS> 'a'..'e' | _fmt_mdTableRow
+
+        | a | b | c | d | e |
+
+    .EXAMPLE
+    PS> 'Name', 'Length', 'FullName' | _fmt_mdTableRow
+
+        | Name | Length | FullName |
+    .EXAMPLE
+        (get-date).psobject.properties
+        | %{
+            @(
+                $_.Name
+                $_.Value
+                ($_.Value)?.GetType() ?? "`u{2400}"
+
+            )  | _fmt_mdTableRow
+        }
+
+    #Output:
+        | DisplayHint | DateTime | Microsoft.PowerShell.Commands.DisplayHintType |
+        | DateTime | Wednesday, April 5, 2023 5:55:57 PM | string |
+        | Date | 04/05/2023 00:00:00 | datetime |
+        | Day | 5 | int |
+        | DayOfWeek | Wednesday | System.DayOfWeek |
+        | DayOfYear | 95 | int |
+        | Hour | 17 | int |
+        | Kind | Local | System.DateTimeKind |
+        | Millisecond | 258 | int |
+        | Microsecond | 715 | int |
+        | Nanosecond | 300 | int |
+        | Minute | 55 | int |
+        | Month | 4 | int |
+        | Second | 57 | int |
+        | Ticks | 638163141572587153 | long |
+        | TimeOfDay | 17:55:57.2587153 | timespan |
+        | Year | 2023 | int |
+    #>
+    param(
+        [Parameter(ValueFromPipeline)]
+        [String[]]$InputText
+    )
+    begin {
+        $lines = @()
+    }
+    process {
+        foreach ($line in $InputText) {
+            $LineS += $line
+        }
+    }
+    end {
+
+        # $lines | Join-String -sep ' | ' -op '| ' -os " |`n"
+        $lines | Join-String -sep ' | ' -op '| ' -os ' |'
+    }
+}
 
 function b.wrapLikeWildcard {
+
     <#
     .SYNOPSIS
         converts like-patterns to always wrap wildcards
@@ -33,6 +113,8 @@ function b.Text.WrapString {
             u_v_w_x_y_
             z
     #>
+    [Alias('Join.WrapText')]
+    [CmdletBinding()]
     param(
         [Alias('Text')]
         [Parameter(Mandatory, Position = 0)]
@@ -98,7 +180,7 @@ function One {
         sugar for: Select first 1
     #>
     # one of the rare cases where Input is useful without the dangers
-    $Input | Select-Object -first 1
+    $Input | Select-Object -First 1
 }
 
 function b.fm {
@@ -143,7 +225,54 @@ function b.getAll.Props {
         }) | Sort-Object -Unique
 }
 
+New-Alias '.fmt.Html.Table' -Value 'Html.Table.Convert.FromHash' -ea ignore
 
+function Format-Html.Table.FromHashtable {
+    <#
+    .SYNOPSIS
+    Short description
+
+    .DESCRIPTION
+    Long description
+
+    .PARAMETER InputHashtable
+    Parameter description
+
+    .EXAMPLE
+            .fmt.html.Table
+
+    .NOTES
+    General notes
+    #>
+    [CmdletBinding()]
+    [Alias(
+        # namespaces experiment.
+        'Convert.Html.Table.FromHash',
+        'Html.Table.Convert.FromHash',
+        'Html.Table.FromHashtable',
+        '.fmt.Html.Table'
+    )]
+    param(
+        [Parameter(Mandatory)]
+        [hashtable]$InputHashtable
+    )
+    $renderBody = $InputHashTable.GetEnumerator() | ForEach-Object {
+        '<tr><td>{0}</td><td>{1}</td></tr>' -f @(
+            $_.Key ?? '?'
+            $_.Value ?? '?'
+        )
+
+    } | Join-String -sep "`n"
+    $renderFinal = @(
+        '<table>'
+        $renderBody
+        '</table>'
+    ) | Join-String -sep "`n"
+    return $renderFinal
+    # '<table>'
+    # '</table>'
+
+}
 
 
 function Test-ModuleWasModified {
@@ -233,20 +362,33 @@ function Err {
         [switch]$TotalCount,
 
         [Alias('HasAny')]
-        [switch]$TestHasAny
+        [switch]$TestHasAny,
+
+        # write-information
+        [Alias('ShowCount')]
+        [switch]$IncludeCount
     )
-    if ($TestHasAny) {
-        return ($global:error.count -gt 0)
-    }
-    if ($TotalErrorCount) {
-        return $global:error.count
+    $TotalErrorCount = $global:error.count
+    if ($IncludeCount) {
+        'Had {0} errors before clearing' -f @(
+            $TotalErrorCount
+        ) | Write-Information -infa 'continue'
     }
 
-    if ( $Clear) { $global:error.Clear() }
-    if ($num -le $global:error.count ) {
-        "Number of Errors: $($global:error.count)" | Write-Verbose
+    'Had {0} Errors' -f @(
+        $TotalErrorCount
+    ) | Write-Verbose
+
+    if ($TestHasAny) {
+        return ($TotalErrorCount -gt 0)
     }
-    return $global:error | Select-Object -First $Num
+    if ($TotalErrorCount) {
+        return $TotalErrorCount
+    }
+
+    if ( $Clear ) { $global:error.Clear() }
+    if ( $Clear ) { $error.Clear() } # depending if func is in profile or module
+    return $global:error | Select-Object -First $Num | CountOf
 }
 
 
@@ -503,8 +645,8 @@ function prof.renderEvent {
     #>
     param()
     process {
-        $_ | fl
-        $_.SourceEventArgs | ft -auto
+        $_ | Format-List
+        $_.SourceEventArgs | Format-Table -auto
     }
 }
 
