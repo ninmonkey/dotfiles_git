@@ -11,7 +11,7 @@ custom attributes, more detailed info
     - more...
         - [CSharp Advanced Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/reflection-and-attributes/creating-custom-attributes)
 #>
-import-module pansies
+Import-Module pansies
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
 'Encoding: [Console Input/Output: {0}, {1}, $OutputEncoding: {2}]' -f @(
@@ -1634,7 +1634,7 @@ function New-Lie {
             $this.ShortType = $TypeInfo.Name
             $this.TypeInfo = $TypeInfo
             $this.TypeName = $TypeInfo.ToString()
-            $this.Namespace = $TypeInfo -split '\.' | select -skiplast 1 | Join-String -sep '.'
+            $this.Namespace = $TypeInfo -split '\.' | Select-Object -SkipLast 1 | Join-String -sep '.'
         }
     }
 
@@ -1642,19 +1642,23 @@ function New-Lie {
         $TypeInfo
         $TypeInfo -is 'type'
         $TypeInfo -as 'type'
-    # ) | Write-Information #-infa 'continue'
-    ) | write-verbose #-infa 'continue'
+        # ) | Write-Information #-infa 'continue'
+    ) | Write-Verbose #-infa 'continue'
 
     # $script:xlr8r ??= [psobject].assembly.gettype('System.Management.Automation.TypeAccelerators')
     $script:xlr8r::Add($Name, $TypeInfo)
 
-    $script:__xlr8rLog.Add(
-        [LieRecord]::New(
-            ($Name),
-            ($TypeInfo)
-            # ($TypeInfo -as 'type')
+    # $isNew = ($script:__xlr8rLog | Where-Object { $_.Name -match $Name }).count -gt 0
+    # if ($IsNew) {
+    if (-not ($script:__xlr8rLog.Name -contains $Name)) {
+        $script:__xlr8rLog.Add(
+            [LieRecord]::New(
+                ($Name),
+                ($TypeInfo)
+                    # ($TypeInfo -as 'type')
+                )
         )
-    )
+    }
 
     'New Lie: {0} => {1}' -f @(
         $Name
@@ -2097,15 +2101,15 @@ if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCo
 @(
     $pcolor = '#{0}' -f @(GetColor -ColorLabel 'teal.bright')
     New-Lie -Name 'List' -TypeInfo ([System.Collections.Generic.List`1]) 6>&1
-    New-Lie 'Rune' -TypeInfo ([Text.Rune])  6>&1
-    New-Lie -Name 'color.Rgb' -TypeInfo ([PoshCode.Pansies.RgbColor])  6>&1
-    New-Lie -Name 'color.Lab' -TypeInfo ([PoshCode.Pansies.HunterLabColor])  6>&1
-    New-Lie -Name color.space.Lab -TypeInfo ([PoshCode.Pansies.ColorSpaces.HunterLab])  6>&1
+    New-Lie 'Rune' -TypeInfo ([Text.Rune]) 6>&1
+    New-Lie -Name 'color.Rgb' -TypeInfo ([PoshCode.Pansies.RgbColor]) 6>&1
+    New-Lie -Name 'color.Lab' -TypeInfo ([PoshCode.Pansies.HunterLabColor]) 6>&1
+    New-Lie -Name color.space.Lab -TypeInfo ([PoshCode.Pansies.ColorSpaces.HunterLab]) 6>&1
 
     # New-Lie -Name text.Utf8 -TypeInfo ([System.Text.UTF8Encoding])   6>&1
     # New-Lie -Name text.Utf8 -TypeInfo ([System.Text.UTF8Encoding])   6>&1
     # New-Lie -Name 'encode.Info' -TypeInfo ([System.Text.EncodingInfo]) 6>&1
     # New-Lie -Name 'text.Encoding' -TypeInfo ([System.Text.Encoding]) 6>&1
 )
-|Join-String -op $PSStyle.Foreground.FromRgb('#'+(GetColor teal.bright)) -os $PSStyle.Reset -sep "`n"
+| Join-String -op $PSStyle.Foreground.FromRgb('#' + (GetColor teal.bright)) -os $PSStyle.Reset -sep "`n"
 # | Join-String -op $PSStyle.Foreground.FromRgb('#515c6b') -os $PSStyle.Reset
