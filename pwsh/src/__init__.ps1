@@ -1,6 +1,8 @@
 ﻿# $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
+
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
+
 <#
 custom attributes, more detailed info
     - [reflection and custom attributes](https://learn.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/accessing-custom-attributes)
@@ -22,19 +24,19 @@ Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 Import-Module 'ugit'
 
 
-## temp include, to move gitlogger to psmodulepath instead
-if ('quick hack, move gitlogger to path PSModules instead') {
-    $wherePath = 'H:\data\2023\pwsh'
-    $env:PSModulePath += ';{0}' -f $wherePath
-    $env:PSModulePath | Join-String -sep "`n" | Write-Debug
+# ## temp include, to move gitlogger to psmodulepath instead
+# if ('quick hack, move gitlogger to path PSModules instead') {
+#     $wherePath = 'H:\data\2023\pwsh'
+#     $env:PSModulePath += ';{0}' -f $wherePath
+#     $env:PSModulePath | Join-String -sep "`n" | Write-Debug
 
-    $Env:PSModulePath = @(
-        $env:PSModulePath -split ';' -notmatch ([regex]::Escape($wherePath))
-        $wherePath
-    ) | Join-String -sep ';'
+#     $Env:PSModulePath = @(
+#         $env:PSModulePath -split ';' -notmatch ([regex]::Escape($wherePath))
+#         $wherePath
+#     ) | Join-String -sep ';'
 
-    $env:PSModulePath | Join-String -sep "`n" | Write-Debug
-}
+#     $env:PSModulePath | Join-String -sep "`n" | Write-Debug
+# }
 
 function Export.PipeScript {
     [alias(
@@ -1152,7 +1154,7 @@ function Remove-Lie {
         # type kind. later remove ky key sintead.
         [Parameter(Mandatory, Position = 0)]$TypeInfo
     )
-
+    'AFAIK api doesn''t expose ability to remove?'
     throw 'does not remove, is internally cached, jborean''s patch might have fixed that, or at least shows whether it''s a new type'
     # $script:xlr8r ??= [psobject].assembly.gettype('System.Management.Automation.TypeAccelerators')
     $script:xlr8r::Remove($TypeInfo)
@@ -1585,16 +1587,23 @@ function ImportColor {
     $state.keys.count | Join-String -f 'Imported {0} colors' | Write-Information -infa 'continue'
 }
 
+[Collections.Generic.List[Object]]$script:__xlr8rLog ??= @()
+
 function New-Lie {
     <#
     .SYNOPSIS
-        TypeInfo lies, type accellerator , lies.
+        TypeInfo lies, type accelerator , lies.
     .EXAMPLE
-        New-Lie -Name 'Lie' -TypeInfo ([System.Collections.Generic.List`1])
+        Get-Lie
     .EXAMPLE
-        $xlr8r::Add( 'Lie', ([System.Collections.Generic.List`1]) )
+        Get-Lie | Sort-Object TypeName
+        | fw -Column 1 TypeName
     .NOTES
-        future: Get-Lies. show lies. (or, at least the user's lies)
+
+    .LINK
+        New-Lie
+    .LINK
+        Get-Lie
     #>
     param(
         #New alias
@@ -1608,6 +1617,27 @@ function New-Lie {
     #         ($Name -as 'type')
     #     ))
 
+    class LieRecord {
+        [string]$Name
+        [string]$ShortType
+        [string]$Namespace
+        hidden [string]$TypeName
+        hidden [object]$TypeInfo # instance of type info.
+        # can a resolved type ever fail in this usage?
+
+        LieRecord (
+            [string]$Name,
+            # [string]$TypeName,
+            [object]$TypeInfo
+        ) {
+            $this.Name = $Name
+            $this.ShortType = $TypeInfo.Name
+            $this.TypeInfo = $TypeInfo
+            $this.TypeName = $TypeInfo.ToString()
+            $this.Namespace = $TypeInfo -split '\.' | select -skiplast 1 | Join-String -sep '.'
+        }
+    }
+
     '{0} isType: {1}, asType: {2}' -f @(
         $TypeInfo
         $TypeInfo -is 'type'
@@ -1617,6 +1647,15 @@ function New-Lie {
 
     # $script:xlr8r ??= [psobject].assembly.gettype('System.Management.Automation.TypeAccelerators')
     $script:xlr8r::Add($Name, $TypeInfo)
+
+    $script:__xlr8rLog.Add(
+        [LieRecord]::New(
+            ($Name),
+            ($TypeInfo)
+            # ($TypeInfo -as 'type')
+        )
+    )
+
     'New Lie: {0} => {1}' -f @(
         $Name
         $TypeInfo
@@ -1624,6 +1663,33 @@ function New-Lie {
 }
 
 
+function Get-Lie {
+    <#
+    .SYNOPSIS
+        List already created lies -- TypeInfo lies, type accelerator , lies.
+    .EXAMPLE
+        Get-Lie
+    .EXAMPLE
+        Get-Lie
+            | ft Name, TypeInfo -GroupBy Namespace
+    .EXAMPLE
+        Get-Lie
+            | Sort-Object Name, Namespace, TypeInfo
+            | ft Name, TypeInfo, Namespace
+
+        Get-Lie
+            | Sort-Object Name, Namespace
+            | ft Name, Namespace
+    .description
+        show lies. (or, at least the user's lies).
+    .LINK
+        New-Lie
+    .LINK
+        Get-Lie
+    #>
+    param()
+    $script:__xlr8rLog | Sort-Object TypeName, Name
+}
 
 
 # $xlr8r::Add( 'Lie', ([System.Collections.Generic.IList`1]) )
