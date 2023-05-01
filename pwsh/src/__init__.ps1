@@ -948,12 +948,12 @@ function Select-NameIsh {
     .EXAMPLE
         gi . | NameIsh Dates -IgnoreEmpty -SortFinalResult
     .EXAMPLE
+        gi . | NameIsh Names|fl
+        gi . | NameIsh Names -IncludeEmptyProperties |fl
     #>
     [Alias('NameIsh')]
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory, ValueFromPipeline)]$InputObject,
-
         [Parameter(Mandatory, position = 0)]
         [ArgumentCompletions(
             'Dates', 'Times',
@@ -963,6 +963,9 @@ function Select-NameIsh {
         )]
         [string[]]$Kinds,
 
+        [Parameter(Mandatory, ValueFromPipeline)]$InputObject,
+
+
         # to be appended to kinds already filtered by $Kinds.
         # useful because you may not want '*id*' as a wildcard to be too aggressive
         # todo: dynamically auto gen based on hashtable declaration
@@ -971,8 +974,8 @@ function Select-NameIsh {
         )]
         [string[]]$ExtraKinds,
 
-        [Alias('HideBlank')][Parameter()]
-        [switch]$IgnoreEmpty,
+        [Alias('IncludeEmptyProperties')][Parameter()]
+        [switch]$KeepEmptyProperties,
 
         # is there any reason to?
         [switch]$WithoutUsingUnique,
@@ -993,6 +996,7 @@ function Select-NameIsh {
             HasA      = 'HasA*', 'Has*'
             Bool      = '*True*', '*False*'
             Attribute = '*attr*', '*attribute*'
+            File = '*file*', '*name*', '*extension*', '*path*', '*directory*', '*folder*'
             Path      = '*Path*', 'FullName', 'Name'
             Company   = 'co', '*company*'
             Locations = '*zip*', '*state*', '*location*', '*city*', '*address*', '*email*', 'addr', '*phone*', '*cell*'
@@ -1026,24 +1030,26 @@ function Select-NameIsh {
         }
     }
     process {
-        $splat_select = @{
+        $query_splat = @{
             Property    = $Names
             ErrorAction = 'ignore'
         }
-        if (-not $IgnoreEmpty) {
-            return $InputObject | Select-Object @splat_select
+        $query = $InputObject | Select-Object @query_splat
+        if ($KeepEmptyProperties) {
+            return $query
         }
 
-        [string[]]$emptyPropNames = $InputObject.PSObject.Properties
+        [string[]]$emptyPropNames = $query.PSObject.Properties
             | Where-Object { [string]::IsNullOrWhiteSpace( $_.Value ) }
             | ForEach-Object Name
 
-        $splat_select = @{
-            Property        = $Names
+        $emptyPropNames | Join-String -op 'empty: ' -sep ', ' -DoubleQuote  | write-debug
+
+        $dropEmpty_splat = @{
             ErrorAction     = 'ignore'
             ExcludeProperty = $emptyPropNames
         }
-        return $InputObject | Select-Object @splat_select
+        return $query | Select-Object @dropEmpty_splat
     }
     end {
         if ($SortFinalResult) {
