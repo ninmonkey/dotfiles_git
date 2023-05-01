@@ -941,10 +941,125 @@ function Help.Param {
     # foreach($x in $Input) { Get-Help -param $_ }
 }
 
+function Select-NameIsh {
+    <#
+    .SYNOPSIS
+        Select propert-ish categories, wildcard searching for frequent kinds
+    .EXAMPLE
+        gi . | NameIsh Dates -IgnoreEmpty -SortFinalResult
+    .EXAMPLE
+    #>
+    [Alias('NameIsh')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]$InputObject,
+
+        [Parameter(Mandatory, position = 0)]
+        [ArgumentCompletions(
+            'Dates', 'Times',
+            'Names', 'Employee', 'Company', 'Locations', 'Numbers',
+            'IsA', 'HasA',
+            'Type'
+        )]
+        [string[]]$Kinds,
+
+        # to be appended to kinds already filtered by $Kinds.
+        # useful because you may not want '*id*' as a wildcard to be too aggressive
+        # todo: dynamically auto gen based on hashtable declaration
+        [ArgumentCompletions(
+            '*id*', '*num*', '*co*', '*emp*'
+        )]
+        [string[]]$ExtraKinds,
+
+        [Alias('HideBlank')][Parameter()]
+        [switch]$IgnoreEmpty,
+
+        # is there any reason to?
+        [switch]$WithoutUsingUnique,
+
+        # sugar sort on property names
+        [switch]$SortFinalResult
+
+    )
+    begin {
+        $PropList = @{
+            Names     = '*name*', '*user*', 'email', 'mail', 'author', '*author*'
+            Employee  = '*employee*', '*emp*id*', '*emp*num*'
+            Dates     = '*date*', '*time*', '*last*modif*', '*last*write*'
+            Type      = '*typename*', '*type*', '*Type'
+            Script    = '*Declaring*', '*method*', '*Declared*'
+            Generic   = '*generic*', 'IsGeneric*', '*Interface*'
+            IsA       = 'Is*'
+            HasA      = 'HasA*', 'Has*'
+            Bool      = '*True*', '*False*'
+            Attribute = '*attr*', '*attribute*'
+            Path      = '*Path*', 'FullName', 'Name'
+            Company   = 'co', '*company*'
+            Locations = '*zip*', '*state*', '*location*', '*city*', '*address*', '*email*', 'addr', '*phone*', '*cell*'
+            Numbers   = 'id', '*num*', '*identifier*', '*identity*', '*GUID*'
+        }
+
+        [Collections.Generic.List[Object]]$Names = @()
+
+        foreach ($Key in $Kinds) {
+            if ($key -notin $PropList.Keys) {
+                throw "Missing Defined NameIsh Group Key Name: '$key'"
+            }
+            $PropNameList = $PropList.$Key
+            $Names.AddRange( $PropNameList )
+        }
+        if ($ExtraKinds) {
+            $Names.AddRange(@( $ExtraKinds ))
+        }
+
+        $Names | Join-String -sep ', ' -single -op 'AllNames: '
+        | Write-Debug
+
+        if (-not $WithoutUsingUnique) {
+            $Names = $Names | Sort-Object -Unique
+        }
+        $Names | Join-String -sep ', ' -single -op 'IncludeNames: '
+        | Write-Verbose
+
+        if ($IgnoreEmpty) {
+            Write-Warning 'IgnoreEmpty: NYI'
+        }
+    }
+    process {
+        $splat_select = @{
+            Property    = $Names
+            ErrorAction = 'ignore'
+        }
+        if (-not $IgnoreEmpty) {
+            return $InputObject | Select-Object @splat_select
+        }
+
+        [string[]]$emptyPropNames = $InputObject.PSObject.Properties
+            | Where-Object { [string]::IsNullOrWhiteSpace( $_.Value ) }
+            | ForEach-Object Name
+
+        $splat_select = @{
+            Property        = $Names
+            ErrorAction     = 'ignore'
+            ExcludeProperty = $emptyPropNames
+        }
+        return $InputObject | Select-Object @splat_select
+    }
+    end {
+        if ($SortFinalResult) {
+            'nyi: becauseSortFinalResult must occur after select-object is finished, else, cant know what properties the wildcards will add'
+            | Write-Warning
+        }
+    }
+}
+
 function Write-NancyCountOf {
     <#
     .SYNOPSIS
         Count the number of items in the pipeline, ie: @( $x ).count
+    .NOTES
+        Any alias to this function named 'null' something
+        will use '-OutNull' as a default parameter
     .EXAMPLE
         gci | CountOf # outputs files as normal *and* counts
         'a'..'e' | Null🧛  # count only
@@ -979,6 +1094,7 @@ function Write-NancyCountOf {
         # '-OutNull', # works, but does not generate completions
         '🧛', # puns are fun
         # 'Out-Null🧛',
+        'OutNull',
         'Null🧛' # puns are fun
     )]
     [CmdletBinding()]
@@ -1655,8 +1771,8 @@ function New-Lie {
             [LieRecord]::New(
                 ($Name),
                 ($TypeInfo)
-                    # ($TypeInfo -as 'type')
-                )
+                # ($TypeInfo -as 'type')
+            )
         )
     }
 
