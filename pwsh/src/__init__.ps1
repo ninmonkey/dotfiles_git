@@ -11,6 +11,9 @@ custom attributes, more detailed info
     - more...
         - [CSharp Advanced Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/reflection-and-attributes/creating-custom-attributes)
 #>
+
+Set-Alias -Name 'Json.From' -value 'ConvertFrom-Json'
+
 Import-Module pansies
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
@@ -939,6 +942,81 @@ function Help.Param {
 
     $Input | Get-Help -Param $ParamPatterns
     # foreach($x in $Input) { Get-Help -param $_ }
+}
+
+function Regex.SplitOn {
+    <#
+    .SYNOPSIS
+        making -split easier to use in the pipeline
+    #>
+    [CmdletBinding()]
+   param(
+     [ArgumentCompletions("'\r?\n'")]
+     [Parameter(Mandatory, position=0)]$SplitRegex,
+
+     [Parameter(ValueFromPipeline)][string]$InputObject
+   )
+   process { $InputObject -split $SplitRegex }
+}
+function Regex.ReplaceOn {
+    <#
+    .SYNOPSIS
+        making -replace easier to use in the pipeline
+    .NOTES
+        ensure proper support with script block syntax
+    .EXAMPLE
+        'afds' | Regex.ReplaceOn -Regex 'fd' -ReplaceWith { "${fg:#70788b}", $_, "${fg:clear}" -join "" }
+    #>
+    [CmdletBinding()]
+   param(
+     [ArgumentCompletions("'\r?\n'")]
+     [Parameter(Mandatory, position=0)]$Regex,
+
+     [ArgumentCompletions(
+        "'\r?\n'",
+        # '{ "${fg:red}", $_, "${fg:clear}" -join "" }',
+        '{ "${fg:#70788b}", $_, "${fg:clear}" -join "" }',
+        '{ @( $PSStyle.Foreground.FromRgb(''aeae23''); $_; $PSStyle.Reset ) | Join-String -sep '''' }'
+     )]
+     [Parameter(Mandatory, position=0)]$ReplaceWith,
+
+     [Parameter(ValueFromPipeline)][string]$InputObject
+   )
+   begin {
+
+   }
+   process {
+      $InputObject -replace $Regex, $ReplaceWith
+    }
+}
+function Regex.JoinOn {
+    <#
+    .SYNOPSIS
+        making -Join easier to use in the pipeline
+
+    #>
+    [CmdletBinding()]
+   param(
+
+    [Alias('-Sep')]
+     [ArgumentCompletions(
+        '"`n"',
+        "','",
+        "' | '",
+        '"`n - "',
+        '( hr 1 )'
+        )]
+     [Parameter(Mandatory, position=0)]$JoinText,
+
+     [Parameter(ValueFromPipeline)][string]$InputObject
+   )
+   begin {
+
+   }
+   process {
+      $InputObject -join $JoinText
+
+    }
 }
 
 function Select-NameIsh {

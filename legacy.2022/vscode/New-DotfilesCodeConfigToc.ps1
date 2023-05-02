@@ -1,4 +1,4 @@
-﻿
+﻿# was: <file:///H:\data\2023\dotfiles.2023\legacy.2022\vscode\New-DotfilesCodeConfigToc.ps1>
 $AutoRunExamples = $false
 function New-DotfilesCodeConfigToc {
     <#
@@ -271,7 +271,7 @@ if ($AutoRunExamples) {
         $results | Format-Table
     }
     if ($True) {
-        hr
+        Hr
         h1 'Example1: Autofind all files in the default path using -List then pipe to command again'
         $autoMaticResults = New-DotfilesCodeConfigToc -list
         | Sort-Object -Property LastWriteTIme
@@ -286,7 +286,7 @@ if ($AutoRunExamples) {
         | Write-Verbose
     }
     if ($True) {
-        hr
+        Hr
         h1 'Example2: Explicit Path'
         $FinalResults = Get-Item -ea stop "$Env:AppData\Code\User\settings.json"
         | New-DotfilesCodeConfigToc -Verbose -Debug -InformationAction Continue
@@ -294,7 +294,7 @@ if ($AutoRunExamples) {
         $FinalResults | Format-Table
     }
     if ($True) {
-        hr
+        Hr
         h1 'Example3: Select using Fzf'
         $fzfResults = New-DotfilesCodeConfigToc -List
         | Out-Fzf -MultiSelect -PromptText 'Select Config File[s]'

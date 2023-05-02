@@ -2,6 +2,8 @@ $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 
+# edit: 2023-05-02
+
 # move-to-shared
 $env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is missing
 

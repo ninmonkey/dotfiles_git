@@ -1,6 +1,6 @@
 
 "Include old stuff ??
-    '<${PSCommandPath}>'" | write-host -fore green
+    '<${PSCommandPath}>'" | Write-Host -fore green
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`" of Env:Nin_Dotfiles" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 # throw 'ShouldNeverReach'
@@ -29,14 +29,14 @@ function quickHist {
         'Number' {
             Get-History
             | Sort-Object -Unique -Stable CommandLine
-            | Join-String -sep (hr 1) {
+            | Join-String -sep (Hr 1) {
                 "{0}`n{1}" -f @(
                     $_.Id, $_.CommandLine )
             }
         }
         'Duplicates' {
             Get-History
-            | Join-String -sep (hr 1) {
+            | Join-String -sep (Hr 1) {
                 "{0}`n{1}" -f @(
                     $_.Id, $_.CommandLine )
             }
@@ -45,7 +45,7 @@ function quickHist {
         default {
             Get-History
             | Sort-Object -Unique -Stable CommandLine
-            | Join-String CommandLine -sep (hr 1)
+            | Join-String CommandLine -sep (Hr 1)
         }
     }
 }
@@ -164,7 +164,7 @@ function fix.PsModulePath {
     # | label 'New: PSModulePath'
 }
 
-    Set-Alias 'label' -Value Get-Date -Force -ea ignore -Description 'to prevent ever referencing exe' -PassThru
+Set-Alias 'label' -Value Get-Date -Force -ea ignore -Description 'to prevent ever referencing exe' -PassThru
 
 fix.PsModulePath -verbose
 <#
@@ -191,6 +191,7 @@ function eye0 {
 function nameOfType {
     <#
     .SYNOPSIS
+    2023-05-02
     .example
         $workbook | nameOfType
         # output: [OfficeOpenXml.ExcelPackage]
@@ -688,7 +689,7 @@ if ($true -and 'wierd stuff') {
         $params = $PSBoundParameters
 
         Start-Job -ScriptBlock { Set-Location $using:pwd; Invoke-Pester @using:params } |
-        Receive-Job -Wait -AutoRemoveJob
+            Receive-Job -Wait -AutoRemoveJob
     }
     Set-Alias ipj Invoke-PesterJob
 }
@@ -862,11 +863,11 @@ function Find.PreviewChain {
     )
 
     if ($WhatIf) {
-        hr
+        Hr
         $ArgsFd | Join-String -sep ' ' -op "`nFd => " -os "`n"
         $ArgsFzf | Join-String -sep ' ' -op "`nFzf => " -os "`n"
         $ArgsBat | Join-String -sep ' ' -op "`nBat => " -os "`n"
-        hr
+        Hr
         return
     }
     if ($Options.StripAnsi) {
@@ -1093,9 +1094,9 @@ function prof.previewChain {
 # prof.previewChain -WhatIf
 
 
-if ($global:__nin_enableTraceVerbosity) {   '📚 exit <== profile <==  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning  }
+if ($global:__nin_enableTraceVerbosity) { '📚 exit <== profile <==  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/d34a150d-75e4-4424-bcc2-56bfe32285ed' | Write-Warning }
 
-if ($global:__nin_enableTraceVerbosity) {   '📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e' | Write-Warning }
+if ($global:__nin_enableTraceVerbosity) { '📚 sub-dotsource ==> git find non-commit repos proto ==>  C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1/3ec3aa30-9cdb-4a54-87c3-ae92b1242c1e' | Write-Warning }
 
 . (Get-Item -ea 'continue' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\prototype\git - find unchangedrepo\git - find non-commit repos.ps1')
 
@@ -1104,7 +1105,7 @@ $PROFILE | Add-Member -NotePropertyName 'currentUserAllHosts_nin' -NotePropertyV
 . G:\temp\ai\prompt.minimal.ps1
 
 "redundant imports came from here
-    '<${PSCommandPath}>'" | write-host -fore green
+    '<${PSCommandPath}>'" | Write-Host -fore green
 
 
-if ($global:__nin_enableTraceVerbosity) {   "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
