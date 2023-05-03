@@ -2225,11 +2225,7 @@ function nin.Where-FilterByGroupChoice {
     }
     end {
         $InformationPreference = 'continue'
-
         # $FzfTitle = 'choose items to filter $OrigCommand: Gcm "*pipe*"'
-
-
-        # $origCommand = Get-Command '*pipe*'d
         $OrigQuery = $Items # alias semantics
 
         if ($OrigQuery.Count -le 0) {
@@ -2243,31 +2239,20 @@ function nin.Where-FilterByGroupChoice {
         )
         #
 
-
+        # Is the arg a string, scriptblock, or nothing
+        # auto-prompt for property name if not set
         switch ( $GroupOnSBOrName ) {
             { $_ -is 'scriptblock' } {
                 throw 'NYI: ScriptBlockParam'
             }
-            { [string]::IsNullOrWhiteSpace( $_ ) } {
-                # pick one dynamically
-                # [string]$GroupByPropertyName = @(
-                #     $OrigQuery
-                #     | Select-Object -First 1
-                # ).PSObject.Properties.Name
-                # | Sort-Object -Unique
-                # | & $binFzf @fzfArgs
 
+            { [string]::IsNullOrWhiteSpace( $_ ) } {
                 [string]$GroupByPropertyName = @(
                     @($OrigQuery)[0].PSObject.Properties.Name
                 )
                 | Sort-Object -Unique
                 | & $binFzf @fzfArgs
-                # if (-not $PSBoundParameters.ContainsKey('GroupOnSBOrName')) {
-                # GroupByPropertyName
-                # 'choose property'
             }
-
-
 
             { $_ -is 'string' } {
                 [string]$GroupByPropertyName = $GroupOnSBOrName
@@ -2297,9 +2282,6 @@ function nin.Where-FilterByGroupChoice {
 
 
         $What = @( $SelectedGroupChoices | & $binFzf @fzfArgs )
-        $OrigQuery | ?{ $_.Name -in @($What) }
-
-        # wait-debugger
 
         ( $global:Last_WhereFilterByChoice = @(
             $OrigQuery
@@ -2310,7 +2292,7 @@ function nin.Where-FilterByGroupChoice {
         ) ) # streaming and ensure non-null list
 
         $what | Join-String -sep ', ' -SingleQuote -op 'GroupOnChoices: ' | Write-Verbose
-        'found: {0}' -f @(
+        'found: {0} items. $global:Last_WhereFilterByChoice' -f @(
             $global:Last_WhereFilterByChoice.count ?? 0
         ) | New-Text -bg gray30 -fg gray65 | Write-Information
 
