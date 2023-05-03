@@ -12,7 +12,7 @@ custom attributes, more detailed info
         - [CSharp Advanced Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/reflection-and-attributes/creating-custom-attributes)
 #>
 
-Set-Alias -Name 'Json.From' -value 'ConvertFrom-Json'
+Set-Alias -Name 'Json.From' -Value 'ConvertFrom-Json'
 
 Import-Module pansies
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
@@ -950,13 +950,13 @@ function Regex.SplitOn {
         making -split easier to use in the pipeline
     #>
     [CmdletBinding()]
-   param(
-     [ArgumentCompletions("'\r?\n'")]
-     [Parameter(Mandatory, position=0)]$SplitRegex,
+    param(
+        [ArgumentCompletions("'\r?\n'")]
+        [Parameter(Mandatory, position = 0)]$SplitRegex,
 
-     [Parameter(ValueFromPipeline)][string]$InputObject
-   )
-   process { $InputObject -split $SplitRegex }
+        [Parameter(ValueFromPipeline)][string]$InputObject
+    )
+    process { $InputObject -split $SplitRegex }
 }
 function Regex.ReplaceOn {
     <#
@@ -968,25 +968,25 @@ function Regex.ReplaceOn {
         'afds' | Regex.ReplaceOn -Regex 'fd' -ReplaceWith { "${fg:#70788b}", $_, "${fg:clear}" -join "" }
     #>
     [CmdletBinding()]
-   param(
-     [ArgumentCompletions("'\r?\n'")]
-     [Parameter(Mandatory, position=0)]$Regex,
+    param(
+        [ArgumentCompletions("'\r?\n'")]
+        [Parameter(Mandatory, position = 0)]$Regex,
 
-     [ArgumentCompletions(
-        "'\r?\n'",
-        # '{ "${fg:red}", $_, "${fg:clear}" -join "" }',
-        '{ "${fg:#70788b}", $_, "${fg:clear}" -join "" }',
-        '{ @( $PSStyle.Foreground.FromRgb(''aeae23''); $_; $PSStyle.Reset ) | Join-String -sep '''' }'
-     )]
-     [Parameter(Mandatory, position=0)]$ReplaceWith,
+        [ArgumentCompletions(
+            "'\r?\n'",
+            # '{ "${fg:red}", $_, "${fg:clear}" -join "" }',
+            '{ "${fg:#70788b}", $_, "${fg:clear}" -join "" }',
+            '{ @( $PSStyle.Foreground.FromRgb(''aeae23''); $_; $PSStyle.Reset ) | Join-String -sep '''' }'
+        )]
+        [Parameter(Mandatory, position = 0)]$ReplaceWith,
 
-     [Parameter(ValueFromPipeline)][string]$InputObject
-   )
-   begin {
+        [Parameter(ValueFromPipeline)][string]$InputObject
+    )
+    begin {
 
-   }
-   process {
-      $InputObject -replace $Regex, $ReplaceWith
+    }
+    process {
+        $InputObject -replace $Regex, $ReplaceWith
     }
 }
 function Regex.JoinOn {
@@ -996,25 +996,25 @@ function Regex.JoinOn {
 
     #>
     [CmdletBinding()]
-   param(
+    param(
 
-    [Alias('-Sep')]
-     [ArgumentCompletions(
-        '"`n"',
-        "','",
-        "' | '",
-        '"`n - "',
-        '( hr 1 )'
+        [Alias('-Sep')]
+        [ArgumentCompletions(
+            '"`n"',
+            "','",
+            "' | '",
+            '"`n - "',
+            '( hr 1 )'
         )]
-     [Parameter(Mandatory, position=0)]$JoinText,
+        [Parameter(Mandatory, position = 0)]$JoinText,
 
-     [Parameter(ValueFromPipeline)][string]$InputObject
-   )
-   begin {
+        [Parameter(ValueFromPipeline)][string]$InputObject
+    )
+    begin {
 
-   }
-   process {
-      $InputObject -join $JoinText
+    }
+    process {
+        $InputObject -join $JoinText
 
     }
 }
@@ -1074,7 +1074,7 @@ function Select-NameIsh {
             HasA      = 'HasA*', 'Has*'
             Bool      = '*True*', '*False*'
             Attribute = '*attr*', '*attribute*'
-            File = '*file*', '*name*', '*extension*', '*path*', '*directory*', '*folder*'
+            File      = '*file*', '*name*', '*extension*', '*path*', '*directory*', '*folder*'
             Path      = '*Path*', 'FullName', 'Name'
             Company   = 'co', '*company*'
             Locations = '*zip*', '*state*', '*location*', '*city*', '*address*', '*email*', 'addr', '*phone*', '*cell*'
@@ -1118,10 +1118,10 @@ function Select-NameIsh {
         }
 
         [string[]]$emptyPropNames = $query.PSObject.Properties
-            | Where-Object { [string]::IsNullOrWhiteSpace( $_.Value ) }
-            | ForEach-Object Name
+        | Where-Object { [string]::IsNullOrWhiteSpace( $_.Value ) }
+        | ForEach-Object Name
 
-        $emptyPropNames | Join-String -op 'empty: ' -sep ', ' -DoubleQuote  | write-debug
+        $emptyPropNames | Join-String -op 'empty: ' -sep ', ' -DoubleQuote | Write-Debug
 
         $dropEmpty_splat = @{
             ErrorAction     = 'ignore'
@@ -2167,6 +2167,144 @@ function bPs.Items {
     #>
 
 }
+
+
+function nin.Where-FilterByGroupChoice {
+    <#
+    .SYNOPSIS
+        Dynamically filter using fzf filtering groups based on property name
+    .NOTES
+
+    .EXAMPLE
+        Get-Command *json* | nin.Where-FilterByGroupChoice 'Source'
+        Get-Command *json* | nin.Where-FilterByGroupChoice
+    .EXAMPLE
+        gcm *pipe* | nin.Where-FilterByGroupChoice 'Source' -Verbose -InformationAction 'continue'
+    #>
+    [CmdletBinding()]
+    param(
+
+        # Prop name to query on. currently they both use the same param
+        # If not set, prompts for which property to search
+        [Alias('Name', 'ScriptBlock')]
+        [Parameter(Position = 0)]
+        [object]$GroupOnSBOrName,
+
+        # object stream
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        $binFzf = Get-Command 'fzf' -ea 'Stop' -CommandType Application | Select-Object -First 1
+        [Collections.Generic.List[Object]]$Items = @()
+        # did user specify group by?
+        # if not, prompt
+
+
+        # if ($GroupOnSBOrName -isnot 'string') {
+        # }
+        # elseif ($GroupOnSBOrName -is 'scriptblock') {
+        #     $GroupByPropertyName = $GroupOnSBOrName
+        #     throw 'NYI: Group on Script block'
+        # }
+        # else {
+        #     $GroupByPropertyName = $GroupOnSBOrName
+        # }
+    }
+    process {
+        $items.AddRange(@( $InputObject ))
+    }
+    end {
+        $InformationPreference = 'continue'
+
+        # $FzfTitle = 'choose items to filter $OrigCommand: Gcm "*pipe*"'
+
+
+        # $origCommand = Get-Command '*pipe*'d
+        $OrigQuery = $Items # alias semantics
+
+        if ($OrigQuery.Count -le 0) {
+            throw 'InputObject had 0 items'
+        }
+
+        [Collections.Generic.List[Object]]$fzfArgs = @(
+            '--layout=reverse'
+            # '-m'
+            '--ansi'
+        )
+        #
+
+
+        switch ( $GroupOnSBOrName ) {
+            { $_ -is 'scriptblock' } {
+                throw 'NYI: ScriptBlockParam'
+            }
+            { [string]::IsNullOrWhiteSpace( $_ ) } {
+                # pick one dynamically
+                # [string]$GroupByPropertyName = @(
+                #     $OrigQuery
+                #     | Select-Object -First 1
+                # ).PSObject.Properties.Name
+                # | Sort-Object -Unique
+                # | & $binFzf @fzfArgs
+
+                [string]$GroupByPropertyName = @(
+                    @($OrigQuery)[0].PSObject.Properties.Name
+                )
+                | Sort-Object -Unique
+                | & $binFzf @fzfArgs
+                # if (-not $PSBoundParameters.ContainsKey('GroupOnSBOrName')) {
+                # GroupByPropertyName
+                # 'choose property'
+            }
+
+
+
+            { $_ -is 'string' } {
+                [string]$GroupByPropertyName = $GroupOnSBOrName
+            }
+            default {
+                throw 'UnhandledCase: nin.Where-FilterByGroupChoice'
+            }
+
+        }
+
+        $fzfArgs.Clear()
+        $fzfArgs.AddRange(@(
+                '--layout=reverse'
+                '-m'
+                '--ansi'
+            ))
+
+        $SelectedGroupChoices = $OrigQuery
+        | Group-Object $GroupByPropertyName -NoElement
+        | ForEach-Object Name | Sort-Object -Unique
+        | Where-Object { $_ <# ignore null or blanks #> }
+
+        # $selectedChoices =
+        if ($SelectedGroupChoices.count -le 0) {
+            throw 'No Filters Selected!'
+        }
+
+
+        $What = @( $SelectedGroupChoices | & $binFzf @fzfArgs )
+
+        ( $global:Last_WhereFilterByChoice = @(
+            $OrigQuery
+            | Where-Object {
+                @( $What ) -contains $_.$GroupOnSbOrName
+                # @($What ) -contains $_.$GroupOnSBOrName #-in #$what
+            }
+        ) ) # streaming and ensure non-null list
+
+        $what | Join-String -sep ', ' -SingleQuote -op 'GroupOnChoices: ' | Write-Verbose
+        'found: {0}' -f @(
+            $global:Last_WhereFilterByChoice.count ?? 0
+        ) | New-Text -bg gray30 -fg gray65 | Write-Information
+
+    }
+}
+
 
 function enumerateSupportedEventNames {
     <#
