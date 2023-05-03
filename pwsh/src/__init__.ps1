@@ -2183,6 +2183,8 @@ function nin.Where-FilterByGroupChoice {
         gcm *pipe* | nin.Where-FilterByGroupChoice 'Source' -Verbose -InformationAction 'continue'
     #>
     [Alias(
+        'fzf.Group',
+        # 'nin.Where-FilterByGroup',
         '?🐒.Group', # testing which is cleaner to autocomplete
         '?nin.Group'
     )]
@@ -2295,11 +2297,14 @@ function nin.Where-FilterByGroupChoice {
 
 
         $What = @( $SelectedGroupChoices | & $binFzf @fzfArgs )
+        $OrigQuery | ?{ $_.Name -in @($What) }
+
+        # wait-debugger
 
         ( $global:Last_WhereFilterByChoice = @(
             $OrigQuery
             | Where-Object {
-                @( $What ) -contains $_.$GroupOnSbOrName
+                @( $What ) -contains $_.$GroupByPropertyName
                 # @($What ) -contains $_.$GroupOnSBOrName #-in #$what
             }
         ) ) # streaming and ensure non-null list
