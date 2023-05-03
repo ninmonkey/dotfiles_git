@@ -2309,6 +2309,10 @@ function nin.Where-FilterByGroupChoice {
             $global:Last_WhereFilterByChoice.count ?? 0
         ) | New-Text -bg gray30 -fg gray65 | Write-Information
 
+        if($RepeatLast) {
+            throw "NYI: while totalFound is exactly 0, repeat prompting for new property name and then filter again  ${PSCOmmandPath}"
+        }
+
     }
 }
 
