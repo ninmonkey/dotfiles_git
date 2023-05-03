@@ -2168,6 +2168,7 @@ function bPs.Items {
 
 }
 
+[Collections.Generic.List[Object]]$global:Last_WhereFilterByChoice = @()
 
 function nin.Where-FilterByGroupChoice {
     <#
@@ -2181,6 +2182,10 @@ function nin.Where-FilterByGroupChoice {
     .EXAMPLE
         gcm *pipe* | nin.Where-FilterByGroupChoice 'Source' -Verbose -InformationAction 'continue'
     #>
+    [Alias(
+        '?🐒.Group', # testing which is cleaner to autocomplete
+        '?nin.Group'
+    )]
     [CmdletBinding()]
     param(
 
@@ -2190,6 +2195,8 @@ function nin.Where-FilterByGroupChoice {
         [Parameter(Position = 0)]
         [object]$GroupOnSBOrName,
 
+        # keep re-running until final match is exit
+        [switch]$RepeatLast,
         # object stream
         [Parameter(Mandatory, ValueFromPipeline)]
         [object[]]$InputObject
