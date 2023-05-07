@@ -43,3 +43,54 @@ function GL.nin.ShowAzureFuncLogs {
     $Dest | Get-Item -ea stop | Join-String -f 'Wrote: <file:///{0}>'
 
 }
+
+function nb.renderHash {
+    <#
+    .synopsis
+        pretty print hashtable, automatically drop nested
+    .example
+
+        nb.renderHash $yak
+        nb.renderHash $yak -IgnoreNested
+    #>
+    [CmdletBinding()]
+    [Alias('prof.nb.renderHash')]
+    param(
+        $InputObject, # dictionary/hash/peypairs type,
+        [switch]$IgnoreNested
+    )
+
+    $Longest = $InputObject.Keys.Length | Measure-Object -Maximum | % Maximum
+    $template = @{}
+    $template.BeforePadding ='{{0,{0}}} : {{1}}'
+    $template.PadRight = $template -f @( $Longest )
+
+    $InputObject.GetEnumerator()
+    | Join-String {
+        [bool]$isNested = $_.Value.values.count -gt 0
+        if($isNested -and $IgnoreNested) {
+            return
+        }
+        $template.BeforePadding -f  $Longest -f @(
+            $_.Key
+            $_.Value
+        )
+    } -sep "`n"
+}
+
+function nb.where-ValuesAreNotNestedHash {
+    <#
+    .SYNOPSIS
+        when enumerating key collections, this will filter based on whether they are nested or flat
+    .EXAMPLE
+        $yak.GetEnumerator() | nb.where-ValuesAreNotNestedHash
+        $yak.GetEnumerator() | nb.where-ValuesAreNotNestedHash -OnlyNested
+    #>
+    param( [switch]$OnlyNested )
+
+    if($OnlyNested) {
+       $input | ?{ $_.Value.values.count -gt 0 }
+    } else {
+       $input | ?{ $_.Value.values.count -le 0 }
+    }
+}
