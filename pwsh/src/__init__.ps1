@@ -1670,22 +1670,118 @@ function SaveColor {
     # ) | Join-String -op $PSStyle.Foreground.FromRgb($HexStr) -os $PSStyle.Reset
     # | Write-Information -infa 'continue'
 }
+function SaveModule {
+    <#
+    .SYNOPSIS
+    Named Module aliases, persists across sessions
+
+    .EXAMPLE
+    PS> SaveModule -Name 'orange.dark3' -HexModule '352b1e'
+    PS> SaveModule -Name 'blue.dim' '3c77d3'
+
+    .NOTES
+    Default file location:
+
+        Join-Path $Env:Nin_Dotfiles 'store/saved_Modules.json'
+
+
+    related, see also:
+        __saveModule__renderModuleName
+        __normalize.HexString
+        SaveModule
+        GetModule
+        ImportModule
+    #>
+    [Alias('NewModule')]
+    [CmdletBinding()]
+    param(
+        [Alias('Module', 'ModuleName', 'Label')]
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Name,
+
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$HexModule,
+
+        [switch]$Strict
+
+    )
+    $Config = @{
+        AlwaysSaveOnAssign = $false
+    }
+    $script:__newModuleState ??= @{}
+    $state = $script:__newModuleState
+
+    $cleanStr = $HexModule -replace '^#+', '#' # just one
+    $cleanStr = $HexModule -replace '^#+', '#' # or none
+    $cleanStr = __normalize.HexString -HexModule $HexModule
+    $cleanDigits = $cleanStr -replace '#+', ''
+    if ($cleanDigits.Length -notin @(6, 8)) {
+        # Wait-Debugger
+        Write-Error "Unexpected Module, expects 6/8 digits: '$HexModule'"
+        return
+    }
+    $HexStr = '{0}' -f @(
+        $cleanDigits
+    )
+    if ($State.ContainsKey($Name)) {
+        if ($State[$Name] -ne $HexStr) {
+            #no change, no error
+            __saveModule__renderModuleName -Name $Name -HexModule $HexModule
+            | Join-String -op 'Different Module AlreadyExists!'
+            | Write-Verbose
+            # | Write-Verbose -Verbose
+            if ($Strict) {
+                # or the inverse, using force?
+                throw 'Different Module already exists'
+            }
+        }
+        else {
+            __saveModule__renderModuleName -Name $Name -HexModule $HexModule
+            | Join-String -op 'Same Module Already Saved. '
+            | Write-Verbose #-Verbose
+        }
+    }
+
+    $state[ $Name  ] = $HexStr
+
+    __saveModule__renderModuleName -Name $Name -HexModule $HexModule
+    | Join-String -op 'Saved '
+    | Write-Information #-infa 'Continue'
+
+    # 'save Modules'
+    if ($Config.AlwaysSaveOnAssign) {
+        GetModule -Json
+        | ConvertFrom-Json -AsHashtable
+        | Ninmonkey.Console\Sort-Hashtable -SortBy Key
+        | ConvertTo-Json -Depth 2
+        | Set-Content -Path (Join-Path $Env:Nin_Dotfiles 'store' 'saved_modules.json')
+    }
+
+
+    # 'saved: {0} = {1}' -f @(
+    #     $Name
+    #     $HexModule
+    # ) | Join-String -op $PSStyle.Foreground.FromRgb($HexStr) -os $PSStyle.Reset
+    # | Write-Information -infa 'continue'
+}
 
 @(
-    SaveColor -Name 'blue' '#234991'
-    SaveColor -Name 'blue.dim' '#3c77d3'
-    SaveColor -Name 'blue.gray' '#2e3440'
-    SaveColor -Name 'green.dim' '#73b254'
-    SaveColor -Name 'green.desaturated' '#b7cea1'
-    SaveColor -Name 'teal.bright' '#3d7679'
-    SaveColor -Name 'teal.bright2' '#63c0c5'
-    SaveColor -Name 'teal' '#2a5153'
-    SaveColor -Name 'teal.dark' '#2a5153'
-    SaveColor -Name 'green' '#73b254'
-    SaveColor -Name 'orange.dark3' -HexColor '#352b1e'
-    SaveColor -Name 'tan' -HexColor '#816949'
-    SaveColor -Name 'tan.dark2' -HexColor '#4d3f2c'
-    SaveColor -Name 'tan.dark3' -HexColor '#352b1e'
+    SaveModule -Name 'blue' '#234991'
+    SaveModule -Name 'blue.dim' '#3c77d3'
+    SaveModule -Name 'blue.gray' '#2e3440'
+    SaveModule -Name 'green.dim' '#73b254'
+    SaveModule -Name 'green.desaturated' '#b7cea1'
+    SaveModule -Name 'teal.bright' '#3d7679'
+    SaveModule -Name 'teal.bright2' '#63c0c5'
+    SaveModule -Name 'teal' '#2a5153'
+    SaveModule -Name 'teal.dark' '#2a5153'
+    SaveModule -Name 'green' '#73b254'
+    SaveModule -Name 'orange.dark3' -HexModule '#352b1e'
+    SaveModule -Name 'tan' -HexModule '#816949'
+    SaveModule -Name 'tan.dark2' -HexModule '#4d3f2c'
+    SaveModule -Name 'tan.dark3' -HexModule '#352b1e'
 ) | Out-Null
 
 <#
@@ -2018,8 +2114,11 @@ function bPs.Items {
         [ArgumentCompletions(
             "'.'",
             "'./docs'",
-            'H:/data/2023/pwsh/GitLogger/docs',
-            'H:/data/2023/pwsh/GitLogger'
+            'H:/data/2023/pwsh/PsModules/GitLogger/docs',
+            'H:/data/2023/pwsh/PsModules/GitLogger/Azure',
+            'H:/data/2023/pwsh/PsModules/GitLogger/Aws',
+            'H:/data/2023/pwsh/PsModules/GitLogger/Commands',
+            'H:/data/2023/pwsh/PsModules/GitLogger'
         )]
         [string]$BaseDirectory = '.',
 
@@ -2296,7 +2395,7 @@ function nin.Where-FilterByGroupChoice {
             $global:Last_WhereFilterByChoice.count ?? 0
         ) | New-Text -bg gray30 -fg gray65 | Write-Information
 
-        if($RepeatLast) {
+        if ($RepeatLast) {
             throw "NYI: while totalFound is exactly 0, repeat prompting for new property name and then filter again  ${PSCOmmandPath}"
         }
 

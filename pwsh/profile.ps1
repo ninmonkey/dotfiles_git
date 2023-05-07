@@ -6,6 +6,7 @@ $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 
 # move-to-shared
 $env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is missing
+Set-Alias 'Tree' 'PSTree\Get-PSTree' -ea 'Ignore'
 
 function Test-AnyTrueItems {
     <#
