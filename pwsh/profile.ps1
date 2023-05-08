@@ -196,32 +196,68 @@ function RenderLongPathNames {
         display a long path, broken into chunks for extra readability
     .EXAMPLE
     Pwsh>
+    $env:LOCALAPPDATA | RenderLongPathNames -GroupSize 1
+            C:
+            Users
+            cppmo_000
+            AppData
+            Local
+    .EXAMPLE
+    Pwsh>
+    gi . | renderLongPathNames -GroupSize 4
+
+        H: ␟ data ␟ foo ␟ 2023.03.12
+        core ␟ src ␟ pass1 ␟ lab-lambda-runtime
+        examples ␟ demo-runtime-layer-function ␟ .aws-sam
+    .EXAMPLE
+    Pwsh>
     gi . | % FullName
 
         H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtime\examples\demo-runtime-layer-fu
         nction\.aws-sam
+    .example
+        # using kwargs
+        Pwsh> RenderLongPathNames -InputObject (gi .) -Options @{ ChunksPerLine = 4 }
 
-    Pwsh>
-    RenderLongPathNames -InputObject (gi .) -Options @{ ChunksPerLine = 4 }
+    .example
+        Pwsh> RenderLongPathNames -InputObject (gi .) -GroupSize 5
 
-        H: ␟ data ␟ client_bdg ␟ 2023.03.17-bdg
-        core ␟ src ␟ pass1 ␟ lab-lambda-runtime
-        examples ␟ demo-runtime-layer-function ␟ .aws-sam
+            H: ␟ data ␟ client_bdg ␟ 2023.03.17-bdg
+            core ␟ src ␟ pass1 ␟ lab-lambda-runtime
+            examples ␟ demo-runtime-layer-function ␟ .aws-sam
+
     #>
-    [Alias('fmt.Path.LongNames')]
+    [Alias(
+        '.fmt.Path.LongNames',
+        'fmt.Path.LongNames'
+    )]
     [CmdletBinding()]
     param(
         [Alias('Path', 'PSPath', 'FullName')]
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [string]$InputObject,
+        [string[]]$InputObject,
 
+        [int]$GroupSize = 5,
         [ArgumentCompletions(
             '@{ ChunksPerLine = 5 }'
         )]
         [hashtable]$Options
     )
-    $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
-        ChunksPerLine = 5
+    begin {
+        [Collections.Generic.List[Object]]$items = @()
+        $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
+            ChunksPerLine = $GroupSize ?? 5
+
+        }
+        $StrUni = @{
+            GroupSep  = '␝'
+            RecordSep = '␞'
+            UnitSep   = '␟'
+            WordSep   = '⸱'
+        }
+    }
+    process {
+        $Items.AddRange(@($InputObject))
     }
     # $all_segments = (Get-Item $InputObject | ForEach-Object FullName ) -split '\\'
     # $n = $Config.ChunksPerLine
@@ -236,27 +272,28 @@ function RenderLongPathNames {
 
     # $fullName = Get-Item .
     # [string[]] $source = 'hey', 'world', (0..100 -join '_')
-    $StrUni = @{
-        GroupSep  = '␝'
-        RecordSep = '␞'
-        UnitSep   = '␟'
-        WordSep   = '⸱'
-    }
-    [string[]] $all_segments = (Get-Item $InputObject).FullName -split '\\'
-    [System.Linq.Enumerable]::Chunk(
-        $crumbs, $Config.ChunksPerLine
-    )
-    | ForEach-Object {
-
-        $unitSepSplat = @{
-            Separator = ' {0}{1}{2} ' -f @(
-                "${fg:gray30}"
-                $StrUni.UnitSep
-                "${fg:clear}"
+    end {
+        $items
+        | ForEach-Object {
+            $curItem = Get-Item $_ # -ea 'stop'
+            if ($null -eq $curItem) { return }
+            [string[]] $all_segments = (Get-Item $curItem).FullName -split '\\'
+            [System.Linq.Enumerable]::Chunk(
+                $all_segments, $Config.ChunksPerLine
             )
-        }
+            | ForEach-Object {
 
-        $_ | Join-String @unitSepSplat
+                $unitSepSplat = @{
+                    Separator = ' {0}{1}{2} ' -f @(
+                        "${fg:gray30}"
+                        $StrUni.UnitSep
+                        "${fg:clear}"
+                    )
+                }
+
+                $_ | Join-String @unitSepSplat
+            }
+        }
     }
 
 }
