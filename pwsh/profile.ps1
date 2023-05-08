@@ -65,9 +65,9 @@ function Test-AnyTrueItems {
 # $env:EDITOR = 'nvim'
 
 $OutputEncoding =
-    [Console]::OutputEncoding =
-    [Console]::InputEncoding =
-    [System.Text.UTF8Encoding]::new()
+[Console]::OutputEncoding =
+[Console]::InputEncoding =
+[System.Text.UTF8Encoding]::new()
 
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
@@ -169,6 +169,97 @@ function __aws.sam.InvokeAndPipeLog {
      (Get-Item $FullCleanLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
 }
 
+
+function nin.GroupByLinqChunk {
+    <#
+    .SYNOPSIS
+        original was:
+            [string[]] $crumbs = (gi .).FullName -split '\\'
+            [System.Linq.Enumerable]::Chunk($crumbs, 5) | json
+    #>
+
+    throw 'not finished, see "RenderLongPathNames"'
+    $fullName = Get-Item .
+    [string[]] $source = 'hey', 'world', (0..100 -join '_')
+    [string[]] $crumbs = (Get-Item .).FullName -split '\\'
+    [System.Linq.Enumerable]::Chunk($crumbs, 5)
+    | ForEach-Object {
+        $StrUnitSep = '␟'
+        $_ | Join-String -sep (" ${fg:gray30}${StrUnitSEp}${fg:clear} ")
+    }
+
+}
+
+function RenderLongPathNames {
+    <#
+    .SYNOPSIS
+        display a long path, broken into chunks for extra readability
+    .EXAMPLE
+    Pwsh>
+    gi . | % FullName
+
+        H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtime\examples\demo-runtime-layer-fu
+        nction\.aws-sam
+
+    Pwsh>
+    RenderLongPathNames -InputObject (gi .) -Options @{ ChunksPerLine = 4 }
+
+        H: ␟ data ␟ client_bdg ␟ 2023.03.17-bdg
+        core ␟ src ␟ pass1 ␟ lab-lambda-runtime
+        examples ␟ demo-runtime-layer-function ␟ .aws-sam
+    #>
+    [Alias('fmt.Path.LongNames')]
+    [CmdletBinding()]
+    param(
+        [Alias('Path', 'PSPath', 'FullName')]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]$InputObject,
+
+        [ArgumentCompletions(
+            '@{ ChunksPerLine = 5 }'
+        )]
+        [hashtable]$Options
+    )
+    $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
+        ChunksPerLine = 5
+    }
+    # $all_segments = (Get-Item $InputObject | ForEach-Object FullName ) -split '\\'
+    # $n = $Config.ChunksPerLine
+
+    # $all_segments
+    # | Select-Object -First $n | Join-String -sep '/'
+
+
+    # $all_segments # remaning
+    # | Select-Object -Skip $n | Join-String -sep '/' -op '    '
+
+
+    # $fullName = Get-Item .
+    # [string[]] $source = 'hey', 'world', (0..100 -join '_')
+    $StrUni = @{
+        GroupSep  = '␝'
+        RecordSep = '␞'
+        UnitSep   = '␟'
+        WordSep   = '⸱'
+    }
+    [string[]] $all_segments = (Get-Item $InputObject).FullName -split '\\'
+    [System.Linq.Enumerable]::Chunk(
+        $crumbs, $Config.ChunksPerLine
+    )
+    | ForEach-Object {
+
+        $unitSepSplat = @{
+            Separator = ' {0}{1}{2} ' -f @(
+                "${fg:gray30}"
+                $StrUni.UnitSep
+                "${fg:clear}"
+            )
+        }
+
+        $_ | Join-String @unitSepSplat
+    }
+
+}
 
 
 function nin.Text.CompareHowMuchCommon {
