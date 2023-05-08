@@ -12,13 +12,9 @@ see also:
 #>
 
 Import-Module Pipeworks -PassThru # can register fail if the module is not yet imported? (ie: break the alias)
-
-New-Lie -Name 'sma.CompletionRes' -TypeInfo ([System.Management.Automation.CompletionResult])
-New-Lie -Name 'sma.CompletionResType' -TypeInfo ([System.Management.Automation.CompletionResultType])
-
 $script:____zTestConn ??= Get-SQLTable -ConnectionStringOrSetting 'AzureSqlConnectionString'
 
-. (gi -ea 'continue' (Join-path $PSScriptRoot 'indentedautomation.find-customArgCompleters.ps1'))
+# . (Get-Item -ea 'continue' (Join-Path $PSScriptRoot 'indentedautomation.find-customArgCompleters.ps1')) # todo: move  to typeWriter
 
 function .fmt.Convert.PipeworksTable.ToWord {
     <#
@@ -128,10 +124,10 @@ function completer.ValidCompletions.For.SelectSql.TableName {
         $shortName = $curTable.TableName
 
         return [System.Management.Automation.CompletionResult]::new(
-                <# completionText: #> $ShortName,  #$completionText,
-                <# listItemText: #> $ShortName,
-                <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
-                <# toolTip: #> $ShortName )
+            <# completionText: #> $ShortName, #$completionText,
+            <# listItemText: #> $ShortName,
+            <# resultType: #> ([System.Management.Automation.CompletionResultType]::ParameterValue),
+            <# toolTip: #> $ShortName )
 
         # if ($false) {
         #     $Tooltip += '> ', $renderTrunc -join ''

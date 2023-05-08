@@ -170,6 +170,73 @@ function __aws.sam.InvokeAndPipeLog {
 }
 
 
+
+function nin.Text.CompareHowMuchCommon {
+    <#
+    .SYNOPSIS
+        highlight the difference in two strings. pass in any order
+
+    .EXAMPLE
+        $info = nin.Text.HowMuchCommonCompare -A 'abc' -B 'abcde' -PassThru
+    .EXAMPLE
+        # highlights folder with it's parent folder
+        $info = nin.Text.CompareHowMuchCommon -A (gi .) -B (gi ..) -PassThru
+        $info.MatchInfo
+
+    .EXAMPLE
+        nin.Text.HowMuchCommonCompare -A 'abc' -B 'abcde'
+    .EXAMPLE
+        $something | nin.Text.HowMuchCommonCompare -A 'abc'
+    .EXAMPLE
+
+    .notes
+        original  command:
+            (gi . ).FullName |sls -Pattern ([regex]::Escape($exp.FullName))
+    #>
+    [Alias('nin.Text.HowMuchCommonCompare')]
+    [CmdletBinding()]
+    param(
+        [Alias('ObjectA')]
+        # detects size, doesn't actually matter which order A and B are passed
+        [Parameter(Position = 0, Mandatory)]
+        [string]$A,
+
+        [Alias('ObjectB')]
+        # todo: future: allow pipeline for sugar
+        # [Parameter(Position=1, Mandatory)]
+        [Parameter(Position = 1, ValueFromPipeline)]
+        [string]$b,
+        [switch]$PassThru
+    )
+    $meta = [Ordered]@{}
+
+    if ($A.Length -lt $b.Length) {
+        $Short = $A; $Long = $B
+    }
+    else {
+        $Short = $B; $Long = $A
+    }
+    $matchInfoResult = $Long | Select-String -Pattern ([Regex]::Escape($Short))
+    $meta += @{
+        A         = $A
+        B         = $B
+        ALen      = $A.Length ?? 0
+        BLen      = $B.Length ?? 0
+        MatchInfo = $matchInfoResult
+    }
+    # $InformationPreference = 'continue'
+    if ($PassThru) {
+        $meta.MatchInfo.Matches | Format-Table -auto | Out-String
+        | Write-Information # -infa 'Continue'
+        return [pscustomobject]$meta
+    }
+    else {
+        $meta.MatchInfo.Matches | Format-Table -auto | Out-String
+        | Write-Information # -infa 'Continue'
+        return [pscustomobject]$matchInfoResult #| Write-Information -infa 'continue'
+    }
+}
+
 # shared (all 3)
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↪ enter Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: AllUsersCurrentHost" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
