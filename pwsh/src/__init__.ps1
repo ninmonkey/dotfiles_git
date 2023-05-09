@@ -14,6 +14,7 @@ custom attributes, more detailed info
 
 Set-Alias -Name 'Json.From' -Value 'ConvertFrom-Json'
 
+remove-module Pipeworks
 Import-Module pansies
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
@@ -1137,6 +1138,76 @@ function Select-NameIsh {
     }
 }
 
+function NewestItem {
+    <#
+    .SYNOPSIS
+    Filter on stuff, using NameIsh to decide what properties to filter on
+
+    .DESCRIPTION
+    next:
+        - check properties for [datetime] of any name
+
+    .EXAMPLE
+        Pwsh> gci | NewestItem
+
+    .NOTES
+    General notes
+    #>
+    [OutputType('System.IO.FileSystemInfo')]
+    param(
+        [ArgumentCompletions(
+            'File',
+            'Directory', 'Dir',
+            'Color',
+            'Length'
+        )]
+        [Parameter(position = 0)]
+        [string]$ItemKind,
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange(@( $InputObject ))
+    }
+
+
+    # $splat = @{}
+    # if( $PSBoundParameters.ContainsKey('File') ) {
+    #     $splat.File = $File
+    # }
+    # if( $PSBoundParameters.ContainsKey('Folder') ) {
+    #     $splat.File = $File
+    # }
+    # warning:
+    end {
+        $items.count | Join-String -f 'total items: {0}'
+        | New-Text -fg 'gray40' | ForEach-Object tostring | Write-Information
+
+        $items
+        | Where-Object {
+            $curItem = $_
+            switch ($ItemKind) {
+                'File' {
+                    return $curItem -is 'System.IO.FileInfo'
+                }
+                { $_ -in @('Directory', 'Dir') } {
+                    return $curItem -is 'System.IO.DirectoryInfo'
+                }
+                default {
+                    # ex: Size would use Length Descending property
+                    throw "UnhandledItemKindException: '$ItemKind'"
+                }
+            }
+        }
+        | Sort-Object LastWriteTime -Descending -Top 1
+    }
+
+}
+
 function Write-NancyCountOf {
     <#
     .SYNOPSIS
@@ -1180,6 +1251,7 @@ function Write-NancyCountOf {
         # 'Out-Null🧛',
         'OutNull',
         'Null🧛' # puns are fun
+        , 'nin.exportMe'
     )]
     [CmdletBinding()]
     param(
@@ -1243,6 +1315,7 @@ function Write-NancyCountOf {
 
                             $ColorFg_count
                             $ColorBg_count
+                            ' '
                             $render_count
                         }
                         default {
@@ -1254,6 +1327,7 @@ function Write-NancyCountOf {
                             $PSStyle.Reset
                             $ColorFg_count
                             $ColorBg_count
+                            ' '
                             $render_count
 
                         }
@@ -1264,6 +1338,7 @@ function Write-NancyCountOf {
             else {
                 $ColorFg_count
                 $ColorBg_count
+                ' '
                 $render_count
             }
 
@@ -1412,6 +1487,9 @@ function bPs.Items {
             -Infa 'Continue'
 
         (Actually it defaults to -Infa 'Continue')
+
+        see also:
+            <file:///H:\data\2023\pwsh\sketches\2023-04\transpileIfNew\Invoke-Pipescript.TranspileIfNew.ps1>
     .notes
         see also: <file:///H:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.ps1>
     .notes
@@ -1873,6 +1951,9 @@ function prof.Io2 {
     $d | io | Format-Table Name, Value, *
 }
 
+'Move to nAsty, nAncy, Marking, etc...{0}' -f @(
+    $PSCommandPath
+) | Write-Host -fg 'orange'
 
 
 
