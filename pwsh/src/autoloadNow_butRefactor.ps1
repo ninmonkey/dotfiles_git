@@ -623,6 +623,51 @@ function quickHist {
     }
 }
 
+function quickPwd {
+    <#
+    .SYNOPSIS
+        ShowLongNames, visual render, easier to read
+    .EXAMPLE
+        Pwsh> QuickPwd
+    #>
+    param(
+        [Alias('Copy', 'Cl', 'PassThru')][Parameter()][switch]$Clip
+    )
+    Hr
+    Get-Item . | RenderLongPathNames -GroupSize 3
+    Hr
+    if ($clip) {
+        Get-Location | Set-Clipboard
+    }
+}
+
+function .to.Resolved.CommandName {
+    <#
+    .example
+    Pwsh> gcm hr | .to.Resolved.CommandName
+
+        Ninmonkey.Console\Write-ConsoleHorizontalRule
+    .example
+        gcm Ninmonkey.Console\Write-ConsoleHorizontalRule
+        | .to.Resolved.CommandName
+
+            Ninmonkey.Console\Write-ConsoleHorizontalRule
+
+        gcm hr
+        | .to.Resolved.CommandName
+
+            Ninmonkey.Console\Write-ConsoleHorizontalRule
+    #>
+    process {
+        Get-Command $_
+        | Join-String {
+            '{0}\{1}' -f @(
+                $_.Source ?? '.'
+                $_.ResolvedCommandName ?? '.'
+            )
+        }
+    }
+}
 function prof.renderEvent {
     <#
     .EXAMPLE

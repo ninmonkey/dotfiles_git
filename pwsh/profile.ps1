@@ -65,14 +65,14 @@ function Test-AnyTrueItems {
 # $env:EDITOR = 'nvim'
 
 $OutputEncoding =
-[Console]::OutputEncoding =
-[Console]::InputEncoding =
-[System.Text.UTF8Encoding]::new()
+    [Console]::OutputEncoding =
+    [Console]::InputEncoding =
+    [System.Text.UTF8Encoding]::new()
 
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
     # 'H:\data\2023\pwsh\PsModules\Ninmonkey.Console\zeroDepend_autoloader\logging.Write-NinLogRecord.ps1'
-    'H:/data/2023/pwsh/GitLogger'
+    # 'H:/data/2023/pwsh/GitLogger'
     $Env:PSModulePath
 ) | Join-String -sep ';'
 
@@ -203,6 +203,11 @@ function RenderLongPathNames {
             AppData
             Local
     .EXAMPLE
+    Pwsh> 'a'..'e' -join '\' | RenderLongPathNames
+
+        a ␟ b ␟ c ␟ d ␟ e
+
+    .EXAMPLE
     Pwsh>
     gi . | renderLongPathNames -GroupSize 4
 
@@ -239,6 +244,7 @@ function RenderLongPathNames {
 
         [int]$GroupSize = 5,
         [ArgumentCompletions(
+            '@{ Reverse = $true }',
             '@{ ChunksPerLine = 5 }'
         )]
         [hashtable]$Options
@@ -247,7 +253,7 @@ function RenderLongPathNames {
         [Collections.Generic.List[Object]]$items = @()
         $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
             ChunksPerLine = $GroupSize ?? 5
-
+            Reverse = $false
         }
         $StrUni = @{
             GroupSep  = '␝'
@@ -273,11 +279,21 @@ function RenderLongPathNames {
     # $fullName = Get-Item .
     # [string[]] $source = 'hey', 'world', (0..100 -join '_')
     end {
+
+        if($Config.Reverse) {
+            $Items.Reverse()
+        }
         $items
         | ForEach-Object {
-            $curItem = Get-Item $_ # -ea 'stop'
+            # $curItem = Get-Item $_ # -ea 'stop'
+            $curItem = $_ # -ea 'stop'
             if ($null -eq $curItem) { return }
-            [string[]] $all_segments = (Get-Item $curItem).FullName -split '\\'
+
+            $PathOrString = Get-Item $CurItem -ea 'ignore' | % Fullname
+            $PathOrString ??= $CurItem
+
+            [string[]] $all_segments = $PathOrString -split '\\'
+            # [string[]] $all_segments = (Get-Item $curItem).FullName -split '\\'
             [System.Linq.Enumerable]::Chunk(
                 $all_segments, $Config.ChunksPerLine
             )
