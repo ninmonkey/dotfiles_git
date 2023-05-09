@@ -65,9 +65,9 @@ function Test-AnyTrueItems {
 # $env:EDITOR = 'nvim'
 
 $OutputEncoding =
-    [Console]::OutputEncoding =
-    [Console]::InputEncoding =
-    [System.Text.UTF8Encoding]::new()
+[Console]::OutputEncoding =
+[Console]::InputEncoding =
+[System.Text.UTF8Encoding]::new()
 
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
@@ -230,6 +230,10 @@ function RenderLongPathNames {
             H: ␟ data ␟ client_bdg ␟ 2023.03.17-bdg
             core ␟ src ␟ pass1 ␟ lab-lambda-runtime
             examples ␟ demo-runtime-layer-function ␟ .aws-sam
+    .example
+        # others
+
+        gi . | RenderLongPathNames -GroupSize 3 -Options @{ Reverse = $true }
 
     #>
     [Alias(
@@ -253,7 +257,7 @@ function RenderLongPathNames {
         [Collections.Generic.List[Object]]$items = @()
         $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
             ChunksPerLine = $GroupSize ?? 5
-            Reverse = $false
+            Reverse       = $false
         }
         $StrUni = @{
             GroupSep  = '␝'
@@ -280,19 +284,22 @@ function RenderLongPathNames {
     # [string[]] $source = 'hey', 'world', (0..100 -join '_')
     end {
 
-        if($Config.Reverse) {
-            $Items.Reverse()
-        }
+
         $items
         | ForEach-Object {
             # $curItem = Get-Item $_ # -ea 'stop'
             $curItem = $_ # -ea 'stop'
             if ($null -eq $curItem) { return }
 
-            $PathOrString = Get-Item $CurItem -ea 'ignore' | % Fullname
+            $PathOrString = Get-Item $CurItem -ea 'ignore' | ForEach-Object Fullname
             $PathOrString ??= $CurItem
 
-            [string[]] $all_segments = $PathOrString -split '\\'
+
+
+            [Collections.Generic.List[Object]]$all_segments = @( $PathOrString -split '\\' )
+            if ($Config.Reverse) {
+                $all_segments.Reverse()
+            }
             # [string[]] $all_segments = (Get-Item $curItem).FullName -split '\\'
             [System.Linq.Enumerable]::Chunk(
                 $all_segments, $Config.ChunksPerLine

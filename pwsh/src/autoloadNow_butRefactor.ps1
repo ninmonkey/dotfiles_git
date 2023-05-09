@@ -629,13 +629,87 @@ function quickPwd {
         ShowLongNames, visual render, easier to read
     .EXAMPLE
         Pwsh> QuickPwd
+    .EXAMPLE
+        QuickPwd
+        QuickPwd -Format Reverse
+        QuickPwd Reverse -Options @{ ChunksPerLine = 8 }
+        QuickPwd Default -Options @{ ChunksPerLine = 8 }
+
+        . $PROFILE.MainEntryPoint ; hr -fg magenta 2
+        QuickPwd Reverse -Options @{ ChunksPerLine = 8 }
+        QuickPwd         -Options @{ ChunksPerLine = 8 ; NoHr = $true ; Reverse = $false }
+        QuickPwd Default -Options @{ ChunksPerLine = 8 ; NoHr = $true ; Reverse = $true }
+        QuickPwd Default -Options @{ ChunksPerLine = 8 ; NoHr = $true ; Reverse = $false }
     #>
     param(
+        [ArgumentCompletions(
+            'Default',
+            'Reverse'
+        )]
+        [Alias('Format')]
+        [Parameter(Position = 0)]
+        [string]$OutputFormat = 'Default',
+
+
+        [ArgumentCompletions(
+            '@{ ChunksPerLine = 8 }'
+        )]
+        [hashtable]$Options,
         [Alias('Copy', 'Cl', 'PassThru')][Parameter()][switch]$Clip
     )
-    Hr
-    Get-Item . | RenderLongPathNames -GroupSize 3
-    Hr
+
+    $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
+        ChunksPerLine = 5
+        # Reverse       = $true
+        NoHr          = $false
+    }
+
+    $shareSize = @{
+        GroupSize = ($Config)?.ChunksPerLine ?? 5
+    }
+    if($Config.Reverse) {
+        $shareSize.Options = mergeHashtable -BaseHash $shareSize.Options -OtherHash @{
+            Reverse = $true
+        }
+        # .Reverse = $True
+    }
+    switch ($OutputFormat) {
+        'Gradient' {
+
+        }
+        'Reverse' {
+            if (-not $Config.NoHR) {
+                Hr
+            }
+
+            $renderLongPathNamesSplat = @{
+                Options = @{
+                    Reverse = $True
+                }
+            }
+            Get-Item . | RenderLongPathNames @shareSize @renderLongPathNamesSplat
+            if (-not $Config.NoHR) {
+                Hr
+            }
+
+        }
+        'Default' {
+            if (-not $Config.NoHR) {
+                Hr
+            }
+            $renderLongPathNamesSplat = @{
+
+            }
+
+            Get-Item . | RenderLongPathNames @ShareSize @renderLongPathNamesSplat
+            if (-not $Config.NoHR) {
+                Hr
+            }
+        }
+        default {
+            throw "UnhandledFormatType: '$OutputFormat'"
+        }
+    }
     if ($clip) {
         Get-Location | Set-Clipboard
     }
