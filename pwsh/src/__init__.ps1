@@ -14,7 +14,7 @@ custom attributes, more detailed info
 
 Set-Alias -Name 'Json.From' -Value 'ConvertFrom-Json'
 
-Remove-Module Pipeworks
+Remove-Module Pipeworks -ea 'ignore' # because it overrides pansies|write-host
 Import-Module pansies
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
@@ -1157,6 +1157,10 @@ function NewestItem {
         gci | NewestItem Directory -TopN 3
         gci | NewestItem File -TopN 3
     .EXAMPLE
+        # WhereItem is short for NewestItem -All
+        gci . | WhereItem File
+        gci . | NewestItem File -All
+    .EXAMPLE
         Pwsh> gci | NewestItem
 
         # more than 1?
@@ -1167,7 +1171,8 @@ function NewestItem {
     .NOTES
     General notes
     #>
-    [OutputType('PSObject')]
+    [Alias('WhereItem')]
+    # [OutputType('PSObject')]
     param(
         [ArgumentCompletions(
             'File',
@@ -1217,6 +1222,8 @@ function NewestItem {
     # }
     # warning:
     end {
+
+
         $items.count | Join-String -f 'total items: {0}'
         | New-Text -fg 'gray40' | ForEach-Object tostring | Write-Information
 
@@ -1331,7 +1338,14 @@ function NewestItem {
             ' }'
         )
         | Join-String -os $reset
+
+        $render
         | Write-Information -infa 'Continue'
+
+        if ($PSCmdlet.MyInvocation.InvocationName -match 'Where.*Item') {
+            $PassThru = $true
+        }
+
 
         if ($PassThru) {
             return $sorted
@@ -1341,10 +1355,11 @@ function NewestItem {
         if ($FirstN) {
             $sortSplat.Top = $FirstN
         }
-        # Wait-Debugger
-        # normal
+
+
+
         return $sorted
-        | Sort-Object LastWriteTime -Descending @sortSplat
+        | Sort-Object -Prop $SortByProp -Descending @sortSplat
         | CountOf
     }
 

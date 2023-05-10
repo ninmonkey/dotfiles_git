@@ -11,8 +11,11 @@ see also:
 
 #>
 
-Import-Module Pipeworks -PassThru # can register fail if the module is not yet imported? (ie: break the alias)
-$script:____zTestConn ??= Get-SQLTable -ConnectionStringOrSetting 'AzureSqlConnectionString'
+if ($false) {
+    # don't auto import
+    Import-Module Pipeworks -PassThru # can register fail if the module is not yet imported? (ie: break the alias)
+    $script:____zTestConn ??= Get-SQLTable -ConnectionStringOrSetting 'AzureSqlConnectionString'
+}
 
 # . (Get-Item -ea 'continue' (Join-Path $PSScriptRoot 'indentedautomation.find-customArgCompleters.ps1')) # todo: move  to typeWriter
 
