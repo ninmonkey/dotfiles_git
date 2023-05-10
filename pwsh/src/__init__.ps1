@@ -14,7 +14,7 @@ custom attributes, more detailed info
 
 Set-Alias -Name 'Json.From' -Value 'ConvertFrom-Json'
 
-remove-module Pipeworks
+Remove-Module Pipeworks
 Import-Module pansies
 [Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
@@ -1149,6 +1149,218 @@ function NewestItem {
 
     .EXAMPLE
         Pwsh> gci | NewestItem
+    .EXAMPLE
+        Pwsh> gci | NewestItem
+
+        # more than 1?
+
+        gci | NewestItem Directory -TopN 3
+        gci | NewestItem File -TopN 3
+    .EXAMPLE
+        Pwsh> gci | NewestItem
+
+        # more than 1?
+
+        gci | NewestItem Directory
+        gci | NewestItem File
+
+    .NOTES
+    General notes
+    #>
+    [OutputType('PSObject')]
+    param(
+        [ArgumentCompletions(
+            'File',
+            'Directory', 'Dir',
+            'Color',
+            'Length',
+            'Command',
+            'Code',
+            'Log'
+        )]
+        [Parameter(position = 0)]
+        [string]$ItemKind,
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        # Defaults to First1, you can set a count, or even return all
+        # maybe lastN / OldestItem as an alias with auto invert behavior
+        [Alias('TopN', 'First')]
+        [int]$FirstN = 1,
+
+        # after filtering, reverse the results
+        [switch]$Reverse,
+
+        # collect/show all
+        # applies filtering, but returns all matches
+        [Alias('All')]
+        [switch]$PassThru
+
+
+
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange(@( $InputObject ))
+    }
+
+
+    # $splat = @{}
+    # if( $PSBoundParameters.ContainsKey('File') ) {
+    #     $splat.File = $File
+    # }
+    # if( $PSBoundParameters.ContainsKey('Folder') ) {
+    #     $splat.File = $File
+    # }
+    # warning:
+    end {
+        $items.count | Join-String -f 'total items: {0}'
+        | New-Text -fg 'gray40' | ForEach-Object tostring | Write-Information
+
+        [Collections.Generic.List[object]]$filtered = $items
+        | Where-Object {
+            $curItem = $_
+            switch ($ItemKind) {
+                'Application' {
+                    # not the fasted but it's flexible on the inputs
+                    $bin = @(  Get-Command $curItem -ea ignore -CommandType Application )
+                    $bin.count -gt 0
+                    continue
+                }
+                'Image' {
+                    $curItem.Extension -match '\.(png|gif|jpe?g|mp4)$'
+                }
+                'File' {
+                    return $curItem -is 'System.IO.FileInfo'
+                }
+                { $_ -in @('Directory', 'Dir') } {
+                    return $curItem -is 'System.IO.DirectoryInfo'
+                }
+                'Code' {
+                    $curItem.Extension -match '\.(ps1|psm1|psd1|ts|js|py)$'
+                }
+                'Log' {
+                    $curItem.Extension -match '\.(log|xml)$'
+                }
+                default {
+                    # ex: Size would use Length Descending property
+                    throw "UnhandledItemKindException: '$ItemKind'"
+                }
+            }
+        }
+
+
+        switch ($ItemKind) {
+            'File' {
+                $sortByProp = 'LastWriteTime'
+            }
+            { $_ -in @('Directory', 'Dir') } {
+                $sortByProp = 'LastWriteTime'
+            }
+            'Code' {
+                $sortByProp = 'LastWriteTime'
+                $curItem.Extension -match '\.(ps1|psm1|psd1|ts|js|py)$'
+            }
+            'Log' {
+                $sortByProp = 'LastWriteTime'
+                $curItem.Extension -match '\.(log|xml)$'
+            }
+            default {
+                # ex: Size would use Length Descending property
+                throw "UnhandledItemKindException: '$ItemKind'"
+            }
+        }
+
+        [Collections.Generic.List[object]]$sorted = @(
+            $filtered | Sort-Object -prop $Property
+        )
+        if ($Reverse) {
+            # is there a reason to use this over
+            # inverting the -descending param?
+            # possibly if it is to be extended.
+            $sorted.Reverse()
+        }
+
+        $endcapLargest = $filtered | Select-Object -First 1
+        $endcapSmallest = $filtered | Select-Object -Last 1
+        # $endcapLargest.LastWriteTime ?? "`u{2400}"
+        # $endcapSmallest.LastWriteTime ?? "`u{2400}"
+
+        '{0}..{1}' -f @(
+            (  $endcapLargest)?.$Property ?? '␀'
+            ( $endcapSmallest)?.$Property ?? '␀'
+        )
+
+        $colorBG = $PSStyle.Background.FromRgb('#362b1f')
+        $colorFg = $PSStyle.Foreground.FromRgb('#e5701c')
+        $colorFg = $PSStyle.Foreground.FromRgb('#f2962d')
+        # $colorBG_count = $PSStyle.Background.FromRgb('#362b1f')
+        # $colorFg_count = $PSStyle.Foreground.FromRgb('#f2962d')
+        $colorFg_label = $PSStyle.Foreground.FromRgb('#4cc5f0')
+        $colorBG_label = $PSStyle.Background.FromRgb('#376bce')
+
+        $endcapLargest.LastWriteTime, $endcapLargest.LastWriteTime
+        | Join-String -op "${bg:gray30}${fg:gray50}"
+        | Join-String -sep '..' -op '{ ' -os ' }'
+        | Join-String -os $PSStyle.Reset
+
+
+        $color_gray = "${fg:gray60}"
+        $reset = $PSStyle.Reset
+        $color_main = @(
+            $PSStyle.Foreground.FromRgb('#4cc5f0')
+            $PSStyle.Background.('#376bce')
+        ) -join '' # validate whether this still works with NO_COLOR
+        # or if multi stage string building doesn't work
+        $render = @(
+            $color_gray
+            '{ '
+            $reset
+            $color_main
+            $endcapLargest
+            $reset
+            $color_gray
+            '…'
+            $color_main
+            $endcapSmallest
+            $reset
+            $color_gray
+            ' }'
+        )
+        | Join-String -os $reset
+        | Write-Information -infa 'Continue'
+
+        if ($PassThru) {
+            return $sorted
+        }
+
+        $sortSplat = @{}
+        if ($FirstN) {
+            $sortSplat.Top = $FirstN
+        }
+        # Wait-Debugger
+        # normal
+        return $sorted
+        | Sort-Object LastWriteTime -Descending @sortSplat
+        | CountOf
+    }
+
+}
+
+function NewestItem.Basic {
+    <#
+    .SYNOPSIS
+    Filter on stuff, using NameIsh to decide what properties to filter on
+
+    .DESCRIPTION
+    next:
+        - check properties for [datetime] of any name
+
+    .EXAMPLE
+        Pwsh> gci | NewestItem
 
     .NOTES
     General notes
@@ -1207,6 +1419,7 @@ function NewestItem {
     }
 
 }
+
 
 function Write-NancyCountOf {
     <#
