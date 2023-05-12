@@ -1461,8 +1461,8 @@ function Write-NancyCountOf {
             $stuff | Null🧛 -Label 'Null' -Extra
 
     .EXAMPLE
-        ,@('a'..'e' + 0..3) | CountIt -Out-Null
-        @('a'..'e' + 0..3) | CountIt -Out-Null
+        ,@('a'..'e' + 0..3) | CountOf -Out-Null
+        @('a'..'e' + 0..3) | CountOf -Out-Null
 
         # outputs
         1 items
@@ -2105,6 +2105,133 @@ function enumerateSupportedEventNames {
     }
 }
 
+function WhereInScope? {
+    [Alias('AmInScope?')]
+    [CmdletBinding()]
+    <#
+    .SYNOPSIS
+     see if value is set and types going up the scope
+
+    .DESCRIPTION
+    same
+
+    todo: ensure it executes in the right execution context of the juser
+
+    .EXAMPLE
+        AmInScope? WhereInScope?
+    .EXAMPLE
+        $valOf = get-variable -scope 0 -Name 'MyInvocation'
+            [System.Management.Automation.LocalVariable]
+    .EXAMPLE
+    to test agains
+
+            . $PROFILE.'MainEntryPoint.__init__'
+            WhereInScope? -Name 'path' |  ft -AutoSize
+            hr
+            $cat  = 'out'
+            function innerCat {
+                $cat
+                $cat = 42
+                $cat
+                WhereInScope? -Name 'cat' |ft
+            }
+            innerCat
+            $cat
+    .NOTES
+    General notes
+    #>
+    param(
+        [alias('Name')][string]$VariableName,
+        [int]$MaxDepth = 4
+    )
+
+    class WhereInScopeResult {
+        [int]$Depth
+        [string]$Name
+        [object]$Value
+        [bool]$Exists
+
+        # hidden [System.Management.Automation.PSVariableAttributeCollection[]]$Attributes
+        [object]$TypeOf
+        [string]$ModuleName
+        [string]$Description
+        # [object]$ReportedType
+        hidden [Nullable[System.Management.Automation.ScopedItemOptions]]$ScopedItemOptions
+        [System.Management.Automation.PSModuleInfo]$ModuleInfo
+        [Nullable[System.Management.Automation.SessionStateEntryVisibility]]$Visibility
+        hidden [object[]]$Attributes # PSES says: [Collection[Attribute]] $Attributes
+        # [hashtable]$Extra
+
+        WhereInScopeResult ( [string]$VariableName, [int]$Depth ) {
+            try {
+                $this.Exists = (Get-Variable -ea 'ignore' -Scope $Depth) -contains $VariableName
+            }
+            catch {
+                $this.Exists = $false
+            }
+
+            $this.Depth = $Depth
+            $this.Name = $VariableName
+            if ($this.Exists ) {
+                $val? = Get-Variable -ea 'ignore' -Name $VariableName -Scope $Depth
+            }
+            else {
+                $val? = $null
+            }
+
+            $this.Value = $val? ?? $null
+
+            # $this.Value = $val?
+            $this.TypeOf = ($val?)?.GetType() ?? $null
+
+            # "Cannot convert null to type
+            #  | "System.Management.Automation.ScopedItemOptions
+            $this.ScopedItemOptions = ($val?)?.Options ?? $null
+
+            $this.Attributes = $val?.Attributes
+            $this.Description = $val?.Description
+            $this.ModuleInfo = $val?.Module
+            $this.ModuleName = $val?.ModuleName
+            $this.Visibility = $val?.Visibility
+            # $this.ReportedType = $val?.
+            # $this.Extra = @{ ... }
+        }
+        [bool] Exists() {
+            # techincally existing values set to null
+            return $this.Exists # custom scriptproperty or exformat for types
+        }
+    }
+
+    # Exists = (get-variable -scope $depth -ea ignore) -contains 'Path'
+    # while($true) {
+    #     $depth = 0
+    #     $value? = Get-Variable -ea 'ignore' -name $Name -scope $Depth
+    #     [pscustomobject]@{
+    #         Scope = $Depth
+    #         Name = $VariableName
+    #         Value = $value? ?? $null
+    #         # sma
+    #         ScopedItemOptions = $value?.ScopedItemOptions
+
+
+    #     }
+    # }
+    # <#
+    # > $valOf = get-variable -scope 0 -Name 'MyInvocation'
+    # System.Management.Automation.LocalVariable
+
+    #>
+    'class: [WhereInScopeResult]: Not fully done, validate values are being assigned when not null: {0}' -f @(
+        $PSCommandPath
+    ) | Write-Warning
+    0..$MaxDepth | ForEach-Object {
+        $curDepth = $_
+        [WhereInScopeResult]::new( $VariableName, $curDepth )
+        # Get-Variable -Scope $Depth -Name $VariableName -ea 'ignore'
+    }
+    # sort ?
+}
+
 function glam.Bps.🐍.All {
     # gitlogger, macro: BuildPipescript
     # counts are wrong but I don't care for now
@@ -2130,6 +2257,30 @@ function glam.Bps.🐍.All {
             $all_items.Name | Join-String -sep ', '
         )
     )
+}
+
+function DeleteOldModule.MoveToNormalPath {
+    <#
+    .SYNOPSIS
+        I had some modules in the non-global path, but you can't update them easily, moving some back to main.
+    #>
+    ($what = Get-ChildItem 'E:\PSModulePath.2023.root\Main' | ForEach-Object Name | fzf -m )
+    | Join-String -sep ', ' -SingleQuote
+
+    try {
+        foreach ($mod in $what) {
+            Get-ChildItem 'E:\PSModulePath.2023.root\Main'
+            #$Mod = 'Profiler'
+            Remove-Item (Join-Path 'E:\PSModulePath.2023.root\Main' $mod ) -Recurse -Force
+
+            Install-Module $mod -AllowClobber -Force
+            Get-Module $mod -ListAvailable
+        }
+    }
+    catch {
+        '😡 Oh no, something bad: {0}' -f @( $_ )
+    }
+    $what | Join-String -op 'Did not ttry -AllowPrerelease. Expected Installs: ... ' -sep ', ' -SingleQuote
 }
 
 <#

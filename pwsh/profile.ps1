@@ -187,8 +187,63 @@ function nin.GroupByLinqChunk {
         $StrUnitSep = '␟'
         $_ | Join-String -sep (" ${fg:gray30}${StrUnitSEp}${fg:clear} ")
     }
-
 }
+
+function nin.RenderUnicodeRange {
+    param(
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ValueFromPipeline)]
+        [System.Text.Rune[]]$InputRunes,
+        [int]$ColumnCount
+    )
+    begin {
+        $Columns ??= 8
+        [Collections.Generic.List[System.Text.Rune]]$Runes = @()
+    }
+    process {
+        $Runes.AddRange($InputRunes )
+
+    }
+    end {
+
+        $minCellsPerRecord = ' 0xffff00 => __ '.Length
+
+        $w = $host.ui.RawUI.WindowSize.Width
+        $groupSize = $ColumnCount ?? [int]($w / $minCellsPerRecord)
+        $groupSize = [Math]::Max(1, $GroupSize)
+
+        # $chars = '-' * $w -join ''
+        # $padding = "`n" * $ExtraLines
+
+        # $output = @(
+        #     $padding, $chars, $padding
+        # ) -join ''
+
+        [System.Linq.Enumerable]::Chunk($Runes, $groupSize)
+        | ForEach-Object {
+            $_ | Join-String {
+                '{0:x} => {1}' -f @(  $_.Value, $_ )
+                | Join-String -op "${fg:gray30}${bg:gray60}" -os $PSStyle.Reset
+            } -sep (" ${fg:gray30} ")
+        }
+        $Runes.Count | Join-String -f 'total runes: {0}' | Write-Information -Infa 'Continue'
+
+
+    }
+}
+# $fullName = gi .
+# [Text.Rune[]]$rune = 0x2500..0x259f + 0x4dc0..0x4dff + 0xfe20..0xfe2f
+# [System.Linq.Enumerable]::Chunk($rune, 7)
+# | %{
+#    $_ | Join-String {
+#       '{0:x} => {1}' -f @(  $_.Value, $_ )
+#       | Join-String -op "${fg:gray30}${bg:gray60}" -os $PSStyle.Reset
+#       } -sep (" ${fg:gray30} ")
+# }
+#| %{
+#  $_ | Join-String -sep ' ' -FormatString '{0:x2}'
+#  }  | Join-String -sep "`n" -f '[{0}]'
+
+
 
 function RenderLongPathNames {
     <#
