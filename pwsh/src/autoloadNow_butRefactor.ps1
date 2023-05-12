@@ -623,7 +623,7 @@ function quickHist {
     }
 }
 
-function quickPwd {
+function quickPwd { # 2023-05-12 : touch
     <#
     .SYNOPSIS
         ShowLongNames, visual render, easier to read
