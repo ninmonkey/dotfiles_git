@@ -368,8 +368,6 @@ function Test-ModuleWasModified {
     return $hasChanged
 }
 
-
-
 function Err {
 
     <#
@@ -381,6 +379,11 @@ function Err {
         for regular mode, or module breakpoints.
 
         Useful when debugging inside a module Sugar for quickly using errors in the console.  2023-01-01
+    .EXAMPLE
+        Pwsh> err -Num 3 -Verbose | Out-Null
+
+            VERBOSE: ErrCounts: {"CountTotal":2,"Count":1,"CountGlobal":1}
+            1 items
     .EXAMPLE
         err -TotalCount
             1
