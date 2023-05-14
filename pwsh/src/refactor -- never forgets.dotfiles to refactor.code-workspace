@@ -1,0 +1,33 @@
+{
+    "folders": [ // 2023-05-14
+        {
+            "path": "elephantMemory"
+        },
+        {
+            "path": "../.."
+        }
+    ],
+    "settings": {
+        "workbench.colorCustomizations": {
+            "activityBar.activeBackground": "#fcb714",
+            "activityBar.background": "#fcb714",
+            "activityBar.foreground": "#15202b",
+            "activityBar.inactiveForeground": "#15202b99",
+            "activityBarBadge.background": "#027e59",
+            "activityBarBadge.foreground": "#e7e7e7",
+            "commandCenter.border": "#15202b99",
+            "sash.hoverBorder": "#fcb714",
+            "statusBar.background": "#da9a03",
+            "statusBar.foreground": "#15202b",
+            "statusBarItem.hoverBackground": "#a87602",
+            "statusBarItem.remoteBackground": "#da9a03",
+            "statusBarItem.remoteForeground": "#15202b",
+            "titleBar.activeBackground": "#da9a03",
+            "titleBar.activeForeground": "#15202b",
+            "titleBar.inactiveBackground": "#da9a0399",
+            "titleBar.inactiveForeground": "#15202b99"
+        },
+        "peacock.color": "#da9a03",
+        "powershell.cwd": "h:\\data\\2023\\dotfiles.2023"
+    }
+}

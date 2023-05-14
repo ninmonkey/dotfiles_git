@@ -67,6 +67,8 @@ function _fmt_mdTableRow {
         | TimeOfDay | 17:55:57.2587153 | timespan |
         | Year | 2023 | int |
     #>
+    [Alias('.fmt.Markdown.Table.Row')]
+    [CmdletBinding()]
     param(
         [Parameter(ValueFromPipeline)]
         [String[]]$InputText
@@ -96,12 +98,41 @@ function b.wrapLikeWildcard {
         '*cat*', '*cat*
     #>
     process {
-        @( '*', $_.ToLower(), '*') -join '' -replace '\^\*{2}', '*' -replace '\*{2}$', '*'
+        @( '*', $_.ToLowerInvariant(), '*') -join '' -replace '\^\*{2}', '*' -replace '\*{2}$', '*'
     }
 }
 
 
 function b.Text.WrapString {
+    <#
+    .EXAMPLE
+        b.Text.WrapString ('a'..'z' -join '_') -MaxWidth 10
+
+            a_b_c_d_e_
+            f_g_h_i_j_
+            k_l_m_n_o_
+            p_q_r_s_t_
+            u_v_w_x_y_
+            z
+    #>
+    [Alias(
+        'Join.WrapText',
+        'todo.mvTo.Nancy.prof'
+    )]
+    [CmdletBinding()]
+    param(
+        [Alias('Text')]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$InputText,
+
+        [Alias('Cols')]
+        [int]$MaxWidth = 120
+    )
+    $regex_charCount = '(.{', $MaxWidth, '})' -join ''
+    # $InputText -join "`n" -split '(.{80})' -join "`n" -replace '\n+', "`n"
+    $InputText -join "`n" -split $regex_charCount -join "`n" -replace '\n+', "`n"
+}
+function b.Text.WrapString.prof.v0 {
     <#
     .EXAMPLE
         b.Text.WrapString ('a'..'z' -join '_') -MaxWidth 10
@@ -192,19 +223,23 @@ function b.fm {
 
 
     #>
-    param( [string]$Pattern, [bool]$WithoutSmartCase )
+    param(
+        [string]$Pattern,
+        [bool]$WithoutSmartCase )
     process {
         if (-not $WithoutSmartCase) {
-            $Patter = $Pattern.ToLower()
+            $Pattern = $Pattern.ToLowerInvariant()
         }
         $pattern = $pattern | b.wrapLikeWildcard
         # $pattern = @( '*', $patter.ToLower(), '*') -join '' -replace '\^\*{2}', '*'
 
         if ($Pattern) {
-            $_ | Find-Member $Pattern | Sort-Object Name | Format-Table Name, DisplayString
+            $_ | Find-Member $Pattern | Sort-Object Name
+            | Format-Table Name, DisplayString
         }
         else {
-            $_ | Find-Member | Sort-Object Name | Format-Table Name, DisplayString
+            $_ | Find-Member | Sort-Object Name
+            | Format-Table Name, DisplayString
         }
     }
 }
@@ -225,8 +260,7 @@ function b.getAll.Props {
         }) | Sort-Object -Unique
 }
 
-New-Alias '.fmt.Html.Table' -Value 'Html.Table.Convert.FromHash' -ea ignore
-
+# New-Alias '.fmt.Html.Table' -Value 'Html.Table.Convert.FromHash' -ea ignore
 function Format-Html.Table.FromHashtable {
     <#
     .SYNOPSIS
@@ -244,13 +278,17 @@ function Format-Html.Table.FromHashtable {
     .NOTES
     General notes
     #>
+    [OutputType('System.String')]
     [CmdletBinding()]
     [Alias(
+        '.fmt.Html.Table',
+        '.fmt.Html.Table.FromHashtable',
         # namespaces experiment.
         'Convert.Html.Table.FromHash',
-        'Html.Table.Convert.FromHash',
-        'Html.Table.FromHashtable',
-        '.fmt.Html.Table'
+        # 'Html.Table.Convert.FromHash',
+        # 'Html.Table.FromHashtable',
+        # '.out.Html.Table.FromHash',
+        '.to.Html.Table'
     )]
     param(
         [Parameter(Mandatory)]
@@ -333,6 +371,7 @@ function Test-ModuleWasModified {
 
 
 function Err {
+
     <#
     .SYNOPSIS
         Useful sugar when debugging inside a module Sugar for quickly using errors in the console.  2023-01-01
@@ -354,6 +393,12 @@ function Err {
         err -clear
             resets even global errors.
     #>
+    [CmdletBinding()]
+    [OutputType(
+        'System.Management.Automation.ErrorRecord',
+        # maybe exception?
+        'System.Boolean'
+    )]
     [Alias('prof.Err')]
     param(
         [int]$Num = 10,
@@ -366,30 +411,61 @@ function Err {
 
         # write-information
         [Alias('ShowCount')]
-        [switch]$IncludeCount
+        [switch]$IncludeCounth,
+        [switch]$PassThru
     )
-    $TotalErrorCount = $global:error.count
-    if ($IncludeCount) {
-        'Had {0} errors before clearing' -f @(
-            $TotalErrorCount
-        ) | Write-Information -infa 'continue'
+    $meta = @{
+        CountGlobal = $global:error.count
+        Count       = $error.Count
+        CountTotal  = ($global:error.count ?? 0) + ($error.count ?? 0)
     }
+    # $Meta | Json -depth 1 -Compress | Join-String -op 'Err : ' | Write-Verbose
+    $Meta | Json -depth 1 -Compress | Join-String -op 'Err: ' | Write-Verbose
 
-    'Had {0} Errors' -f @(
-        $TotalErrorCount
-    ) | Write-Verbose
+
+    @(
+        if ( $Meta.CountGlobal -gt 0 ) { 'Global: {0}' -f $Meta.CountGlobal }
+        'Err: {0}' -f $Meta.Count
+    ) | Join-String -sep ', ' -op 'Err: ' | Write-Verbose
+
 
     if ($TestHasAny) {
-        return ($TotalErrorCount -gt 0)
+        return [bool]($meta.CountTotal -gt 0)
     }
-    if ($TotalErrorCount) {
-        return $TotalErrorCount
+    # $TotalErrorCount = $global:error.count
+    if ($IncludeCount) {
+        'Had Globlal: {0}, and {1} errors before clearing' -f @(
+            $meta.CountGlobal ?? 0
+            $meta.Count ?? 0
+        )
+        | Write-Information -infa 'continue'
+        # | Write-Verbose
     }
 
-    if ( $Clear ) { $global:error.Clear() }
-    if ( $Clear ) { $error.Clear() } # depending if func is in profile or module
-    return $global:error | Select-Object -First $Num | CountOf
+    # 'Had {0} Errors' -f @(
+    #     $TotalErrorCount
+    # ) | Write-Verbose
+    if ($PassThru) {
+        $Meta.ErrListObject = $error
+        $Meta.ErrListGlobalObject = $global:error
+        return [pscustomobject]$Meta
+    }
+
+    # depending if func is in profile or module
+    if ( $Clear ) {
+        $global:error.Clear()
+        $error.Clear()
+    }
+
+    if ($TotalErrorCount) {
+        return $meta.CountTotal
+    }
+
+    if ( -not $Clear) {
+        return $global:error | Select-Object -First $Num | CountOf
+    }
 }
+
 
 
 class GhRepoListRecord {
@@ -623,7 +699,8 @@ function quickHist {
     }
 }
 
-function quickPwd { # 2023-05-12 : touch
+function quickPwd {
+    # 2023-05-12 : touch
     <#
     .SYNOPSIS
         ShowLongNames, visual render, easier to read
@@ -667,7 +744,7 @@ function quickPwd { # 2023-05-12 : touch
     $shareSize = @{
         GroupSize = ($Config)?.ChunksPerLine ?? 5
     }
-    if($Config.Reverse) {
+    if ($Config.Reverse) {
         $shareSize.Options = mergeHashtable -BaseHash $shareSize.Options -OtherHash @{
             Reverse = $true
         }

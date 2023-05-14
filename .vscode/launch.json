@@ -3,12 +3,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "🐒 Test Format.ps1xml",
+            "name": "Fixed.🐒.ps1",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder}/test/test_Format.ps1xml.ps1",
-            "cwd": "${workspaceFolder}",
-
+            "script": "H:/data/2023/dump.buffer.offline/misc/2023-05-14 ┐WhatErrorRecordFormat/2023-05-14 ┐Find WhatErrorRecordFormat.ps1",
+            "cwd": "H:/data/2023/dump.buffer.offline/misc/2023-05-14 ┐WhatErrorRecordFormat"
         },
         {
             "name": "🐒 cur.ps1 — ",
@@ -16,6 +15,13 @@
             "request": "launch",
             "script": "${file}",
             "cwd": "${file}"
+        },
+        {
+            "name": "🐒 Test Format.ps1xml",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/test/test_Format.ps1xml.ps1",
+            "cwd": "${workspaceFolder}",
         },
         {
             "name": "🐒 visual test.ps1",
