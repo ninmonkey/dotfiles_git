@@ -419,7 +419,6 @@ function Err {
         Count       = $error.Count
         CountTotal  = ($global:error.count ?? 0) + ($error.count ?? 0)
     }
-    # $Meta | Json -depth 1 -Compress | Join-String -op 'Err : ' | Write-Verbose
     $Meta | Json -depth 1 -Compress | Join-String -op 'Err: ' | Write-Verbose
 
 
@@ -441,14 +440,14 @@ function Err {
         | Write-Information -infa 'continue'
         # | Write-Verbose
     }
-
-    # 'Had {0} Errors' -f @(
-    #     $TotalErrorCount
-    # ) | Write-Verbose
     if ($PassThru) {
         $Meta.ErrListObject = $error
         $Meta.ErrListGlobalObject = $global:error
         return [pscustomobject]$Meta
+    }
+
+    if ($TotalErrorCount) {
+        return $meta.CountTotal
     }
 
     # depending if func is in profile or module
@@ -457,12 +456,9 @@ function Err {
         $error.Clear()
     }
 
-    if ($TotalErrorCount) {
-        return $meta.CountTotal
-    }
-
     if ( -not $Clear) {
-        return $global:error | Select-Object -First $Num | CountOf
+        return $global:error | Select-Object -First $Num
+        | CountOf # optional
     }
 }
 
