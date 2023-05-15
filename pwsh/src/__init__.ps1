@@ -2334,7 +2334,8 @@ function prof.Io2 {
     $PSCommandPath
 ) | Write-Host -fg 'orange'
 
-
+. (Get-Item -ea 'continue' ('H:\data\2023\dotfiles.2023\pwsh\src\Exported-Show-ErrorRecord.ps1') )
+# . (Get-Item -ea 'stop' ('./Exported-Show-ErrorRecord.ps1') )
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
