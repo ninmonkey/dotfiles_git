@@ -6,7 +6,8 @@
             "name": "Fixed.🐒.ps1",
             "type": "PowerShell",
             "request": "launch",
-            "script": "H:/data/2023/dump.buffer.offline/misc/2023-05-14 ┐WhatErrorRecordFormat/2023-05-14 ┐Find WhatErrorRecordFormat.ps1",
+            // "script": "H:/data/2023/dump.buffer.offline/misc/2023-05-14 ┐WhatErrorRecordFormat/2023-05-14 ┐Find WhatErrorRecordFormat.ps1",
+            "script": "H:/data/2023/pwsh/notebooks/Pwsh/Formatting/2023-05-14 ┐Find Get-Error - WhatErrorRecordFormat.ps1",
             "cwd": "H:/data/2023/dump.buffer.offline/misc/2023-05-14 ┐WhatErrorRecordFormat"
         },
         {
