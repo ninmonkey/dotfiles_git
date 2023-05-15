@@ -6,17 +6,188 @@ $Config += @{
     Export_DotfilesRoot = Join-Path $Config.AppRoot 'desktop-main'
     Profile_SubProfiles = Join-Path $Config.Profile_Root 'profiles'
 }
+function RenderInternalScriptExtent {
+    [Alias(
+        '.Render.InternalScriptExtent'
+        # '.Render.smal.InternalScriptExtent',
+    )]
+    [OutputType('System.String'
+        # 'AnsiEscapeString'
+    )]
+    # some metadata attribute: ansi color output is optional
+    [CmdletBinding()]
+    param(
+        [Alias('Position')]
+        [Parameter(
+            Mandatory, ValueFromPipeline,
+            ValueFromPipelineByPropertyName
+        )]
+        # supports [IScriptExtent], is a pInternalScriptExtent]
+        # [System.Management.Automation.Language.InternalScriptExtent]$InputObject
+        # [System.Management.Automation.Language.ScriptExtent]
+        [object]$InputObject
+    )
+
+    if ($InputObject -is [System.Management.Automation.Language.IScriptExtent]) {
+        $Target = $InputObject
+    }
+    elseif ( $InputObject.Position -is [System.Management.Automation.Language.IScriptExtent]) {
+        $Target = $InputObject.Position
+    }
+    else {
+        throw "Unhandled type: $($InputObject.GetType().Name)"
+    }
+    # $ScriptExtent
+    # 'from:'
+    # $info.FuncionName
+    $msg = @(
+        @(
+            $InputObject.StartScriptLineNumber
+            '..'
+            $InputObject.EndScriptLineNumber
+        ) | Join-String -op "${fg:gray60}" -os $PSStyle.Reset
+        $LogMessage
+    ) -join ' '
+
+    $msg | Write-Host -fg 'yellow'
+    $null = 0
+}
+
+function write.TraceLocation {
+    <#
+    .SYNOPSIS
+        writes info, by inspecting call stack frame
+    .NOTES
+        for details see:
+            $s.InvocationInfo [sma.InvocationInfo]
+            $s.Position [InternalScriptExtent]
+    #>
+    # [Alias('write.Trace.Enter')]
+    # todo: To be refactored as: '.Render.CallStackFrame
+    # [Alias('.Render.CallStackFrame')]
+    [CmdletBinding()]
+    param(
+        # optional
+        [Alias('Prefix')]
+        [Parameter(Mandatory, position = 0)]
+        [ArgumentCompletions(
+            "'Enter'", "'Exit'"
+        )]
+        [string]$Mode,
+
+        [Alias('Message', 'Text')]
+        [Parameter(Position = 1)][string]$LogMessage,
+
+        [switch]$Detailed
+    )
+
+    switch ($Mode) {
+        'Enter' { $prefix = '::enter:' }
+        'Exit' { $prefix = '::exit :' }
+        default { }
+    }
+    $callStack = Get-PSCallStack
+    $targetFrame = $callStack[1]
+    $info = @{}
+
+    $info.DocsString = @'
+make sure to try nested types
+    $s.Position => extent?
+
+    [IScriptPosition]
+        $s.Position.StartScriptPosition
+    [IScriptPosition]
+        $s.Position.EndScriptPosition
+'@
+
+    # ex: Collect-VsCodeProfile.ps1: line 42
+    $info.shortNameAndLineNumber = $targetFrame.GetScriptLocation()
+
+    # ex: __collect.VsCode.Config
+    $info.FuncionName = $targetFrame.Command
+    # ex: args, input, MyInvocation, PSBoundParameters, PSCommandPath, PSScriptRoot
+    $info.frameVariableNames = $targetFrame.GetFrameVariables().Keys
+    | Sort-Object -Unique | Join-String -sep ', '
+
+    # ex: H:\data\2023\dotfiles.2023\vscode\profiles\Collect-VsCodeProfile.ps1
+    $info.fullName = $targetFrame.Position.StartScriptPosition.File
+
+    # current line only
+    # ex: "     write.TraceLocation 'Enter'"
+    $info.StartScriptLineString = $targetFrame.Position.StartScriptPosition.Line
+    # ex: 42
+    $info.StartScriptLineNumber = $targetFrame.Position.StartScriptPosition.LineNumber
+    $info.EndScriptLineNumber = $targetFrame.Position.EndScriptPosition.LineNumber
+
+    # ex: entire script contents
+    $info.ScriptContentsString = $targetFrame.Position.StartScriptPosition.GetFullScript()
+
+
+    $info.frameCommand = $targetFrame.Command
+
+
+    # System.Management.Automation.Language.InternalScriptExtent
+
+
+    $info.RenderFrameVariableSummary = $targetFrame.GetFrameVariables().Values
+    # | Select-Object Name, Value
+    | Join-String {
+        "{0}`n   is {1}`n   value is {2}" -f @(
+            $_.Name
+            $_.Value.GetType() | Format-ShortTypeName
+            $_.value
+        ) } -sep "`n"
+
+    # $info.GetEnumerator() | ForEach-Object {
+    #     Hr -fg magenta
+    #     $_.key
+    #     $_.value
+    # }
+
+    RenderInternalScriptExtent $targetFrame
+
+    if ( -not $Detailed) {
+
+        $Message = @(
+            $Prefix
+            'location:'
+            $info.FuncionName
+            'from:'
+            @(
+                $info.StartScriptLineNumber
+                '..'
+                $info.EndScriptLineNumber
+            ) | Join-String -op "${fg:gray60}" -os $PSStyle.Reset
+            $LogMessage
+        ) -join ' '
+        $Message | Write-Host -fg 'blue'
+        return
+    }
+
+    $Message = @(
+        $Prefix
+        'location:'
+        $LogMessage
+        $info.RenderFrameVariableSummary
+    ) -join ' '
+    Write-Warning 'no template for detailed yet '
+    $Message | Write-Host -fg 'blue'
+
+}
 # $Config | Format-Table -auto -Wrap
 # $Config | Format-List
 # return
 function __collect.VsCode.Config {
+    write.TraceLocation 'Enter'
+    '::enter: __collect.VsCode.Config' | Write-Host -fg green
     $P = @{
         Profile_SubProfiles = Join-Path $Config.Profile_Root 'profiles'
     }
-
+    '::exit : __collect.VsCode.Config' | Write-Host -fg green
+    write.TraceLocation 'Exit'
 }
 
-function __renderHashtable.Experiment {
+function __dotfiles.RenderHashtable {
     param(
         [Alias('Hash', 'InputHash')]
         [Parameter(Position = 0, Mandatory)]
@@ -106,14 +277,5 @@ function __renderHashtable.Experiment {
     Hr
 }
 
-__renderHashtable.Experiment -InputHash $Config 'Default'
-__renderHashtable.Experiment -InputHash $Config 'SemanticPath'
-
-$SomePaths = @{
-    Home         = Get-Item ~
-    AppData      = Get-Item $Env:AppData
-    LocalAppData = Get-Item $Env:LocalAppData
-    UserProfile  = Get-Item $Env:UserProfile
-}
-__renderHashtable.Experiment -InputObject $SomePaths -OutputMode SemanticPath -SortByKey Value
-__renderHashtable.Experiment -InputObject $SomePaths -OutputMode SemanticPath
+__dotfiles.RenderHashtable -InputObject $Config -OutputMode SemanticPath -SortByKey Key
+__collect.VsCode.Config
