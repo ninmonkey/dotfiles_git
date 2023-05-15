@@ -292,6 +292,7 @@ function RenderLongPathNames {
 
     #>
     [Alias(
+        '.Render.PathNames',
         '.fmt.Path.LongNames',
         'fmt.Path.LongNames'
     )]
@@ -376,6 +377,127 @@ function RenderLongPathNames {
 
 }
 
+
+## refactor, move to Nancy 2023-05-15
+function RenderHashtablePaths {
+    <#
+    .SYNOPSIS
+    render semantic paths from a hashtable, like Format-List without extra bloat
+
+    .DESCRIPTION
+    colors emphasize key names and MSB of filepaths, dim the LSB
+
+    .EXAMPLE
+    .Render.Hash.Semantic.PathNames -InputHash @{
+        Home = gi ~
+        Temp = gi temp:\
+        SelfCommand = gi $PSCommandPath
+    } 'SemanticPath'
+
+    $SomePaths = @{
+        Home         = Get-Item ~
+        AppData      = Get-Item $Env:AppData
+        LocalAppData = Get-Item $Env:LocalAppData
+        UserProfile  = Get-Item $Env:UserProfile
+    }
+    .Render.Hash.Semantic.PathNames -InputObject $SomePaths -OutputMode SemanticPath -SortByKey Value
+    .Render.Hash.Semantic.PathNames -InputObject $SomePaths -OutputMode SemanticPath
+
+
+    .NOTES
+    General notes
+    #>
+    [Alias('.Render.Hash.Semantic.PathNames')]
+    [CmdletBinding()]
+    param(
+        [Alias('Hash', 'InputHash')]
+        [Parameter(Position = 0, Mandatory)]
+        [hashtable]$InputObject,
+
+        [Parameter(Position = 1)]
+        [ArgumentCompletions(
+            'Default',
+            'SemanticPath'
+        )]
+        [string]$OutputMode = 'SemanticPath',
+
+        # sort not 100% working as expected maybe need to clone dict?
+        [Alias('Sort')]
+        [Parameter(Position = 2)]
+        [ValidateSet('Key', 'Value')]
+        [string]$SortByKey
+    )
+    if ($SortByKey) {
+        $sortSplat = @{
+            InputHash = $InputObject
+            SortBy    = $SortByKey
+        }
+        $InputObject = Ninmonkey.Console\Sort-Hashtable @sortSplat
+        Write-Warning 'sort not working in all cases, maybe using implicit case casensitive?'
+    }
+
+    Hr -fg orange
+    label 'OutputMode' $OutputMode
+    switch ( $OutputMode ) {
+        'Default' {
+            $InputObject.GetEnumerator()
+            | Join-String -sep "`n`n" -p {
+                "{0}`n{1}" -f @(
+                    $_.Key
+                    $_.Value
+                ) }
+        }
+        'SemanticPath' {
+            $C = @{}
+            $C.Fg_Dim = "${fg:gray30}"
+            $C.Fg_Dim = "${fg:gray15}"
+            $C.Fg = "${fg:gray65}"
+            $C.Fg_Em = "${fg:gray85}"
+            $C.Fg_Max = "${fg:gray100}"
+            $C.Fg_Min = "${fg:gray0}"
+            $InputObject.GetEnumerator()
+            | Join-String -sep "`n`n" -p {
+                $segs = $_.Value -split '\\'
+                $render_pathColor = @(
+                    $body = $segs | Select-Object -SkipLast 2
+                    | Join-String -sep '/'
+
+                    $tail = $segs | Select-Object -Last 2
+                    | Join-String -sep '/'
+
+                    $C.Fg_Dim
+                    $Body
+                    $C.Fg_Em
+                    '/'
+                    $Tail
+                    $PSStyle.Reset
+                ) | Join-String
+
+                $render_key = @(
+                    $C.Fg_Max
+                    $_.Key
+                    $PSStyle.Reset
+                ) | Join-String
+
+                # '{0}{1}' -f @(
+                "{0}`n{1}" -f @(
+                    $render_key
+                    $render_pathColor) }
+        }
+        'Default2' {
+            $InputObject.GetEnumerator()
+            | Join-String -sep "`n`n" -p {
+                '{0} : {1}' -f @(
+                    $_.Key
+                    $_.Value ) }
+        }
+        default {
+            throw "UnhandledMode: $OutputMode"
+        }
+
+    }
+    Hr
+}
 
 function nin.Text.CompareHowMuchCommon {
     <#
