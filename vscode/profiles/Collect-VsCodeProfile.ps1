@@ -144,23 +144,24 @@ make sure to try nested types
     #     $_.value
     # }
 
-    RenderInternalScriptExtent $targetFrame
+    # RenderInternalScriptExtent $targetFrame.Position
+    # return
 
     if ( -not $Detailed) {
 
         $Message = @(
             $Prefix
-            'location:'
             $info.FuncionName
-            'from:'
+            "${fg:Color30}"
             @(
+                'from:'
                 $info.StartScriptLineNumber
                 '..'
                 $info.EndScriptLineNumber
             ) | Join-String -op "${fg:gray60}" -os $PSStyle.Reset
             $LogMessage
         ) -join ' '
-        $Message | Write-Host -fg 'blue'
+        $Message | Write-Host #-fg 'blue'
         return
     }
 
@@ -179,11 +180,11 @@ make sure to try nested types
 # return
 function __collect.VsCode.Config {
     write.TraceLocation 'Enter'
-    '::enter: __collect.VsCode.Config' | Write-Host -fg green
+
     $P = @{
         Profile_SubProfiles = Join-Path $Config.Profile_Root 'profiles'
     }
-    '::exit : __collect.VsCode.Config' | Write-Host -fg green
+
     write.TraceLocation 'Exit'
 }
 
