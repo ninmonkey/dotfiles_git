@@ -645,7 +645,7 @@ function Find-ConsoleKeybinding {
     [Alias('FindKeybind')]
     param(
         [ArgumentCompletions(
-            "'search|history'", "'\+'"
+            "'search|history'", "'\+'",
             "'^vi'", 'line', 'move', 'yank', 'space', 'enter', 'Ctrl|Shift|Alt'
         )]
         [string]$Regex )
