@@ -634,6 +634,27 @@ if ($global:__nin_enableTraceVerbosity) {}
 . (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfile 'pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1') )
 # it  <== Profile: docs/profile.ps1/ => Pid: '${pid}'" | Write-Warning
 
+function Find-ConsoleKeybinding {
+    <#
+    .NOTES
+    see:
+        - help: about_ANSI_Terminals
+        - Set-PSReadlineKeyhandler
+        - [Microsoft.PowerShell.SetPSReadLineKeyHandlerCommand] | fime
+        #>
+    [Alias('FindKeybind')]
+    param(
+        [ArgumentCompletions(
+            "'search|history'", "'\+'"
+            "'^vi'", 'line', 'move', 'yank', 'space', 'enter', 'Ctrl|Shift|Alt'
+        )]
+        [string]$Regex )
+    Get-PSReadLineKeyHandler -Bound -Unbound | Where-Object {
+        $_.Function -Match $regex -or
+        $_.Description -match $regex -or
+        $_.Key -match $regex
+    }
+}
 
 # if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 # if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 i>
