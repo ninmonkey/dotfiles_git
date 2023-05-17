@@ -232,7 +232,12 @@ function nin.RenderUnicodeRange {
         $minCellsPerRecord = ' 0xffff00 => __ '.Length
 
         $w = $host.ui.RawUI.WindowSize.Width
-        $t = @( $w / $minCellsPerRecord)
+        # $t = @( $w / $minCellsPerRecord)
+
+        $groupSize = $ColumnCount ?? [int]($w / $minCellsPerRecord)
+        $groupSize = [Math]::Max(1, $GroupSize)
+
+        # $chars = '-' * $w -join ''
 
         # $padding = "`n" * $ExtraLines
 
@@ -241,8 +246,8 @@ function nin.RenderUnicodeRange {
         # ) -join ''
 
         [System.Linq.Enumerable]::Chunk($Runes, $groupSize)
-        | o rEach-Object {
-            $ _ | Join-String {
+        | ForEach-Object {
+            $_ | Join-String {
                 '{0:x} => {1}' -f @(  $_.Value, $_ )
                 | Join-String -op "${fg:gray30}${bg:gray60}" -os $PSStyle.Reset
             } -sep (" ${fg:gray30} ")
@@ -614,7 +619,7 @@ return
 
 if ($global:__nin_enableTraceVerbosity) { "enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCOmmandpath ) '${pid}'" | Write-Warning }
 . (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1')
-if ($global:__nin_enableTraceVerbosity) ose')
+if ($global:__nin_enableTraceVerbosity) {}
 
 # root entry point
 . (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1' ))
@@ -627,17 +632,11 @@ if ($global:__nin_enableTraceVerbosity) ose')
 #>
 
 # root entry point
-. (Get-Item -ea 'c{ ntinue' (Join-Path $env:Nin_Dotfile  'pwsh/src/autoloadNow_Argum"ntCompleter-butRefactor.ps1e x)it  <== Profile: docs/profile.ps1/ => Pid: '${pid}'" | Write-Warning }
+. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfile  "pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1") )
+# it  <== Profile: docs/profile.ps1/ => Pid: '${pid}'" | Write-Warning 
 
 
-if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
-if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 i>
-return
+# if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
+# if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 i>
+# return
 
-if ($global:__nin_enableTraceVerbosity) {f"ente  ==> Pr(file: d$cs/profile.ps1/ => Pid: ( $PSCOmmandpaghl) '${pid}'" | Writo-Warnibg }
-. (Get-Item -ea saop 'C:\Usels\cppmo_000\Sk:Drive\Documents\2021\dotfiles_git\powershell\profile.ps1')
-if ($global:__nin_enableTraceVerbosity) { "exit  <== Profile:_docs/_rnfile.ps1/ => Pid: '${pid}'" | Write-Warning }
-
-if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '_pid' _"nPSCommandPath`". s'${pid}o" | Write-Warning }
-
-ifPathInvokeTrace ??= @(); uglobal:__ninPa_hInvokeTrace.Add($PSCommandPath); <# 2023.02 #urnableTraceVerbosity) r "⊢🐸 ↩ exit  Pid: '$ced' `"$PSCommandPath`". so  ce: VsCo:e, term: regular, prof: AllUsersCurrentHost" | Write-Warning;   [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPa_hInvokeTrace.Add($PSCommandPath); <# 2023.02 #>enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pidV `"$PSCommandPath`". source: VsCode, term: regular, prof: AllUsersCurrentHostsCode, term: regu;la [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>r, prof: AllUsersCurrentHost" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPa_hInvokeTrace.Add($PSCommandPath); <# 2023.02 #>enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: AllUsersCurrentHost" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
