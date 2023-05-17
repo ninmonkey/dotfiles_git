@@ -2339,5 +2339,45 @@ function prof.Io2 {
 . (Get-Item -ea 'continue' ('H:\data\2023\dotfiles.2023\pwsh\src\Exported-Show-ErrorRecord.ps1') )
 # . (Get-Item -ea 'stop' ('./Exported-Show-ErrorRecord.ps1') )
 
+function Grid {
+
+    <#
+    .SYNOPSIS
+    all the docs were in the other place
+
+    .EXAMPLE
+        0..50 | Grid -Count 10 -PadLeft 5
+        0..50 | Grid -Count 10 -PadLeft 1
+        0..50 | Grid -Auto -Count 3
+    #>
+    [Alias('Nancy.OutGrid')]
+    param(
+        [int]$Count = 8,
+        [int]$PadLeft,
+        [switch]$Auto
+    )
+    $all_items = $Input
+    if ($Auto) {
+        $w = $host.ui.RawUI.WindowSize.Width
+        $perCell = $PadLeft -gt 0 ? $PadLeft : 6
+        [int]$numItems = $w / $perCell # auto floors ?
+        #             $perCell = $w / ( $PadLeft ?? 6 )
+        $Count = $numItems
+    }
+
+    $all_items | Ninmonkey.Console\Iter->ByCount -Count $Count | % {
+        $_
+        | Join-String -sep ', ' {
+            if (-not $PadLeft) { return $_ }
+            return $_.ToString().PadLeft( $PadLeft, ' ' )
+
+        }
+        # | Join-String -sep '' { $Template.Hex -f $_ }
+        | Format-Predent -PassThru -TabWidth 4
+    } | Join-String -sep ''
+}
+
+
+
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 

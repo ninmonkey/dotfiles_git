@@ -233,7 +233,6 @@ function nin.RenderUnicodeRange {
 
         $w = $host.ui.RawUI.WindowSize.Width
         # $t = @( $w / $minCellsPerRecord)
-
         $groupSize = $ColumnCount ?? [int]($w / $minCellsPerRecord)
         $groupSize = [Math]::Max(1, $GroupSize)
 
@@ -253,7 +252,7 @@ function nin.RenderUnicodeRange {
             } -sep (" ${fg:gray30} ")
         }
         $Runes.Count | Join-String -f 'total runes: {0}' | Write-Information -Infa 'Continue'
-    
+
 
     }
 }
@@ -632,8 +631,8 @@ if ($global:__nin_enableTraceVerbosity) {}
 #>
 
 # root entry point
-. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfile  "pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1") )
-# it  <== Profile: docs/profile.ps1/ => Pid: '${pid}'" | Write-Warning 
+. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfile 'pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1') )
+# it  <== Profile: docs/profile.ps1/ => Pid: '${pid}'" | Write-Warning
 
 
 # if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
