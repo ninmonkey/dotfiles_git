@@ -28,6 +28,8 @@ Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 Import-Module 'ugit'
 
 
+## refactor, move to Nancy 2023-05-15
+
 # ## temp include, to move gitlogger to psmodulepath instead
 # if ('quick hack, move gitlogger to path PSModules instead') {
 #     $wherePath = 'H:\data\2023\pwsh'
