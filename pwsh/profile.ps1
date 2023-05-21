@@ -314,9 +314,9 @@ function Test-AnyTrueItems {
 # $env:EDITOR = 'nvim'
 
 $OutputEncoding =
-[Console]::OutputEncoding =
-[Console]::InputEncoding =
-[System.Text.UTF8Encoding]::new()
+    [Console]::OutputEncoding =
+        [Console]::InputEncoding =
+            [System.Text.UTF8Encoding]::new()
 
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
@@ -326,6 +326,8 @@ $Env:PSModulePath = @(
 ) | Join-String -sep ';'
 
 Import-Module 'Ninmonkey.Console' -PassThru
+    | Join-String { $_.Name, $_.Version -join ' = '} 
+    | New-Text -fg 'gray30' -bg 'gray10' | Join-String
 
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.__init__' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
@@ -883,7 +885,8 @@ function Find-ConsoleKeybinding {
     }
 }
 
-nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/PsModules/TypeWriter/Output'
+nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/PsModules/TypeWriter/Output' -AddToFront
+$Env:PSModulePath = nin.PSModulePath.Clean -PassThru
 
 Import-Module TypeWriter -PassThru -ea 'continue'
 # H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter
