@@ -687,168 +687,36 @@ function aws.abbrKeyName {
 }
 
 
-# $_cmds = Get-Command -m AwsLambdaPSCore
-# nin.Help.Command.OutMarkdown -Debug -verbose -inputobject $_cmds
-function nin.PSModulePath.Clean {
-    <#
-    .SYNOPSIS
-        -1] remove invalid paths
-        -2] remove duplicate paths, preserving sort order
-        -3] remove any all-whitespace values
-        -4] remove obsolete import path from 2021
-    .EXAMPLE
-        nin.CleanPSModulePath
-    #>
-    [CmdletBinding()]
-    param(
-        # return the new value
-        [switch]$PassThru
+if ($true -or 'not anymore' ) {
+
+    nin.PSModulePath.Clean
+    # nin.PSModulePath.AddNamed -GroupName AWS, JumpCloud   -verbose -debug
+    nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
+        'E:/PSModulePath.2023.root\Main'
+        'H:/data/2023/pwsh/PsModules/ExcelAnt/Output'
+        'H:/data/2023/pwsh/PsModules/TypeWriter/Build'
+        'H:/data/2023/pwsh/PsModules'
     )
 
-    Write-Warning "todo: ensure duplicates are removed: $PSCOmmandPath"
 
-    $records = $Env:PSMODulePath -split ([IO.Path]::PathSeparator)
-    | Where-Object { $_ } # drop false and empty strings
-    | Where-Object { -not [String]::IsNullOrWhiteSpace( $_ ) } # drop blank
-
-    $records | Join-String -op "initial: `n" -FormatString "`n- {0}" | Write-Debug
-    # $records | Join-String -op "`n- " -sep "`n- " -DoubleQuote | write-verbose
-    # $records | Join-String -op 'Was:' | Write-Debug
-
-    $records = $records
-    | Where-Object { $_ -notmatch ([Regex]::Escape('C:\Users\cppmo_000\SkyDrive\Documents\2021')) }
-
-    $records | Join-String -op "initial: `n" -FormatString "`n- {0}" | Write-Debug
-
-    $finalPath = $records | Join-String -sep ([IO.Path]::PathSeparator)
-
-    $finalPath | Join-String -op 'finalPath = ' | Write-Verbose
-    if ($PassThru) {
-        return $finalPath
-    }
-}
-
-function nin.PSModulePath.Add {
-    [CmdletBinding()]
-    param(
-        [ArgumentCompletions('E:\PSModulePath.2023.root')]
-        [Parameter(Mandatory, Position = 0)]
-        [string[]]$LiteralPath,
-        [switch]$RequireExist,
-
-        # prefix rather than add to end?
-        [Alias('ToFront')]
-        [switch]$AddToFront
-        # [string[]]$GroupName
+    nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
+        'C:/Users/cppmo_000/SkyDrive/Documents/2022/client_BDG/self/bdg_lib'
+        'C:/Users/cppmo_000/SkyDrive/Documents/2021/powershell/My_Github'
     )
+    # 'E:\PSModulePath_base\all'
+    # 'E:\PSModulePath_2022'
 
-    $Env:PSModulePath -split ([IO.Path]::PathSeparator) | Join-String -op "`n- " -sep "`n- " -DoubleQuote
-    | Join-String -op 'start: ' | Write-Debug
+    #$Env:PSModulePath -join ([IO.Path]::PathSeparator), (gi 'E:\PSModulePath.2023.root\JumpCloud')
+    # nin.AddPSModulePath Main -Verbose -Debug
+    # nin.Ass
 
-    Write-Warning 'todo: ensure duplicates are removed'
-
-    foreach ($curPath in $LiteralPath) {
-        $Item = $curPath
-        if ($RequireExists) {
-            $Item = Get-Item -ea stop $curPath
-        }
-        $records = $Env:PSModulePath -split ([IO.Path]::PathSeparator)
-        if ($records -contains $Item) { continue }
-
-        Join-String -inp $Item -FormatString 'Adding Path: <{0}>' | Write-Verbose
-
-        if ($AddToFront) {
-            $Env:PSModulePath = @(
-                $Item
-                $Env:PSModulePath
-            ) | Join-String -sep ([IO.Path]::PathSeparator)
-        }
-        else {
-            $Env:PSModulePath = @(
-                $Env:PSModulePath
-                $Item
-            ) | Join-String -sep ([IO.Path]::PathSeparator)
-        }
-
-        # Join-String -inp $Item 'adding: "{0}" to $PSModulePath'
-
-    }
-    $Env:PSModulePath -split ([IO.Path]::PathSeparator) | Join-String -op "`n- " -sep "`n- " -DoubleQuote
-    | Join-String -op 'end  : ' | Write-Debug
+    # # include some dev psmodule paths
+    # $Env:PSModulePath = @(
+    #     $Env:PSModulePath
+    #     'E:\PSModulePath.2023.root\Main'
+    #     'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
+    # ) -join ([IO.Path]::PathSeparator)
 }
-function nin.PSModulePath.AddNamedGroup {
-    <#
-    .synopsis
-        either add a group of custom PSModulePaths by GrupName else full name
-    .example
-        nin.PSModulePath.AddNamedGroup -GroupName AWS, JumpCloud   -verbose -debug4
-    .example
-
-    .example
-        nin.PSModulePath.Clean
-        nin.PSModulePath.AddNamedGroup -GroupName AWS, JumpCloud   -verbose -debug
-        nin.PSModulePath.Add -verbose -debug -RequireExist -LiteralPath @(
-            'E:\PSModulePath.2023.root\Main'
-            'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
-        )
-    #>
-    [CmdletBinding(DefaultParameterSetName = 'GroupName')]
-    param(
-        [ArgumentCompletions('AWS', 'Disabled', 'JumpCloud', 'Main')]
-        [Parameter(Mandatory, Position = 0, ParameterSetName = 'GroupName')]
-        [string[]]$GroupName,
-
-        [Alias('PSPath', 'Path', 'Name')]
-        [Parameter(Mandatory, ParameterSetName = 'LiteralPath', ValueFromPipelineByPropertyName)]
-        $LiteralPath
-    )
-    $Env:PSModulePath -split ([IO.Path]::PathSeparator) | Join-String -op "`n- " -sep "`n- " -DoubleQuote
-    | Join-String -op 'Was:' | Write-Debug
-
-    switch ( $PSCmdlet.ParameterSetName ) {
-        'GroupName' {
-            foreach ($item in $GroupName) {
-                $mappedGroupPath = Join-Path 'E:\PSModulePath.2023.root' $Item
-                nin.PSModulePath.Add -LiteralPath $mappedGroupPath -RequireExist -verbose -debug
-            }
-            continue
-        }
-
-        'LiteralPath' {
-            nin.PSModulePath.Add -LiteralPath $LiteralPath -RequireExist -verbose -debug
-            continue
-        }
-        default { throw "UnhandledSwitch ParameterSetItem: $Switch" }
-    }
-}
-
-nin.PSModulePath.Clean
-# nin.PSModulePath.AddNamed -GroupName AWS, JumpCloud   -verbose -debug
-nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
-    'E:/PSModulePath.2023.root\Main'
-    'H:/data/2023/pwsh/PsModules/ExcelAnt/Output'
-    'H:/data/2023/pwsh/PsModules/TypeWriter/Build'
-    'H:/data/2023/pwsh/PsModules'
-)
-
-
-nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
-    'C:/Users/cppmo_000/SkyDrive/Documents/2022/client_BDG/self/bdg_lib'
-    'C:/Users/cppmo_000/SkyDrive/Documents/2021/powershell/My_Github'
-)
-# 'E:\PSModulePath_base\all'
-# 'E:\PSModulePath_2022'
-
-#$Env:PSModulePath -join ([IO.Path]::PathSeparator), (gi 'E:\PSModulePath.2023.root\JumpCloud')
-# nin.AddPSModulePath Main -Verbose -Debug
-# nin.Ass
-
-# # include some dev psmodule paths
-# $Env:PSModulePath = @(
-#     $Env:PSModulePath
-#     'E:\PSModulePath.2023.root\Main'
-#     'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
-# ) -join ([IO.Path]::PathSeparator)
 
 function Help.Example {
     <#
@@ -952,6 +820,7 @@ function Regex.SplitOn {
     .SYNOPSIS
         making -split easier to use in the pipeline
     #>
+    [Alias('.Split.SplitOn.fromDotfile')]
     [CmdletBinding()]
     param(
         [ArgumentCompletions("'\r?\n'")]
@@ -970,6 +839,7 @@ function Regex.ReplaceOn {
     .EXAMPLE
         'afds' | Regex.ReplaceOn -Regex 'fd' -ReplaceWith { "${fg:#70788b}", $_, "${fg:clear}" -join "" }
     #>
+    [Alias('.Replace.fromDotfile')]
     [CmdletBinding()]
     param(
         [ArgumentCompletions("'\r?\n'")]
@@ -998,6 +868,7 @@ function Regex.JoinOn {
         making -Join easier to use in the pipeline
 
     #>
+    [Alias('.Join.fromDotfile')]
     [CmdletBinding()]
     param(
 

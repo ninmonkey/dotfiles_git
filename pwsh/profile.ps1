@@ -8,12 +8,237 @@ $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 $env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is missing
 Set-Alias 'Tree' 'PSTree\Get-PSTree' -ea 'Ignore'
 
+$ExecutionContext.InvokeCommand.GetCommand('TabExpansion2', 'All')
+
+$setAliasSplat = @{
+    Scope       = 'global'
+    Name        = 'TabExpansion2_Original'
+    Value       = $ExecutionContext.InvokeCommand.GetCommand(
+        'TabExpansion2', 'Function'
+    )
+    Description = 'Test out the vanilla completion'
+}
+Set-Alias @setAliasSplat
+
+
+
+
+function .Assert.Clamp {
+    <#
+    .SYNOPSIS
+        maybe monkey business?
+    .link
+        .Assert.Clamp
+        .fmt.Clamp
+        .Where.Clamp
+    #>
+
+    param(
+        # converts to non terminating, silent errors
+        [Alias('Silent')]
+        [switch]$NullOnError
+
+    )
+    throw 'WIP: Assert returns bool'
+}
+function .fmt.Clamp {
+    <#
+    .SYNOPSIS
+        Clamp something with a range, with specific data type as one invoke
+    .EXAMPLE
+        PS> 40..300 | .fmt.Clamp 20 130 | Grid
+    .EXAMPLE
+        # 30.94 | .fmt.Clamp -min 20 -max 40 -Verbose
+        0..40 | .fmt.Clamp.Int -MinValue 10 -MaxValue 30 -OutputFormat Int
+        | Grid
+
+            10, 10, 10, 10, 10, 10, 10, 10
+            10, 10, 10, 11, 12, 13, 14, 15
+            16, 17, 18, 19, 20, 21, 22, 23
+            24, 25, 26, 27, 28, 29, 30, 30
+            30, 30, 30, 30, 30, 30, 30, 30
+            30
+    .EXAMPLE
+        PS> 30.999 | .fmt.Clamp -min 20 -max 40 -Verbose -As ([Int16])
+
+        PS> 1 | .fmt.Clamp -min 10 -MaxValue 400 -Verbose -As Double
+            VERBOSE: [Double], [Int32], [Double], [Int32], [Double]
+
+        PS> 30.999 | .fmt.Clamp -min 20 -max 40 -Verbose -As ([Int16])
+            VERBOSE: coerceTo type: short
+            VERBOSE: [Int16], [Int32], [Int16], [Int32], [Int16]
+31
+10
+    .link
+        .Assert.Clamp
+        .fmt.Clamp
+        .Where.Clamp
+
+        [Math]::MaxMagnitude
+        [Math]::MinMagnitude
+        [Math]::Min
+        [Math]::Max
+        [Math]::Clamp
+    #>
+    [CmdletBinding()]
+    [Alias(
+        '.fmt.Clamp.Int', # future: invoke name sets type constraint
+        '.fmt.Clamp.Double'
+    )]
+    [OutputType( [int], [double] )]
+    param(
+        [Alias('Min')]
+        [Parameter(Mandatory, Position = 0)]
+        $MinValue,
+        [Alias('Max')]
+        [Parameter(Mandatory, Position = 1)]
+        $MaxValue,
+
+        [Parameter(ValueFromPipeline)]
+        [object]$InputObject,
+
+        [Parameter()]
+        [Alias('As')]
+        [ArgumentCompletions(
+            'Int', 'Double', 'Auto'
+        )]
+        [string]$OutputFormat,
+
+        [Alias('Silent')]
+        [string]$ErrorsAsNull
+
+    )
+    begin {
+        if ($MaxValue -lt $MinValue) {
+            'MaxValueIsLessThanMinException: ', $MinValue, $MaxValue -join ', ' | Write-Error
+            return
+        }
+    }
+    process {
+        if ($ErrorsAsNull) {
+            throw 'WIP: next: auto coerce out of bounds, etc. to nulls, or nothing'
+        }
+        # if ($true -or $MaxValue -lt $MinValue) { throw 'MaxValueIsLessThanMinException' }
+        if ( [String]::IsNullOrWhiteSpace( $OutputFormat ) ) {
+            $OutputFormat = 'Auto'
+        }
+        foreach ($num in $InputObject) {
+
+
+
+            switch ($OutputFormat) {
+                { $_ -in @('Int', 'Double') } {
+                    $coercedMin = $MinValue -as $OutputFormat
+                    $coercedMax = $MaxValue -as $OutputFormat
+                    $result = [Math]::Clamp( $num, $coercedMin, $coercedMax)
+                    $result = $result -as $OutputFormat
+                    break
+                }
+                'Auto' {
+                    # ie: implicit
+                    $coercedMin = $MinValue
+                    $coercedMax = $MaxValue
+                    $result = [Math]::Clamp( $num, $coercedMin, $coercedMax)
+                    $result = $result # -as $OutputFormat
+                    break
+                }
+                default {
+                    # also coerce return type
+                    'coerceTo type: {0}' -f @( $OutputFormat) | Write-Verbose
+                    try {
+                        $coercedMin = $MinValue -as $OutputFormat
+                        $coercedMax = $MaxValue -as $OutputFormat
+                        $result = [Math]::Clamp( $num, $coercedMin, $coercedMax)
+                        $result = $result -as $OutputFormat
+                    }
+                    catch {
+                        'CoerceTypeFailed: object -as [ {0} ]' -f $OutputFormat | Write-Warning
+                        throw $_
+                    }
+                } #throw "UnhandledOutputFormatException: $OutputFormat"}
+            }
+            # $lower = [Math]::Max( $MinValue, $Num )
+            # $upper = [Math]::Min( $MaxValue, $Num )
+            # .fmt.Clamp.Int -MinValue $MinValue -MaxValue $MaxValue
+
+            $result, $MinValue, $coercedMin, $MaxValue, $coercedMax #|  .GetType().Name
+            | Join-String -sep ', ' -prop { Format-ShortTypeName -InputObject $_ }
+            | Write-Verbose
+            $result
+        }
+    }
+}
+
+
+function Where-FilterByClamp {
+    <#
+    .SYNOPSI
+        like .fmt.Clamp , except used as a filter verb instead of formatting
+    .EXAMPLE
+        0, 4, 10 | .Where.Clamp 3 11 | Should -beExactly @(4, 10)
+    .link
+        .Assert.Clamp
+        .fmt.Clamp
+        .Where.Clamp
+    #>
+    [Alias(
+        '.Where.WithinCamp',
+        '.Where.Clamp', '.FilterBy.Clamp')]
+    param(
+        [Alias('Min')]
+        [Parameter(Mandatory, Position = 0)]
+        $MinValue,
+        [Alias('Max')]
+        [Parameter(Mandatory, Position = 1)]
+        $MaxValue,
+
+        [Parameter(ValueFromPipeline)]
+        [object]$InputObject,
+
+        [Parameter(Position = 2)]
+        #[NinPropertyNameOrExpression( arg = 'stuff' )] # coerces into a value automatically
+        [object]$PropertyNameOrExpression
+    )
+
+    process {
+        # [Parameter()]
+        # [Alias('As')]
+        # [ArgumentCompletions(
+        #     'Int', 'Double', 'Auto'
+        # )]
+        # [string]$OutputFormat
+
+        if (-not $PSBoundParameters.ContainsKey('PropertyNameOrExpression')) {
+            #none, so use no property
+            $valueToTest = $InputObject
+        }
+        else {
+            if ($PropertyNameOrExpression -is 'ScriptBlock') {
+                throw 'NYI: Next coerce script block to a value, as a argumentransformation'
+            }
+            $valueToTest = $InputObject.Psobject.Properties[$PropertyNameOrExpression ].Value
+        }
+        throw 'verify this logic, was on a tangent.'
+        $targetValue = .fmt.Clamp -min $MinValue -max $MaxValue -InputObject $InputObject
+        $value = .Assert.Clamp -min $MinValue -max $MaxValue -NullOnError
+
+        $maybeValue = $InputObject.Psobject.Properties
+    }
+
+
+
+    # [CmdletBinding()]
+    # $Input | ? { }
+}
+
 # always prefer dev version
 # remove-module pipescript
-$Env:PSModulePath = @(
-    Get-Item -ea 'continue' -Path 'H:/data/2023/pwsh/my🍴'
-    $Env:PSModulePath
-) | Join-String -sep ';'
+# $Env:PSModulePath = @(
+#     Get-Item -ea 'continue' -Path 'H:/data/2023/pwsh/my🍴'
+#     $Env:PSModulePath
+# ) | Join-String -sep ';'
+
+# Impo Ninmonkey.Console -PassThru
 
 
 function Nancy.Write.InfoStream.AsTable {
@@ -99,6 +324,8 @@ $Env:PSModulePath = @(
     # 'H:/data/2023/pwsh/GitLogger'
     $Env:PSModulePath
 ) | Join-String -sep ';'
+
+Import-Module 'Ninmonkey.Console' -PassThru
 
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.__init__' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
@@ -656,7 +883,16 @@ function Find-ConsoleKeybinding {
     }
 }
 
+nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/PsModules/TypeWriter/Output'
+
+Import-Module TypeWriter -PassThru -ea 'continue'
+# H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter
+# write-verbose 'Temp: manual import of type writer path'
+
 # if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 # if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 i>
 # return
 
+
+
+nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/my🍴'

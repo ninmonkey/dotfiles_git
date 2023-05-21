@@ -54,7 +54,8 @@ function nb.renderHash {
         nb.renderHash $yak -IgnoreNested
     #>
     [CmdletBinding()]
-    [Alias('prof.nb.renderHash')]
+    [Alias('prof.nb.renderHash', 'Nancy.Render.Hashtable',
+        'toRefactor.Nancy.Render.Hashtable')]
     param(
         $InputObject, # dictionary/hash/peypairs type,
         [switch]$IgnoreNested
@@ -62,16 +63,16 @@ function nb.renderHash {
 
     $Longest = $InputObject.Keys.Length | Measure-Object -Maximum | % Maximum
     $template = @{}
-    $template.BeforePadding ='{{0,{0}}} : {{1}}'
+    $template.BeforePadding = '{{0,{0}}} : {{1}}'
     $template.PadRight = $template -f @( $Longest )
 
     $InputObject.GetEnumerator()
     | Join-String {
         [bool]$isNested = $_.Value.values.count -gt 0
-        if($isNested -and $IgnoreNested) {
+        if ($isNested -and $IgnoreNested) {
             return
         }
-        $template.BeforePadding -f  $Longest -f @(
+        $template.BeforePadding -f $Longest -f @(
             $_.Key
             $_.Value
         )
@@ -88,9 +89,12 @@ function nb.where-ValuesAreNotNestedHash {
     #>
     param( [switch]$OnlyNested )
 
-    if($OnlyNested) {
-       $input | ?{ $_.Value.values.count -gt 0 }
-    } else {
-       $input | ?{ $_.Value.values.count -le 0 }
+    if ($OnlyNested) {
+        $input | ? { $_.Value.values.count -gt 0 }
+    }
+    else {
+        $input | ? { $_.Value.values.count -le 0 }
     }
 }
+
+Import-Module Ninmonkey.Console
