@@ -329,6 +329,10 @@ Import-Module 'Ninmonkey.Console' -PassThru
     | Join-String { $_.Name, $_.Version -join ' = '} 
     | New-Text -fg 'gray30' -bg 'gray10' | Join-String
 
+Import-Module H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter -Force -PassThru -DisableNameChecking -wa Ignore
+  | Join-String { $_.Name, $_.Version -join ': ' } -f "{0}" -sep ', '
+  | New-Text -bg 'gray15' -fg 'gray40' | Join-String
+
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.__init__' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
 
