@@ -93,6 +93,70 @@ function Dotils.String.Transform.AlignRight {
 }
 
 
+function Dotils.Stdout.CollectUntil.Match {
+#  Dotils.Stdout.CollectUntil.Match #  PipeUntil.Match
+    <#
+    .synopsis
+    asfdsf
+    .notes
+
+warning need naming clarification.
+
+wait until a pattern is found in the input stream.
+
+collect until : match found
+Get?Until -match $regex -then quit
+    or -then become silent pass through ?
+    out: a..f
+
+
+or
+    Collect|Capture|ProcUntil
+    param:
+
+        -ProcessUntil RegexMatch 'gateway' # ie: Ignores, but allows rest to continue
+
+    #>
+    [Alias(
+        # 'Dotils.Stdout.WatchUntil.Match',
+        'PipeUntil.Match'
+    )]
+    param(
+        # Should it continue to output all text while waiting?
+        # like set-content -passthru
+        [AllowEmptyString()]
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [Alias('InputText', 'Text', 'Content')]
+        [object[]]$InputObject,
+
+        [Parameter(Mandatory, Position = 0)]
+        [Alias('Regex' , 'Re')]
+        [string]$Pattern,
+
+        [Alias('Kwargs')][hashtable]$Options
+    )
+    begin {
+        $HasFoundPattern = $false
+
+    }
+    process {
+        if ($HasFoundPattern) { return }
+
+        Foreach ($item in $InputObject) {
+            if ($HasFoundPattern) { return }
+            if ($Item -match $Pattern) {
+                $HasFoundPattern = $true
+                return
+            }
+            $Item
+        }
+    }
+    end {
+
+    }
+}
 
 function Dotils.JoinString.As {
     <#
@@ -744,8 +808,10 @@ $exportModuleMemberSplat = @{
         'Dotils.Join.CmdPrefix'
         ## --
         'Dotils.Html.Table.FromHashtable' # 'Marking.Html.Table.From.Hashtable'
- | Sort-Object -Unique
+        ## until
+        'Dotils.Stdout.CollectUntil.Match' # 'PipeUntil.Match' #
     )
+    | Sort-Object -Unique
     Alias    = @(
         'Join.As' # 'Dotils.JoinString.As'
         'CompareCompletions' # 'Dotils.CompareCompletions'
@@ -763,6 +829,9 @@ $exportModuleMemberSplat = @{
         'String.Transform.AlignRight' # 'S
         ## --
         'Marking.Html.Table.From.Hashtable' # 'Dotils.Html.Table.FromHashtable'
+
+
+        'PipeUntil.Match' # Dotils.Stdout.CollectUntil.Match
     ) | Sort-Object -Unique
 }
 Export-ModuleMember @exportModuleMemberSplat
