@@ -2,13 +2,14 @@ $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 
+# required or else it breaks piping 'fd | fzf --preview bat'
+$PSNativeCommandArgumentPassing = [System.Management.Automation.NativeArgumentPassingStyle]::Legacy
+
 # edit: 2023-05-02
 
 # move-to-shared
 $env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is missing
 Set-Alias 'Tree' 'PSTree\Get-PSTree' -ea 'Ignore'
-
-$ExecutionContext.InvokeCommand.GetCommand('TabExpansion2', 'All')
 
 $setAliasSplat = @{
     Scope       = 'global'
@@ -320,18 +321,21 @@ $OutputEncoding =
 
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
+    'H:/data/2023/dotfiles.2023/pwsh/dots_psmodules'
     # 'H:\data\2023\pwsh\PsModules\Ninmonkey.Console\zeroDepend_autoloader\logging.Write-NinLogRecord.ps1'
     # 'H:/data/2023/pwsh/GitLogger'
     $Env:PSModulePath
 ) | Join-String -sep ';'
 
 Import-Module 'Ninmonkey.Console' -PassThru
-    | Join-String { $_.Name, $_.Version -join ' = '} 
+    | Join-String { $_.Name, $_.Version -join ' = '}
     | New-Text -fg 'gray30' -bg 'gray10' | Join-String
 
+if($false) {
 Import-Module H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter -Force -PassThru -DisableNameChecking -wa Ignore
   | Join-String { $_.Name, $_.Version -join ': ' } -f "{0}" -sep ', '
   | New-Text -bg 'gray15' -fg 'gray40' | Join-String
+}
 
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.__init__' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
@@ -888,9 +892,12 @@ function Find-ConsoleKeybinding {
         $_.Key -match $regex
     }
 }
+New-Alias 'Write-Host.Original' -value 'Microsoft.Powershell.Utility\write-host' -Description 'sugar to not un-import modules to test the raw basic one' -ea 'ignore'
 
 nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/PsModules/TypeWriter/Output' -AddToFront
-$Env:PSModulePath = nin.PSModulePath.Clean -PassThru
+nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/my🍴'
+nin.PSModulePath.Clean -Write
+# $Env:PSModulePath = nin.PSModulePath.Clean -Write -PassThru
 
 Import-Module TypeWriter -PassThru -ea 'continue'
 # H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter
@@ -902,4 +909,3 @@ Import-Module TypeWriter -PassThru -ea 'continue'
 
 
 
-nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/my🍴'
