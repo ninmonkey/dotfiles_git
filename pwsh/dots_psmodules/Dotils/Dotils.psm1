@@ -99,22 +99,30 @@ function Dotils.Stdout.CollectUntil.Match {
     .synopsis
     asfdsf
     .notes
+    warning need naming clarification.
 
-warning need naming clarification.
+                wait until a pattern is found in the input stream.
 
-wait until a pattern is found in the input stream.
-
-collect until : match found
-Get?Until -match $regex -then quit
-    or -then become silent pass through ?
-    out: a..f
+                collect until : match found
+                Get?Until -match $regex -then quit
+                    or -then become silent pass through ?
+                    out: a..f
 
 
-or
-    Collect|Capture|ProcUntil
-    param:
-
+                or
+                    Collect|Capture|ProcUntil
+                    param:
+    future:
         -ProcessUntil RegexMatch 'gateway' # ie: Ignores, but allows rest to continue
+        - allow context, so last match plus N lines
+    .EXAMPLE
+        ipconfig /all
+        | Dotils.Stdout.CollectUntil.Match 'gate'
+        | CountOf
+
+        ipconfig /all
+        | Dotils.Stdout.CollectUntil.Match 'gate' -WithoutIncludingFinalMatch
+        | CountOf
 
     #>
     [Alias(
@@ -135,10 +143,17 @@ or
         [Alias('Regex' , 'Re')]
         [string]$Pattern,
 
+        # allow context, so last match plus result plus +N lines before or after or both
+        [int]$Context, # default to 0 or null?  = 0,
+
+
+        # should the match be part of the result set?
+        [switch]$WithoutIncludingFinalMatch,
         [Alias('Kwargs')][hashtable]$Options
     )
     begin {
         $HasFoundPattern = $false
+        if($Context) { throw "NotYetImplementedException: flags like grep. -Context/-Before/-After:"}
 
     }
     process {
@@ -148,7 +163,7 @@ or
             if ($HasFoundPattern) { return }
             if ($Item -match $Pattern) {
                 $HasFoundPattern = $true
-                return
+                if( $WithoutIncludingFinalMatch ) { return }
             }
             $Item
         }
