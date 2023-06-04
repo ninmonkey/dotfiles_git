@@ -954,41 +954,7 @@ function Dotils.SelectBy-Module {
             'AppBackgroundTask',
             'Appx',
             'AssignedAccess',
-            # 'AWS.Tools.ApplicationInsights',
-            # 'AWS.Tools.AutoScaling',
-            # 'AWS.Tools.ChimeSDKIdentity',
-            # 'AWS.Tools.CloudFormation',
-            # 'AWS.Tools.CloudWatch',
-            # 'AWS.Tools.CloudWatchLogs',
-            # 'AWS.Tools.CodeDeploy',
-            # 'AWS.Tools.Common',
-            # 'AWS.Tools.ConnectParticipant',
-            # 'AWS.Tools.DynamoDBv2',
-            # 'AWS.Tools.EC2',
-            # 'AWS.Tools.ECR',
-            # 'AWS.Tools.ECS',
-            # 'AWS.Tools.ElasticLoadBalancing',
-            # 'AWS.Tools.ElasticLoadBalancingV2',
-            # 'AWS.Tools.IdentityManagement',
-            # 'AWS.Tools.IdentityStore',
-            # 'AWS.Tools.Installer',
-            # 'AWS.Tools.KeyManagementService',
-            # 'AWS.Tools.Lambda',
-            # 'AWS.Tools.Organizations',
-            # 'AWS.Tools.Polly',
-            # 'AWS.Tools.RDS',
-            # 'AWS.Tools.ResourceGroups',
-            # 'AWS.Tools.Route53',
-            # 'AWS.Tools.S3',
-            # 'AWS.Tools.SecretsManager',
-            # 'AWS.Tools.SecurityToken',
-            # 'AWS.Tools.SimpleEmail',
-            # 'AWS.Tools.SimpleEmailV2',
-            # 'AWS.Tools.SimpleNotificationService',
-            # 'AWS.Tools.SimpleSystemsManagement',
-            # 'AWS.Tools.SQS',
-            # 'AWS.Tools.SSOAdmin',
-            # 'AWSLambdaPSCore',
+            # 'AWS.Tools.ApplicationInsights', # 'AWS.Tools.AutoScaling', # 'AWS.Tools.ChimeSDKIdentity', # 'AWS.Tools.CloudFormation', # 'AWS.Tools.CloudWatch', # 'AWS.Tools.CloudWatchLogs', # 'AWS.Tools.CodeDeploy', # 'AWS.Tools.Common', # 'AWS.Tools.ConnectParticipant', # 'AWS.Tools.DynamoDBv2', # 'AWS.Tools.EC2', # 'AWS.Tools.ECR', # 'AWS.Tools.ECS', # 'AWS.Tools.ElasticLoadBalancing', # 'AWS.Tools.ElasticLoadBalancingV2', # 'AWS.Tools.IdentityManagement', # 'AWS.Tools.IdentityStore', # 'AWS.Tools.Installer', # 'AWS.Tools.KeyManagementService', # 'AWS.Tools.Lambda', # 'AWS.Tools.Organizations', # 'AWS.Tools.Polly', # 'AWS.Tools.RDS', # 'AWS.Tools.ResourceGroups', # 'AWS.Tools.Route53', # 'AWS.Tools.S3', # 'AWS.Tools.SecretsManager', # 'AWS.Tools.SecurityToken', # 'AWS.Tools.SimpleEmail', # 'AWS.Tools.SimpleEmailV2', # 'AWS.Tools.SimpleNotificationService', # 'AWS.Tools.SimpleSystemsManagement', # 'AWS.Tools.SQS', # 'AWS.Tools.SSOAdmin', # 'AWSLambdaPSCore',
             'Az',
             'Az.*',
             'BasicModuleTemplate',
@@ -1291,6 +1257,133 @@ function Dotils.Find-MyWorkspace {
 
 }
 
+
+function Dotils.InferCommandCategory {
+    # process commands, returns group names
+    [CmdletBinding()]
+    param(
+        [ValidateNotNull()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        write-warning '80% wip'
+    }
+    process {
+
+        # foreach($curCmd in $InputObject) {
+        $InputObject | %{
+
+            $curCmd = gcm -ea 'continue' $_
+            $baseName = $curCmd.Path | Get-Item | % BaseName
+
+            # could return multiple
+            [object[]]$kinds = switch -regex ($CurCmd.Base) {
+                '^([i]?py[w]?(thon)?.*)' {
+                    'Python'
+                }
+                '^pwsh|powershell' { 'PowerShell', 'cli' }
+                '^tsc?$' { 'TypeScript', 'Javascript', 'BuildTool', 'cli' }
+                '^code(-insiders)?' { 'VsCode' }
+                '^sql(.*)cmd'  { 'SQL', 'BuildTool'}
+                {
+                    $CurCmd.Path -match ('^' + [regex]::Escape('C:\Windows\system32'))
+                } { 'Windows' }
+                default {
+                    $_  | Join-String -f 'Dotils.Find-MyNativeCommandKind: UnhandledKind: {0}'
+                        | Write-error
+                        return 'None'
+                }
+            }
+            $kinds.count
+                | Join-String -f 'Kinds: {0}'
+                | Join-String -f "${fg:green}{0}${fg:clear}" -op $PSStyle.Reset
+                | Join-String -os $($Kinds -join ', ' )
+                | write-information -infa 'continue'
+
+            $kinds.count
+                | Join-String -op 'Kinds: {0}'
+                | Join-String -f "{0} = $($kinds -join ', ' )"
+                | Write-Verbose
+
+            $kinds -join ', '
+                | write-information
+
+            $kinds.count
+                | Join-String -op 'Kinds: {0}'
+                | Join-String -f "{0} = $($kinds -join ', ' )"
+                | Write-Verbose
+
+            $kinds -join ', '
+                | Write-verbose
+
+            return ,$kinds
+        }
+    }
+}
+
+function Dotils.Find-MyNativeCommandCategory {
+    # generates metadata on command, including GroupKind categories
+    [CmdletBinding()]
+    param(
+        [ValidateNotNull()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+
+    }
+    process {
+        $addMemberSplat = @{
+            PassThru    = $true
+            Force       = $true
+            ErrorAction = 'ignore'
+
+        }
+
+        foreach ($Item in $InputObject) {
+            $Item | Add-Member -PassThru -Force -ea 'ignore' -NotePropertyMembers @{
+                PSShortType = $Item | Format-ShortTypeName
+                Group     = $Item | Dotils.InferCommandCategory
+            }
+
+        }
+    }
+
+}
+
+function Dotils.Find-MyNativeCommand {
+    write-warning
+    @'
+FrontEnd for finding executables by categories
+
+reuse pattern from:
+    Find-MyWorkspace
+'@
+    $binList = Get-Command -CommandType Application -ea 'continue'
+    throw 'this will either be gcm but nicer, or it will also filter to the important modules'
+
+
+}
+function Dotils.Get-NativeCommand {
+    <#
+    .SYNOPSIS
+        Returns only Applications, or executables, excluding all commands and aliases
+    #>
+    # [Alias('')]
+    param(
+        [Alias('Path', 'LiteralPath')]
+        # future: customAttributes: Find-MyNativeCommand
+        [ArgumentCompletions(
+            '7z', '7za', '7zfm', '7zg', 'cargo-clippy', 'com.docker.cli', 'dmypy', 'dnSpy-x86', 'dnSpy', 'docker-compose-v1', 'docker-compose', 'docker-credential-desktop', 'docker-credential-ecr-login', 'docker-credential-wincred', 'docker-index', 'docker', 'dotnet-counters', 'dotnet-coverage', 'dotnet-dump', 'dotnet-gcdump', 'dotnet-ildasm', 'dotnet-lambda', 'dotnet-monitor', 'dotnet-repl', 'dotnet-stack', 'dotnet-suggest', 'dotnet-symbol', 'dotnet-trace', 'dotnet-try', 'dotnet', 'fd', 'Fiddler', 'http-server', 'http', 'httpie', 'https', 'ILSpy', 'ipython', 'ipython3', 'jupyter-run', 'jupyter', 'mpyq', 'mypy', 'powershell', 'putty', 'puttygen', 'pwsh', 'py', 'pygmentize', 'python3', 'pyw', 'Robocopy', 'Winobj', 'wt', 'xcopy'
+        )]
+        [Parameter(Mandatory)][string]$Name
+    )
+    $found = Get-Command -ea 'stop' -CommandType Application $Name | Select-Object -First 1
+    if (-not $Found) { throw "Did not match command: $Name" }
+    return $Found
+}
+
 function Dotils.Render.CallStack {
     <#
     .SYNOPSIS
@@ -1397,8 +1490,15 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+        #
+        'Dotils.InferCommandCategory'  # <none>
+        'Dotils.Find-MyNativeCommand' # <none>
+        # dups?
+        'Dotils.Find-MyNativeCommandKind'  # <none> but check it
+        'Dotils.Get-NativeCommand' # <none> but check it
+        #
+        #
         'Dotils.Find-MyWorkspace'  # Find-MyWorkspace
-
         'Dotils.SelectBy-Module' # 'SelectBy-Module', 'Dotils.SelectBy-Module', 'SelectBy-Module'
 
 

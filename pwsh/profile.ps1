@@ -319,6 +319,11 @@ $OutputEncoding =
         [Console]::InputEncoding =
             [System.Text.UTF8Encoding]::new()
 
+
+$env:LESS = '--quiet --raw-control-chars --quit-on-intr --ignore-case --prompt :' # from sci: <https://discord.com/channels/180528040881815552/575331370264428584/1112842371059687544>
+$env:LESSCHARSET = 'utf-8'
+
+
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
     'H:/data/2023/dotfiles.2023/pwsh/dots_psmodules'

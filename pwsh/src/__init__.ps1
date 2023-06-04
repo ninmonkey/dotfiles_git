@@ -868,7 +868,10 @@ function Regex.JoinOn {
         making -Join easier to use in the pipeline
 
     #>
-    [Alias('.Join.fromDotfile')]
+    [Alias(
+        '.Join.fromDotfile',
+        '.Join.Lines'
+    )]
     [CmdletBinding()]
     param(
 
@@ -880,7 +883,7 @@ function Regex.JoinOn {
             '"`n - "',
             '( hr 1 )'
         )]
-        [Parameter(Mandatory, position = 0)]$JoinText,
+        [Parameter(position = 0)]$JoinText,
 
         [Parameter(ValueFromPipeline)][string]$InputObject
     )
@@ -888,6 +891,11 @@ function Regex.JoinOn {
 
     }
     process {
+
+        if( $MyInvocation.MyCommand.Name -match '\.Join\.Lines'){
+            write-host 'yeah' -back red
+        }
+        if(-not $JoinText) { throw 'assert: no implicit default' }
         $InputObject -join $JoinText
 
     }
