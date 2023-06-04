@@ -1230,6 +1230,88 @@ GroupKindCompleter filters Get-Module, checking for any shared root directories
     }
 }
 
+function Dotils.Find-MyWorkspace {
+    <#
+    .SYNOPSIS
+        quick search of my recent files by category, similar to
+            ext:code-workspace dm:last2weeks
+    #>
+    [Alias(
+        'Find-MyWorkspace'
+    )]
+    [CmdletBinding()]
+    param(
+        [ArgumentCompletions(
+            '20minutes', '8hours', '1week', '3weeks', '1year'
+        )]
+        [string]$ChangedWithin = '1week'
+    )
+
+    if ($false -and 'maybe it is a different param name?') {
+        # [Collections.Generic.List[Object]]$BinArgs = @(
+        #     '-e', 'code-workspace'
+        #     # (gi -ea 'ignore' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\proto.nin')
+        #     # (gi -ea 'ignore' 'H:\data\2023\pwsh')
+        #     $explicitPaths = @(
+        #         'H:\data\2023'
+        #         'H:\data\2022'
+        #         'H:\data\client_bdg'
+        #         'C:\Users\cppmo_000\SkyDrive\Documents\2022'
+        #     )
+        #     $explicitPaths | Join-String -sep ', ' -SingleQuote -op '$ExplicitPaths: ' | Write-Verbose
+
+        #     foreach ($item in $ExplicitPaths) {
+        #         @('--search-path',
+        #         (Get-Item -ea 'stop' $Item)
+        #         )
+        #     }
+
+        # )
+
+        # [Collections.Generic.List[Object]]$Files = @(
+        #     & 'fd' @BinArgs | Get-Item
+        # ) | Sort-Object LastWriteTime -Descending
+        # $files
+    } else {
+        # [Collections.Generic.List[Object]]$BinArgs = @(
+        #     # '-e', 'code-workspace'
+        #     # # (gi -ea 'ignore' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\proto.nin')
+        #     # # (gi -ea 'ignore' 'H:\data\2023\pwsh')
+
+
+        # )
+
+        [Collections.Generic.List[Object]]$Files = @(
+           $explicitPaths = @(
+                'H:\data\2023'
+                'H:\data\2022'
+                'H:\data\client_bdg'
+                'C:\Users\cppmo_000\SkyDrive\Documents\2022'
+            )
+            $explicitPaths | Join-String -sep ', ' -SingleQuote -op '$ExplicitPaths: ' | Write-Verbose
+
+            foreach ($item in $ExplicitPaths) {
+                & 'fd' @(
+                    '--absolute-path',
+                    '--extension', 'code-workspace',
+                    '--type', 'file'
+                    if($ChangedWithin) {
+                        '--changed-within', $ChangedWithin
+                    }
+
+                    '--base-directory',
+                    (gi -ea 'stop' $item)
+                )
+                | Get-item
+            }
+        )
+        return $files
+            | sort-object -Unique FullName
+            | Sort-Object LastWriteTime -Descending
+            | CountOf -CountLabel "ChangedWithin: $( $ChangedWithin )"
+    }
+}
+
 function Dotils.Render.CallStack {
     <#
     .SYNOPSIS
@@ -1336,7 +1418,7 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
-
+        'Dotils.Find-MyWorkspace'  # Find-MyWorkspace
 
         'Dotils.SelectBy-Module' # 'SelectBy-Module', 'Dotils.SelectBy-Module', 'SelectBy-Module'
 
@@ -1371,6 +1453,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        'Find-MyWorkspace'  # 'Dotils.Find-MyWorkspace'
+
         'SelectBy-Module' # Dotils.SelectBy-Module
         'SelectBy-Module' # Dotils.SelectBy-Module
         #
