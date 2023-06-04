@@ -1235,6 +1235,12 @@ function Dotils.Find-MyWorkspace {
     .SYNOPSIS
         quick search of my recent files by category, similar to
             ext:code-workspace dm:last2weeks
+    .NOTES
+        super not performant, but more than fast enough
+    .EXAMPLE
+        Find-MyWorkspace
+    .EXAMPLE
+        Find-MyWorkspace -ChangedWithin 1year
     #>
     [Alias(
         'Find-MyWorkspace'
@@ -1244,52 +1250,25 @@ function Dotils.Find-MyWorkspace {
         [ArgumentCompletions(
             '20minutes', '8hours', '1week', '3weeks', '1year'
         )]
-        [string]$ChangedWithin = '1week'
+        [string]$ChangedWithin = '1week',
+
+        [string[]]$BasePath
     )
 
-    if ($false -and 'maybe it is a different param name?') {
-        # [Collections.Generic.List[Object]]$BinArgs = @(
-        #     '-e', 'code-workspace'
-        #     # (gi -ea 'ignore' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\proto.nin')
-        #     # (gi -ea 'ignore' 'H:\data\2023\pwsh')
-        #     $explicitPaths = @(
-        #         'H:\data\2023'
-        #         'H:\data\2022'
-        #         'H:\data\client_bdg'
-        #         'C:\Users\cppmo_000\SkyDrive\Documents\2022'
-        #     )
-        #     $explicitPaths | Join-String -sep ', ' -SingleQuote -op '$ExplicitPaths: ' | Write-Verbose
-
-        #     foreach ($item in $ExplicitPaths) {
-        #         @('--search-path',
-        #         (Get-Item -ea 'stop' $Item)
-        #         )
-        #     }
-
-        # )
-
-        # [Collections.Generic.List[Object]]$Files = @(
-        #     & 'fd' @BinArgs | Get-Item
-        # ) | Sort-Object LastWriteTime -Descending
-        # $files
+    if (-not $BasePath.count -gt 0) {
+        $ExplicitPaths = @(
+            'H:\data\2023'
+            'H:\data\2022'
+            'H:\data\client_bdg'
+            'C:\Users\cppmo_000\SkyDrive\Documents\2022'
+        )
     } else {
-        # [Collections.Generic.List[Object]]$BinArgs = @(
-        #     # '-e', 'code-workspace'
-        #     # # (gi -ea 'ignore' 'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh\my_Github\proto.nin')
-        #     # # (gi -ea 'ignore' 'H:\data\2023\pwsh')
+        $ExplicitPaths = $BasePath
+    }
 
-
-        # )
+    $explicitPaths | Join-String -sep ', ' -SingleQuote -op '$ExplicitPaths: ' | Write-Verbose
 
         [Collections.Generic.List[Object]]$Files = @(
-           $explicitPaths = @(
-                'H:\data\2023'
-                'H:\data\2022'
-                'H:\data\client_bdg'
-                'C:\Users\cppmo_000\SkyDrive\Documents\2022'
-            )
-            $explicitPaths | Join-String -sep ', ' -SingleQuote -op '$ExplicitPaths: ' | Write-Verbose
-
             foreach ($item in $ExplicitPaths) {
                 & 'fd' @(
                     '--absolute-path',
@@ -1309,7 +1288,7 @@ function Dotils.Find-MyWorkspace {
             | sort-object -Unique FullName
             | Sort-Object LastWriteTime -Descending
             | CountOf -CountLabel "ChangedWithin: $( $ChangedWithin )"
-    }
+
 }
 
 function Dotils.Render.CallStack {
