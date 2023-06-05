@@ -676,19 +676,39 @@ Function Dotils.Search-Pipescript.Nin {
         $content = gc -raw -Path 'C:\foo\utils.psm1'
         $sb = [scriptblock]::Create( $content )
         Dotils.Search-Pipescript.Nin -Path C:\foo\utils.psm1' -AstKind 'Variable'
+    .example
+        # Several output shapes defined as sugar
+
+            $splatSearch = @{
+                InputObject = $srcWrapModule
+                AstKind = 'Function'
+            }
+
+            dotils.search-Pipescript.Nin @splatSearch -OutputFormat PassThru
+            dotils.search-Pipescript.Nin @splatSearch -OutputFormat Result
+            dotils.search-Pipescript.Nin @splatSearch -OutputFormat Tokens
+            dotils.search-Pipescript.Nin @splatSearch -OutputFormat Value
     #>
     param(
+        # Make paramset that allow paging or not, but positional is automatic
         [Parameter(Mandatory, Position=0)]
         [Alias('LiteralPath', 'Path')]
         [object]$InputObject,
 
-        # [ArgumentCompletions("'Function'", "'Variable'" )]
+        # This is AstKind, not defined inline, yet
         [Parameter(Mandatory, Position=1)]
         [ArgumentCompletions(
             # "'Function'", "'Variable'"
             'Function', 'Variable', 'wipAutoGenKinds'
-        )]
-        [string]$AstKind
+        )][string]$AstKind,
+
+
+        # this is not an AST type, it's properties on the value returned
+        # by find-pipescript, drilling down
+        [Parameter(Mandatory, Position=2)]
+        [Alias('As')][ValidateSet(
+            'PassThru', 'Result', 'Tokens', 'Value'
+        )][string]$OutputFormat = 'PassThru'
     )
     function __getSBContent {
         # file info, filepath, script block, or string?
@@ -711,7 +731,35 @@ Function Dotils.Search-Pipescript.Nin {
         throw "Unknown coercion, UnhandledType: $($InputObject.GetType().Name)"
     }
     $content = __getSBContent -InputObject $InputObject
-    Pipescript\Search-PipeScript -InputObject $sb -AstType $AstKind
+
+    # dotils.search-Pipescript.Nin -Path $srcWrapModule -AstKind Variable | % Result | % Tokens | ft
+
+
+    $query = Pipescript\Search-PipeScript -InputObject $sb -AstType $AstKind
+    switch($OutputFormat) {
+        'PassThru' {
+            $query
+            write-verbose "Using: $AstKind"
+            break
+        }
+        'Result' {
+            $query | % Result
+            write-verbose "Using: $AstKind | % Result"
+            break
+        }
+        'Value' {
+            $query | % Result | % Value
+            Write-warning 'type "value" doesn''t work? or wrong type?'
+            write-verbose "Using: $AstKind | % Result.Value"
+            break
+        }
+        'Tokens' {
+            $query | % Result | % Tokens
+            write-verbose "Using: $AstKind | % Result.Tokens"
+            break
+        }
+        default { throw "UnhandledOutputFormat: '$OutputFormat'" }
+    }
 
     # if($InputObject -is 'ScriptBlock') {
     #     $content = $InputObject
