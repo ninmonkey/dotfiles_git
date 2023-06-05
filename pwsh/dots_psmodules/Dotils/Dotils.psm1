@@ -664,6 +664,12 @@ Function Dotils.Search-Pipescript.Nin {
     .synopsis
     sugar to pass fileinfo or filepath or contents, as the source to search
     .example
+        dotils.search-Pipescript.Nin -Path (gcl|gi) -AstKind Function
+            | % Result | % Name | sort -Unique
+    .example
+        $src = Get-Item 'foo\bar.psm1'
+        Dotils.Search-Pipescript.Nin -Path $src -AstKind 'Function'
+    .example
         Dotils.Search-Pipescript.Nin -Path 'C:\foo\utils.psm1' -AstKind 'Function'
         Dotils.Search-Pipescript.Nin -Path 'C:\foo\utils.psm1' -AstKind 'Variable'
     .example
@@ -672,15 +678,24 @@ Function Dotils.Search-Pipescript.Nin {
         Dotils.Search-Pipescript.Nin -Path C:\foo\utils.psm1' -AstKind 'Variable'
     #>
     param(
+        [Parameter(Mandatory, Position=0)]
         [Alias('LiteralPath', 'Path')]
         [object]$InputObject,
 
-        [ArgumentCompletions("'Function'", "'Variable'" )]
+        # [ArgumentCompletions("'Function'", "'Variable'" )]
+        [Parameter(Mandatory, Position=1)]
+        [ArgumentCompletions(
+            # "'Function'", "'Variable'"
+            'Function', 'Variable', 'wipAutoGenKinds'
+        )]
         [string]$AstKind
     )
     function __getSBContent {
         # file info, filepath, script block, or string?
-        param( [object]$InputObject )
+        param(
+            [Parameter(Mandatory)]
+            [object]$InputObject
+        )
         if( Test-Path $InputObject ) { # already is path/fileinfo
             $content = gc -raw -Path (gi -ea 'stop' $InputObject)
             return $content
@@ -695,7 +710,7 @@ Function Dotils.Search-Pipescript.Nin {
         }
         throw "Unknown coercion, UnhandledType: $($InputObject.GetType().Name)"
     }
-    $content = __getSBContent
+    $content = __getSBContent -InputObject $InputObject
     Pipescript\Search-PipeScript -InputObject $sb -AstType $AstKind
 
     # if($InputObject -is 'ScriptBlock') {
