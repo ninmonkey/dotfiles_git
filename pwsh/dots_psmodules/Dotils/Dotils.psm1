@@ -663,33 +663,36 @@ function Dotils.Build.Find-ModuleMembers {
     # find items to export
     param( [object]$InputObject )
 
-
+    write-warning 'slightly broke in last  patch'
     $splat = @{
         InputObject = $InputObject
-        # AstKind = 'Function'
-        # OutputFormat = 'Result'
     }
-    $sPass = @{ PassThru = $True }
-    $astVar = @{ AstKind = 'Variable' }
+    $outPassThru = @{ OutputFormat = 'PassThru' }
+    $outResult   = @{ OutputFormat =   'Result' }
+
+    $astVar      = @{ AstKind = 'Variable' }
+    $astFunc  = @{ AstKind = 'Function' }
 
     # dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result | % Name | sort-object -Unique |
     # Same thing currently:
     $meta = [ordered]@{}
+    throw "$PSCommandPath: NYI, lost pipe reference"
 
     $Meta.Function = @(
-        dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result
+        dotils.search-Pipescript.Nin @splat @astFunc @outResult
             | % Name | Sort-Object -Unique
     )
 
     $Meta.Variable = @(
-        dotils.search-Pipescript.Nin @splat -AstKind Variable -OutputFormat PassThru
+        dotils.search-Pipescript.Nin @splat @astVar @outPassThru
             | % Result  |  % tokens | % Text
     )
     $Meta.Variable_Content = @(
-        dotils.search-Pipescript.Nin @splat -AstKind Variable -OutputFormat PassThru
+        dotils.search-Pipescript.Nin @splat @astVar @outPassThru
             | % Result  |  % tokens | % Content
     )
-    if($false) {
+
+    if($false -and 'old') {
 
         $Meta.Function = @(
             dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result
@@ -1721,6 +1724,7 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+        'Dotils.Build.Find-ModuleMembers' # <none>
         'Dotils.Search-Pipescript.Nin' # <none>
         #
         'Dotils.InferCommandCategory'  # <none>
