@@ -659,6 +659,55 @@ function Dotils.Join.CmdPrefix {
     }
 }
 
+function Dotils.Build.Find-ModuleMembers {
+    # find items to export
+    param( [object]$InputObject )
+
+
+    $splat = @{
+        InputObject = $InputObject
+        # AstKind = 'Function'
+        # OutputFormat = 'Result'
+    }
+    $sPass = @{ PassThru = $True }
+    $astVar = @{ AstKind = 'Variable' }
+
+    # dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result | % Name | sort-object -Unique |
+    # Same thing currently:
+    $meta = [ordered]@{}
+
+    $Meta.Function = @(
+        dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result
+            | % Name | Sort-Object -Unique
+    )
+
+    $Meta.Variable = @(
+        dotils.search-Pipescript.Nin @splat -AstKind Variable -OutputFormat PassThru
+            | % Result  |  % tokens | % Text
+    )
+    $Meta.Variable_Content = @(
+        dotils.search-Pipescript.Nin @splat -AstKind Variable -OutputFormat PassThru
+            | % Result  |  % tokens | % Content
+    )
+    if($false) {
+
+        $Meta.Function = @(
+            dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result
+                | % Name | Sort-Object -Unique
+        )
+
+        $Meta.Variable = @(
+            dotils.search-Pipescript.Nin @splat -AstKind Variable -OutputFormat PassThru
+                | % Result  |  % tokens | % Text
+        )
+        $Meta.Variable_Content = @(
+            dotils.search-Pipescript.Nin @splat -AstKind Variable -OutputFormat PassThru
+                | % Result  |  % tokens | % Content
+        )
+    }
+    # dotils.search-Pipescript.Nin @splat -AstKind Variable -OutputFormat PassThru
+}
+
 Function Dotils.Search-Pipescript.Nin {
     <#
     .synopsis
@@ -707,7 +756,8 @@ Function Dotils.Search-Pipescript.Nin {
         # by find-pipescript, drilling down
         [Parameter(Mandatory, Position=2)]
         [Alias('As')][ValidateSet(
-            'PassThru', 'Result', 'Tokens', 'Value'
+            'PassThru', 'Result', 'Tokens', 'Value',
+            'VariablePath'
         )][string]$OutputFormat = 'PassThru'
     )
     function __getSBContent {
@@ -745,6 +795,11 @@ Function Dotils.Search-Pipescript.Nin {
         'Result' {
             $query | % Result
             write-verbose "Using: $AstKind | % Result"
+            break
+        }
+        'VariablePath' {
+            $query | % Result | % VariablePath
+            write-verbose "Using: $AstKind | % Result.VariablePath"
             break
         }
         'Value' {
