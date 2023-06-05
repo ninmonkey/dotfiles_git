@@ -659,6 +659,57 @@ function Dotils.Join.CmdPrefix {
     }
 }
 
+Function Dotils.Search-Pipescript.Nin {
+    <#
+    .synopsis
+    sugar to pass fileinfo or filepath or contents, as the source to search
+    .example
+        Dotils.Search-Pipescript.Nin -Path 'C:\foo\utils.psm1' -AstKind 'Function'
+        Dotils.Search-Pipescript.Nin -Path 'C:\foo\utils.psm1' -AstKind 'Variable'
+    .example
+        $content = gc -raw -Path 'C:\foo\utils.psm1'
+        $sb = [scriptblock]::Create( $content )
+        Dotils.Search-Pipescript.Nin -Path C:\foo\utils.psm1' -AstKind 'Variable'
+    #>
+    param(
+        [Alias('LiteralPath', 'Path')]
+        [object]$InputObject,
+
+        [ArgumentCompletions("'Function'", "'Variable'" )]
+        [string]$AstKind
+    )
+    function __getSBContent {
+        # file info, filepath, script block, or string?
+        param( [object]$InputObject )
+        if( Test-Path $InputObject ) { # already is path/fileinfo
+            $content = gc -raw -Path (gi -ea 'stop' $InputObject)
+            return $content
+        }
+        if($InputObject -is 'ScriptBlock') {
+            $content = $InputObject
+            return $content
+        }
+        if($InputObject -is 'String') {
+            $content = [ScriptBlock]::Create( $InputObject )
+            return $content
+        }
+        throw "Unknown coercion, UnhandledType: $($InputObject.GetType().Name)"
+    }
+    $content = __getSBContent
+    Pipescript\Search-PipeScript -InputObject $sb -AstType $AstKind
+
+    # if($InputObject -is 'ScriptBlock') {
+    #     $content = $InputObject
+    # }
+    # if( -not (Test-Path $InputObject) -and $InputObject -is 'String' ) {
+    #     $content = $InputObject # if not a path, assume  content
+    # }
+    # $sb = [scriptblock]::Create( $content )
+}
+
+
+
+
 function Dotils.CompareCompletions {
     <#
     .synopsis
@@ -1306,9 +1357,15 @@ function Dotils.Find-MyWorkspace {
                 | Get-item
             }
         )
-        return $files
-            | sort-object -Unique FullName
+
+        $files = $Files
+            | Sort-Object FullName -Unique
             | Sort-Object LastWriteTime -Descending
+
+        $global:MyWorkspaceQuery = $files
+        # $global:MyWorkspaceQuery
+        '$MyWorkspaceQuery saved' | New-Text -fg gray30 -bg gray50 | Join-String | Write-Information -infa 'continue'
+        return $files
             | CountOf -CountLabel "ChangedWithin: $( $ChangedWithin )"
 
 }
@@ -1546,6 +1603,7 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+        'Dotils.Search-Pipescript.Nin' # <none>
         #
         'Dotils.InferCommandCategory'  # <none>
         'Dotils.Find-MyNativeCommand' # <none>
