@@ -1214,28 +1214,84 @@ function Dotils.Find-MyWorkspace {
     [CmdletBinding()]
     param(
         [ArgumentCompletions(
-            '20minutes', '8hours', '1week', '3weeks', '1year'
-        )]
-        [string]$ChangedWithin = '1week',
+            '20minutes', '8hours', '1week', '3weeks', '1year')
+        ][string]$ChangedWithin = '2weeks',
+
+        [Parameter( #not using a param set temporarily since it'll rewrite sometime
+            # Mandatory, ParameterSetName='QueryGroupName')]
+        )][ValidateSet('All', 'Fast', 'PwshOnly', '2022')]
+        [string]$QueryGroupName,
 
         [string[]]$BasePath
     )
 
-    if (-not $BasePath.count -gt 0) {
-        $ExplicitPaths = @(
+    $QueryKindList = @{
+        All = @(
             'H:\data\2023'
             'H:\data\2022'
+            'H:\data\2023\pwsh\PsModules\KnowMoreTangent'
             'H:\data\client_bdg'
             'C:\Users\cppmo_000\SkyDrive\Documents\2022'
         )
-    } else {
-        $ExplicitPaths = $BasePath
+        Fast = @(
+            'H:\data\2023'
+        )
+        PwshOnly = @(
+            'H:\data\2023\pwsh'
+            'H:\data\client_bdg' # for now
+            'C:\Users\cppmo_000\SkyDrive\Documents\2022\Pwsh' # for now
+
+        )
+        2022 = @(
+            'H:\data\2022'
+            'C:\Users\cppmo_000\SkyDrive\Documents\2022'
+        )
     }
 
-    $explicitPaths | Join-String -sep ', ' -SingleQuote -op '$ExplicitPaths: ' | Write-Verbose
+    if($PSBoundParameters.ContainsKey('QueryGroupName') -and $PSBoundParameters.ContainsKey('BasePath')) {
+        throw "CannotCombineparameters: QueryGroupName with BasePath"
+    }
+    $DefaultGroup = 'Fast'
+
+    if($QueryKindList -and $QueryKindList.$QueryGroupName ) {
+        $explicitPaths = $QueryKindList.$QueryGroupName
+    } else {
+        if($BasePath) {
+            $explicitPaths = @($BasePath)
+        } else {
+            $explicitPaths = @($QueryKindList.$DefaultGroup)
+        }
+    }
+
+    # -not $PSBoundParameters.ContainsKey('QueryGroupName') {
+
+    # if (-not $BasePath.count -gt 0) {
+    #         # $BasePath = $QueryKindList[$QueryGroupName]
+
+    #     $ExplicitPaths = @(
+    #         $QueryGroupName.$DefaultGroup
+    #     )
+    # } else {
+    #     $ExplicitPaths = $BasePath
+    # }
+    # if($QueryGroupName) {
+    #     $explicitPaths = @( $QueryKindList.$QueryGroupName )
+    # }
+
+    # Join-String 'searching {0}' $
+    $explicitPaths
+        | Join-String -sep ', ' -SingleQuote -op '$ExplicitPaths: '
+        | write-information -infa 'Continue'
 
         [Collections.Generic.List[Object]]$Files = @(
             foreach ($item in $ExplicitPaths) {
+                'write-progress: InvokeFd: changed?: {0}, dir?: {1}' -f @(
+                    $ChangedWithin
+                    $item
+                )
+                | Write-Information -infa 'Continue'
+
+
                 & 'fd' @(
                     '--absolute-path',
                     '--extension', 'code-workspace',
