@@ -676,7 +676,7 @@ function Dotils.Build.Find-ModuleMembers {
     # dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result | % Name | sort-object -Unique |
     # Same thing currently:
     $meta = [ordered]@{}
-    throw "$PSCommandPath: NYI, lost pipe reference"
+    throw "${PSCommandPath}: NYI, lost pipe reference"
 
     $Meta.Function = @(
         dotils.search-Pipescript.Nin @splat @astFunc @outResult
