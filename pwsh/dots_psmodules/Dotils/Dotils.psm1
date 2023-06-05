@@ -1618,6 +1618,47 @@ function Dotils.Get-NativeCommand {
     return $Found
 }
 
+function Dotils.DB.toDataTable {  
+<#
+.synopsis
+	output DataTable from an object
+.example
+	Get-Service | Dotils.DB.toDataTable
+.example
+	Get-Date    | Dotils.DB.toDataTable
+.notes
+    started: <https://gist.github.com/indented-automation/2dd91c24c2ef0a985ae9454bd713f7da#file-license-txt-L2>
+#>
+    [Alias('Dotils.ConvertTo-DataTable')]
+    [OutputType('System.Data.DataTable')]
+    [CmdletBinding()]
+    param (
+        [Parameter(ValueFromPipeline)]
+        [Object]$InputObject
+    )
+
+    begin {
+        $dataTable = [System.Data.DataTable]::new()
+    }
+
+    process {
+        if ($dataTable.Columns.Count -eq 0) {
+            $null = foreach ($property in $InputObject.PSObject.Properties) {
+                $dataTable.Columns.Add($property.Name, $property.TypeNameOfValue)
+            }
+        }
+
+        $values = foreach ($property in $InputObject.PSObject.Properties) {
+            ,$property.Value
+        }
+        $null = $dataTable.Rows.Add($values)
+    }
+
+    end {
+        ,$dataTable
+    }
+}
+
 function Dotils.Render.CallStack {
     <#
     .SYNOPSIS
@@ -1724,6 +1765,8 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+'Dotils.DB.toDataTable' # 'Dotils.ConvertTo-DataTable
+
         'Dotils.Build.Find-ModuleMembers' # <none>
         'Dotils.Search-Pipescript.Nin' # <none>
         #
@@ -1768,6 +1811,7 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+	'Dotils.ConvertTo-DataTable' # 'Dotils.DB.toDataTable' 
         'Find-MyWorkspace'  # 'Dotils.Find-MyWorkspace'
 
         'SelectBy-Module' # Dotils.SelectBy-Module

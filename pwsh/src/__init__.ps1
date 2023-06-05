@@ -1376,8 +1376,12 @@ function Write-NancyCountOf {
         [Parameter(Position = 0)]
         [string]$CountLabel,
 
-        # Also consume output (pipe to null)
-        [switch]${Out-Null},
+        # Count and Consume all output. (pipes to null)
+        # Equivalent to calling CountOf and then | Out-Null
+        # Automatically defaults to be on when alias to 'Write-NancyCountOf'
+        # has the string null in it, like 'OutNull' (the command alias, rather than this param alias does this)
+        [Alias('Out-Null')]
+        [switch]${OutNull},
 
         [ArgumentCompletions(
             '@{ LabelFormatMode = "SpaceClear" }'
