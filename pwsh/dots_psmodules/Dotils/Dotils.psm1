@@ -784,6 +784,7 @@ Function Dotils.Search-Pipescript.Nin {
         throw "Unknown coercion, UnhandledType: $($InputObject.GetType().Name)"
     }
     $content = __getSBContent -InputObject $InputObject
+    $sb = [scriptblock]::Create( $content )
 
     # dotils.search-Pipescript.Nin -Path $srcWrapModule -AstKind Variable | % Result | % Tokens | ft
 
@@ -1618,7 +1619,7 @@ function Dotils.Get-NativeCommand {
     return $Found
 }
 
-function Dotils.DB.toDataTable {  
+function Dotils.DB.toDataTable {
 <#
 .synopsis
 	output DataTable from an object
@@ -1811,7 +1812,7 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
-	'Dotils.ConvertTo-DataTable' # 'Dotils.DB.toDataTable' 
+	'Dotils.ConvertTo-DataTable' # 'Dotils.DB.toDataTable'
         'Find-MyWorkspace'  # 'Dotils.Find-MyWorkspace'
 
         'SelectBy-Module' # Dotils.SelectBy-Module

@@ -1,0 +1,68 @@
+// Place your key bindings in this file to override the defaults
+[
+    /*
+    see global:
+        <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\keybindings.json>
+
+          ### Sect: from SeeminglySci's profile
+        tags: SeeminlySci, Powershell, PSEditorServices
+
+    */
+    {
+        "key": "alt+shift+n",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "AddResolvedNamespace"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "alt+shift+m",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ExpandMemberExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    // {
+    //     "key": "ctrl+shift+,",
+    //     "command": "PowerShell.InvokeRegisteredEditorCommand",
+    //     "args": {
+    //         "commandName": "Invoke-DocumentRefactor"
+    //     },
+    //     "when": "editorLangId == 'powershell'"
+    // },
+    // {
+    //     "key": "ctrl+shift+s",
+    //     "command": "PowerShell.InvokeRegisteredEditorCommand",
+    //     "args": {
+    //         "commandName": "ConvertTo-SplatExpression"
+    //     },
+    //     "when": "editorLangId == 'powershell'"
+    // },
+    // {
+    //     // # old: "key": "ctrl+.",
+    //     "key": "ctrl+shift+.",
+    //     "when": "editorLangId == 'powershell'",
+    //     "command": "PowerShell.InvokeRegisteredEditorCommand",
+    //     "args": {
+    //         "commandName": "Invoke-DocumentRefactor"
+    //     },
+    // },
+    {
+        "key": "ctrl+k",
+        "when": "editorLangId == 'powershell'",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "Invoke-DocumentRefactor"
+        },
+    },
+    {
+        "key": "ctrl+shift+s",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ConvertTo-SplatExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+]
