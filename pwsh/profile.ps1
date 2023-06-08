@@ -327,6 +327,8 @@ $env:LESSCHARSET = 'utf-8'
 $Env:PSModulePath = @(
     'H:/data/2023/pwsh/PsModules'
     'H:/data/2023/dotfiles.2023/pwsh/dots_psmodules'
+    'H:/data/2023/pwsh/PsModules.dev/GitLogger'
+    'H:/data/2023/pwsh/PsModules.dev' # really temp but required because needs parent dir
     # 'H:\data\2023\pwsh\PsModules\Ninmonkey.Console\zeroDepend_autoloader\logging.Write-NinLogRecord.ps1'
     # 'H:/data/2023/pwsh/GitLogger'
     $Env:PSModulePath
@@ -402,14 +404,15 @@ function __aws.sam.InvokeAndPipeLog {
         code -g (Get-Item $FullLogPath)
     }
     & sam build --debug --parallel --use-container --cached --skip-pull-image --profile BDG *>&1
-    | StripAnsi # Pwsh7.3 pipes color from STDERROR
-    | ForEach-Object {
-        $addContentSplat = @{
-            PassThru = -not $WithoutStdout
-            Path     = $FullLogPath
+        | StripAnsi # Pwsh7.3 pipes color from STDERROR
+        | ForEach-Object {
+            $addContentSplat = @{
+                PassThru = -not $WithoutStdout
+                Path     = $FullLogPath
+            }
+            $_ | Add-Content @addContentSplat
         }
-        $_ | Add-Content @addContentSplat
-    }
+
     (Get-Item $FullLogPath) | Join-String -f "`n  => wrote <file:///{0}>"
 
     New-BurntToastNotification -Text 'SAM Build Complete', "$FullLogPath"

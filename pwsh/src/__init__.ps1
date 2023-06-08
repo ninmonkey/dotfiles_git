@@ -1396,12 +1396,13 @@ function Write-NancyCountOf {
     end {
         $null = 0
         # wait-debugger
-        if ( ${Out-Null}.IsPresent -or $PSCmdlet.MyInvocation.InvocationName -match 'null|(Out-?Null)') {
+        if ( $OutNull -or ${OutNull}.IsPresent -or $PSCmdlet.MyInvocation.InvocationName -match 'null|(Out-?Null)') {
             # $items | Out-Null # redundant?
         }
         else {
             $items
         }
+
         $colorBG = $PSStyle.Background.FromRgb('#362b1f')
         $colorFg = $PSStyle.Foreground.FromRgb('#e5701c')
         $colorFg = $PSStyle.Foreground.FromRgb('#f2962d')

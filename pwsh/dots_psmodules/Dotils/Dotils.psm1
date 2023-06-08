@@ -661,11 +661,16 @@ function Dotils.Join.CmdPrefix {
 
 function Dotils.Build.Find-ModuleMembers {
     # find items to export
-    param( [object]$InputObject )
+    [CmdletBinding()]
+    param(
+        [object]$InputObject,
+        [switch]$Recurse
+    )
 
     write-warning 'slightly broke in last  patch'
     $splat = @{
         InputObject = $InputObject
+        Recurse = $Recurse
     }
     $outPassThru = @{ OutputFormat = 'PassThru' }
     $outResult   = @{ OutputFormat =   'Result' }
@@ -676,7 +681,7 @@ function Dotils.Build.Find-ModuleMembers {
     # dotils.search-Pipescript.Nin @splat -AstKind Function -OutputFormat Result | % Name | sort-object -Unique |
     # Same thing currently:
     $meta = [ordered]@{}
-    throw "${PSCommandPath}: NYI, lost pipe reference"
+    # throw "${PSCommandPath}: NYI, lost pipe reference"
 
     $Meta.Function = @(
         dotils.search-Pipescript.Nin @splat @astFunc @outResult
@@ -691,6 +696,7 @@ function Dotils.Build.Find-ModuleMembers {
         dotils.search-Pipescript.Nin @splat @astVar @outPassThru
             | % Result  |  % tokens | % Content
     )
+    return $meta
 
     if($false -and 'old') {
 
@@ -761,7 +767,9 @@ Function Dotils.Search-Pipescript.Nin {
         [Alias('As')][ValidateSet(
             'PassThru', 'Result', 'Tokens', 'Value',
             'VariablePath'
-        )][string]$OutputFormat = 'PassThru'
+        )][string]$OutputFormat = 'PassThru',
+
+        [switch]$Recurse
     )
     function __getSBContent {
         # file info, filepath, script block, or string?
@@ -789,7 +797,7 @@ Function Dotils.Search-Pipescript.Nin {
     # dotils.search-Pipescript.Nin -Path $srcWrapModule -AstKind Variable | % Result | % Tokens | ft
 
 
-    $query = Pipescript\Search-PipeScript -InputObject $sb -AstType $AstKind
+    $query = Pipescript\Search-PipeScript -InputObject $sb -AstType $AstKind -recurse $Recurse
     switch($OutputFormat) {
         'PassThru' {
             $query
