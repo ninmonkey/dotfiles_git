@@ -325,10 +325,12 @@ $env:LESSCHARSET = 'utf-8'
 
 
 $Env:PSModulePath = @(
+    'H:/data/2023/pwsh/PsModules.Import'
     'H:/data/2023/pwsh/PsModules'
     'H:/data/2023/dotfiles.2023/pwsh/dots_psmodules'
     'H:/data/2023/pwsh/PsModules.dev/GitLogger'
-    'H:/data/2023/pwsh/PsModules.dev' # really temp but required because needs parent dir
+    # 'H:/data/2023/pwsh/PsModules.dev' # really temp but required because needs parent dir
+
     # 'H:\data\2023\pwsh\PsModules\Ninmonkey.Console\zeroDepend_autoloader\logging.Write-NinLogRecord.ps1'
     # 'H:/data/2023/pwsh/GitLogger'
     $Env:PSModulePath
@@ -514,8 +516,55 @@ function nin.RenderUnicodeRange {
 #  $_ | Join-String -sep ' ' -FormatString '{0:x2}'
 #  }  | Join-String -sep "`n" -f '[{0}]'
 
+function RenderModuleName {
+    <#
+    .SYNOPSIS
+        visually summarize a module, maybe make a EzFormat
+    .EXAMPLE
+        Get-Module | RenderModuleName
+    #>
+    $Input
+    | Join-String {
+        $cDim = "${fg:gray30}${bg:gray40}"
+        $cBold = "${fg:gray80}${bg:gray20}"
+        $cDef =   $PSStyle.Reset # or "${fg:clear}${bg:clear}"
 
+        "${cBold}{0} = {1}${cDef}`n`t${cDim}{2}${cDef}`n" -f @(
+            $_.Name
+            $_.Version
+            $_.Path
+        )
+    } | Join-String -os $PSStyle.Reset
+}
 
+function Dotils.Render.Callstack.Basic {
+    param(
+        #by param to simplify piping
+        [Parameter(Mandatory,Position=0)]
+        [object[]]$InputObject
+    )
+    function _render.Frame {
+        param(
+            [Alias('Frame')]
+            [Parameter(Mandatory,Position=0)]
+            $InputObject
+        )
+        $InputObject | Join-String -sep "`n" {
+            "`n"
+            $_.Command
+            "`n    "
+            $_.Location
+        }
+    }
+
+    $InputObject | ForEach-Object {
+        _render.Frame $_
+    }
+    # Get-PSCallStack | Join-string -sep "`n" {
+    #     "`n"
+    #     $_.Command, "`n    ", $_.Location
+    # }
+}
 function RenderLongPathNames {
     <#
     .SYNOPSIS
@@ -856,10 +905,45 @@ $PSDefaultParameterValues.Remove('*:verbose')
 # root entry point
 . (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/autoloadNow_ArgumentCompleter-butRefactor.ps1' ))
 
+if($false) {
+    Import-Module TypeWriter -PassThru -ea 'continue'
+} else {
+    impo -force -pass (Join-Path 'H:/data/2023/pwsh/PsModules.dev/TypeWriter/Source' 'TypeWriter.psm1')
+}
+
+
+
+
+
+
+
+
 
 if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 return
+
+
+
+
 
 if ($global:__nin_enableTraceVerbosity) { "enter ==> Profile: docs/profile.ps1/ => Pid: ( $PSCOmmandpath ) '${pid}'" | Write-Warning }
 . (Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\dotfiles_git\powershell\profile.ps1')
@@ -907,13 +991,10 @@ nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/my🍴'
 nin.PSModulePath.Clean -Write
 # $Env:PSModulePath = nin.PSModulePath.Clean -Write -PassThru
 
-Import-Module TypeWriter -PassThru -ea 'continue'
 # H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter
 # write-verbose 'Temp: manual import of type writer path'
 
 # if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 # if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 i>
 # return
-
-
 

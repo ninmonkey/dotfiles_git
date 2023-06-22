@@ -173,6 +173,236 @@ function Dotils.Stdout.CollectUntil.Match {
     }
 }
 
+function Dotils.FindExceptionSource  {
+    <#
+    .SYNOPSIS
+    .LINK
+        Dotils.JoinString.As
+    .notes
+        future:
+        - [ ] auto bind using parameternames, so piping $error array works automatic
+
+        see methods: $serr | fime * -Force
+
+    .example
+        PS> $error[0]       | Dotils.FindExceptionSource
+        PS> $error[0..3]    | Dotils.FindExceptionSource
+        PS> $error          | Dotils.FindExceptionSource
+    .example
+        $serr|Dotils.FindExceptionSource
+        $serr|Dotils.FindExceptionSource -Kind GetError
+        $serr|Dotils.FindExceptionSource -Kind InnerDebug
+        $serr|Dotils.FindExceptionSource -Kind Minimal
+        $serr|Dotils.FindExceptionSource -Kind Overrides
+    .example
+        # related:
+        PS> $ErrorView | Dotils.JoinString.As Enum
+        # outputs:
+            [ 'CategoryView' | 'ConciseView' | 'DetailedView' | 'NormalView' ]
+    .LINK
+        System.Management.Automation.ErrorRecord
+    #>
+    [CmdletBinding()]
+    param(
+        # Expects an ErrorRecord or child exception
+        [Alias(
+            # 'Exception'
+            # not sure if this will unroll the outer exception losing a layer
+            # using:    ValueFromPipelineByPropertyName
+        )]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        $InputObject,
+        # [Exception]
+
+        [Alias('Find.As')]
+        [ValidateSet(
+            # 'Default',
+            'GetError',
+            'InnerDebug',
+            'Minimal',
+            'Overrides'
+        )]
+        [string[]]$Kind,
+
+        [hashtable]$Options = @{}
+    )
+    process {
+        $t = $InputObject
+        $Config = mergeHashtable -OtherHash $Options -BaseHash @{
+            # Separator = ', '
+            IncludeFirstChild = $false
+        }
+        $UniNull        = '[␀]' # "[`u{2400}]'"
+        $UniDotDotDot   = '…' # "`u{2026}"
+        $Config | Json -depth 4 -Compress
+                | Join-String -f "Dotils.FindExceptionSource: Options = {0}"
+                | Write-Verbose
+
+        $InputObject    | Format-ShortTypeName | Join-String -f '$InputObject is {0}'
+                        | write-debug
+
+        if($Config.IncludeFirstChild) { throw 'NYI: IncludeFirstChild'}
+        if($null -eq $t) {
+            write-error 'InputObject Was Null'
+            return
+        }
+
+        $meta = [ordered]@{}
+
+
+        $meta.SelectStar =
+            $t | Select-Object '*'
+
+        $meta.PSObjectPropertiesAll =
+            $t.PsObject.Properties
+
+        $meta.IterProps =
+            $t | io
+        $meta.IterPropsNoBlank =
+            $t | io -SkipMost -SkipNull -SkipBlank
+
+        if( -not $t.Exception -or -not $Config.IncludeFirstChild ) {
+            $meta.FirstChild = $UniNull
+        }
+        if($Config.IncludeFirstChild) {
+            $meta.FirstChild =
+                Dotils.FindExceptionSource -input $t.Exception
+        }
+
+
+        # tempTest
+
+
+
+
+
+        # copy direct properties
+
+        $meta.CategoryInfo =
+            ($t)?.CategoryInfo ?? $UniNull
+
+        $meta.ErrorCategoryInfo =
+            ($t)?.ErrorCategoryInfo ?? $UniNull
+
+        $meta.ErrorDetails =
+            ($t)?.ErrorDetails      ?? $UniNull
+
+        # Obj.Exception.ErrorRecord
+        $meta.ErrorRecord =
+            ($t)?.ErrorRecord      ?? $UniNull
+
+        # first child
+        $meta.Exception =
+            ($t)?.Exception         ?? $UniNull
+        $Meta.ExceptionTypeName =
+            $t | Format-ShortSciTypeName
+
+        $meta.FullyQualifiedErrorId =
+            ($t)?.FullyQualifiedErrorId ?? $UniNull
+
+        $meta.InvocationInfo =
+            ($t)?.InvocationInfo         ?? $UniNull
+        $meta.PipelineIterationInfo =
+            ($t)?.PipelineIterationInfo         ?? $UniNull
+
+        $meta.PSMessageDetails =
+            ($t)?.PSMessageDetails ?? $UniNull
+
+        $meta.ScriptStackTrace =
+            ($t)?.ScriptStackTrace ?? $UniNull
+
+        $meta.TargetObject =
+            ($t)?.TargetObject     ?? $UniNull
+
+
+
+        switch ($Kind) {
+            'GetError'  {
+                $meta.FromGetError =
+                    ($t | Get-Error) ?? $UniNull
+                continue
+            }
+            'Minimal' {
+                $meta.remove('IterProps')
+                $meta.remove('IterPropsNoBlank')
+                # $meta.remove('ScriptStackTrace')
+                return [pscustomobject]$meta
+                continue
+            }
+            'Overrides' {
+                # maybe more, see: full list
+                #   $serr | fime * -Force
+                $meta._serializedErrorCategoryMessageOverride =
+                    ($t)?._serializedErrorCategoryMessageOverride     ?? $UniNull
+                $meta._reasonOverride =
+                    ($t)?._reasonOverride     ?? $UniNull
+                return [pscustomobject]$meta
+                continue
+            }
+            'InnerDebug' {
+
+                <#
+                Original was
+                    $serr | Format-ShortTypeName
+                    $serr.Exception | Format-ShortTypeName
+
+                    $z.Inner_Exception =
+
+                    if($serr.Exception.ErrorRecord) {
+                        $serr.Exception.ErrorRecord | Format-ShortTypeName  } else { "<null>" }
+
+                    $meta.Inner_Exception =
+                        if($serr.Exception.ErrorRecord) {
+                            $serr.Exception.ErrorRecord | Format-ShortTypeName
+                        } ?? $StrNull
+                    $meta.Inner_ExceptionTypeName =
+                        $what ?
+                        ($what | Format-ShortTypeName) :
+                        'null'
+                #>
+                $meta.Inner_Json =
+                    $t  | ConvertTo-Json -Depth 1
+
+                $meta.Inner_PSCO =
+                    $t  | ConvertTo-Json -Depth 1
+                        | ConvertFrom-Json
+
+                $what = $t
+                $meta.Inner_TypeName =
+                    $what ?
+                    ($What | Format-ShortTypeName) :
+                    $UniNull
+
+                $what = $t.Exception
+                $meta.Inner_ExceptionTypeName =
+                    $what ?
+                    ($What | Format-ShortTypeName) :
+                    $UniNull
+
+                $what = $t.ErrorRecord
+                $meta.Inner_ErrorRecordTypeName =
+                    $what ?
+                    ($What | Format-ShortTypeName) :
+                    $UniNull
+
+                $what = $t.Exception.ErrorRecord
+                $meta.Inner_Exception_ErrorRecordTypeName =
+                    $what ?
+                    ($What | Format-ShortTypeName) :
+                    $UniNull
+                continue
+            }
+            # 'Default' {
+            #     #
+            #     continue
+            # }
+            default { throw "UnhandledJoinKind: $Kind" }
+        }
+        return [pscustomobject]$meta
+    }
+    end {}
+}
+
 function Dotils.JoinString.As {
     <#
     .SYNOPSIS
@@ -1668,6 +1898,43 @@ function Dotils.DB.toDataTable {
     }
 }
 
+function Dotils.Type.Info {
+    <#
+    .SYNOPSIS
+    convert/coerce values into type info easier
+    .example
+        @( 'IPropertyCmdletProvider'
+        'ICmdletProviderSupportsHelp'
+        'IContentCmdletProvider' ) | .Type.Info
+
+
+    .example
+        'rgbcolor'  |  Dotils.Type.Info
+                    | %{ $_.GetTypeInfo().FullName }
+                    | Should -Be 'PoshCode.Pansies.RgbColor'
+    #>
+    [Alias('.As.TypeInfo')]
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline, mandatory)]
+        [object]$InputObject,
+
+        [switch]$CompareAsLower,
+
+        [Alias('All')][switch]$WildCard
+    )
+    process {
+        if(-not $WildCard -and ($InputObject -match '\*')) {
+            write-error 'wildcard not enabled, are you sure?'
+        }
+        if($CompareAsLower) {
+            $InputObject = $InputObject.ToLower()
+        }
+        $query = Find-Type $InputObject
+        if(-not $query) { write-error 'failed type' ; return }
+        return $query
+    }
+}
 function Dotils.Render.CallStack {
     <#
     .SYNOPSIS
@@ -1774,6 +2041,9 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+        'Dotils.FindExceptionSource' # <none>
+        #
+        'Dotils.Type.Info' # '.As.TypeInfo'
 'Dotils.DB.toDataTable' # 'Dotils.ConvertTo-DataTable
 
         'Dotils.Build.Find-ModuleMembers' # <none>
@@ -1820,6 +2090,7 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        '.As.TypeInfo' # 'Dotils.Type.Info'
 	'Dotils.ConvertTo-DataTable' # 'Dotils.DB.toDataTable'
         'Find-MyWorkspace'  # 'Dotils.Find-MyWorkspace'
 
