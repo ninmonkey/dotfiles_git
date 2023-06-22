@@ -26,7 +26,7 @@ Import-Module pansies
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
 Import-Module 'ugit'
-
+Import-Module 'Dotils' -Force -PassThru
 
 ## refactor, move to Nancy 2023-05-15
 
