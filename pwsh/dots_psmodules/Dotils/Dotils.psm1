@@ -93,6 +93,48 @@ function Dotils.String.Transform.AlignRight {
 }
 
 
+function Dotils.Grid {
+
+    <#
+    .SYNOPSIS
+    all the docs were in the other place
+
+    .EXAMPLE
+        0..50 | Grid -Count 10 -PadLeft 5
+        0..50 | Grid -Count 10 -PadLeft 1
+        0..50 | Grid -Auto -Count 3
+    #>
+    [Alias(
+        'Grid',
+        'Nancy.OutGrid'
+    )]
+    param(
+        [int]$Count = 8,
+        [int]$PadLeft,
+        [switch]$Auto
+    )
+    $all_items = $Input
+    if ($Auto) {
+        $w = $host.ui.RawUI.WindowSize.Width
+        $perCell = $PadLeft -gt 0 ? $PadLeft : 6
+        [int]$numItems = $w / $perCell # auto floors ?
+        #             $perCell = $w / ( $PadLeft ?? 6 )
+        $Count = $numItems
+    }
+
+    $all_items | Ninmonkey.Console\Iter->ByCount -Count $Count | % {
+        $_
+        | Join-String -sep ', ' {
+            if (-not $PadLeft) { return $_ }
+            return $_.ToString().PadLeft( $PadLeft, ' ' )
+
+        }
+        # | Join-String -sep '' { $Template.Hex -f $_ }
+        | Format-Predent -PassThru -TabWidth 4
+    } | Join-String -sep ''
+}
+
+
 function Dotils.Stdout.CollectUntil.Match {
     #  Dotils.Stdout.CollectUntil.Match #  PipeUntil.Match
     <#
@@ -169,6 +211,164 @@ function Dotils.Stdout.CollectUntil.Match {
         }
     }
     end {
+
+    }
+}
+
+function Dotils.Write-NancyCountOf {
+    <#
+    .SYNOPSIS
+        Count the number of items in the pipeline, ie: @( $x ).count
+    .NOTES
+        Any alias to this function named 'null' something
+        will use '-OutNull' as a default parameter
+    .EXAMPLE
+        gci | CountOf # outputs files as normal *and* counts
+        'a'..'e' | Null🧛  # count only
+        'a'..'e' | Null🧛  # labeled
+        'a'..'e' | Null🧛 -Extra  # count only /w type names
+        'a'..'e' | Null🧛 -Extra -Name 'charList'  # labeled type names
+    .EXAMPLE
+        for unit test
+
+            . $redot
+            $stuff = 'a'..'c'
+            $stuff | CountOf
+            $stuff | Null🧛
+
+            $stuff | CountOf -Label 'Count' -Extra
+            $stuff | Null🧛 -Label 'Null' -Extra
+
+    .EXAMPLE
+        ,@('a'..'e' + 0..3) | CountOf -Out-Null
+        @('a'..'e' + 0..3) | CountOf -Out-Null
+
+        # outputs
+        1 items
+        9 items
+    #>
+    # [CmdletBinding()]
+    # [Alias('Len', 'Len🧛‍♀️')] # warning this breaks crrent parameter sets
+    [Alias(
+        'CountOf', 'Len',
+        # '🧛Of',
+        # 'Len',
+        # '-OutNull', # works, but does not generate completions
+        '🧛', # puns are fun
+        # 'Out-Null🧛',
+        'OutNull',
+        'Null🧛' # puns are fun
+        , 'nin.exportMe'
+    )]
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline)]
+        [object]$InputObject,
+
+        # Show type names of collection and items
+        [Alias('TypeOf')]
+        [switch]$Extra,
+
+        # optionally label numbers
+        [Alias('Name', 'Label')]
+        [Parameter(Position = 0)]
+        [string]$CountLabel,
+
+        # Count and Consume all output. (pipes to null)
+        # Equivalent to calling CountOf and then | Out-Null
+        # Automatically defaults to be on when alias to 'Write-NancyCountOf'
+        # has the string null in it, like 'OutNull' (the command alias, rather than this param alias does this)
+        [Alias('Out-Null')]
+        [switch]${OutNull},
+
+        [ArgumentCompletions(
+            '@{ LabelFormatMode = "SpaceClear" }'
+        )][hashtable]$Options
+    )
+    begin {
+        [int]$totalCount = 0
+        [COllections.Generic.List[Object]]$Items = @()
+        $Config = $Options
+    }
+    process { $Items.Add( $InputObject ) }
+    end {
+        $null = 0
+        # wait-debugger
+        if ( $OutNull -or ${OutNull}.IsPresent -or $PSCmdlet.MyInvocation.InvocationName -match 'null|(Out-?Null)') {
+            # $items | Out-Null # redundant?
+        }
+        else {
+            $items
+        }
+
+        $colorBG = $PSStyle.Background.FromRgb('#362b1f')
+        $colorFg = $PSStyle.Foreground.FromRgb('#e5701c')
+        $colorFg = $PSStyle.Foreground.FromRgb('#f2962d')
+        $colorBG_count = $PSStyle.Background.FromRgb('#362b1f')
+        $colorFg_count = $PSStyle.Foreground.FromRgb('#f2962d')
+        $colorFg_label = $PSStyle.Foreground.FromRgb('#4cc5f0')
+        $colorBG_label = $PSStyle.Background.FromRgb('#376bce')
+        @(
+
+            $render_count = '{0} items' -f @(
+                $items.Count
+            )
+            if ($CountLabel) {
+                @(
+                    $LabelFormatMode = 'SpaceClear'
+
+                    switch ($Config.LabelFormatMode) {
+                        'SpaceClear' {
+                            $colorFg_label, $colorBG_label
+                            # style 1
+                            $CountLabel
+                            $PSStyle.Reset
+                            ' ' # space before, between, or last color?
+
+                            $ColorFg_count
+                            $ColorBg_count
+                            ' '
+                            $render_count
+                        }
+                        default {
+                            $colorFg_label, $colorBG_label
+                            # style 1
+                            $CountLabel
+                            '' # space before, between, or last color?
+                            # $PSStyle.Reset
+                            $PSStyle.Reset
+                            $ColorFg_count
+                            $ColorBg_count
+                            ' '
+                            $render_count
+
+                        }
+                    }
+                )
+                $renderLabel -join ''
+            }
+            else {
+                $ColorFg_count
+                $ColorBg_count
+                ' '
+                $render_count
+            }
+
+            # $PSStyle.Reset
+            # $PSStyle.Foreground.FromRgb('#e5701c')
+            "${fg:gray60}"
+            if ($Extra) {
+                ' {0} of {1}' -f @(
+                    ($Items)?.GetType().Name ?? "[`u{2400}]"
+                    # $Items.GetType().Name ?? ''
+                    # @($Items)[0].GetType().Name ?? ''
+                    @($Items)[0]?.GetType() ?? "[`u{2400}]"
+                )
+            }
+            $PSStyle.Reset
+        ) -join ''
+        | Write-Information -infa 'Continue'
+
 
     }
 }
@@ -2038,6 +2238,7 @@ function Dotils.Render.CallStack {
     }
 }
 
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
@@ -2087,11 +2288,18 @@ $exportModuleMemberSplat = @{
         'Dotils.Stdout.CollectUntil.Match' # 'PipeUntil.Match' #
         'Dotils.Out.Grid2' # <none>
         'Dotils.Render.Callstack' # => { '.CallStack', 'Render.Stack' }
+        'Dotils.Write-NancyCountOf' # => { 'CountOf', 'OutNull' }
+        'Dotils.Grid' # => { 'Nancy.OutGrid', 'Grid' }
     )
     | Sort-Object -Unique
     Alias    = @(
+        'CountOf' # 'Dotils.Write-NancyCountOf' => { CountOf, OutNull }
+        'OutNull' # 'Dotils.Write-NancyCountOf' => { CountOf, OutNull }
+        'Nancy.OutGrid' # 'Dotils.Grid' => { 'Nancy.OutGrid', 'Grid' }
+        'Grid'          # 'Dotils.Grid' => { 'Nancy.OutGrid', 'Grid' }
+
         '.As.TypeInfo' # 'Dotils.Type.Info'
-	'Dotils.ConvertTo-DataTable' # 'Dotils.DB.toDataTable'
+        'Dotils.ConvertTo-DataTable' # 'Dotils.DB.toDataTable'
         'Find-MyWorkspace'  # 'Dotils.Find-MyWorkspace'
 
         'SelectBy-Module' # Dotils.SelectBy-Module
