@@ -92,7 +92,69 @@ function Dotils.String.Transform.AlignRight {
     }
 }
 
+if($false) {
+    $reason = 'write-warning param binding keeps breaking on import, often silently'
 
+function Dotils.PSDefaultParams.ToggleAllVerboseCommands {
+    <#
+    .SYNOPSIS
+        sugar to toggle PSDefaultParameterValues on and off for a lot of commands
+    .DESCRIPTION
+        Attempts to import the module first.
+        currently only selects 'function' commands
+        aliases might not be included ?
+
+    #>
+    [CmdletBinding()]
+    param(
+        [ValidateNotNullOrEmpty()]
+        [Parameter(position=0, Mandatory)]
+        [ArgumentCompletions(
+            'ImportExcel', 'Pipescript',
+            'Ninmonkey.Console',
+            'ExcelAnt',
+            'Dotils',
+            'TypeWriter',
+            'ugit', 'GitLogger'
+        )]
+        [string]$ModuleName,
+
+        [Parameter(position=1, Mandatory)]
+        [ValidateSet('Enable', 'Disable')]
+        [string]$VerboseMode
+
+        # [Alias('On')][switch]$Enable,
+        # [Alias('Off')][switch]$Disable
+    )
+
+
+    if($Enable)  { $VerboseMode = 'Enable'  }
+    if($Disable) { $VerboseMode = 'Disable' }
+
+    import-module $ModuleName -ea 'stop'
+
+    gcm -m $ModuleName
+        | ? CommandType -eq 'function'
+        | Sort-Object -Unique
+        | %{
+            $keyName = "{0}:Verbose" -f $_.Name
+            $keyName | Join-String -f 'add/remove key: "{0}"' -sep "`n"
+                    | write-verbose
+            if($VerboseMode -eq 'Enable') {
+                $PSDefaultParameterValues[ $keyName ] = $true
+            } else {
+                $PSDefaultParameterValues.
+                    Remove( $keyName )
+            }
+        }
+
+    $PSDefaultParameterValues.
+        GetEnumerator()
+        | Sort-Object Name
+        | OutNull 'DefaultParams'
+
+    }
+}
 function Dotils.Grid {
 
     <#
@@ -2290,6 +2352,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Render.Callstack' # => { '.CallStack', 'Render.Stack' }
         'Dotils.Write-NancyCountOf' # => { 'CountOf', 'OutNull' }
         'Dotils.Grid' # => { 'Nancy.OutGrid', 'Grid' }
+        'Dotils.PSDefaultParams.ToggleAllVerboseCommands ' # => { }
     )
     | Sort-Object -Unique
     Alias    = @(
