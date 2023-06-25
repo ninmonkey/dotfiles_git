@@ -46,6 +46,44 @@ function Dotils.String.Visualize.Whitespace {
         | New-Text -bg 'gray30' -fg 'gray80' | % tostring
     }
 }
+function Dotils.Debug.Find-Variable {
+    # gives metadata to querry against
+    get-variable
+        | %{
+            <#
+                $_.Value
+                    # can you do this as a coalesce? might require error record
+                    | Format-ShortTypeName -ea 'ignore' || '<missing>'
+
+            see also:
+                LocalVariable
+                NullVariable
+                PSCultureVariable
+                PSUICultureVariable
+                PSVariable
+                QuestionMarkVariable
+
+            Now the normal version
+            #>
+
+# function Dotils.Format-TaggedUnionString {
+
+    #  System.Management.Automation.PSVariable
+        [pscustomobject]@{
+            # PSTypeName = 'Dotils.PSVariable'
+            PSTypeName = 'sma.PSVariable'
+            what       = $_.Name
+            value      = $_.Value
+            Kind       = $_.Value.GetType().Name
+            ShortName  =
+                $_.Value
+                | Format-ShortTypeName -ea 'ignore' #|| '<missing>' # can you do this ?
+        }
+    }
+      #| to-xl
+
+}
+
 function Dotils.String.Transform.AlignRight {
     # replace all \r\n sequences with \n
     [Alias('String.Transform.AlignRight')]
@@ -850,6 +888,65 @@ function Dotils.JoinString.As {
         }
     }
 }
+
+function Dotils.Join.Brace {
+    <#
+    .synopsis
+    .example
+        Get-Variable | % gettype | Format-ShortTypeName | Sort-Object -Unique | Dotils.Join.Brace
+    .example
+        'a', 'b', 'c' | Dotils.Join.Brace
+        'a', 'b', 'c' | Join-String -DoubleQuote |  Dotils.Join.Brace
+        'a', 'b', 'c' | Join-String -DoubleQuote -sep ' | ' |  Dotils.Join.Brace
+
+        [a][b][c]
+        ["a""b""c"]
+        ["a" | "b" | "c"]
+    #>
+    # [CmdletBinding()]
+    # [Alias('Join.Brace.Dotils')]
+    param(
+        # [switch]$
+    )
+
+    switch($WhichMode) {
+        'Padding' {
+            $Input | Join-String -f "[{0}]" -op ' ' -os ' '
+        }
+        'Thin' {
+            $Input | Join-String -f "[{0}]" -op '' -os ''
+        }
+        default {
+            $Input | Join-String -f "[{0}]" -op ' ' -os ' '
+        }
+    }
+}
+function Join.Pad.Item {
+    <#
+    .SYNOPSIS
+       Proc Item,  like -join except the output is an array, not one string.
+
+    #>
+    switch($OutputMode){
+        default {
+            # surround with single space
+            $Input -split '\r?\n' | %{  " <{0}> " -f $_ }
+        }
+    }
+    return
+    # or basic
+    #$Input -split '\r?\n' | %{  "<{0}>" -f $_ }
+        # | Join-String -f "`n<{0}>"
+}
+function Dotils.Format-TaggedUnionString {
+    param()
+
+    $choices = $Input
+    $choices | Join-String -sep ' | ' -Property {
+        $_   | Join-String -DoubleQuote
+           } #|# Join.Brace
+}
+# $sample | Dotils.Format-TaggedUnionString | Dotils.Join.Brace
 
 function Dotils.Html.Table.FromHashtable {
     <#
@@ -2410,10 +2507,18 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+        'Dotils.Debug.Find-Variable' # <none>
         'Dotils.FindExceptionSource' # <none>
         #
+        # ...
+        'Dotils.Debug.Find-Variable'
+        'Dotils.Format-TaggedUnionString'
+        'Dotils.Join.Brace'
+        'Join.Pad.Item'
+        # ...
+        #
         'Dotils.Type.Info' # '.As.TypeInfo'
-'Dotils.DB.toDataTable' # 'Dotils.ConvertTo-DataTable
+        'Dotils.DB.toDataTable' # 'Dotils.ConvertTo-DataTable
 
         'Dotils.Build.Find-ModuleMembers' # <none>
         'Dotils.Search-Pipescript.Nin' # <none>
