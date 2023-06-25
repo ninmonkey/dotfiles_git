@@ -906,12 +906,24 @@ function Dotils.Join.Brace {
     # [CmdletBinding()]
     # [Alias('Join.Brace.Dotils')]
     param(
-        # [switch]$
+        [ValidateSet('Padding', 'Wrap', 'Thin')]
+        [string]$OutputFormat = 'Padding'
     )
+    $Config = @{
+        Prefix = ' '
+        Suffix = ' '
+    }
 
     switch($WhichMode) {
+        'Wrap' {
+            # $Config = @{
+            #     Prefix = ' '
+            #     Suffix = ' '
+            # }
+            $Input | Join-String -op $Config.Prefix -os $Config.Suffix
+        }
         'Padding' {
-            $Input | Join-String -f "[{0}]" -op ' ' -os ' '
+            $Input | Join-String -f "[ {0} ]" #-op ' ' -os ' '
         }
         'Thin' {
             $Input | Join-String -f "[{0}]" -op '' -os ''
@@ -939,12 +951,92 @@ function Join.Pad.Item {
         # | Join-String -f "`n<{0}>"
 }
 function Dotils.Format-TaggedUnionString {
-    param()
+    <#
+    .synopsis
+        renders a tagged union of the distinct set of [Type]-Name's of the values
+    .EXAMPLE
+        Pwsh>
 
-    $choices = $Input
-    $choices | Join-String -sep ' | ' -Property {
-        $_   | Join-String -DoubleQuote
-           } #|# Join.Brace
+        Get-Variable | % Gettype | % Name
+            | Dotils.Format-TaggedUnionString
+
+        [ "LocalVariable" | "NullVariable" | "PSCultureVariable" | "PSUICultureVariable" | "PSVariable" | "QuestionMarkVariable" ]
+    .EXAMPLE
+        gci .
+            | % GetType
+            | Dotils.Format-TaggedUnionString
+
+        [ "System.IO.DirectoryInfo" | "System.IO.FileInfo" ]
+
+    .example
+        $sample | Dotils.Format-TaggedUnionString -AsTypeName
+            ["LocalVariable" | "NullVariable" | "PSCultureVariable" | "PSUICultureVariable" | "PSVariable" | "QuestionMarkVariable"]
+
+        $sample | Dotils.Format-TaggedUnionString
+            ["string" | "string" | "string" | "string" | "string" | "string"]
+    #>
+    param(
+        [switch]$AsTypeName,
+
+        [ArgumentCompletions(
+            'AsTypeName', 'AsTypeName2',
+            'AsTypeName.Name.NinTils',
+            'Default'
+        )]
+        [string]$OutputFormat
+    )
+
+    $choices = $Input | Sort-Object -Unique
+    if($AsTypeName) { $OutputFormat = 'AsTypeName' }
+
+    throw 'cat attack this was maybe broken'
+    write-warning 'cat attack this was maybe broken'
+
+    switch($OutputFormat) {
+        'AsTypeName.Name.NinTils' {
+            $choices
+                | Format-ShortTypeName
+                | Join-String -sep ' | ' -Property {
+                    $_ | Join-String -DoubleQuote
+                }
+                # aka: Join-String -op '[ ' -os ' ]']
+                | Dotils.Join.Brace -OutputFormat Padding
+
+                break
+        }
+        'AsTypeName.Name' {
+            $choices
+                | % GetType | % Name
+                | Join-String -sep ' | ' -Property {
+                    $_ | Join-String -DoubleQuote
+                }
+                # aka: Join-String -op '[ ' -os ' ]']
+                | Dotils.Join.Brace -OutputFormat Padding
+
+                break
+        }
+        'AsTypeName' {
+            $choices
+                | % GetType
+                | Join-String -sep ' | ' -Property {
+                    $_ | Join-String -DoubleQuote
+                }
+                # aka: Join-String -op '[ ' -os ' ]']
+                | Dotils.Join.Brace -OutputFormat Padding
+
+                break
+        }
+        default  {
+            $choices
+                | Join-String -sep ' | ' -Property {
+                    $_ | Join-String -DoubleQuote
+                }
+                # aka: Join-String -op '[ ' -os ' ]']
+                | Dotils.Join.Brace -OutputFormat Padding
+        }
+
+    }
+        # $sample | Dotils.Format-TaggedUnionString | Dotils.Join.Brace
 }
 # $sample | Dotils.Format-TaggedUnionString | Dotils.Join.Brace
 
