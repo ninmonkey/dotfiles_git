@@ -277,6 +277,112 @@ function Dotils.Stdout.CollectUntil.Match {
     }
 }
 
+
+function Dotils.Debug.Get-Variable {
+    <#
+    .SYNOPSIS
+        Get variable, using regex patterns
+    .example
+        Dotils.Get-Variable '\d+' -Scopes Local
+    .example
+        Dotils.Get-Variable 'path' -Scopes 0..10
+    .link
+        Dotils.Debug.Compare-VariableScope
+    .link
+        Dotils.Debug.Get-Variable
+    #>
+    [OutputType(
+        'PSVariable[]',
+        'System.Management.Automation.PSVariable[]')]
+    [CmdletBinding()]
+    param(
+        [Alias('Pattern', 'Regex')]
+        [Parameter(Mandatory)]
+        [string[]]$InputPattern,
+
+        [ArgumentCompletions(
+            'Global', 'Script', 'Local',
+            '0', '1', '2', '3', '4', '5', '6'
+        )]
+        [Parameter(Mandatory)]
+        [string[]]$Scopes = 'Local'
+    )
+    write-warning 'double check output works with debugger scope as expected, maybe embedded session is better with explicit global scope in cases'
+
+    $whoAmI =
+        $PSCmdlet.
+            MyInvocation.
+            MyCommand.
+            Name # ( $parentCmdlet = Get-Variable 'PSCmdlet' -Scope 1 )
+
+    [Collections.Generic.List[Object]]$results =
+        @()
+    '⭝ enter: Dotils.Debug.Get-Variable'
+        | Join-String -op $WhoAmi
+    foreach($curScope in $Scopes) {
+        foreach($curRegex in $InputPattern) {
+
+            $query = Get-Variable -Scope $curScope -Name '*'
+            # experimenting with making misleading continuations
+            'Num?: {0} -Scope {1} | Where: {2}' -f
+                @(  $query.
+                        Count, $curScope, $curRegex
+                )
+            | Write-Verbose
+
+            if(-not $query) {'failed' | write-verbose  }
+            # use raw for now, maybe transform later
+            $results.AddRange(@( $Query ))
+        }
+
+    }
+    '⭂ exit: Dotils.Debug.Get-Variable'
+        | Join-String -op $WhoAmi
+    return $results
+}
+
+function Dotils.Debug.Compare-VariableScope {
+    <#
+    .SYNOPSIS
+        Compare-Object on variables by name (and value?) returns only compare-object
+    .link
+        Dotils.Debug.Compare-VariableScope
+    .link
+        Dotils.Debug.Get-Variable
+    #>
+    [CmdletBinding()]
+    param(
+        [string]$Scope1 = '0',
+        [string]$Scope2 = '1'
+
+    )
+    $getVars1 = Get-Variable -scope $Scope1 -ea 'continue'
+    $getVars2 = Get-Variable -scope $Scope2 -ea 'continue'
+
+    @{
+        Vars1Count = $getVars1.Count
+        Vars2Count = $getVars2.Count
+        Names1 =
+            $getVars1.Name
+                | Sort-Object -Unique
+                | Join-string -sep ', ' -p {
+                    $_ | New-text -fg gray80 -bg gray30
+                }
+
+        Names2 =
+            $getVars2.Name
+                | Sort-Object -Unique
+                | Join-string -sep ', ' -p {
+                    $_ | New-text -fg gray80 -bg gray30
+                }
+
+    } | ft  | out-string
+            | Write-Information -ea 'continue'
+        # | write-verbose -verbose
+    Compare-Object ($getVars1) ($getVars2)
+    return
+}
+
 function Dotils.Write-NancyCountOf {
     <#
     .SYNOPSIS
@@ -2390,8 +2496,8 @@ $exportModuleMemberSplat = @{
         'String.Transform.AlignRight' # 'S
         ## --
         'Marking.Html.Table.From.Hashtable' # 'Dotils.Html.Table.FromHashtable'
-
-
+        'Dotils.Debug.Compare-VariableScope'
+        'Dotils.Debug.Get-Variable'
         'PipeUntil.Match' # Dotils.Stdout.CollectUntil.Match
     ) | Sort-Object -Unique
 }
