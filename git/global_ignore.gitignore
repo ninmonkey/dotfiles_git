@@ -1,3 +1,4 @@
+**/node_modules
 # missing:
 ## Temp Excel/word files
 **/*.aws-build

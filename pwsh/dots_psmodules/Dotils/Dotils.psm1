@@ -1446,6 +1446,37 @@ function Dotils.Join.CmdPrefix {
     }
 }
 
+function Dotils.LogObject {
+    # short minimal log
+    [OutputType('String')]
+    [Alias('㏒')]
+    [CmdletBinding()]
+    param(
+        [Alias('NoCompress')][switch]$Expand,
+        [switch]$PassThru
+    )
+    $jsonSplat = @{
+        Compress = -not $Expand
+        Depth = 2
+    }
+    $data = $Input
+    $renderJson =
+        $data | ConvertTo-Json @jsonSplat
+
+    $actualWidth = $host.ui.RawUI.WindowSize.Width
+    $finalRender = @(
+        '  ㏒'
+        "${fg:gray60}${bg:gray15}"
+        $renderJson | shortStr -Length ($actualWidth - 8 )
+        $PSStyle.Reset
+    ) -join ''
+
+    if($Passthru) {
+        return $finalRender # currently still truncates value, returns as string
+    }
+    return $finalRender
+        | Write-Information -infa 'continue'
+}
 function Dotils.Build.Find-ModuleMembers {
     # find items to export
     [CmdletBinding()]
@@ -1848,18 +1879,91 @@ function Dotils.Select-ExcludeBlankProperty {
         $Props = $InputObject.PSObject.Properties
         [Collections.Generic.List[object]]$exclusionList = @()
 
-        $Props | ForEach-Object {
-            if ( [string]::IsNullOrWhiteSpace( $_.Value ) ) {
-                $exclusionList.Add( $_.Name )
+        $Props
+            | ForEach-Object {
+                if ( [string]::IsNullOrWhiteSpace( $_.Value ) ) {
+                    $exclusionList.Add( $_.Name )
+                }
             }
-        }
 
         $exclusionList
-        | Join-String -sep ', ' -SingleQuote -op '$exclusionList: '
-        | Write-Verbose
+            | Join-String -sep ', ' -SingleQuote -op '$exclusionList: '
+            | Write-Verbose
 
         return $InputObject | Select-Object -ExcludeProperty $exclusionList
     }
+}
+
+
+function Dotils.Select-NotBlankKeys {
+    <#
+    .SYNOPSIS
+        enumerate hashtable, drop any keys that have blankable vlaues
+    #>
+    [Alias(
+        'Dotils.DropBlankKeys',
+        'Dotils.Where-NotBlankKeys'
+    )]
+    [CmdletBinding()]
+    [OutputType('Hashtable')]
+    param(
+        [Parameter(mandatory)]
+        [hashtable]$InputHashtable,
+
+        [switch]$NoMutate
+    )
+    throw 'untested from other module'
+    $strUserKeyId = '[User={2} <CoId={0}, EmpId={1}>]' -f @(
+        $finalObj.companyId
+        $finalObj.employeeIdentifier
+        $finalObj.userName
+    )
+    if ($NoMutate) {
+        $targetHash = [hashtable]::new( $InputHashtable )
+    }
+    else {
+        $targetHash = $InputHashtable
+    }
+
+    $msg =
+        $targetHash.GetEnumerator()
+            | Where-Object { [string]::IsNullOrEmpty( $_.Value ) }
+            | ForEach-Object Name | Sort-Object -Unique
+            | Join-String -sep ', ' -op "dropped blank fields on ${strUserKeyId}: "
+
+    @{ Message = $msg }
+        | bdgLog -Category DataIntegrity -Message $msg -PassThru
+        | Write-Verbose
+
+    $toDrop =
+        $targetHash.GetEnumerator()
+            | Where-Object { [string]::IsNullOrEmpty( $_.Value ) }
+            | ForEach-Object Name
+
+    foreach ($k in $toDrop) {
+        $targetHash.Remove( $k )
+    }
+    return $targetHash
+
+}
+
+
+function Dotils.Invoke-TipOfTheDay  {
+    <#
+    .SYNOPSIS
+        grab a random example command from the docs of a random command, or maybe from json files, or, KnowMoreTangent. there even is an official PwshRandomPatchNotes command
+    .DESCRIPTION
+        grab a random example command from the docs of a random command, or maybe from json files, or, KnowMoreTangent. there even is an official PwshRandomPatchNotes command
+    #>
+
+    '<Insert Tip from Get-Help Examples>'
+    Get-Command  mkdir
+            | Select-Object *
+            | Select-ByModule
+    Get-Command  mkdir
+            | Select-Object *
+            | Select-ByModule
+
 }
 function Dotils.SelectBy-Module {
     <#
@@ -2599,6 +2703,8 @@ function Dotils.Render.CallStack {
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+        'Dotils.Select-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
+
         'Dotils.Debug.Find-Variable' # <none>
         'Dotils.FindExceptionSource' # <none>
         #
@@ -2655,10 +2761,14 @@ $exportModuleMemberSplat = @{
         'Dotils.Render.Callstack' # => { '.CallStack', 'Render.Stack' }
         'Dotils.Write-NancyCountOf' # => { 'CountOf', 'OutNull' }
         'Dotils.Grid' # => { 'Nancy.OutGrid', 'Grid' }
-        'Dotils.PSDefaultParams.ToggleAllVerboseCommands ' # => { }
+        'Dotils.PSDefaultParams.ToggleAllVerboseCommands' # => { }
+        'Dotils.LogObject' # 'Dotils.LogObject' => { '㏒' }
     )
     | Sort-Object -Unique
     Alias    = @(
+        'Dotils.DropBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
+        'Dotils.Where-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
+        '㏒' # 'Dotils.LogObject' => { '㏒' }
         'CountOf' # 'Dotils.Write-NancyCountOf' => { CountOf, OutNull }
         'OutNull' # 'Dotils.Write-NancyCountOf' => { CountOf, OutNull }
         'Nancy.OutGrid' # 'Dotils.Grid' => { 'Nancy.OutGrid', 'Grid' }

@@ -21,8 +21,10 @@ $setAliasSplat = @{
 }
 Set-Alias @setAliasSplat
 
-
-
+# javascript, npm / new package manager
+if(-not ($ENV:PATH -split ';' -match 'pnpm')) {
+       $ENV:PATH += ';', $Env:PNPM_HOME -join ''
+}
 
 function .Assert.Clamp {
     <#
