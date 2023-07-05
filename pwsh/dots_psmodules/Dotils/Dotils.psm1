@@ -1955,14 +1955,98 @@ function Dotils.Invoke-TipOfTheDay  {
     .DESCRIPTION
         grab a random example command from the docs of a random command, or maybe from json files, or, KnowMoreTangent. there even is an official PwshRandomPatchNotes command
     #>
+    [CmdletBinding()]
+    param(
+        # sources
+        [Parameter()]
+        [string[]]$ModuleName
+    )
 
-    '<Insert Tip from Get-Help Examples>'
-    Get-Command  mkdir
-            | Select-Object *
-            | Select-ByModule
-    Get-Command  mkdir
-            | Select-Object *
-            | Select-ByModule
+    $ModuleName ??=
+        'Pansies', 'ImportExcel', 'Dotils', 'ExcelAnt', 'Ugit', 'Ninmonkey.Console', 'PsReadLine', 'TypeWriter', 'ClassExplorer' | Sort-Object -Unique
+
+    $ModuleName
+        | Join-String -op 'ModuleSources: ' -sep ', ' -SingleQuote | write-verbose
+
+    # '<Insert Tip from Get-Help Examples>'
+    # Get-Command  mkdir
+    #         | Select-Object *
+
+    # Get-Command  mkdir
+    #         | Select-Object *
+
+    function _randomCommand {
+
+    }
+
+    $innerLimit = 0
+    while( $true ) {
+        if( ($innerLimit++) -gt 15) {
+            throw "Did not find a valid example in $InnerLimit Iterations!"
+        }
+        "Iter = $innerLimit, continue until a non blank example is found" | write-verbose
+        $getModuleSplat = @{
+            Name = $ModuleName
+        }
+
+        function _rand.Module {
+            param()
+            Get-Module @getModuleSplat
+                | Get-Random -count 1
+        }
+        function _rand.Command {
+            param(
+                [string]$whichModule
+            )
+            $cmds =
+                Get-Command -Module $whichModule
+                    | Sort-Object -unique
+
+            $cmds
+                | Get-Random -Count 1
+        }
+        function _rand.Example {
+            param()
+
+            [object[]]$examples =
+                (gcm $whichCmd | Get-Help -Examples).examples.example
+            $whichExample =
+                gcm $whichCmd
+                | Get-Help -Examples
+                | % Examples
+                | Get-Random -Count 1
+        }
+
+        $whichModule =
+            _rand.Module
+
+        $whichCmd =
+           _rand.Command
+
+        $whichModule
+            | Join-String -op 'RandomModule: ' | write-verbose
+
+        $whichCmd
+            | Join-String -op 'WhichCmd: ' | write-verbose
+
+
+
+# $q.examples.example
+
+
+
+        if($whichExample) {
+            $whichExample
+            break
+        }
+    }
+
+    if(-not $whichExample -or $whichExample.Count -eq 0){
+        $errMsg = "ShouldNeverReachException: Failed on: Gcm $whichCmd | Get-Help -Example; Args = $WhichModule, $WhichCmd."
+        throw $ErrMsg # [Exception]::new($errMsg)
+    }
+
+    # gcm -m ImportExcel
 
 }
 function Dotils.SelectBy-Module {
