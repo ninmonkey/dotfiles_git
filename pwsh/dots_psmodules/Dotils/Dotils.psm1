@@ -2784,10 +2784,241 @@ function Dotils.Render.CallStack {
 }
 
 
+function Dotils.Random.Module { # to refactor, to allow piping
+    <#
+    .SYNOPSIS
+        grab a random module from the list of modules
+    .DESCRIPTION
+        Because it doesn't enforce importing modules, it will miss commands that aren't discoverable without loading the module.
+    .example
+        Dotils.Random.Module | Dotils.Random.Command
+    .example
+        'pansies', 'ImportExcel', 'ugit' | Dotils.Random.Module
+    .example
+        Dotils.Random.Module  -ModuleName 'ImportExcel', 'ClassExplorer'
+        'ImportExcel', 'ClassExplorer' | Dotils.Random.Module
+    .NOTES
+        test each invoke mode
+        - [x] Dotils.Random.Module -ModuleName 'ClassExplorer', 'ugit'
+        - [x] 'ClassExplorer', 'ugit' | Dotils.Random.Module
+        - [x] Dotils.Random.Module
+    .link
+        Dotils.Random.Module
+    .link
+        Dotils.Random.Command
+    .link
+        Dotils.Random.CommandExample
+
+    #>
+    [CmdletBinding()]
+    param(
+        # defaults to parameter, else to pipeline, else default value
+        [Parameter(ValueFromPipeline, Position=0)]
+        [string[]]$ModuleName
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+        $PSCmdlet.MyInvocation.ExpectingInput # 𝄔
+            | Join-String -f '  => -begin(): Expecting Input?: {0}' | write-debug
+    }
+    process {
+        $PSCmdlet.MyInvocation.ExpectingInput
+            | Join-String -f '  =>  -proc(): Expecting Input?: {0}' | write-debug
+        # $PSCmdlet.input
+        if( $PSCmdlet.MyInvocation.ExpectingInput ) {
+            $Items.AddRange(@($ModuleName))
+        }
+    }
+    end {
+        $PSCmdlet.MyInvocation.ExpectingInput
+            | Join-String -f '  =>   -end(): Expecting Input?: {0}' | write-debug
+
+        if( -not $PSCmdlet.MyInvocation.ExpectingInput ) {
+            if($ModuleName) {
+                $Items.AddRange(@($ModuleName))
+            }
+        }
+
+        if($items.count -eq 0){
+            write-warning "InputNames not collected! $ModuleName"
+            write-verbose 'fallback to defaults'
+            $items.AddRange(@(
+                'Pansies', 'ImportExcel', 'Dotils', 'ExcelAnt', 'Ugit', 'Ninmonkey.Console', 'PsReadLine', 'TypeWriter', 'ClassExplorer'
+
+            ))
+        }
+        # $ModuleName ??= $ModuleName
+        # $ModuleName ??= @(
+        # )
+        $items
+            | Join-String -sep ', ' -op 'ModuleNames: ' -SingleQuote
+            | Write-Verbose
+
+        $items =
+            $items | Sort-Object -Unique
+
+        # does not enforce loading
+        $maybeModules? = @(
+            Get-Module -name $items
+        )
+        if($maybeModules?.count -lt $items.count) {
+            $Items
+                | Join-String -op 'Expected = ' -sep ', '-SingleQuote
+                | Join-String -op "Some modules were not loaded, Import them first if you wish to include them: `n"
+                | write-warning
+
+            $maybeModules? ?? '∅'
+                | Join-String -op 'Found: = ' -sep ', ' -SingleQuote
+                | write-verbose
+        }
+        $whichModule =
+            $maybeModules?
+                | Get-Random -count 1
+
+        if($whichModule) { return $whichModule }
+
+        if(-not $whichModule) {
+            $errMsg =
+                $ModuleName | Join-String -op "Failed selecting random module! '$WhichModule'" -sep ', ' -SingleQuote
+            throw $errMsg
+        }
+    }
+}
+function Dotils.Random.Command { # to refactor, to allow piping
+    <#
+    .SYNOPSIS
+        grab a random command from the list of modules
+    .DESCRIPTION
+        Because it doesn't enforce importing modules, it will miss commands that aren't discoverable without loading the module.
+
+        Does not filter out aliases. I want them for now.
+    .example
+        Dotils.Random.Command | Dotils.Random.CommandExample
+    .example
+        'ugit' | Dotils.Random.Command
+    .example
+        Dotils.Random.Command  -ModuleName 'ImportExcel', 'ClassExplorer'
+        'ImportExcel', 'ClassExplorer' | Dotils.Random.Command
+    .NOTES
+        test each invoke mode
+        - [ ] Dotils.Random.Command -ModuleName 'ClassExplorer', 'ugit'
+        - [ ] 'ClassExplorer', 'ugit' | Dotils.Random.Command
+        - [ ] Dotils.Random.Command
+    .link
+        Dotils.Random.Module
+    .link
+        Dotils.Random.Command
+    .link
+        Dotils.Random.CommandExample
+
+    #>
+    [OutputType(
+        'System.Management.Automation.FunctionInfo',
+        'System.Management.Automation.CommandInfo',
+        'System.Management.Automation.AliasInfo'
+    )]
+    [CmdletBinding()]
+    param(
+        # defaults to parameter, else to pipeline, else default value
+        # todo: future abstracts accepts a list of commands or module names
+        # which could be object instances
+        [Alias('SourceModule')]
+        [Parameter(ValueFromPipeline, Position=0)]
+        [string[]]$ModuleName
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+        $PSCmdlet.MyInvocation.ExpectingInput # 𝄔
+            | Join-String -f '  => -begin(): Expecting Input?: {0}' | write-debug
+    }
+    process {
+        $PSCmdlet.MyInvocation.ExpectingInput
+            | Join-String -f '  =>  -proc(): Expecting Input?: {0}' | write-debug
+        # $PSCmdlet.input
+        if( $PSCmdlet.MyInvocation.ExpectingInput ) {
+            $Items.AddRange(@($ModuleName))
+        }
+    }
+    end {
+        $PSCmdlet.MyInvocation.ExpectingInput
+            | Join-String -f '  =>   -end(): Expecting Input?: {0}' | write-debug
+
+        if( -not $PSCmdlet.MyInvocation.ExpectingInput ) {
+            if($ModuleName) {
+                $Items.AddRange(@($ModuleName))
+            }
+        }
+
+        if($items.count -eq 0){
+            write-warning "InputNames not collected! $ModuleName"
+            write-verbose 'fallback to defaults'
+            $items.AddRange(@(
+                'Pansies', 'ImportExcel', 'Dotils', 'ExcelAnt', 'Ugit', 'Ninmonkey.Console', 'PsReadLine', 'TypeWriter', 'ClassExplorer'
+
+            ))
+        }
+        # $ModuleName ??= $ModuleName
+        # $ModuleName ??= @(
+        # )
+        $items
+            | Join-String -sep ', ' -op 'ModuleNames: ' -SingleQuote
+            | Write-Verbose
+
+        $items =
+            $items | Sort-Object -Unique
+
+        # # does not enforce loading
+        # $maybeModules? = @(
+        #     Get-Module -name $items
+        # )
+        # if($maybeModules?.count -lt $items.count) {
+        #     $Items
+        #         | Join-String -op 'Expected = ' -sep ', '-SingleQuote
+        #         | Join-String -op "Some modules were not loaded, Import them first if you wish to include them: `n"
+        #         | write-warning
+
+        #     $maybeModules? ?? '∅'
+        #         | Join-String -op 'Found: = ' -sep ', ' -SingleQuote
+        #         | write-verbose
+        # }
+        $whichModule =
+            $Items | Dotils.Random.Module -wa 'ignore' -ea 'ignore'
+        # $whichModule =
+        #     $maybeModules?
+        #         | Get-Random -count 1
+        $cmds = @(
+            Get-Command -Module $whichModule
+            # $whichModule.ExportedCommands.Keys
+            # $whichModule.ExportedFunctions.Keys
+            # $whichModule.ExportedAliases.Keys
+            # $whichModule.ExportedCmdlets.Keys
+
+            # $whichModule | % ExportedCommands
+        ) | Sort-object -Unique
+
+        wait-debugger
+
+        $whichCmd =
+            $cmds | Get-Random -Count 1
+
+        if($whichCmd) { return $whichCmd }
+
+#         ( $someMod ??= Dotils.Random.Module )
+# $q = $someMod | Dotils.Random.Command -Verbose
+        if(-not $whichCmd) {
+            $errMsg =
+                $ModuleName | Join-String -op "Failed selecting random Command! '$WhichModule'" -sep ', ' -SingleQuote
+            throw $errMsg
+        }
+    }
+}
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
         'Dotils.Select-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
+        'Dotils.Random.Module' #  Dotils.Random.Module = { <none> }
+        'Dotils.Random.Command' #  Dotils.Random.Command = { <none> }
 
         'Dotils.Debug.Find-Variable' # <none>
         'Dotils.FindExceptionSource' # <none>
@@ -2801,6 +3032,7 @@ $exportModuleMemberSplat = @{
         #
         'Dotils.Type.Info' # '.As.TypeInfo'
         'Dotils.DB.toDataTable' # 'Dotils.ConvertTo-DataTable
+
 
         'Dotils.Build.Find-ModuleMembers' # <none>
         'Dotils.Search-Pipescript.Nin' # <none>
