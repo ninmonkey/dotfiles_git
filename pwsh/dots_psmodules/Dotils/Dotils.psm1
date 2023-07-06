@@ -3106,8 +3106,11 @@ function Dotils.Random.CommandExample { # to refactor, to allow piping
 
         }
         $helpObj = @(
-            gcm $Items | Get-Help -Examples
-        )
+                gcm $Items | Get-Help -Examples
+            )
+
+        write-warning 'command not finished, try: >
+    Dotils.Random.Command <# -Verbose -Debug #> | Dotils.Random.CommandExample -Verbose <# -Debug #>'
 
         $whichExample =
             # note: Piping to Get-Random does not function the same in this context, unless explicitally wrapped in an array, or passed as a parameter
