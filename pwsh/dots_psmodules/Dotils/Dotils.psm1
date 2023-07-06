@@ -2889,11 +2889,16 @@ function Dotils.Random.Command { # to refactor, to allow piping
     .SYNOPSIS
         grab a random command from the list of modules
     .DESCRIPTION
+        (warning, depraved code, do not continue)
+
         Because it doesn't enforce importing modules, it will miss commands that aren't discoverable without loading the module.
 
         Does not filter out aliases. I want them for now.
     .example
         Dotils.Random.Command | Dotils.Random.CommandExample
+    .example
+        Dotils.Random.Command -ModuleName 'ImportExcel', 'Pansies' -Debug
+        # Debug lists all commands that were chosen from
     .example
         'ugit' | Dotils.Random.Command
     .example
@@ -2953,7 +2958,15 @@ function Dotils.Random.Command { # to refactor, to allow piping
             write-warning "InputNames not collected! $ModuleName"
             write-verbose 'fallback to defaults'
             $items.AddRange(@(
-                'Pansies', 'ImportExcel', 'Dotils', 'ExcelAnt', 'Ugit', 'Ninmonkey.Console', 'PsReadLine', 'TypeWriter', 'ClassExplorer'
+                'Pansies',
+                'ImportExcel',
+                'Dotils',
+                'ExcelAnt',
+                'Ninmonkey.Console',
+                'PsReadLine',
+                'TypeWriter',
+                'ClassExplorer'
+                'Ugit'
 
             ))
         }
@@ -2994,9 +3007,12 @@ function Dotils.Random.Command { # to refactor, to allow piping
             # $whichModule.ExportedCmdlets.Keys
 
             # $whichModule | % ExportedCommands
-        ) | Sort-object -Unique
+            )
+        | Sort-object -Unique
 
-        wait-debugger
+        $cmds | Join-String -op 'FoundCommands: ' -sep ', ' -SingleQuote
+              | write-debug
+
 
         $whichCmd =
             $cmds | Get-Random -Count 1
@@ -3013,12 +3029,190 @@ function Dotils.Random.Command { # to refactor, to allow piping
     }
 }
 
+function Dotils.Random.CommandExample { # to refactor, to allow piping
+    <#
+    .SYNOPSIS
+        grab a random example from a list of commands
+    .DESCRIPTION
+        (warning, depraved code, do not continue)
+
+        Because it doesn't enforce importing modules, it will miss commands that aren't discoverable without loading the module.
+
+        Does not filter out aliases. I want them for now.
+    .example
+        Dotils.Random.Command | Dotils.Random.CommandExample
+    .example
+        Dotils.Random.CommandExample -CommandName 'ExportExcel'
+        # Debug lists all commands that were chosen from
+    .example
+        'ugit' | Dotils.Random.CommandExample
+    .example
+        Dotils.Random.CommandExample  -ModuleName 'ImportExcel', 'ClassExplorer'
+        'ImportExcel', 'ClassExplorer' | Dotils.Random.CommandExample
+    .NOTES
+        test each invoke mode
+        - [ ] Dotils.Random.CommandExample -ModuleName 'ClassExplorer', 'ugit'
+        - [ ] 'ClassExplorer', 'ugit' | Dotils.Random.CommandExample
+        - [ ] Dotils.Random.CommandExample
+    .link
+        Dotils.Random.Module
+    .link
+        Dotils.Random.Command
+    .link
+        Dotils.Random.CommandExample
+
+    #>
+    [OutputType(
+        'System.Management.Automation.FunctionInfo',
+        'System.Management.Automation.CommandInfo',
+        'System.Management.Automation.AliasInfo'
+    )]
+    [CmdletBinding()]
+    param(
+        # this function requires input
+        # defaults to parameter, else to pipeline, else default value
+        # todo: future abstracts accepts a list of commands or module names
+        # which could be object instances
+        [Alias('CommandName')]
+        [ValidateNotNullOrEmpty()]
+        [Parameter(ValueFromPipeline, Position=0, Mandatory)]
+        [object]$InputCommand
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+        $PSCmdlet.MyInvocation.ExpectingInput # 𝄔
+            | Join-String -f '  => -begin(): Expecting Input?: {0}' | write-debug
+    }
+    process {
+        $PSCmdlet.MyInvocation.ExpectingInput
+            | Join-String -f '  =>  -proc(): Expecting Input?: {0}' | write-debug
+        # $PSCmdlet.input
+        if( $PSCmdlet.MyInvocation.ExpectingInput ) {
+            $Items.AddRange(@($InputCommand))
+        }
+    }
+    end {
+        $PSCmdlet.MyInvocation.ExpectingInput
+            | Join-String -f '  =>   -end(): Expecting Input?: {0}' | write-debug
+
+        if( -not $PSCmdlet.MyInvocation.ExpectingInput ) {
+            if($InputCommand) {
+                $Items.AddRange(@($InputCommand))
+            }
+        }
+
+        if($items.count -eq 0){
+            throw "InputNames not collected! $InputCommand"
+
+        }
+        $helpObj = @(
+            gcm $Items | Get-Help -Examples
+        )
+
+        $whichExample =
+            # note: Piping to Get-Random does not function the same in this context, unless explicitally wrapped in an array, or passed as a parameter
+            Get-Random -Count 1 -Input @(
+                $helpObj.examples.examples
+            )
+
+        return $whichExample
+
+
+#         [object[]]$examples = @(
+#             $items | %{
+#                 $cmdName = $_
+#                 (gcm $cmdName | Get-Help -Examples).examples.example
+#             }
+#         )
+
+#          (gcm $Items | Get-Help -Examples).examples.example
+
+#         return
+
+#         $items
+#             | Join-String -sep ', ' -op 'CommandNames: ' -SingleQuote
+#             | Write-Verbose
+
+#         $items =
+#             $items | Sort-Object -Unique
+
+#         $cmds = @( # -is [CommandInfo[]]
+#             gcm $Items
+#                 | Sort-Object -unique
+#         )
+
+#         # $examples = @(
+#         #     foreach($cur in $cmds) {
+#         #         Get-Help $cur -Examples | % Examples
+#         #     }
+#         # )
+
+#         # Get-Help @($cmds)[0]
+
+#         # $help = @(
+#         #     Get-Help $cmds -Examples
+#         # )
+
+#         # $whichExample =
+#         #     $help
+
+#         # # does not enforce loading
+#         # $maybeModules? = @(
+#         #     Get-Module -name $items
+#         # )
+#         # if($maybeModules?.count -lt $items.count) {
+#         #     $Items
+#         #         | Join-String -op 'Expected = ' -sep ', '-SingleQuote
+#         #         | Join-String -op "Some modules were not loaded, Import them first if you wish to include them: `n"
+#         #         | write-warning
+
+#         #     $maybeModules? ?? '∅'
+#         #         | Join-String -op 'Found: = ' -sep ', ' -SingleQuote
+#         #         | write-verbose
+#         # }
+#         # $whichCommand =
+#         #     $Items | Dotils.Random.Module -wa 'ignore' -ea 'ignore'
+#         # gcm $items | Get-Help -Examples
+#         # $whichModule =
+#         #     $maybeModules?
+#         #         | Get-Random -count 1
+#         $cmds = @(
+#             Get-Command -Module $whichModule
+#             # $whichModule.ExportedCommands.Keys
+#             # $whichModule.ExportedFunctions.Keys
+#             # $whichModule.ExportedAliases.Keys
+#             # $whichModule.ExportedCmdlets.Keys
+
+#             # $whichModule | % ExportedCommands
+#             )
+#         | Sort-object -Unique
+
+#         $cmds | Join-String -op 'FoundCommands: ' -sep ', ' -SingleQuote
+#               | write-debug
+
+
+#         $whichCmd =
+#             $cmds | Get-Random -Count 1
+
+#         if($whichCmd) { return $whichCmd }
+
+# #         ( $someMod ??= Dotils.Random.Module )
+# # $q = $someMod | Dotils.Random.Command -Verbose
+#         if(-not $whichCmd) {
+#             $errMsg =
+#                 $ModuleName | Join-String -op "Failed selecting random Command! '$WhichModule'" -sep ', ' -SingleQuote
+#             throw $errMsg
+#         }
+    }
+}
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
         'Dotils.Select-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
         'Dotils.Random.Module' #  Dotils.Random.Module = { <none> }
         'Dotils.Random.Command' #  Dotils.Random.Command = { <none> }
+        'Dotils.Random.CommandExample' #  Dotils.Random.Command = { <none> }
 
         'Dotils.Debug.Find-Variable' # <none>
         'Dotils.FindExceptionSource' # <none>
