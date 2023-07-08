@@ -1414,14 +1414,14 @@ function nin.findNewestItem {
 # which actually causes a full exception when it's piped to Get-Item
 #
 # test:  Is the default Ctor the non-bom one?
-function Out-PipescriptDefault {
+function Out-PipescriptDefaultAsMarkdownTable {
     <#
     .synopsis
         experimental default formatting operator when used within a pipescript
     .LINK
        bPs.Items
     .LINK
-       Out-PipescriptDefault
+       Out-PipescriptDefaultAsMarkdownTable
     #>
     [Alias('Ft.🐍', 'Format-Table.🐍', 'Out-Default.🐍')]
     param()
@@ -1465,7 +1465,7 @@ function bPs.Items {
     .LINK
        bPs.Items
     .LINK
-       Out-PipescriptDefault
+       Out-PipescriptDefaultAsMarkdownTable
     #>
     [Alias(
         'bps.Items.Profile',

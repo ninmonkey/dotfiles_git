@@ -969,11 +969,22 @@ function Dotils.Format-TaggedUnionString {
         [ "System.IO.DirectoryInfo" | "System.IO.FileInfo" ]
 
     .example
+        $sample = Get-Variable | % gettype | % Name | sort -Unique -Descending
+        $sample | dotils.Format-TaggedUnionString -OutputFormat Default |
+
+        # output: ["LocalVariable" | "NullVariable" | "PSCultureVariable" | "PSUICultureVariable" | "PSVariable" | "QuestionMarkVariable"]
+    .example
         $sample | Dotils.Format-TaggedUnionString -AsTypeName
             ["LocalVariable" | "NullVariable" | "PSCultureVariable" | "PSUICultureVariable" | "PSVariable" | "QuestionMarkVariable"]
 
         $sample | Dotils.Format-TaggedUnionString
             ["string" | "string" | "string" | "string" | "string" | "string"]
+
+        .EXAMPLE
+        [System.ConsoleColor]
+            | fime | % Name | Dotils.Format-TaggedUnionString
+
+        #  ["Black" | "Blue" | "Cyan" | "DarkBlue" | "DarkCyan" | "DarkGray" | "DarkGreen" | "DarkMagenta" | "DarkRed" | "DarkYellow" | "Gray" | "Green" | "Magenta" | "Red" | "value__" | "White" | "Yellow"]
     #>
     param(
         [switch]$AsTypeName,
@@ -989,7 +1000,7 @@ function Dotils.Format-TaggedUnionString {
     $choices = $Input | Sort-Object -Unique
     if($AsTypeName) { $OutputFormat = 'AsTypeName' }
 
-    throw 'cat attack this was maybe broken'
+    # throw 'cat attack this was maybe broken'
     write-warning 'cat attack this was maybe broken'
 
     switch($OutputFormat) {
