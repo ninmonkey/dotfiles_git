@@ -962,14 +962,22 @@ function Dotils.Start-WatchForFilesModified {
         $error.Clear(); impo Dotils -Force -Verbose -DisableNameChecking
 
         $sb = { 'hi world' }
-        Dotils.Start-WatchForFilesModified -RootWatchDirectory 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Dotils.psm1' -FileKinds .psm1 -Verbose -infa Continue -SleepMilliseconds 150 -ScriptBlock $sb
+        Dotils.Start-WatchForFilesModified -RootWatchDirectory 'H:\data\2023\pwsh\PsModules.dev\GitLogger\docs' -FileKinds .psm1 -Verbose -infa Continue -SleepMilliseconds 150 -ScriptBlock $sb
     .EXAMPLE
-        # same?
+        Dotils.Start-WatchForFilesModified -RootWatchDirectory H:\data\2023\pwsh\PsModules.dev\GitLogger\docs -FileKinds .ps1 -ScriptBlock {
+            $bps_Splat = @{
+                BaseDirectory = 'H:\data\2023\pwsh\PsModules.dev\GitLogger\docs'
+                InputObject   = 'MyRepos2.ps.*'
+            }
+            bps.🐍 @bps_Splat
+        } -SleepMilliseconds 1400
+    .EXAMPLE
+        impo Dotils -Force -Verbose -DisableNameChecking
         $dotils_watch = @{
-            FileKinds          = '.psm1'
+            FileKinds          = '.psm1', '.ps1', '.psd1'
             InformationAction  = 'Continue'
-            RootWatchDirectory = 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Dotils.psm1'
-            SleepMilliseconds  = 150
+            RootWatchDirectory = 'H:\data\2023\pwsh\PsModules.dev\GitLogger\docs'
+            SleepMilliseconds  = 450
             Verbose            = $true
             ScriptBlock        = {
                 $bps_Splat = @{
@@ -987,54 +995,85 @@ function Dotils.Start-WatchForFilesModified {
     param(
         [Alias('Path')]
         [Parameter(Mandatory, Position=0)]
+        [ArgumentCompletions(
+            'H:\data\2023\pwsh\PsModules.dev\GitLogger\docs')]
         [string]$RootWatchDirectory,
 
+        # not currently a regex
         [ArgumentCompletions(
-            '.ps1', '.psm1', '.psd1', '.md', '.js', '.html', '.css'
+            '.ps1', '.psm1', '.psd1', '.md', '.js', '.html', '.css', '.ts', '.svg', '.md'
         )]
         [Parameter(Mandatory, Position=1)]
         [string[]]$FileKinds,
 
+
         # Action to run
         [Alias('Expression', 'Action')]
+        [ArgumentCompletions(
+            '{
+        $bps_Splat = @{
+            BaseDirectory = ''H:\data\2023\pwsh\PsModules.dev\GitLogger\docs''
+            InputObject   = ''MyRepos2.ps.*''
+        }
+        bps.🐍 @bps_Splat
+    }'
+    #-replace '\^M', "`n")
+        )]
         [Parameter(Mandatory, Position=2)]
         [ScriptBlock]$ScriptBlock,
 
         # sleep milliseconds cycle until ctrl+c
         [Alias('SleepAsMs')]
-        [int]$SleepMilliseconds  = 450
+        [int]$SleepMilliseconds  = 1400,
+
+        [switch]$NotSilent
     )
     $script:__dotilsStartWatch ??= @{ LastInvokeTime = 0 }
     $state = $script:__dotilsStartWatch
 
     function __handleIteration {
+        [cmdletBinding()]
         $now = [Datetime]::Now
+        # $state = $script:__dotilsStartWatch
 
         $files = gci -LiteralPath $RootWatchDirectory -Recurse -file
+            | CountOf -CountLabel 'Files'
             | ?{ $_.Extension.ToLower() -In @( $FileKinds ) }
             | CountOf -CountLabel 'FilesOfType'
-            | ?{ $_.LastWriteTime -gt $state.LastInvokeTime }
+            # | ?{ $_.LastWriteTime -gt $state.LastInvokeTime }
+            | ?{ $_.LastWriteTime -gt $script:__dotilsStartWatch.LastInvokeTime }
             | sort-object LastWriteTIme -Descending
             | CountOf -CountLabel 'ModifiedFiles'
+        $files
             | Write-Information
 
+        if($files.count -gt 0) {
+            # wait-debugger
+        } else {
+            'none found: ' | write-debug # write-host -back darkyellow
+            return
+        }
         if($Files.count -gt 0){
+            $State.lastInvokeTime | Join-String -op 'most recently: ' | write-verbose -verbose
+
             $files
                 | Join-String -sep ', ' -single -p Name -op 'Found New files! (newest): '
                 | Write-Information
             'invoke-scriptblock' | write-verbose
+            & $ScriptBlock
+            $script:__dotilsStartWatch.LastInvokeTime = $now
+            $null = 0
         } else {
             'still cached' | write-debug
         }
 
-        $state.LastInvokeTime = $now
-    }
 
+    }
     try {
         while($true) {
             sleep -Milliseconds $SleepMilliseconds
-            'tick'
-            # . _handleIteration
+            'tick' |write-debug
+            . __handleIteration
         }
     } catch {
         write-warning 'Dotils.Start-WatchForFilesModified: => catch'
