@@ -950,6 +950,106 @@ function Join.Pad.Item {
     #$Input -split '\r?\n' | %{  "<{0}>" -f $_ }
         # | Join-String -f "`n<{0}>"
 }
+
+function Dotils.Start-WatchForFilesModified {
+    <#
+    .synopsis
+        Invoke a scriptblock if files are newer than the last invoke
+    .NOTES
+        better solution: use events for file watcher
+    .EXAMPLE
+        Pwsh>
+        $error.Clear(); impo Dotils -Force -Verbose -DisableNameChecking
+
+        $sb = { 'hi world' }
+        Dotils.Start-WatchForFilesModified -RootWatchDirectory 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Dotils.psm1' -FileKinds .psm1 -Verbose -infa Continue -SleepMilliseconds 150 -ScriptBlock $sb
+    .EXAMPLE
+        # same?
+        $dotils_watch = @{
+            FileKinds          = '.psm1'
+            InformationAction  = 'Continue'
+            RootWatchDirectory = 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Dotils.psm1'
+            SleepMilliseconds  = 150
+            Verbose            = $true
+            ScriptBlock        = {
+                $bps_Splat = @{
+                    BaseDirectory = 'H:\data\2023\pwsh\PsModules.dev\GitLogger\docs'
+                    InputObject   = 'MyRepos2.ps.*'
+                }
+                bps.🐍 @bps_Splat
+            }
+        }
+
+        Dotils.Start-WatchForFilesModified @dotils_watch
+
+    #>
+    [CmdletBinding()]
+    param(
+        [Alias('Path')]
+        [Parameter(Mandatory, Position=0)]
+        [string]$RootWatchDirectory,
+
+        [ArgumentCompletions(
+            '.ps1', '.psm1', '.psd1', '.md', '.js', '.html', '.css'
+        )]
+        [Parameter(Mandatory, Position=1)]
+        [string[]]$FileKinds,
+
+        # Action to run
+        [Alias('Expression', 'Action')]
+        [Parameter(Mandatory, Position=2)]
+        [ScriptBlock]$ScriptBlock,
+
+        # sleep milliseconds cycle until ctrl+c
+        [Alias('SleepAsMs')]
+        [int]$SleepMilliseconds  = 450
+    )
+    $script:__dotilsStartWatch ??= @{ LastInvokeTime = 0 }
+    $state = $script:__dotilsStartWatch
+
+    function __handleIteration {
+        $now = [Datetime]::Now
+
+        $files = gci -LiteralPath $RootWatchDirectory -Recurse -file
+            | ?{ $_.Extension.ToLower() -In @( $FileKinds ) }
+            | CountOf -CountLabel 'FilesOfType'
+            | ?{ $_.LastWriteTime -gt $state.LastInvokeTime }
+            | sort-object LastWriteTIme -Descending
+            | CountOf -CountLabel 'ModifiedFiles'
+            | Write-Information
+
+        if($Files.count -gt 0){
+            $files
+                | Join-String -sep ', ' -single -p Name -op 'Found New files! (newest): '
+                | Write-Information
+            'invoke-scriptblock' | write-verbose
+        } else {
+            'still cached' | write-debug
+        }
+
+        $state.LastInvokeTime = $now
+    }
+
+    try {
+        while($true) {
+            sleep -Milliseconds $SleepMilliseconds
+            'tick'
+            # . _handleIteration
+        }
+    } catch {
+        write-warning 'Dotils.Start-WatchForFilesModified: => catch'
+        write-verbose 'Dotils.Start-WatchForFilesModified: => catch'
+        throw
+    } finally {
+        write-verbose 'Dotils.Start-WatchForFilesModified: => finally'
+    } clean {
+        write-verbose 'Dotils.Start-WatchForFilesModified: => clean'
+    }
+
+    'Dotils.Start-WatchForFilesModified: => exit'
+        | write-host -fore green
+
+}
 function Dotils.Format-TaggedUnionString {
     <#
     .synopsis
@@ -3223,6 +3323,7 @@ function Dotils.Random.CommandExample { # to refactor, to allow piping
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     Function = @(
+        'Dotils.Start-WatchForFilesModified' # 'Dotils.Start-WatchForFilesModified' = { <none> }
         'Dotils.Select-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
         'Dotils.Random.Module' #  Dotils.Random.Module = { <none> }
         'Dotils.Random.Command' #  Dotils.Random.Command = { <none> }
