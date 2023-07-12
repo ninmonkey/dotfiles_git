@@ -1,4 +1,5 @@
 {
+    // sess: 2023-06-03
     /*
     nord token customizations: <https://www.nordtheme.com/docs/ports/visual-studio-code/customization#ui>
     terminal config troubleshoooting:c
@@ -22,12 +23,82 @@
             },
         ],
         "configurations": [
+            {
+                "name": "Cur.ps1 🏃‍♂️",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${file}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                // "args": [
+                //     "-Nop"
+                // ],
+                // "cwd": "${workspaceFolder}"
+                "cwd": "${file}" // else workspace
+                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            },
+            {
+                "name": "Launch Program",
+                "program": "${workspaceFolder}/app.js",
+                "request": "launch",
+                "skipFiles": [
+                    "<node_internals>/**"
+                ],
+                "type": "node"
+            },
+            {
+                "console": "integratedTerminal",
+                "internalConsoleOptions": "neverOpen",
+                "name": "🤖 nodemon",
+                "program": "${workspaceFolder}/app.js",
+                "request": "launch",
+                "restart": true,
+                "runtimeExecutable": "nodemon",
+                "skipFiles": [
+                    "<node_internals>/**"
+                ],
+                "type": "node"
+            },
             // pipe-script it
+            {
+                "name": "🐍 🤖task sketch 🐍",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "h:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.ps1",
+                "args": [
+                    "\"${file}\""
+                ],
+                "cwd": "${cwd}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "aaa",
+                    "order": 1
+                }
+            },
             {
                 "name": "🐍 PssipeSsScriptsSs 🐍",
                 "type": "PowerShell",
                 "request": "launch",
                 "script": "h:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.ps1",
+                "args": [
+                    "\"${file}\""
+                ],
+                "cwd": "${cwd}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "aaa",
+                    "order": 1
+                }
+            },
+            {
+                "name": "🐍Pipescript.Basic 📌",
+                "type": "PowerShell",
+                "request": "launch",
+                // calls a 2 line powershell script, on the selected file
+                "script": "h:/data/2023/dotfiles.2023/pwsh/vscode/editorServicesScripts/ExportPipescript.minimal.ps1",
                 "args": [
                     "\"${file}\""
                 ],
@@ -318,23 +389,23 @@
                 "cwd": "${file}" // else workspace
                 // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
             },
-            {
-                "name": "Cur.ps1 🏃‍♂️",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${file}",
-                "presentation": {
-                    "hidden": false,
-                    "group": "Invoke-Run",
-                    "order": 1
-                },
-                // "args": [
-                //     "-Nop"
-                // ],
-                // "cwd": "${workspaceFolder}"
-                "cwd": "${file}" // else workspace
-                // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
-            },
+            // {
+            //     "name": "Cur.ps1 🏃‍♂️",
+            //     "type": "PowerShell",
+            //     "request": "launch",
+            //     "script": "${file}",
+            //     "presentation": {
+            //         "hidden": false,
+            //         "group": "Invoke-Run",
+            //         "order": 1
+            //     },
+            //     // "args": [
+            //     //     "-Nop"
+            //     // ],
+            //     // "cwd": "${workspaceFolder}"
+            //     "cwd": "${file}" // else workspace
+            //     // "cwd": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Powershell"
+            // },
             {
                 "presentation": {
                     "hidden": false,
@@ -854,6 +925,7 @@
     "editor.matchBrackets": "always", // shows the block you're in, without touching bracket
     "editor.parameterHints.cycle": true,
     "editor.parameterHints.enabled": true,
+    "editor.suggest.showTypeParameters": true,
     "editor.peekWidgetDefaultFocus": "tree",
     // "editor.quickSuggestions": false | true | Obj
     "editor.quickSuggestions": {
@@ -902,46 +974,6 @@
     "html.format.wrapAttributes": "auto",
     "editor.definitionLinkOpensInPeek": true,
     "editor.definitionLinkOpensInPeek": false,
-    /*
-
-  ###### SubSect: Truly Experimental
-
-      */
-    "search.experimental.searchInOpenEditors": true,
-    /*
-
-
-    "workbench.panel.defaultLocation": "right",
-    "workbench.panel.defaultLocation": "bottom",
-    "terminal.integrated.tabs.showActions": "singleTerminalOrNarrow",
-    "terminal.integrated.showExitAlert": true,
-    /*
-
-  ###### SubSect: Editor ⇢ Tabs, Pins, Icons, Decorations
-
-      */
-    "workbench.editor.showTabs": false,
-    "workbench.editor.showTabs": true, // default
-    "workbench.editor.showIcons": false,
-    "workbench.editor.showIcons": true, // default
-    // see: <https://code.visualstudio.com/updates/v1_53#_wrap-tabs>
-    "workbench.editor.wrapTabs": false, // default
-    // "workbench.editor.tabSizing": "shrink", // super important if you 'wrapTabs'
-    // "workbench.editor.tabSizing": "fit", // super important if you 'wrapTabs'
-    "workbench.editor.tabSizing": "fit", // super important if you 'wrapTabs'
-    // "workbench.editor.wrapTabs": true,
-    /*
-      "workbench.editor.pinnedTabSizing":
-      Controls the sizing of pinned editor tabs. Pinned tabs are sorted to the beginning of all opened tabs and typically do not close until unpinned. This value is ignored when #workbench.editor.showTabs# is disabled.
-      "compact":      A pinned tab will show in a compact form with only icon or first letter of the editor name.
-      "normal":       [default] A pinned tab inherits the look of non pinned tabs.
-      "shrink":       A pinned tab shrinks to a compact fixed size showing parts of the editor name.
-      */
-    "workbench.editor.pinnedTabSizing": "shrink",
-    "workbench.editor.pinnedTabSizing": "normal", // default
-    "workbench.editor.decorations.colors": true,
-    "workbench.editor.decorations.badges": true,
-    "workbench.editor.enablePreviewFromCodeNavigation": true,
     /*
 
   ###### SubSect: Searching
@@ -1101,7 +1133,6 @@
         "editor.semanticHighlighting.enabled": true,
     },
     "[markdown-math][markdown_latex_combined]": {},
-    "[dotnet-interactive.markdown]": {},
     "[json]": {
         "editor.suggest.showSnippets": false,
         // "editor.quickSuggestions": {
@@ -1109,7 +1140,7 @@
         // },
         // "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.defaultFormatter": "vscode.json-language-features",
-        "editor.formatOnSave": true,
+        "editor.$ve": true,
         "editor.formatOnPaste": false,
         // "editor.formatOnType": true,
         "editor.formatOnPaste": false,
@@ -1174,9 +1205,11 @@
     "editor.inlineSuggest.showToolbar": "always",
     "editor.inlineSuggest.showToolbar": "always",
     "livePreview.autoRefreshPreview": "On All Changes in Editor",
-    "livePreview.serverRoot": "src",
-    "livePreview.serverRoot": "",
-    "livePreview.customExternalBrowser": "Default",
+    "livePreview.openPreviewTarget": "External Browser",
+    // "livePreview.serverRoot": "src",
+    // "livePreview.serverRoot": "",
+    // "livePreview.customExternalBrowser": "Default",
+    "livePreview.customExternalBrowser": "Edge",
     "xml.format.preserveAttributeLineBreaks": false,
     "xmlTools.splitAttributesOnFormat": true,
     "xml.format.splitAttributes": true,
@@ -1203,11 +1236,15 @@
     "xml.codeLens.enabled": true,
     "[html]": {
         // "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": false,
+        "editor.formatOnSaveMode": "modifications",
         "editor.suggest.insertMode": "replace",
         "gitlens.codeLens.scopes": [
             "document"
         ],
-        "editor.defaultFormatter": "vscode.html-language-features"
+        "editor.defaultFormatter": "vscode.html-language-features",
+        "editor.snippetSuggestions": "bottom",
+        "editor.suggestSelection": "recentlyUsedByPrefix"
     },
     "[markdown]": {
         // "editor.defaultFormatter": "vscode.markdown-language-features",
@@ -1215,6 +1252,7 @@
         // "editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced",
         // "editor.defaultFormatter": "yzhang.markdown-all-in-one",
         "editor.wordWrap": "on",
+        "editor.snippetSuggestions": "none",
         "editor.quickSuggestions": {
             "comments": "off",
             "strings": "off",
@@ -1470,7 +1508,7 @@
         // "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
-        "editor.semanticHighlighting.enabled": true,
+        "editor.semanticHighlighting.enabled": false,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
         "editor.suggest.showFunctions": true,
@@ -1628,8 +1666,7 @@
     // Specifies the path to a PowerShell Script Analyzer settings file. To override the default settings for all projects, enter an absolute path, or enter a path relative to your workspace.
     // old: <file:///C:/Users/cppmo_000/skydrive/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1>
     "powershell.scriptAnalysis.settingsPath": "C:/Users/cppmo_000/skydrive/Documents/2021/dotfiles_git/powershell/PSScriptAnalyzerSettings.psd1",
-    // "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
-    "powershell.scriptAnalysis.enable": true,
+    "powershell.scriptAnalysis.enable": false,
     /*
 
   ### Sect: Chris Dent Powershell Config
@@ -1677,7 +1714,6 @@
     "xml.fileAssociations": [
         {
             "systemId": "https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd",
-            // "pattern": "**/*.Format.ps1xml"
             "pattern": "**/*.[Ff]ormat.ps1xml"
         },
         {
@@ -1713,11 +1749,11 @@
     "files.autoGuessEncoding": false,
     "files.associations": {
         // these have higher precendence than extensions
+        "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
         "*.dax": "sql",
         "*.json": "jsonc",
         "*.jsonl": "jsonc",
         // powershell
-        "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
         // microsoft / vs studio
         "*.wixproj": "xml",
         "*.mproj": "xml",
@@ -1728,6 +1764,7 @@
         "nuget.config": "xml",
         "*.psm1": "powershell",
         "*.resx": "xml", // visual studio
+        // "*.psm1": "ps1",
     },
     /*
 
@@ -1795,106 +1832,6 @@
     // default value
     "explorer.excludeGitIgnore": false, /* warning: is no longer visible in editor */
     "explorer.excludeGitIgnore": true, /* warning: is no longer visible in editor */
-    "files.exclude": {
-        "**/*.exe": true,
-        "**/*.lnk": true,
-        "**/.git": true,
-        "**/*.aws-sam": true, // makes type invisible
-        "**/*.aws-sam": false, // re-enables invisible folder
-        "**/Output": true,
-        "**/*.pbix": true,
-        "**/*.zip": true,
-        "**/*.cache": true,
-        // venv, cache, or compiled
-        "**/*.py[co]": true,
-        "**/__pycache__": true,
-        "**/node_modules": true,
-        "**/.mypy_cache": true,
-        // node and
-        // "**sdfds": { "when": "$(basename).extension" }
-        // "**/*.js": false,
-        // "files.exclude": {
-        //     "**/.git": true,
-        //     "**/.svn": true,
-        //     "**/.hg": true,
-        //     "**/CVS": true,
-        //     "**/.DS_Store": true,
-        //     "**/Thumbs.db": true
-        // },
-        // new ignore test
-        "**/venv/*": true,
-        "**/*.js": { // example taken from the docs or blog I think ?
-            // they altered the conditional syntax a couple times so I should confirm this
-            "when": "$(basename).min.js",
-            "exclude": false,
-        },
-        "**/*.{exe,zip,7z,xlsx}": true,
-        "**/*.zip": true,
-        "**/.output/*.csv": true,
-        "**/.export/*.csv": true,
-        "**/.input/*.csv": true,
-        //
-        "**/.output/*.log": true,
-        "**/.export/*.log": true,
-        "**/.input/*.log": true,
-        //
-        "**/.output/*.json": true,
-        "**/.export/*.json": true,
-        "**/.input/*.json": true,
-        "**/*.lnk": true,
-        "**/.git": true,
-        "**/*.pbix": true,
-        "**/*.zip": true,
-        // venv, cache, or compiled
-        "**/*.py[co]": true,
-        "**/__pycache__": true,
-        "**/node_modules": true,
-        "**/.mypy_cache": true,
-        "**/venv": true,
-        "**/.output/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
-        "**/.input/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
-        "**/.export/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
-        // # top level
-        "{.output,.export,.input}": true,
-        // todo: verify this works correctly
-        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
-        // "**/*.js": false,
-    },
-    "files.watcherExclude": {
-        // Configure paths or glob patterns to exclude from file watching. Paths or basic glob patterns that are relative (for example `build/output` or `*.js`) will be resolved to an absolute path using the currently opened workspace. Complex glob patterns must match on absolute paths (i.e. prefix with `**/` or the full path and suffix with `/**` to match files within a path) to match properly (for example `**/build/output/**` or `/Users/name/workspaces/project/build/output/**`). When you experience the file watcher process consuming a lot of CPU, make sure to exclude large folders that are of less interest (such as build output folders).
-        "**/.export/**": true,
-        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
-        "**/.export/**": true,
-        "**/.output/**": true,
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/*/**": true,
-        "**/.hg/store/**": true
-    },
-    // Configure extra paths to watch for changes inside the workspace. By default, all workspace folders will be watched recursively, except for folders that are symbolic links. You can explicitly add absolute or relative paths to support watching folders that are symbolic links. Relative paths will be resolved to an absolute path using the currently opened workspace.
-    "files.watcherInclude": [],
-    /*
-
-    searching cheat-sheet (for ctrl+F)
-
-        see: <https://code.visualstudio.com/docs/editor/codebasics#_find-in-selection>
-        This  is shorthand for ${WorkSpaceRoot}/example:
-            ./example
-
-        glob style
-            *  : 0-to-many
-            ?  : 1 char
-            ** : any number of path segments (even 0)
-            [] : range, 0-9
-            [!]: example.[!0-9]
-            {} : group pattern
-                {**\/*.html,**\/*.txt}
-
-                had to add \\ escapes because this is json
-
-
-
-    */
     "breadcrumbs.filePath": "off",
     "breadcrumbs.filePath": "last", // theme-tag: minimalism
     "breadcrumbs.filePath": "on", // theme-tag: information
@@ -2117,6 +2054,7 @@
 
       */
     "errorLens.errorColor": "rgba(22,0,0,0.1)",
+    "errorLens.errorColor": "#fe9999",
     "errorLens.errorTextColor": "rgba(242,240,240,0.1)",
     "errorLens.hintColor": "rgba(20,140,140,0.1)",
     "errorLens.fontStyle": "normal",
@@ -2228,9 +2166,9 @@
         "errorLens.errorMessageBackground": "#e4545419",
         "errorLens.errorBackground": "#362b1f6b", // default:#332424
         "errorLens.errorBackground": "#362b1f34", // dim
-        "errorLens.warningForeground": "#F2962D", // orange default
-        "errorLens.warningForeground": "#f2962d32", // default -> dim 2x
         "errorLens.warningForeground": "#f2962d6c", // default -> dim 1x
+        "errorLens.warningForeground": "#f2962d32", // default -> dim 2x
+        "errorLens.warningForeground": "#F2962D", // orange default
         // custom dim theme
         "editorBracketHighlight.foreground1": "#ffffff80", // dim gray
         "editorBracketHighlight.foreground1": "#ffd780", // # dim
@@ -2300,6 +2238,13 @@
     // },
     "terminal.integrated.allowWorkspaceConfiguration": false,
     // "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.automationProfile.windows": null,
+    "terminal.integrated.automationProfile.windows": {
+        "args": [],
+        "color": "terminal.ansiMagenta",
+        "path": "pwsh.exe",
+        "icon": "browser"
+    },
     "terminal.integrated.enableFileLinks": true,
     "terminal.integrated.environmentChangesIndicator": "warnonly",
     /*
@@ -2424,15 +2369,36 @@
                     // "fontStyle": "bold"
                 }
             },
-            {
-                "scope": "constant.character.escape",
-                "settings": {
-                    // "foreground": "#FF0000",
-                    // "fontStyle": "bold"
-                    // "fontStyle": "underline"
-                    // "fontStyle": "bold"
-                }
-            },
+            // {
+            //     "scope": "constant.character.escape",
+            //     "settings": {
+            //         // "foreground": "#FF0000",
+            //         // "fontStyle": "bold"
+            //         // "fontStyle": "underline"
+            //         // "fontStyle": "bold"
+            //     }
+            // },
+            /*
+            palette
+
+        to generate:
+            In   [1]:
+                Get-Gradient -StartColor 'ff0031' -EndColor '9842b4' -Width 3 | Join-String -sep ' ' | Set-Clipboard -PassThru
+
+            Out: [1]: #FE0031 #E40081 #9842B4
+
+            reds:   #ff000031 #ff00005e #FF0000
+            puke:   #d2e0555e #707c185e #2c300c5e
+            perps:  #9842b4bb
+            */
+            // {
+            //     "name": "does stuff [token experiment]",
+            //     "scope": "support.function.powershell",
+            //     "settings": {
+            //         "foreground": "#707c185e",
+            //         "fontStyle": "strikethrough"
+            //     }
+            // }
             /*
             {
                 "scope": "storage.type.powershell",
@@ -2585,6 +2551,7 @@
     "pesterExplorer.autoDiscoverOnOpen": true,
     "editor.renderWhitespace": "none",
     // "powershell.codeFormatting.pipelineIndentationStyle": "NoIndentation",
+    "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
     "redhat.telemetry.enabled": false,
     "snippets.viewer.sortSnippetsByName": true,
     "python.defaultInterpreterPath": "C:/Users/cppmo_000/.virtualenvs/1-offs-ErlZkEu9/Scripts/python.exe",
@@ -3129,8 +3096,8 @@
     //  - selectWord: Double clicking selects the word under the cursor.
     //  - goToLocation: Double clicking opens the result in the active editor group.
     //  - openLocationToSide: Double clicking opens the result in the editor group to the side, creating one if it does not yet exist.
-    "search.searchEditor.doubleClickBehaviour": "goToLocation",
     "search.searchEditor.doubleClickBehaviour": "openLocationToSide",
+    "search.searchEditor.doubleClickBehaviour": "goToLocation",
     // When enabled, new Search Editors will reuse the includes, excludes, and flags of the previously opened Search Editor.
     "search.searchEditor.reusePriorSearchConfiguration": true,
     // Search all files as you type.
@@ -3291,7 +3258,7 @@
     //  - ignore: Don't insert or remove any semicolons.
     //  - insert: Insert semicolons at statement ends.
     //  - remove: Remove unnecessary semicolons.
-    "typescript.format.semicolons": "ignore",
+    "typescript.format.semicolons": "remove",
     // Enable/disable implementations CodeLens. This CodeLens shows the implementers of an interface.
     "typescript.implementationsCodeLens.enabled": true,
     // Enable/disable inlay hints for member values in enum declarations:
@@ -3389,8 +3356,8 @@
     // Enable/disable introducing aliases for object shorthand properties during renames. Requires using TypeScript 3.4 or newer in the workspace.
     "typescript.preferences.useAliasesForRenames": true,
     // Enable/disable references CodeLens in TypeScript files.
-    "typescript.referencesCodeLens.enabled": false,
     "typescript.referencesCodeLens.enabled": true,
+    "typescript.referencesCodeLens.enabled": false,
     // Enable/disable references CodeLens on all functions in TypeScript files.
     "typescript.referencesCodeLens.showOnAllFunctions": false,
     "typescript.referencesCodeLens.showOnAllFunctions": true,
@@ -3738,8 +3705,7 @@
     "errorLens.delay": 1300,
     "errorLens.followCursorMore": 2,
     "errorLens.followCursor": "closestProblem",
-    "errorLens.exclude": [], //# regex
-    "errorLens.excludeBySource": [], // ["eslint"]
+    "errorLens.exclude": [], // ["eslint"]
     "errorLens.statusBarIconsEnabled": true,
     "yaml.schemas": {},
     // "errorLens.severityText": [
@@ -4886,6 +4852,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.suggest.showInlineDetails": true,
         "editor.suggest.preview": true,
         "editor.suggest.showSnippets": false,
+        "editor.suggest.showSnippets": true,
         "editor.snippetSuggestions": "bottom",
         "editor.suggest.filterGraceful": true,
         "editor.suggest.insertMode": "insert",
@@ -5023,6 +4990,15 @@ workbench.action.quickOpenNavigateNextInViewPicker */
 
     */
     //  - interval: Line numbers are rendered every 10 lines.
+    "[xml]": {
+        "editor.fontSize": 14,
+        "editor.suggest.preview": false,
+        "editor.suggest.preview": true,
+        "editor.snippetSuggestions": "inline",
+        "editor.snippetSuggestions": "none",
+        "editor.quickSuggestionsDelay": 150,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+    },
     "[powershell]": {
         "editor.lineNumbers": "interval", // hide numbers, show only every 10th
         // "editor.suggest.shareSuggestSelections": true,
@@ -5031,6 +5007,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.tabCompletion": "onlySnippets",
         "editor.suggestSelection": "recentlyUsedByPrefix", // <// https://code.visualstudio.com/docs/editor/intellisense#_suggestion-selection>
         "editor.suggestSelection": "first",
+        "editor.suggestSelection": "recentlyUsedByPrefix",
         "editor.suggest.localityBonus": true, // example: <https://code.visualstudio.com/docs/editor/intellisense#_locality-bonus> not sure if you'll like this
         "editor.suggestOnTriggerCharacters": true, // on '.'
         "editor.quickSuggestionsDelay": 10, // super slow to when testing
@@ -5043,11 +5020,20 @@ workbench.action.quickOpenNavigateNextInViewPicker */
             "strings": "inline",
             "strings": "off",
         },
+        "editor.snippets.codeActions.enabled": true,
+        "editor.suggest.showSnippets": true,
+        "editor.suggest.showSnippets": false,
+        "editor.inlineSuggest.suppressSuggestions": true,
+        "editor.inlineSuggest.suppressSuggestions": false,
+        "editor.inlineSuggest.enabled": true,
+        "editor.inlineSuggest.enabled": false,
+        "editor.inlineSuggest.showToolbar": "always",
         "outline.showClasses": true,
         "breadcrumbs.showClasses": true,
         "editor.suggest.showClasses": true,
         // "editor.snippetSuggestions": "top",
         "editor.snippetSuggestions": "inline",
+        "editor.snippetSuggestions": "bottom", // snippets *never* show on suggestions, then hit the hotkey 'insert snippet' if you want to manually show them
         "editor.snippetSuggestions": "none", // snippets *never* show on suggestions, then hit the hotkey 'insert snippet' if you want to manually show them
         "editor.fontSize": 18,
         "editor.fontSize": 14,
@@ -5060,16 +5046,19 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.rename.enablePreview": true,
         "editor.suggest.preview": true,
         "editor.suggest.selectionMode": "whenQuickSuggestion",
-        "editor.formatOnSave": false,
         "editor.formatOnSaveMode": "modificationsIfAvailable",
+        "editor.formatOnSave": false,
         "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
+        // "debug.saveBeforeStart":
         // "editor.suggest.snippetsPreventQuickSuggestions": true
+        "editor.suggest.preview": false,
+        "editor.suggest.preview": true,
     },
     "[jsonc][json]": {
         // "editor.suggestFontSize": 18,
         // "editor.suggestLineHeight": "0.3",
         // "editor.suggestFontSize": 16,
-        "editor.suggestLineHeight": "0.3",
+        // "editor.suggestLineHeight": "0.3",
         // ""
     },
     "[csv]": {
@@ -5136,6 +5125,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "terminal.ansiBrightWhite": "#e5e5e5",
         "terminal.ansiBrightYellow": "#ecec6a",
         "editor.lineHighlightBackground": "#1073cf2d",
+        "editor.lineHighlightBorder": "#9fced1ff",
         "editor.lineHighlightBorder": "#9fced11f",
         "testing.message.error.decorationForeground": "#ff646440",
         "testing.message.error.lineBackground": "#e4545405",
@@ -5146,7 +5136,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "testing.iconQueued": "#CCA700",
         "testing.iconSkipped": "#ff00ff",
         "testing.iconErrored": "#bb600c",
-        "testing.iconUnset": "#848484"
+        "testing.iconUnset": "#848484",
     },
     "terminal.integrated.drawBoldTextInBrightColors": true,
     "terminal.integrated.copyOnSelection": true,
@@ -5230,6 +5220,9 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     // Defines the verbosity of output to be used. For Pester 5 and newer the default value FromPreference, will use the Output settings from the $PesterPreference defined in the caller context, and will default to Normal if there is none. For Pester 4 the FromPreference and Normal options map to All, and Minimal option maps to Fails.
     "powershell.pester.outputVerbosity": "FromPreference",
     "git.mergeEditor": true,
+    "git.branchSortOrder": "committerdate",
+    "git.defaultBranchName": "main",
+
     "files.trimTrailingWhitespace": true,
     "jupyter.showVariableViewWhenDebugging": true,
     "[Log]": {},
@@ -5256,6 +5249,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     "omnisharp.loggingLevel": "trace", // not sure which is the highest
     "powershell.developer.editorServicesLogLevel": "Warning",
     "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    "powershell.developer.editorServicesLogLevel": "Error",
     "editor.guides.highlightActiveIndentation": false,
     "editor.occurrencesHighlight": true,
     "colorInfo.languages": [
@@ -5461,7 +5455,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     // "editor.multiCursorPaste": "full"
     // "editor.cursorWidth": 400,
     "rainbow_csv.enable_cursor_position_info": true,
-    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.2.2-win32-x64\\.nuget\\Microsoft.PowerQuery.SdkTools.2.114.4\\tools",
+    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.2.3-win32-x64\\.nuget\\Microsoft.PowerQuery.SdkTools.2.114.4\\tools",
     // When set to false, the SDK does not try to automatically detect connector workspaces and prompt to create a settings file.
     "powerquery.sdk.features.autoDetection": true,
     "[html][js][jsx][python][markdown]": {
@@ -5494,6 +5488,20 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     // "editor.lightbulb.enable":
     // "powershell.developer.editorServicesLogLevel": "Normal",
     // "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    /*
+
+    Sets the log verbosity for both the extension and its LSP server, PowerShell Editor Services. **Please set to `Diagnostic` when recording logs for a bug report!**
+
+        - Diagnostic: Enables all logging possible, please use this setting when submitting logs for bug reports!
+        - Verbose: Enables more logging than normal.
+        - Normal: The default logging level.
+        - Warning: Only log warnings and errors.
+        - Error: Only log errors.
+        - None: Disable all logging possible. No log files will be written!
+
+    */
+
+    "powershell.developer.editorServicesLogLevel": "Warning",
     "markdown.experimental.editor.pasteLinks.enabled": true,
     "markdown.editor.drop.enabled": true,
     "editor.dropIntoEditor.enabled": true,
@@ -5524,10 +5532,11 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "screencastMode.keyboardShortcutsFormat": "command",
     "screencastMode.keyboardShortcutsFormat": "commandWithGroup",
     "screencastMode.keyboardShortcutsFormat": "commandWithGroupAndKeys",
-    "powershell.codeFormatting.autoCorrectAliases": true,
     "powershell.codeFormatting.newLineAfterCloseBrace": true,
     "powershell.codeFormatting.newLineAfterOpenBrace": true,
     "powershell.codeFormatting.openBraceOnSameLine": true,
+    "powershell.codeFormatting.autoCorrectAliases": false,
+    "powershell.codeFormatting.pipelineIndentationStyle": "None",
     "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
     "powershell.codeFormatting.whitespaceAfterSeparator": true,
     "powershell.codeFormatting.whitespaceAroundOperator": true,
@@ -5567,8 +5576,9 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     },
     "playwright.reuseBrowser": true,
     "pester.autoDebugOnSave": false,
+    "pester.autoDebugOnSave": true,
     // "pester.pesterModulePath": "C:\\Program Files\\WindowsPowerShell\\Modules\\Pester\\5.2.1\\Pester.psm1",
-    "pester.pesterModulePath": "E:/PSModulePath_2022/pester",
+    // "pester.pesterModulePath": "E:/PSModulePath_2022/pester",
     "pester.runTestsInNewProcess": false,
     "debug.showInlineBreakpointCandidates": true,
     "powershellInlineValues.startLocation": "currentFunction",
@@ -5584,4 +5594,408 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "notebook.output.fontSize": 16,
     "notebook.output.fontFamily": "cascadia code PL", // default was 90 seconds for local
     // "powershell.integratedConsole.startInBackground": false
+    /* 2023-04 : peacock theme I ~wavy~ like */
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#e2ca9e",
+        "activityBar.background": "#e2ca9e",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#2c936f",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#e2ca9e",
+        "statusBar.background": "#d6b577",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#caa050",
+        "statusBarItem.remoteBackground": "#d6b577",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#d6b577",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#d6b57799",
+        "tab.activeBackground": "#d872e64f",
+        "tab.activeBackground": "#e6c7724f",
+        "tab.activeBackground": "#e6c77218",
+        "tab.activeBackground": "#e6c7722d",
+        "tab.activeBorderTop": "#00ff37a2",
+        "tab.activeBorderTop": "#40bdeea2",
+        "tab.activeModifiedBorder": "#ff7b00",
+        "tab.activeModifiedBorder": "#ff3300",
+        "titleBar.inactiveForeground": "#15202b99",
+    },
+    "powerquery.sdk.tools.version": "2.114.4",
+    // "peacock.color": "#d6b577",
+    /* 2023-04 : peacock theme I like */
+    // "workbench.colorCustomizations": {
+    //     "activityBar.activeBackground": "#9abcca",
+    //     "activityBar.background": "#9abcca",
+    //     "activityBar.foreground": "#15202b",
+    //     "activityBar.inactiveForeground": "#15202b99",
+    //     "activityBarBadge.background": "#a75890",
+    //     "activityBarBadge.foreground": "#e7e7e7",
+    //     "commandCenter.border": "#15202b99",
+    //     "sash.hoverBorder": "#9abcca",
+    //     "statusBar.background": "#79a6b8",
+    //     "statusBar.foreground": "#15202b",
+    //     "statusBarItem.hoverBackground": "#5890a6",
+    //     "statusBarItem.remoteBackground": "#79a6b8",
+    //     "statusBarItem.remoteForeground": "#15202b",
+    //     "titleBar.activeBackground": "#79a6b8",
+    //     "titleBar.activeForeground": "#15202b",
+    //     "titleBar.inactiveBackground": "#79a6b899",
+    //     "titleBar.inactiveForeground": "#15202b99"
+    // },
+    // "peacock.color": "#79a6b8"
+    "polyglot-notebook.suppressPromptToSaveDefaults": false,
+    "polyglot-notebook.kernelEnvironmentVariables": {
+        "EnvSetByNoteBookTest": "From: <file:///C:/Users/cppmo_000/AppData/Roaming/Code/User/settings.json>",
+    },
+    "polyglot-notebook.languageServiceDelay": 500,
+    "notebook.formatOnSave.enabled": true,
+    "notebook.globalToolbar": true,
+    "notebook.showFoldingControls": "always",
+    "notebook.output.scrolling": false,
+    "notebook.globalToolbarShowLabel": "dynamic",
+    "notebook.output.wordWrap": false,
+    "notebook.insertToolbarLocation": "betweenCells",
+    "notebook.navigation.allowNavigateToSurroundingCells": true,
+    "polyglot-notebook.defaultNotebookExtension": ".dib",
+    // "polyglot-notebook.defaultNotebookLanguage": "pwsh",
+    // "markd"
+    "polyglot-notebook.logLevel": "Info",
+    "[polyglot-notebook]": {
+        "editor.fontSize": 16
+    },
+    "interactiveSession.editor.fontFamily": "cascadia code",
+    "interactiveSession.editor.fontWeight": "27",
+    "interactiveSession.editor.wordWrap": "on",
+    "[dotnet-interactive.markdown]": {
+        // "editor.fontSize": 20
+    },
+    // *** start => file watchers ( 2023-05-05 )
+    "files.exclude": {
+        "**/*.exe": true,
+        "**/*.lnk": true,
+        "**/.git": true,
+        "**/*.aws-sam": true, // makes type invisible
+        "**/*.aws-sam": false, // re-enables invisible folder
+        "**/Output": true,
+        "**/*.pbix": true,
+        "**/*.zip": true,
+        "**/*.cache": true,
+        // venv, cache, or compiled
+        "**/*.py[co]": true,
+        "**/__pycache__": true,
+        "**/node_modules": true,
+        "**/.mypy_cache": true,
+        // node and
+        // "**sdfds": { "when": "$(basename).extension" }
+        // "**/*.js": false,
+        // "files.exclude": {
+        //     "**/.git": true,
+        //     "**/.svn": true,
+        //     "**/.hg": true,
+        //     "**/CVS": true,
+        //     "**/.DS_Store": true,
+        //     "**/Thumbs.db": true
+        // },
+        // new ignore test
+        "**/venv/*": true,
+        "**/*.js": { // example taken from the docs or blog I think ?
+            // they altered the conditional syntax a couple times so I should confirm this
+            "when": "$(basename).min.js",
+            "exclude": false,
+        },
+        "**/*.{exe,zip,7z,xlsx}": true,
+        "**/*.zip": true,
+        "**/.output/*.csv": true,
+        "**/.export/*.csv": true,
+        "**/.input/*.csv": true,
+        //
+        "**/.output/*.log": true,
+        "**/.export/*.log": true,
+        "**/.input/*.log": true,
+        //
+        "**/.output/*.json": true,
+        "**/.export/*.json": true,
+        "**/.input/*.json": true,
+        "**/*.lnk": true,
+        "**/.git": true,
+        "**/*.pbix": true,
+        "**/*.zip": true,
+        // venv, cache, or compiled
+        "**/*.py[co]": true,
+        "**/__pycache__": true,
+        "**/node_modules": true,
+        "**/.mypy_cache": true,
+        "**/venv": true,
+        "**/.output/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/.input/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/.export/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        // # top level
+        "{.output,.export,.input}": true,
+        // todo: verify this works correctly
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        // "**/*.js": false,
+    },
+    "files.watcherExclude": {
+        // Configure paths or glob patterns to exclude from file watching. Paths or basic glob patterns that are relative (for example `build/output` or `*.js`) will be resolved to an absolute path using the currently opened workspace. Complex glob patterns must match on absolute paths (i.e. prefix with `**/` or the full path and suffix with `/**` to match files within a path) to match properly (for example `**/build/output/**` or `/Users/name/workspaces/project/build/output/**`). When you experience the file watcher process consuming a lot of CPU, make sure to exclude large folders that are of less interest (such as build output folders).
+        "**/.export/**": true,
+        "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
+        "**/.export/**": true,
+        "**/.output/**": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true
+    },
+    // Configure extra paths to watch for changes inside the workspace. By default, all workspace folders will be watched recursively, except for folders that are symbolic links. You can explicitly add absolute or relative paths to support watching folders that are symbolic links. Relative paths will be resolved to an absolute path using the currently opened workspace.
+    "files.watcherInclude": [],
+    /*
+
+    searching cheat-sheet (for ctrl+F)
+
+        see: <https://code.visualstudio.com/docs/editor/codebasics#_find-in-selection>
+        This  is shorthand for ${WorkSpaceRoot}/example:
+            ./example
+
+        glob style
+            *  : 0-to-many
+            ?  : 1 char
+            ** : any number of path segments (even 0)
+            [] : range, 0-9
+            [!]: example.[!0-9]
+            {} : group pattern
+                {**\/*.html,**\/*.txt}
+
+                had to add \\ escapes because this is json
+
+
+
+    */
+    // *** end  <== file watchers ( 2023-05-05)
+    // try new power query stuff
+    "editor.snippetSuggestions": "inline",
+    "powershell.integratedConsole.startInBackground": true,
+    "[powershell]": {
+        "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
+        "editor.semanticHighlighting.enabled": false,
+        "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
+    },
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    // more
+    // *** begin  <== new error color configs ( 2023-05-10 )
+    "errorLens.messageBackgroundMode": "message",
+    "errorLens.messageBackgroundMode": "line",
+    "errorLens.messageBackgroundMode": "none",
+    // "editor.inlineSuggest.suppressSuggestions": true
+    "errorLens.editorHoverPartsEnabled": {
+        "messageEnabled": true,
+        "sourceCodeEnabled": true,
+        "buttonsEnabled": true
+    },
+    "errorLens.onSaveTimeout": 1000,
+    // "errorLens.disableLineComments": {
+    //     "eslint": "// eslint-disable-next-line $code",
+    //     "Stylelint": "/* stylelint-disable-next-line $code */"
+    // }
+    // "errorLens.light": {
+    //     // "warningGutterIconColor": ""
+    // }
+    "errorLens.replaceLinebreaksSymbol": "⏎",
+    // "errorLens.severityText": [
+    //     "ERROR",
+    //     "WARNING",
+    //     "INFO",
+    //     "HINT"
+    // ]
+    // *** end  <== new error color configs ( 2023-05-10 )
+    "[powershell]": {
+        "editor.suggest.showSnippets": false,
+
+    },
+    /*
+
+  ###### SubSect: Experiment with tabs inline
+
+      */
+    "search.experimental.searchInOpenEditors": true, // default
+    "workbench.editor.showIcons": false,
+    "workbench.editor.showIcons": true, // default
+    "workbench.editor.wrapTabs": false, // super important if you 'wrapTabs' // see: <https://code.visualstudio.com/updates/v1_53#_wrap-tabs>
+    "workbench.editor.wrapTabs": true, // super important if you 'wrapTabs'
+    // "workbench.editor.wrapTabs": true,
+    /*
+      "workbench.editor.pinnedTabSizing":
+      Controls the sizing of pinned editor tabs. Pinned tabs are sorted to the beginning of all opened tabs and typically do not close until unpinned. This value is ignored when #workbench.editor.showTabs# is disabled.
+      "compact":      A pinned tab will show in a compact form with only icon or first letter of the editor name.
+      "normal":       [default] A pinned tab inherits the look of non pinned tabs.
+      "shrink":       A pinned tab shrinks to a compact fixed size showing parts of the editor name.
+      */
+    "workbench.editor.pinnedTabSizing": "shrink",
+    "workbench.editor.pinnedTabSizing": "normal", // default
+    "workbench.editor.decorations.colors": true,
+    "workbench.editor.decorations.badges": true,
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+    "workbench.editor.tabSizing": "shrink",
+    "workbench.editor.scrollToSwitchTabs": true,
+    /*
+
+
+
+###### TypeScript:  new config started: [2023-05-20]
+
+*/
+    "[typescript]": {
+        "editor.showUnused": true,
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+        "editor.showUnused": true,
+    },
+    "[css]": {
+        "editor.defaultFormatter": "vscode.css-language-features",
+        "editor.formatOnSave": true,
+        // "editor.formatOnSaveMode": "modificationsIfAvailable"
+        "editor.formatOnSaveMode": "file"
+    },
+    "editor.unicodeHighlight.ambiguousCharacters": true,
+    "editor.unicodeHighlight.allowedCharacters": {
+        "‛“": false,
+        "'": false,
+        "‟": false,
+        "‛": false,
+        "a": false,
+        "‛": false,
+        "˃": false,
+        "╱": false
+    },
+    "[powershell]": {
+        "editor.formatOnSave": false,
+        "editor.snippets.codeActions.enabled": true,
+        "editor.snippetSuggestions": "none",
+        "editor.fontSize": 13,
+        "editor.fontSize": 15,
+        "editor.fontFamily": "'cascadia code pl semilight', monospace", // when large text, this font is nicer (
+    },
+    "[powershell]": {
+        "debug.saveBeforeStart": "allEditorsInActiveGroup"
+        // Automatically show values for variables that are lazily resolved by the debugger, such as getters.
+    },
+    "debug.onTaskErrors": "debugAnyway",
+    "debug.onTaskErrors": "abort",
+    "debug.onTaskErrors": "showErrors",
+    "debug.onTaskErrors": "prompt", // default
+    "debug.javascript.codelens.npmScripts": "top", //default
+    "debug.javascript.codelens.npmScripts": "all",
+    "debug.autoExpandLazyVariables": false, // cannot be set per-language
+    // Automatically show values for variables that are lazily resolved by the debugger, such as getters.
+    "livePreview.portNumber": 3003,
+    "livePreview.debugOnExternalPreview": true,
+    "livePreview.showServerStatusNotifications": true,
+    "livePreview.tasks.runTaskWithExternalPreview": true,
+    "vscode-edge-devtools.browserFlavor": "Default",
+    "vscode-edge-devtools.timeout": 3000,
+    // "livePreview.httpHeaders": {
+    //     // "cors something?"
+    //     "Accept-Ranges": "bytes"
+    // }
+    // "eslint.codeActionsOnSave.mode": "problems",
+    // codesave
+    // "editor.codeActionsOnSave": {
+    //     "source.fixAll": false,
+    //     "source.organizeImports": false
+    // },
+    "editor.linkedEditing": true,
+    /* new features:
+        https://code.visualstudio.com/updates/v1_79#_code-actions-on-save
+        https://code.visualstudio.com/updates/v1_79#_quick-suggestions-and-snippets
+        https://code.visualstudio.com/updates/v1_79#_markdowncopyfilesdestination
+        https://code.visualstudio.com/updates/v1_79#_experimental-quick-question-experience
+
+    */
+    // "markdown.copyFiles.destination": {
+    // new: <https://code.visualstudio.com/updates/v1_79#_markdowncopyfilesdestination>
+    // For example, if we want every Markdown file under /docs in our workspace to put new media files into an images directory specific to the current file, we can write:
+    // "/docs/**/*": "images/${documentBaseName}/"
+    // },
+    // "markdown.copyFiles.destination": {
+    //  this transform uses only the first letter of the document file name when creating the media file
+    // "/docs/**/*": "images/${documentBaseName/(.).*/$1/}/"
+    // }
+    // "markdown.editor.drop.copyIntoWorkspace": "never",
+    // "markdown.editor.filePaste.copyIntoWorkspace": "never",
+    "chat.experimental.quickQuestion.enable": true, // new: https://code.visualstudio.com/updates/v1_79#_experimental-quick-question-experience
+    /*
+
+
+
+###### cat: end of file, new
+
+*/
+    // "[ansible]": {
+    //     "debug.saveBeforeStart": "allEditorsInActiveGroup",
+    //     "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
+    //     "debug.saveBeforeStart": "none",
+    //     "editor.formatOnSaveMode": "modificationsIfAvailable",
+    //     "editor.formatOnSaveMode": "file",
+    //     "debug.saveBeforeStart": "none",
+    //     "debug.saveBeforeStart": "allEditorsInActiveGroup",
+    //     "editor.formatOnSave": true,
+    //     "editor.formatOnType": false,
+    //     "editor.formatOnPaste": false,
+    //     "editor.defaultFormatter": "ms-vscode.powershell",
+    //     "editor.snippets.codeActions.enabled": true,
+    //     "editor.codeActionsOnSave": {
+    //         "source.fixAll": false,
+    //         "source.organizeImports": false
+    //     },
+    // },
+    // global only settings:
+    "notebook.formatOnSave.enabled": false,
+    "pester.autoDebugOnSave": false,
+    "pester.autoRunOnSave": false,
+    "pester.testFilePath": [
+        "**/*.[tT]ests.[pP][sS]1"
+    ],
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true
+    },
+        "editor.suggest.showSnippets": false,
+
+    "[powershell]": {
+        "editor.formatOnSave": false,
+        "editor.suggest.showSnippets": false,
+
+    },
+    "[json]": {
+        "editor.formatOnSave": false,
+    },
+    "[jsonc]": {
+        "editor.formatOnSave": false,
+        // "editor.quickSuggestions": {
+        //     "strings": true
+        // },
+        // "editor.suggest.insertMode": "replace"
+    },
+"debug.showBreakpointsInOverviewRuler": true,
+"debug.showInStatusBar": "always",
+"workbench.statusBar.visible": false,
+"files.autoSave": "afterDelay",
+
+    // Specifies to search for references only within open documents instead of all workspace files. An alternative to `powershell.enableReferencesCodeLens` that allows large workspaces to support some references without the performance impact.
+    // "powershell.analyzeOpenDocumentsOnly": false,
+
+    /* debug mode super verbose */
+    // "powershell.developer.editorServicesLogLevel": "Diagnostic",
+    "editor.quickSuggestionsDelay": 500,
+    "markdown.editor.pasteUrlAsFormattedLink.enabled": true, /* new: <https://code.visualstudio.com/updates/v1_80#_markdown-format-pasted-urls-as-markdown-links> */
+
+
 }

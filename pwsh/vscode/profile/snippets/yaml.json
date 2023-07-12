@@ -15,6 +15,77 @@
     // ▸⇢⁞ ┐⇽▂
     // 🐛💻📄📁🏠🖧
     // DevTool💻 Conversion📏 Style🎨 Format🎨 ArgCompleter🧙‍♂️ NativeApp💻 ExamplesRef📚 TextProcessing📚 Regex🔍 Prompt💻 Cli_Interactive🖐 Experimental🧪 UnderPublic🕵️‍♀️ My🐒 Validation🕵
+    /*
+    (nin) 2023-04-03
+    */
+    "nin: PipescriptCodefence block": {
+        "prefix": "PipeFence: codeblock with nested PipeScript codeblock ⁞ [Supports Selected Text] ⁞ nin", // this is the big text on preview
+        "description": "nin🐒 ⁞ PipeFence Wraps selected text in a codeblock 📌", // smaller text on preview
+        "body": [
+            // "", // NL required for markdown to render right
+            "```${1:ps1}",
+            "~~~pipescript{",
+            "${TM_SELECTED_TEXT}",
+            "}~~~",
+            "```",
+            "$0"
+        ],
+        /*
+
+Ex1: Input:
+
+    $rules = PSScriptAnalyzer\Get-ScriptAnalyzerRule
+    $rules | group SourceName | ft
+
+Ex1: Output:
+
+    ```ps1
+    ~~~pipescript{
+    $rules = PSScriptAnalyzer\Get-ScriptAnalyzerRule
+    $rules | group SourceName | ft
+    }~~~
+    ```
+
+        */
+    },
+    /*
+    (nin) 2023-04-03
+    */
+    "nin: Pipescript inline, single line": {
+        "prefix": "PipeScript ⁞ inline, singleline [Supports Selected Text] ⁞ nin", // this is the big text on preview
+        "description": "nin🐒 ⁞ pipeline singleline  as PipescriptBlock 📌", // smaller text on preview
+        "body": [
+            // "", // NL required for markdown to render right
+            "```.<{ ${TM_SELECTED_TEXT} }>.```",
+            "${0}"
+        ],
+    },
+    "nin: Pipescript block": {
+        "prefix": "PipeScript ⁞ [Supports Selected Text] ⁞ nin", // this is the big text on preview
+        "description": "nin🐒 ⁞ pipescript Wraps selected text as PipescriptBlock 📌", // smaller text on preview
+        "body": [
+            // "", // NL required for markdown to render right
+            "~~~pipescript{",
+            "${TM_SELECTED_TEXT}",
+            "}~~~",
+            "${0}"
+        ],
+        /*
+
+Ex1: Input:
+
+    $rules = PSScriptAnalyzer\Get-ScriptAnalyzerRule
+    $rules | group SourceName | ft
+
+Ex1: Output:
+
+    ~~~pipescript{
+    $rules = PSScriptAnalyzer\Get-ScriptAnalyzerRule
+    $rules | group SourceName | ft
+    }~~~
+
+        */
+    },
     "template: Yaml with header": {
         "prefix": "template ┐ Yaml Header",
         "description": "template🐒 yaml [header]",

@@ -66,7 +66,7 @@
         ],
     },
     "Choice: Select One": {
-        "scope": "ruby",
+        "scope": "ruby,json",
         "prefix": "choice",
         "description": "select from UI Popup menu",
         "body": [
@@ -74,8 +74,9 @@
         ]
     },
     "Dynamic: Datetime": {
-        "scope": "ruby",
-        "prefix": "dynamic",
+        // "scope": "ruby",
+        // "scope": "",
+        "prefix": "example_dynamic",
         "description": "insert datetimes",
         "body": [
             "\\$CURRENT_YEAR = '$CURRENT_YEAR'", // The current year
@@ -155,10 +156,11 @@
         ]
     },
     "regex: escape quotes": {
+        "scope": "ruby",
         "prefix": "escape quotes",
         "description": "escape double quotes",
         "body": [
-            "${TM_SELECTED_TEXT/[\"]/\\\"_/gi}"
+            "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
         ]
     },
     "regex: strip extension": {

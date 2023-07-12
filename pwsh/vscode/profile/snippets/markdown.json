@@ -21,7 +21,7 @@
     */
     "nin: PipescriptCodefence block": {
         "prefix": "PipeFence: codeblock with nested PipeScript codeblock ⁞ [Supports Selected Text] ⁞ nin", // this is the big text on preview
-        "description": "nin🐒 ⁞ PipeFence Wraps selected text in a codeblock", // smaller text on preview
+        "description": "nin🐒 ⁞ PipeFence Wraps selected text in a codeblock 📌", // smaller text on preview
         "body": [
             // "", // NL required for markdown to render right
             "```${1:ps1}",
@@ -52,9 +52,18 @@ Ex1: Output:
     /*
     (nin) 2023-04-03
     */
+    "nin: Pipescript inline, single line": {
+        "prefix": "PipeScript ⁞ inline, singleline [Supports Selected Text] ⁞ nin", // this is the big text on preview
+        "description": "nin🐒 ⁞ pipeline singleline  as PipescriptBlock 📌", // smaller text on preview
+        "body": [
+            // "", // NL required for markdown to render right
+            "```.<{ ${TM_SELECTED_TEXT} }>.```",
+            "${0}"
+        ],
+    },
     "nin: Pipescript block": {
         "prefix": "PipeScript ⁞ [Supports Selected Text] ⁞ nin", // this is the big text on preview
-        "description": "nin🐒 ⁞ pipescript Wraps selected text as PipescriptBlockk", // smaller text on preview
+        "description": "nin🐒 ⁞ pipescript Wraps selected text as PipescriptBlock 📌", // smaller text on preview
         "body": [
             // "", // NL required for markdown to render right
             "~~~pipescript{",
@@ -85,7 +94,7 @@ Ex1: Output:
         "prefix": "md. Spaces to Escape ⁞ template nin🐒",
         "description": "fixes urls with spaces in them",
         "body": [
-            "${TM_SELECTED_TEXT/ /%20/g}",
+            "${TM_SELECTED_TEXT/\\ /%20/g}",
         ],
         /*
         output:
@@ -99,7 +108,8 @@ Ex1: Output:
         "prefix": "md.undo Spaces to Escape ⁞ template nin🐒",
         "description": "🔴🚧Not yet working ' ' from '%20'",
         "body": [
-            "${TM_SELECTED_TEXT/%20\\ /_/g}",
+            "${TM_SELECTED_TEXT/%20/ /g}",
+            // "${TM_SELECTED_TEXT/%20\\ /_/g}",
         ],
         /*
         output:

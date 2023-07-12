@@ -731,13 +731,5 @@
             "${0}",
         ],
     },
-    "TypeWriter ⇢ New File ⇢ as [TypeWriter].Completer 🙊": {
-        "isFileTemplate": true,
-        "prefix": "tw.NewFile . TypeWriter : Completer",
-        // "scope": "powershell",
-        "description": "TypeWriter ⇢ New File ⇢ as [TypeWriter].Completer 🙊\n ; tw.NewFile . TypeWriter : Completer",
-        "body": [
-            "new file blah"
-        ],
-    },
+
 }

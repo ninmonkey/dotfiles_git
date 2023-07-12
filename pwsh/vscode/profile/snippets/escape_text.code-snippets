@@ -28,6 +28,9 @@
 
         🎨🖥️⁞┐⇽⇾— ⚙️💡📋📹🔑🔥⇒🕷️🕹️→
 
+
+C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
+
     ninmonkey. created: 2021-06-30
 
     */
@@ -35,7 +38,7 @@
         // this could be editor command1
         // safety, should probably require '['"]' on both ends of matches
         // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-        "scope": "", //json,jsonc",
+        "scope": "disabled", //json,jsonc",
         "prefix": "fix Backslash filepaths 📌",
         "description": "Transforms \\\\ ⇒ /",
         "body": [
@@ -44,9 +47,10 @@
     },
     "🐒regex: Escape Double Quotes": {
         // "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-        "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-        "prefix": "re: Escape Double Qoutes: escape quotes",
-        "description": "Transforms \" ⇒ \\\"",
+        // "scope": "disabled", //json,jsonc",
+        // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        "prefix": "re: Escape Double Quotes: escape quotes",
+        "description": "Transforms \" ⇒ \\\" 🐪",
         "body": [
             "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
         ]

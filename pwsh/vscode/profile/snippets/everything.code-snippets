@@ -42,13 +42,15 @@
     },
     "1234 Regex: Escape Backslashes📌": {
         // "scope": "markdown,powerquery,swift,powershell,ps1,typescript,javascriptjson,jsonc,xml,py,python,js,cs,csx,code-workspace,code-snippets,powershell",
-        "scope": "",
+        // "scope": "",
         "prefix": "escape backslash",
-        "description": "Converts backslashes to forslashes, for json paths.",
+        "description": "Converts backslashes to forslashes, for json paths 4321.",
         "body": [
             // "${TM_SELECTED_TEXT/(\\\\${2})/\\//gi}", // out: /
-            "${TM_SELECTED_TEXT/cat}", // out: /
+            "${TM_SELECTED_TEXT/(\\\\)/\\//gi}", // out: /
+            // "${TM_SELECTED_TEXT/cat}", // out: /
         ]
+        // C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
     },
     "File.CurrentFilename": {
         "scope": "markdown,powerquery,swift,powershell,ps1,typescript,javascriptjson,jsonc,xml,py,python,js,cs,csx,code-workspace,code-snippets",
