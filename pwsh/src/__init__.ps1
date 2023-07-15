@@ -1574,8 +1574,8 @@ function bPs.Items {
             '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
             '  Get-Item "."     : {0}' -f @( Get-Item . )
         )
-        | Join-String @jstr_prefixedArrowRedLines
-        | Write-Verbose
+            | Join-String @jstr_prefixedArrowRedLines
+            | Write-Verbose
 
         @(
             # '  BaseDirectory    : {0}' -f @( $BaseDirectory ?? '␀')
@@ -1584,9 +1584,9 @@ function bPs.Items {
             '  ResolvedFullPat. : {0}' -f @( $ResolvedFullpattern ?? '␀')
             '  Get-Item "."     : {0}' -f @( Get-Item . )
         )
-        | Join-String @jstr_prefixedArrowRedLines
-        | Join-String -op "`nnin::ExportPipeScript:`n"
-        | Write-Information -infa 'continue'
+            | Join-String @jstr_prefixedArrowRedLines
+            | Join-String -op "`nnin::ExportPipeScript:`n"
+            | Write-Information -infa 'continue'
         # | write-information #-infa continue
 
 
@@ -1611,8 +1611,8 @@ function bPs.Items {
         $global:BpsItems.AddRange(@(
                 @(
                     Export-Pipescript -InputPath $ResolvedFullpattern
-                    | Get-Item
-                    | Sort-Object Fullname -Unique
+                        | Get-Item
+                        | Sort-Object Fullname -Unique
                     # | CountOf '$bPsItems = ' # chunk len
                 )
                 #
@@ -1625,11 +1625,11 @@ function bPs.Items {
     }
 
     $global:bpsItems
-    | Get-Item
-    | Sort-Object -Unique FullName
-    | CountOf
-    | Join-String FullName -f '   <file:///{0}>' -sep "`n" -op "wrote:`n"
-    | Write-Verbose
+        | Get-Item
+        | Sort-Object -Unique FullName
+        | CountOf -CountLabel '$bpsItems'
+        | Join-String FullName -f '   <file:///{0}>' -sep "`n" -op "wrote:`n"
+        | Write-Verbose
 
     if ($List) { return $global:BpsItems }
     # if ($BaseDirectory) {
@@ -1664,6 +1664,7 @@ function nin.Where-FilterByGroupChoice {
     #>
     [Alias(
         'fzf.Group',
+        'Dotils-ToBe.nin-Where-FilterByGroupChoice',
         # 'nin.Where-FilterByGroup',
         '?🐒.Group', # testing which is cleaner to autocomplete
         '?nin.Group'

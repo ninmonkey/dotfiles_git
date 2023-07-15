@@ -65,8 +65,13 @@ function minimal.prompt.render.crumbs {
             #     $renderLocation
             # }
             $PSStyle.Reset
-            "`n"
-            ''
+            if($PredentExtra) {
+                "`n    "
+                '    '
+            } else {
+                "`n"
+                ''
+            }
         ) -join ''
     }
 }

@@ -5186,7 +5186,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     "powershell.debugging.createTemporaryIntegratedConsole": false,
     "terminal.integrated.shellIntegration.history": 200,
     "terminal.integrated.shellIntegration.enabled": true, // need to unbind their keybind somehow
-    "terminal.integrated.shellIntegration.enabled": false, // need to unbind their keybind somehow
+
     "window.commandCenter": true,
     "terminal.integrated.shellIntegration.decorationIcon": "circle-outline",
     "terminal.integrated.shellIntegration.decorationIconSuccess": "primitive-dot",
@@ -5884,7 +5884,9 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "[powershell]": {
         "debug.saveBeforeStart": "allEditorsInActiveGroup"
         // Automatically show values for variables that are lazily resolved by the debugger, such as getters.
+
     },
+    
     "debug.onTaskErrors": "debugAnyway",
     "debug.onTaskErrors": "abort",
     "debug.onTaskErrors": "showErrors",

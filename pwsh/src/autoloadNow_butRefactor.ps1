@@ -654,14 +654,30 @@ function prof.hack.dumpExcel {
         [object[]]$InputObject
     )
     begin {
+
         [Collections.Generic.List[Object]]$Items = @()
     }
     process {
         $Items.AddRange( $InputObject )
     }
     end {
+        # autosize respecting orignal.
+        # note: no try block, so it could fail to reset on cleanup
+        $originalAutosizePref = $env:NoAutoSize ?? $null
+        $env:NoAutoSize = $Null
+
+        $exportExcelSplat = @{
+            WorksheetName = $TableName
+            TableName     = "${TableName}_table"
+            AutoSize      = $true
+            Show          = $true
+            TableStyle    = 'Light2'
+        }
+
         $items
-        | Export-Excel -work $TableName -table "${TableName_t}" -AutoSize -Show -TableStyle Light2 #-Verbose -Debug
+            | Export-Excel @exportExcelSplat #-Verbose -Debug
+
+        $env:NoAutoSize = $originalAutosizePref
     }
 }
 

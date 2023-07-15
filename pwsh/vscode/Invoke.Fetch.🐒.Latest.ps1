@@ -11,8 +11,8 @@ $FetchConfig = @{
 $FetchConfig += @{
     Import = @{
         Profile = @{
-            'Settings.json' = Get-Item "$Env:AppData\Code\User\settings.json"
-            'Snippets'      = Get-Item "$Env:AppData\Code\User\Snippets"
+            'Settings.json' = Get-Item "$Env:AppData/Code/User/settings.json"
+            'Snippets'      = Get-Item "$Env:AppData/Code/User/Snippets"
 
         }
     }
