@@ -2757,9 +2757,31 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 
     <#
     .SYNOPSIS
         Quick Summary of types of an object. terribly written, testing breaking rules with  code that is still valid (ie: correct)
+    .DESCRIPTION
+        I give you many possible formatters, some use raw text parsing
+        some return actual [type] info objects
+
+    - future:
+        - [ ] if a type does not resolve using 'as type', then attempt
+            a 'find-type -fullName *name*' query to resolve it
     #>
     [Alias('Dotils.Is.Type', 'Is.Type', '.IsType', 'IsType')]
-    param()
+    param(
+        [ValidateSet(
+            'Type',
+            'ElemType',
+            'FullName',
+            'Name',
+            'PSTypesRaw',
+            'PSTypes',
+            'PSTypesInfo',
+            'PSTypesString',
+            'PassThru'
+            )]
+        [Parameter(Position=0)][string]$Style = 'PassThru',
+
+        [switch]$PassThru
+    )
     $t = $Input
     if( $t -is 'type' ) {
         $tInfo = $t.GetType()
@@ -2767,21 +2789,35 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 
         $tInfo = $t
     }
 
-    [pscustomobject]@{
+    $info = [pscustomobject]@{
         PSTypeName = 'Dotils.Debug.GetTypeInfo'
-        ElemType =
-            @( $t )[0].
-                GetType() ??
-                '<missing>'
+
         Type =
             $t.
                 GetType() ??
                 '<missing>'
-        PSTypesInfo =
+
+        ElemType =
+            @( $t )[0].
+                GetType() ??
+                '<missing>'
+
+        FullName =
+            $t.
+                GetType().FullName ??
+                '<missing>'
+        Name =
+            $t.
+                GetType().Name ??
+                '<missing>'
+        PSTypesRaw =
             $tInfo.
                 PSTypeNames ??
                 '<missing>'
-        PSTypes =
+        PSTypes = # alias to TypesInfo
+            $tinfo.PSTypeNames ?? '' | %{  $_ -as 'type' }
+
+        PSTypesInfo =
             $tinfo.PSTypeNames ?? '' | %{  $_ -as 'type' }
 
         PSTypesString =
@@ -2791,6 +2827,11 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 
                     | %{ $_ -replace '\System\.', '' }
                     | Ninmonkey.Console\Format-WrapText -Style Bracket
     }
+    if($PassThru -or $Style -eq 'PassThru') {
+        return $info
+    }
+
+    return $info.$Style
 }
 
 function Dotils.DB.toDataTable {
