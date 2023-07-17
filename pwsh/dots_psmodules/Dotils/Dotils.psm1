@@ -3444,10 +3444,72 @@ function Dotils.Random.CommandExample { # to refactor, to allow piping
     }
 }
 
+
+function Dotils.Modulebuilder.Format-SummarizeCommandAliases {
+    <#
+    .SYNOPSIS
+        Summarize Aliases used by amodule, formatted as a nin-style alias comment
+    .NOTES
+    desired output to summarize gci:
+
+    Output:
+        # 'Get-ChildItem' = { 'gci', 'ls', 'dir' }
+    .example
+        PS> Dotils.Modulebuilder.Format-SummarizeCommandAliases 'Get-ChildItem'
+            | Should -BeExactly "# 'Get-ChildItem' = { 'dir', 'gci' }"
+    .example
+
+        Dotils.Module.Format-AliasesSummary -CommandDefinition (gcm 'Label' | % Definition)
+    .example
+        Dotils.Modulebuilder.Format-SummarizeCommandAliases 'Get-ChildItem'
+
+
+        Dotils.Module.Format-AliasesSummary 'Get-ChildItem'
+            | Should -BeExactly "# 'Get-ChildItem' = { 'dir', 'gci' }"
+    #>
+    [Alias('Dotils.Module.Format-AliasesSummary')]
+    [OutputType('System.String')]
+    param(
+        # currently just the defintion string
+        [Parameter()]
+        [Alias('Name', 'Definition')][string]$CommandDefinition,
+
+        # accepts [CmdletInfo], [AliasInfo], etc...
+        [Parameter()]
+        [System.Management.Automation.CommandInfo]
+        $InputObject
+
+
+    )
+
+    if($null -ne $InputObject) {
+        throw 'Finish func, accept both types automagically.'
+    }
+
+    $target = $CommandDefinition
+    $aList =
+        Get-Alias -Definition $CommandDefinition
+
+    [string]$render = ''
+
+    $render +=
+        $target
+            | Join-String -SingleQuote -op '# ' -os ' = '
+
+    $render +=
+        $aList
+            | Sort-Object -Unique
+            | Join-String -sep ', ' -SingleQuote -op '{ ' -os ' }'
+
+    $render
+}
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        'Dotils.Modulebuilder.Format-SummarizeCommandAliases' # 'Dotils.Modulebuilder.Format-SummarizeCommandAliases' = { 'Dotils.Module.Format-AliasesSummary' }
+        #
         'Dotils.Debug.GetTypeInfo' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
 
         'Dotils.Start-WatchForFilesModified' # 'Dotils.Start-WatchForFilesModified' = { <none> }
@@ -3518,6 +3580,7 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        'Dotils.Module.Format-AliasesSummary' # 'Dotils.Modulebuilder.Format-SummarizeCommandAliases' = { 'Dotils.Module.Format-AliasesSummary' }
         #
 
         'Dotils.Is.Type' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
