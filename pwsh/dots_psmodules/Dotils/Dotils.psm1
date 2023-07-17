@@ -2780,9 +2780,12 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 
             )]
         [Parameter(Position=0)][string]$Style = 'PassThru',
 
+        [Parameter(ValueFromPipeline)][object]$InputObject,
+
         [switch]$PassThru
     )
-    $t = $Input
+    write-warning 'finish writing dotils.GetTypeInfo, including formatter that auto renders string else type info instance'
+    $t = $InputObject
     if( $t -is 'type' ) {
         $tInfo = $t.GetType()
     } else {
