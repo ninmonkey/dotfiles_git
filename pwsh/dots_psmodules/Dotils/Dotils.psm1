@@ -2753,7 +2753,7 @@ function Dotils.Get-NativeCommand {
 }
 
 # function Dotils.Is.Type {
-function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
     <#
     .SYNOPSIS
         Quick Summary of types of an object. terribly written, testing breaking rules with  code that is still valid (ie: correct)
@@ -2777,7 +2777,7 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.
             $t.
                 GetType() ??
                 '<missing>'
-        PSTypes =
+        PSTypesInfo =
             $tInfo.
                 PSTypeNames ??
                 '<missing>'
@@ -3404,7 +3404,7 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
-        'Dotils.Debug.GetTypeInfo' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+        'Dotils.Debug.GetTypeInfo' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
 
         'Dotils.Start-WatchForFilesModified' # 'Dotils.Start-WatchForFilesModified' = { <none> }
         'Dotils.Select-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
@@ -3476,9 +3476,10 @@ $exportModuleMemberSplat = @{
     Alias    = @(
         #
 
-        'Dotils.Is.Type' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
-        'Is.Type' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
-        'IsType' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+        'Dotils.Is.Type' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+        'Is.Type' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+        '.IsType' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+        'IsType' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
 
         #
 
