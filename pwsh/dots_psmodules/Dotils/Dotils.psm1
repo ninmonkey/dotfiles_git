@@ -2752,6 +2752,47 @@ function Dotils.Get-NativeCommand {
     return $Found
 }
 
+# function Dotils.Is.Type {
+function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+    <#
+    .SYNOPSIS
+        Quick Summary of types of an object. terribly written, testing breaking rules with  code that is still valid (ie: correct)
+    #>
+    [Alias('Dotils.Is.Type', 'Is.Type', '.IsType', 'IsType')]
+    param()
+    $t = $Input
+    if( $t -is 'type' ) {
+        $tInfo = $t.GetType()
+    } else {
+        $tInfo = $t
+    }
+
+    [pscustomobject]@{
+        PSTypeName = 'Dotils.Debug.GetTypeInfo'
+        ElemType =
+            @( $t )[0].
+                GetType() ??
+                '<missing>'
+        Type =
+            $t.
+                GetType() ??
+                '<missing>'
+        PSTypes =
+            $tInfo.
+                PSTypeNames ??
+                '<missing>'
+        PSTypes =
+            $tinfo.PSTypeNames ?? '' | %{  $_ -as 'type' }
+
+        PSTypesString =
+            $tinfo.
+                PSTypeNames
+                    | Sort-Object -Unique
+                    | %{ $_ -replace '\System\.', '' }
+                    | Ninmonkey.Console\Format-WrapText -Style Bracket
+    }
+}
+
 function Dotils.DB.toDataTable {
 <#
 .synopsis
@@ -3361,7 +3402,10 @@ function Dotils.Random.CommandExample { # to refactor, to allow piping
 
 $exportModuleMemberSplat = @{
     # future: auto generate and export
+    # (sort of) most recently added to top
     Function = @(
+        'Dotils.Debug.GetTypeInfo' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+
         'Dotils.Start-WatchForFilesModified' # 'Dotils.Start-WatchForFilesModified' = { <none> }
         'Dotils.Select-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
         'Dotils.Random.Module' #  Dotils.Random.Module = { <none> }
@@ -3430,6 +3474,14 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        #
+
+        'Dotils.Is.Type' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+        'Is.Type' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+        'IsType' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+
+        #
+
         'Dotils.DropBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
         'Dotils.Where-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
         '㏒' # 'Dotils.LogObject' => { '㏒' }
