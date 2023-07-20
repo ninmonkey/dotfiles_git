@@ -1233,6 +1233,95 @@ function Dotils.Html.Table.FromHashtable {
     # '</table>'
 
 }
+function Dotils.Out.XL-AllPropOfBoth {
+    [CmdletBinding()]
+    param(
+        $Obj1, $Obj2,
+        [switch]$PassThru
+
+    )
+
+    if($null -eq $Obj1 -or $Null -eq $Obj2) { throw "OneOrBothAreNull!" }
+
+    $tInfo1 = $Obj1.GetType()
+    $tInfo2 = $Obj2.GetType()
+    $info = [ordered]@{
+        LeftName  = $Obj1.username ?? '<no name>'
+        RightName = $Obj2.username ?? '<no name>'
+        LeftType  = $tInfo1.FullName
+        RightType = $tInfo2.FullName
+    }
+
+    $info
+        | ConvertTo-Json -depth 3
+        | Join-String -op 'User compare: ' | write-verbose -verbose
+
+    $propNames = @(
+        $Obj1.PsoObject.Properties.Name
+        $Obj2.PsoObject.Properties.Name
+    ) | Sort-Object -Unique
+
+    $mergedKind1 = [ordered]@{}
+    $mergedKind2 = [ordered]@{}
+    $mergedKind1.Source = 'Left'
+    $mergedKind2.Source = 'Right'
+
+    $mergedKind1.Type = ($tInfo1)?.GetType().Name ?? "`u{2400}"
+    $mergedKind2.Type = ($tInfo2)?.GetType().Name ?? "`u{2400}"
+    $mergedKind1.FullTypeName = ($tInfo1)?.GetType().FullName ?? "`u{2400}"
+    $mergedKind2.FullTypeName = ($tInfo2)?.GetType().FullName ?? "`u{2400}"
+
+    foreach($name in $PropNames) {
+        $mergedKind1.$Name = $Obj1.$Name
+        $mergedKind2.$Name = $Obj2.$Name
+
+        $mergedKind1.$Name ??= "`u{2400}"
+        $mergedKind2.$Name ??= "`u{2400}"
+    }
+    Wait-Debugger
+
+    $query = @(
+        [pscustomobject]$mergedKind1
+        [pscustomobject]$mergedKind2
+    )
+    if($PassThru) { return $query }
+    $query | to-xl
+}
+# $JCUpdateCsvRecord.psobject.Properties.name
+
+function Dotils.SamBuild {
+    [CmdletBinding()]
+    param(
+        [switch]$Fast,
+        [string]$LogPath = 'g:\temp\last_sam.log'
+    )
+    write-warning 'maybe not fuly done'
+    Get-Location
+        | Join-String -f 'SamBuild::FromDir: "{0}"'
+        | write-host -back 'red'
+
+    [Collections.Generic.List[Object]]$SamArgs = @(
+        '--debug'
+        'build', '--use-container',
+        '--parallel'
+        if(-not $Fast) {
+            '--cached',
+            '--skip-pull-image'
+        }
+    )
+    (get-date).ToString('o')
+        | Join-String -op 'SamBuild.ps1: ' -os "`n`n"
+        | Add-Content $LogPath -PassThru
+
+    $SamArgs
+        | Join-String -sep ' ' -op 'Invoke Sam: => '
+    & 'sam' @SamArgs
+        | Add-Content $LogPath -PassThru
+
+    $LogPath
+        | Join-String -f 'SamBuild::Wrote Log: <file:///"{0}">'
+        | Write-host -back 'darkyellow'
+}
 
 
 function Dotils.Measure-CommandDuration {
@@ -2878,6 +2967,143 @@ function Dotils.DB.toDataTable {
     }
 }
 
+# 'Dotils.Format-ShortString.Basic' = { 'Dotils.ShortString.Basic' }
+# 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
+function Dotils.Format-ShortString.Basic {    <#
+    .synopsis
+        Shorten string in a way that never errors. Keep it simple
+    .NOTES
+        future:
+            ability to write num chars relative root.
+    .link
+        Dotils\Dotils.Format-ShortString.Basic
+    .link
+        Dotils\Dotils.Format-ShortString
+
+    #>
+    [Alias('Dotils.ShortString.Basic')]
+    [OutputType('String')]
+    [CmdletBinding()]
+    param(
+        # Text to format
+        [Alias('Text', 'String')]
+        [Parameter(Mandatory, Position=0,
+            ValueFromPipeline)]
+        [AllowEmptyString()]
+        [string]$InputObject,
+
+        # future: validatescript to assert length?
+        [int]$maxLength = 80
+    )
+    if($null -eq $InputObject) { return '␀' }
+
+    $Len = $InputObject.Length
+    $maxOffset = $input.Length - 1 # not used
+
+    <#
+    must be updated if position is every relative a non-zero
+        because it's not an offset, it's a length
+    #>
+    [int]$selectedCount = [math]::Clamp(
+        <# value #> $maxLength,
+        <# min #> 0, <# max #> $Len )
+
+    return $InputObject.SubString(0, $selectedCount )
+
+}
+function Dotils.Format-ShortString {    <#
+    .synopsis
+        Shorten string in a way that never errors. Keep it simple
+    .NOTES
+        future:
+            ability to write num chars relative root.
+    .link
+        Dotils\Dotils.Format-ShortString.Basic
+    .link
+        Dotils\Dotils.Format-ShortString
+
+    #>
+    [Alias('Dotils.ShortString')]
+    [OutputType('String')]
+    [CmdletBinding()]
+    param(
+        # Text to format
+        [Alias('Text', 'String')]
+        [Parameter(Mandatory, Position=0,
+            ValueFromPipeline)]
+        [AllowEmptyString()]
+        [string]$InputObject,
+
+        # future: validatescript to assert length?
+        [int]$maxLength = 80,
+        # can be negative
+        [int]$startPosition = 0 #
+    )
+    if($null -eq $InputObject) { return '␀' }
+
+    $Len = $InputObject.Length
+    $maxOffset = $input.Length - 1 # not used
+    if($StartPosition -lt 0) {
+        # $MaxOffset = $Input.Length
+        $startAt = $input.Length + $startPosition # which is -1
+    } else {
+        $startAt = $startPosition
+    }
+    # $possibleMaxSubstrLength =
+    #     $maxOffset
+
+
+    <#
+    must be updated if position is every relative a non-zero
+        because it's not an offset, it's a length
+    #>
+    [int]$selectedCount = [math]::Clamp(
+        <# value #> $maxLength,
+        <# min #> 0, <# max #> $Len )
+
+    [ordered]@{
+        StartAt = $startAt
+        StartPosition = $startPosition
+        InputLen = $input.Length
+        MaxOffset = $MaxOffset
+        SelectedCount = $SelectedCount
+    }
+        | Json | Join-String -op 'Format-ShortString: '
+        | write-debug
+
+    return $InputObject.SubString(0, $selectedCount )
+
+}
+# 'Dotils.Object.QuickInfo' = { 'QuickInfo' }
+function Dotils.Object.QuickInfo {
+    [Alias('QuickInfo')]
+    [CmdletBinding()]
+    param(
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position=0)]
+        $InputObject
+    )
+    $InputObject.psobject.properties | %{
+        #$_.Name, $_.TypeNameOfvalue | Join-String -sep ' ⇒ '
+        try {
+        # or I could grab the type from Value
+            $tinfoFromStr = $_.TypeNameOfValue -as 'type'
+        } catch {
+            $tinfoFromStr = $_.TypeNameOfValue
+        }
+        [pscustomobject][ordered]@{
+            Name = $_.Name
+
+            Kind =
+                ($tinfoFromStr | Format-ShortSciTypeName) ??
+                    $tinfoFromStr
+
+            tInfoInstance = # auto hide
+                $tInfoFromStr
+      }
+    }
+}
+
 function Dotils.Type.Info {
     <#
     .SYNOPSIS
@@ -3467,9 +3693,11 @@ function Dotils.Modulebuilder.Format-SummarizeCommandAliases {
         Dotils.Module.Format-AliasesSummary 'Get-ChildItem'
             | Should -BeExactly "# 'Get-ChildItem' = { 'dir', 'gci' }"
     #>
+    # [Nin.NotYetImplemented('ArgumentTransformation, or PipeScript with TypeUnions, see NoMoreTangnent for the first example')]
     [Alias('Dotils.Module.Format-AliasesSummary')]
     [OutputType('System.String')]
     param(
+
         # currently just the defintion string
         [Parameter()]
         [Alias('Name', 'Definition')][string]$CommandDefinition,
@@ -3481,6 +3709,15 @@ function Dotils.Modulebuilder.Format-SummarizeCommandAliases {
 
 
     )
+@'
+[Nin.NotYetImplemented('ArgumentTransformation, or PipeScript with TypeUnions, see NoMoreTangnent for the first example')]
+
+
+to finish next: wrap this automaticallly
+
+        Dotils.Module.Format-AliasesSummary -CommandDefinition (gcm 'Label' | % Definition)
+either [1] regular argumenttransformatation
+'@ | write-warning
 
     if($null -ne $InputObject) {
         throw 'Finish func, accept both types automagically.'
@@ -3508,6 +3745,12 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        'Dotils.Format-ShortString' # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
+        'Dotils.Format-ShortString.Basic' # 'Dotils.Format-ShortString.Basic' = { 'Dotils.ShortString.Basic' }
+        'Dotils.Object.QuickInfo' # 'Dotils.Object.QuickInfo' = { 'QuickInfo' }
+        #
+        'Dotils.SamBuild'
+        'Dotils.Out.XL-AllPropOfBoth' # 'Dotils.Out.XL-AllPropOfBoth' = {}
         'Dotils.Modulebuilder.Format-SummarizeCommandAliases' # 'Dotils.Modulebuilder.Format-SummarizeCommandAliases' = { 'Dotils.Module.Format-AliasesSummary' }
         #
         'Dotils.Debug.GetTypeInfo' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
@@ -3580,6 +3823,12 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        'Dotils.ShortString' # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
+        'Dotils.ShortString.Basic'  # 'Dotils.Format-ShortString.Basic' = { 'Dotils.ShortString.Basic' }
+        # 'Dotils.Format-ShortString' # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
+
+        'QuickInfo' # 'Dotils.Object.QuickInfo' = { 'QuickInfo' }
+
         'Dotils.Module.Format-AliasesSummary' # 'Dotils.Modulebuilder.Format-SummarizeCommandAliases' = { 'Dotils.Module.Format-AliasesSummary' }
         #
 
@@ -3664,5 +3913,10 @@ Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList | ? IsBad
 try:
     Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils' | ? IsBad
 '@
+'dotils next:
+function Dotils.Stash-NewFileBuffer {
+    quickly dump files into a location to be used later, quick ideas. no naming.
+}
+'
 
 # Dotils.Testing.Validate.ExportedCmds
