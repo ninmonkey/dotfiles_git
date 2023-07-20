@@ -3035,20 +3035,30 @@ function Dotils.Format-ShortString {    <#
         [string]$InputObject,
 
         # future: validatescript to assert length?
+        # Null or empty
+        [Alias('Number', 'Count', 'MaxChars', 'MaxCols')]
+        [Parameter()]
         [int]$maxLength = 80,
         # can be negative
+        [Alias('StartAt')]
+        [Parameter()]
         [int]$startPosition = 0 #
     )
     if($null -eq $InputObject) { return '␀' }
 
     $Len = $InputObject.Length
-    $maxOffset = $input.Length - 1 # not used
     if($StartPosition -lt 0) {
         # $MaxOffset = $Input.Length
         $startAt = $input.Length + $startPosition # which is -1
     } else {
         $startAt = $startPosition
     }
+
+    $maxOffset =
+        $input.Length - 1
+    $maxCount =
+        $maxOffset - $startAt
+
     # $possibleMaxSubstrLength =
     #     $maxOffset
 
@@ -3067,6 +3077,7 @@ function Dotils.Format-ShortString {    <#
         InputLen = $input.Length
         MaxOffset = $MaxOffset
         SelectedCount = $SelectedCount
+        MaxCount = $MaxCount
     }
         | Json | Join-String -op 'Format-ShortString: '
         | write-debug
