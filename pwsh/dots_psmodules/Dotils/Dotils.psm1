@@ -2133,6 +2133,15 @@ function Dotils.Select-ExcludeBlankProperty {
     }
 }
 
+function Dotils.Log.Format-WriteHorizontalRule {
+   throw 'NYI, Get original: <file:///H:\data\2023\pwsh\PsModules.dev\GitLogger.StartLocalhostAzureChildProcess.ps1>'
+}
+function Dotils.Log.WriteFromPipe {
+   throw 'NYI, Get original: <file:///H:\data\2023\pwsh\PsModules.dev\GitLogger.StartLocalhostAzureChildProcess.ps1>'
+}
+function Dotils.Log.WriteNowHeader {
+   throw 'NYI, Get original: <file:///H:\data\2023\pwsh\PsModules.dev\GitLogger.StartLocalhostAzureChildProcess.ps1>'
+}
 
 function Dotils.Select-NotBlankKeys {
     <#
@@ -3756,6 +3765,11 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        #
+        'Dotils.Log.Format-WriteHorizontalRule' # 'Dotils.Log.Format-WriteHorizontalRule' = { }
+        'Dotils.Log.WriteFromPipe' # 'Dotils.Log.WriteFromPipe' = { }
+        'Dotils.Log.WriteNowHeader' # 'Dotils.Log.WriteNowHeader' = { }
+        #
         'Dotils.Format-ShortString' # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
         'Dotils.Format-ShortString.Basic' # 'Dotils.Format-ShortString.Basic' = { 'Dotils.ShortString.Basic' }
         'Dotils.Object.QuickInfo' # 'Dotils.Object.QuickInfo' = { 'QuickInfo' }

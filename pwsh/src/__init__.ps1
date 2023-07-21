@@ -25,8 +25,13 @@ Import-Module pansies
 
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
-Import-Module 'ugit'
-Import-Module 'Dotils' -Force -PassThru
+@(
+    Import-Module -wa 0  'ugit' -PassThru
+    Import-Module -wa 0 'Dotils' -Force -PassThru
+)   | Join-String -p {
+        '{0} = {1}' -f @(
+            $_.Name ; $_.Version; ) } -op "Import: `n" -sep ",`n" -single
+    | Write-Verbose
 
 ## refactor, move to Nancy 2023-05-15
 
