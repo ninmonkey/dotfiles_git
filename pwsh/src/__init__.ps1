@@ -861,6 +861,7 @@ function Regex.ReplaceOn {
         [Parameter(ValueFromPipeline)][string]$InputObject
     )
     begin {
+        write-warning "Partiall done $PSCommandPath"
 
     }
     process {
@@ -896,6 +897,7 @@ function Regex.JoinOn {
 
     }
     process {
+        throw "NotYetImplemented $PSCommandPath"
 
         if( $MyInvocation.MyCommand.Name -match '\.Join\.Lines'){
             write-host 'yeah' -back red
@@ -905,18 +907,19 @@ function Regex.JoinOn {
 
     }
 }
-
 function Select-NameIsh {
     <#
     .SYNOPSIS
         Select propert-ish categories, wildcard searching for frequent kinds
+    .NOTES
+        todo: fun, add more kinds
     .EXAMPLE
         gi . | NameIsh Dates -IgnoreEmpty -SortFinalResult
     .EXAMPLE
         gi . | NameIsh Names|fl
         gi . | NameIsh Names -IncludeEmptyProperties |fl
     #>
-    [Alias('NameIsh')]
+    [Alias('Nameish', 'Dotils.NameIsh')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, position = 0)]

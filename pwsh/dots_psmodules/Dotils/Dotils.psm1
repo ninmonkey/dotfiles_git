@@ -1713,6 +1713,88 @@ function Dotils.Render.ErrorRecord.Fancy {
     }
 }
 
+
+function Dotils.GetAt {
+    <#
+    .SYNOPSIS
+        goto index, negative is relative the end
+    .NOTES
+        out of bounds returns null. no errors fired.
+
+        try looking at 'python' slice notation
+        and 'jq' json slice notation
+
+
+        $x = 'a'..'e'
+        $x | Nat '[-2::1]'
+
+        $x | Nat '[::2]'
+        $x | Nat '[2::4]'
+        $x | Nat '[2:1:10]'
+
+    .EXAMPLE
+        0..6 | GetAt 5
+
+    .EXAMPLE
+        sugar gettting an index
+        PS> @('a'..'c')[2]
+        PS> 'a'..'c' | Nat 2
+
+        PS> @('a'..'c')[-2]
+        PS> 'a'..'c' | Nat -2
+    #>
+    [Alias('Nat', 'gnat')]
+    [CmdletBinding()]
+    param(
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Parameter(Mandatory,ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        # future: Support ranges
+        [Alias('Offset')]
+        [Parameter(Mandatory,position=0)]
+        [int]$Index
+    )
+    begin {
+        # negative may not be performant, but that isn't important here
+        [int]$CurIndex = 0
+        [Collections.Generic.List[Object]]$Items = @()
+        $earlyExit = $false
+    }
+    process {
+
+        $PSCmdlet.MyInvocation.BoundParameters
+            | ConvertTo-Json -wa 0 -Depth 0 -Compress
+            | Join-String -op 'Dotils.GetAt: '
+            | write-verbose
+        if($earlyExit) { return }
+
+        # maybe faster for large collections
+        if($Index -ge 0) {
+            foreach($item in $InputObject) {
+                if ($null -eq $Item) {
+                    continue
+                }
+                if($index -eq $curIndex) {
+                    $earlyExit = $True
+                    return $item
+                }
+                $curIndex++
+            }
+            return
+        }
+        # so it's negative, collect
+        $items.AddRange( $InputObject )
+    }
+    end {
+        if($earlyExit) { return }
+        $selected = $Items[ $Index ]
+        return $selected
+    }
+
+}
+
 function Dotils.Join.CmdPrefix {
     process {
         $_ | % {
@@ -3950,11 +4032,67 @@ either [1] regular argumenttransformatation
     $render
 }
 
+function Dotils.md.Format.EscapeFilepath {
+    <#
+    .DESCRIPTION
+        escapes spaces in filepaths, making relative urls clickable
+    .NOTES
+        naming, should maybe be format, not write, to be consistent with other commands
+    .EXAMPLE
+       PS>  'c:\foo bar\fast cat.png'
+       c:\foo%20bar\fast%20cat.png
+    .example
+    in  [0]:$what = gi '.\web.js ⁞ sketch ⁞ 2023-08 - Copy.code-workspace'
+            $what | 2md.Path.escapeSpace
+    out [0]: H:\data\2023\web.js\web.js%20⁞%20sketch%20⁞%202023-08%20-%20Copy.code-workspace
+
+    in  [1]: $what | 2md.Path.escapeSpace -AndForwardSlash
+    out [1]: H:/data/2023/web.js/web.js%20⁞%20sketch%20⁞%202023-08%20-%20Copy.code-workspace
+
+    in  [1]: $what | 2md.Path.escapeSpace -AndForwardSlash -UsingFileProtocol
+    out [1]: <file:///H:/data/2023/web.js/web.js%20⁞%20sketch%20⁞%202023-08%20-%20Copy.code-workspace>
+
+$what | md.Path.escapeSpace | cl
+H:\data\2023\web.js\web.js%20⁞%20sketch%20⁞%202023-08%20-%20Copy.code-workspace
+Pwsh 7.3.6> [8] 🐧
+
+$what | md.Path.escapeSpace -AndForwardSlash
+H:/data/2023/web.js/web.js%20⁞%20sketch%20⁞%202023-08%20-%20Copy.code-workspace
+Pwsh 7.3.6> [8] 🐧
+
+$what | md.Path.escapeSpace -AndForwardSlash -UsingFileProtocol
+<file:///H:/data/2023/web.js/web.js%20⁞%20sketch%20⁞%202023-08%20-%20Copy.code-workspace>
+    #>
+    [Alias('md.Format.EscapeFilepath')]
+    param(
+        [switch]$AndForwardSlash,
+
+        # this tends to render clickable links easier, by wrapping the url in
+        #      <file:///$url>
+
+        [Alias('LocalPath')]
+        [switch]$UsingFileProtocol
+    )
+    process {
+        $accum = $_ -replace ' ', '%20'
+        if ($AndForwardSlash) {
+            $accum = $accum -replace '\\', '/'
+        }
+        if($UsingFileProtocol) {
+            $accum | Join-String -f '<file:///{0}>'
+            return
+        }
+        return $accum
+    }
+}
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
         # 2023-07-29
+        'Dotils.d.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
+        'Dotils.GetAt' # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
         'Dotils.Render.ColorName'
         'Dotils.Format.Color'
         # 2023-07-24
@@ -4042,7 +4180,14 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-07-xx
+        # 2023-08-xx
+        # 2023-07-xx
+
         # 2023-07-24
+        'md.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
+        'nat'  # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
+        'gnat' # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
         'Dotils.Write-DimText' # 'Dotils.Format.Write-DimText' = { 'Dotils.Write-DimText' }
         #
         'Dotils.ShortString' # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
