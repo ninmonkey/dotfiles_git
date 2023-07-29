@@ -4032,12 +4032,53 @@ either [1] regular argumenttransformatation
     $render
 }
 
+function Dotils.md.Write.Url {
+    <#
+    .SYNOPSIS
+        Writes a standard markdown url with escaped title characters
+    .LINK
+        Dotils\md.Write.Url
+    .LINK
+        Dotils\md.Format.EscapeFilepath
+    #>
+    [Alias(
+        'md.Write.Url')]
+    [CmdeltBinding()]
+    param(
+        # rquired label, and url
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Text,
+
+        [Parameter(Mandatory, Position = 1)]
+        [string]
+        $Url,
+
+        [switch]$FileUProtocolURL
+    )
+    process {
+        $EscapedLabel = $Text -replace '\(', '\(' -replace '\)', '\)' -replace '\[', '\[' -replace '\]', '\]'
+
+        @(
+            '[{0}]' -f @( $EscapedLabel )
+            '({0})' -f @(
+                $Url | md.Path.EscapeSpace -AndForwardSlash -UsingFileProtocol:$FileUProtocolURL
+            )
+        ) -join ''
+
+    }
+}
+
+
 function Dotils.md.Format.EscapeFilepath {
     <#
     .DESCRIPTION
         escapes spaces in filepaths, making relative urls clickable
     .NOTES
         naming, should maybe be format, not write, to be consistent with other commands
+    .LINK
+        Dotils\md.Write.Url
+    .LINK
+        Dotils\md.Format.EscapeFilepath
     .EXAMPLE
        PS>  'c:\foo bar\fast cat.png'
        c:\foo%20bar\fast%20cat.png
@@ -4086,15 +4127,169 @@ $what | md.Path.escapeSpace -AndForwardSlash -UsingFileProtocol
     }
 }
 
+function Select-NameIsh {
+    <#
+    .SYNOPSIS
+        Select propert-ish categories, wildcard searching for frequent kinds
+    .NOTES
+        todo: expand: abstract:
+        todo: fun, add more kinds
+    .EXAMPLE
+        gi . | NameIsh Dates -IgnoreEmpty -SortFinalResult
+    .EXAMPLE
+        gi . | NameIsh Names|fl
+        gi . | NameIsh Names -IncludeEmptyProperties |fl
+    #>
+    [Alias(
+        'Nameish', 'Dotils.NameIsh',
+        'Namish'
+        )]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, position = 0)]
+        [ArgumentCompletions(
+            'Dates', 'Times',
+            'Names', 'Employee', 'Company', 'Locations', 'Numbers',
+            'IsA', 'HasA',
+
+            'PrimativeTypes', # string, int, date, etc...
+
+            'Type'
+        )]
+        [string[]]$Kinds,
+
+        [Parameter(Mandatory, ValueFromPipeline)]$InputObject,
+
+
+        # to be appended to kinds already filtered by $Kinds.
+        # useful because you may not want '*id*' as a wildcard to be too aggressive
+        # todo: dynamically auto gen based on hashtable declaration
+        [ArgumentCompletions(
+            '*id*', '*num*', '*co*', '*emp*'
+        )]
+        [string[]]$ExtraKinds,
+
+        [Alias('IncludeEmptyProperties')][Parameter()]
+        [switch]$KeepEmptyProperties,
+
+        # is there any reason to?
+        [switch]$WithoutUsingUnique,
+
+        # sugar sort on property names
+        [switch]$SortFinalResult
+
+    )
+    begin {
+        $PropList = @{
+            Names     = '*name*', '*user*', 'email', 'mail', 'author', '*author*'
+            Employee  = '*employee*', '*emp*id*', '*emp*num*'
+            Dates     = '*date*', '*time*', '*last*modif*', '*last*write*'
+            Type      = '*typename*', '*type*', '*Type'
+            Script    = '*Declaring*', '*method*', '*Declared*'
+            Generic   = '*generic*', 'IsGeneric*', '*Interface*'
+            AST = '*AST', '*Extent*', '*ScriptBlock*', '*Script*'
+            IsA       = 'Is*'
+            HasA      = 'HasA*', 'Has*'
+            Bool      = '*True*', '*False*'
+            Attribute = '*attr*', '*attribute*'
+            File      = '*file*', '*name*', '*extension*', '*path*', '*directory*', '*folder*'
+            Path      = '*Path*', 'FullName', 'Name'
+            Company   = 'co', '*company*'
+            Locations = '*zip*', '*state*', '*location*', '*city*', '*address*', '*email*', 'addr', '*phone*', '*cell*'
+            Numbers   = 'id', '*num*', '*identifier*', '*identity*', '*GUID*'
+        }
+        $TypesList = @{
+            # dynamic build from command:
+            # Find-Type -Base ([System.Management.Automation.Language.Ast]) | sort Name
+            Ast = @(
+                'ArrayExpressionAst', 'ArrayLiteralAst', 'AssignmentStatementAst', 'AttributeAst', 'AttributeBaseAst',
+                'AttributedExpressionAst', 'BaseCtorInvokeMemberExpressionAst', 'BinaryExpressionAst', 'BlockStatementAst',
+                'BreakStatementAst', 'CatchClauseAst', 'ChainableAst', 'CommandAst', 'CommandBaseAst', 'CommandElementAst',
+                'CommandExpressionAst', 'CommandParameterAst', 'ConfigurationDefinitionAst', 'ConstantExpressionAst',
+                'ContinueStatementAst', 'ConvertExpressionAst', 'DataStatementAst', 'DoUntilStatementAst', 'DoWhileStatementAst',
+                'DynamicKeywordStatementAst', 'ErrorExpressionAst', 'ErrorStatementAst', 'ExitStatementAst', 'ExpandableStringExpressionAst',
+                'ExpressionAst', 'FileRedirectionAst', 'ForEachStatementAst', 'ForStatementAst', 'FunctionDefinitionAst',
+                'FunctionMemberAst', 'HashtableAst', 'IfStatementAst', 'IndexExpressionAst', 'InvokeMemberExpressionAst',
+                'LabeledStatementAst', 'LoopStatementAst', 'MemberAst', 'MemberExpressionAst', 'MergingRedirectionAst',
+                'NamedAttributeArgumentAst', 'NamedBlockAst', 'ParamBlockAst', 'ParameterAst', 'ParenExpressionAst',
+                'PipelineAst', 'PipelineBaseAst', 'PipelineChainAst', 'PropertyMemberAst', 'RedirectionAst',
+                'ReturnStatementAst', 'ScriptBlockAst', 'ScriptBlockExpressionAst', 'StatementAst', 'StatementBlockAst', 'StringConstantExpressionAst', 'SubExpressionAst', 'SwitchStatementAst', 'TernaryExpressionAst',
+                'ThrowStatementAst', 'TrapStatementAst', 'TryStatementAst', 'TypeConstraintAst', 'TypeDefinitionAst', 'TypeExpressionAst', 'UnaryExpressionAst', 'UsingExpressionAst', 'UsingStatementAst', 'VariableExpressionAst', 'WhileStatementAst'
+            )
+            Primitive = @(
+                'int\d+', 'int', 'string', 'double', 'float', 'bool'
+            )
+        }
+
+        [Collections.Generic.List[Object]]$Names = @()
+
+        foreach ($Key in $Kinds) {
+            if ($key -notin $PropList.Keys) {
+                throw "Missing Defined NameIsh Group Key Name: '$key'"
+            }
+            $PropNameList = $PropList.$Key
+            $Names.AddRange( $PropNameList )
+        }
+        if ($ExtraKinds) {
+            $Names.AddRange(@( $ExtraKinds ))
+        }
+
+        $Names | Join-String -sep ', ' -single -op 'AllNames: '
+        | Write-Debug
+
+        if (-not $WithoutUsingUnique) {
+            $Names = $Names | Sort-Object -Unique
+        }
+        $Names | Join-String -sep ', ' -single -op 'IncludeNames: '
+        | Write-Verbose
+
+        if ($IgnoreEmpty) {
+            Write-Warning 'IgnoreEmpty: NYI'
+        }
+    }
+    process {
+        $query_splat = @{
+            Property    = $Names
+            ErrorAction = 'ignore'
+        }
+        $query = $InputObject | Select-Object @query_splat
+        if ($KeepEmptyProperties) {
+            return $query
+        }
+
+        [string[]]$emptyPropNames = $query.PSObject.Properties
+        | Where-Object { [string]::IsNullOrWhiteSpace( $_.Value ) }
+        | ForEach-Object Name
+
+        $emptyPropNames | Join-String -op 'empty: ' -sep ', ' -DoubleQuote | Write-Debug
+
+        $dropEmpty_splat = @{
+            ErrorAction     = 'ignore'
+            ExcludeProperty = $emptyPropNames
+        }
+        return $query | Select-Object @dropEmpty_splat
+    }
+    end {
+        if ($SortFinalResult) {
+            'nyi: becauseSortFinalResult must occur after select-object is finished, else, cant know what properties the wildcards will add'
+            | Write-Warning
+        }
+    }
+}
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
         # 2023-07-29
+
+        'Dotils.Select-NameIsh' # 'Dotils.NameIsh' = { 'Nameish', 'Namish' }
+        'Dotils.md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
         'Dotils.d.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
         'Dotils.GetAt' # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
         'Dotils.Render.ColorName'
         'Dotils.Format.Color'
+
         # 2023-07-24
         'Dotils.Format.Write-DimText' # 'Dotils.Format.Write-DimText' = { 'Dotils.Write-DimText' }
         # 2023-07-10
@@ -4185,6 +4380,9 @@ $exportModuleMemberSplat = @{
         # 2023-07-xx
 
         # 2023-07-24
+        'Nameish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
+        'Namish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
+        'md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
         'md.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
         'nat'  # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
         'gnat' # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
