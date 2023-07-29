@@ -2891,6 +2891,16 @@ function Dotils.Render.ColorName {
     .SYNOPSIS
         emits items one at a time, so you don't have to otherwise split them after, like a join-string
     .example
+        '232311', 'blue', 'darkred'
+            | Dotils.Render.ColorName -Foreground -Text '_'
+            | Join-String
+
+        # out: ---
+        # which is:
+
+        ␛[38;2;35;35;17m_␛[39m␛[38;2;0;0;255m_␛[39m␛[38;2;128;0;0m_␛[39m
+
+    .example
         PS> fmt.Render.ColorName -Text 'darkyellow' -bg | fcc
 
             ␛[38;2;128;128;0mdarkyellow␛[39m
@@ -2903,33 +2913,53 @@ function Dotils.Render.ColorName {
         PS> 'red', '#fefe9e' | fmt.Render.ColorName -fg | Join-String | fcc
 
             ␛[48;2;255;0;0mred␛[49m␛[48;2;254;254;158m#fefe9e␛[49m
+    .example
+        PS> Get-Gradient -StartColor 'gray10' -end 'gray50' -Width 10
+            | Dotils.Render.ColorName -bg '.'
+            | Join-String
+
+        PS> Get-Gradient -StartColor 'gray10' -end 'gray50' -Width 10
+            | Dotils.Render.ColorName -bg '.'
+            | Join.UL
     #>
     [OutputType('System.String')]
+    [CmdletBinding()]
     # [NinDependsInfo( # this does not yet exist
     #     Modules='Pansies', Powershell='7.0.0', NativeCommands=$false)]
     param(
-        [Parameter(Mandatory, Position=0, ValueFromPipeline)]
-        [Alias('Object')][object]$Text,
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [Alias('InputObject', 'Name')][object]$ColorName,
+
+        # text to render, if not color name
+        [Alias('Content')]
+        [Parameter(Position=0)]
+        [Alias('Object')][string]$Text,
+
 
         [Alias('Bg')][switch]$Background,
         [Alias('Fg')][switch]$Foreground
     )
     begin {
         if(-not $PSCmdlet.MyInvocation.ExpectingInput) {
-            $target = $Text
+            $target = $ColorName
         }
     }
     process {
         if($PSCmdlet.MyInvocation.ExpectingInput) {
-            $target = $Text
+            $target = $ColorName
         }
         if(-not $Foreground -and  -not $Background) {
             throw 'Missing BG, FG, must be one or the other' }
         $splat = @{}
-        if($Background) { $splat.fg = $Text }
-        if($Foreground) { $splat.bg = $Text }
-        if($Text) { $splat.Object = $Text }
+        if($Background) { $splat.bg = $ColorName }
+        if($Foreground) { $splat.fg = $ColorName }
+        if($ColorName) { $splat.Object = $ColorName }
+        if($PSBoundParameters.ContainsKey('Text')) {
+            $splat.Object = $Text
+        }
+
         return (Pansies\New-Text @splat).ToString()
+
     }
     end {
     }
