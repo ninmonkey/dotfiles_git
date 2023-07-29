@@ -2922,7 +2922,7 @@ function Dotils.Render.ColorName {
             | Dotils.Render.ColorName -bg '.'
             | Join.UL
     #>
-    [OutputType('System.String')]
+    [OutputType('System.String', 'PoshCode.Pansies.Text')]
     [CmdletBinding()]
     # [NinDependsInfo( # this does not yet exist
     #     Modules='Pansies', Powershell='7.0.0', NativeCommands=$false)]
@@ -2937,7 +2937,10 @@ function Dotils.Render.ColorName {
 
 
         [Alias('Bg')][switch]$Background,
-        [Alias('Fg')][switch]$Foreground
+        [Alias('Fg')][switch]$Foreground,
+
+        # Instead, return the raw [PoshCode.Pansies.Text]
+        [switch]$PassThru
     )
     begin {
         if(-not $PSCmdlet.MyInvocation.ExpectingInput) {
@@ -2958,10 +2961,82 @@ function Dotils.Render.ColorName {
             $splat.Object = $Text
         }
 
+        if($PassThru){
+            return Pansies\New-Text @splat
+        }
         return (Pansies\New-Text @splat).ToString()
 
     }
     end {
+    }
+}
+function Dotils.Format.Color {
+    <#
+    .SYNOPSIS
+        format without forcing joining strings, just emit the values one at a time
+    .EXAMPLE
+        '#fefff1', 'red' | Fmt.Color ByProp X11ColorName | Join-String
+
+        # out: IvoryRed
+        # ansi:[48;2;254;255;241mIvory[49m[48;2;255;0;0mRed[49m
+    #>
+    param(
+        [AllowEmptyString()]
+        [Alias('Text', 'InputObject')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [string]$InputText,
+
+        # exactly how to render the color?
+        [Parameter(position=0)]
+        [ValidateSet(
+            'Implicit',
+            'ByProp')]
+        [string]$FormatMode,
+
+        [Parameter(position=1)]
+        [ValidateSet(
+            'RGB', 'BGR', 'ConsoleColor',
+            'XTerm256Index', 'X11ColorName',
+            'Mode',
+            'R', 'G', 'B'
+            # 'Ordinals'
+        )]
+        [string]$PropName
+    )
+    begin {
+        $str = @{
+            PansiesResetAll = "${fg:clear}${bg:clear}"
+            PSStyleReset = $PSStyle.Reset
+        }
+    }
+    process {
+        if( [string]::IsNullOrWhiteSpace($InputText)) {
+            return [string]::Empty
+        }
+
+
+
+        $jStr_splat = @{
+            Separator = ''
+            # Object = $InputText
+        }
+        switch($FormatMode) {
+            'Implicit' {
+                $InputText | Dotils.Render.ColorName -bg
+            }
+            'ByProp' {
+                # [PoshCode.Pansies.Text]
+                $textObj = $InputText | Dotils.Render.ColorName -bg -PassThru
+                # $textObj.BackgroundColor is [PoshCode.Pansies.RgbColor]
+                $value? = ($textObj.BackgroundColor)?.$PropName ?? '-'
+                $InputText | Dotils.Render.ColorName -bg -Text $Value?
+            }
+            default {
+                throw "UnhandledFormatMode: $FormatMode"
+            }
+        }
+        # $InputText | Join-String
+
     }
 }
 # function Dotils.Is.Type {
@@ -3881,6 +3956,7 @@ $exportModuleMemberSplat = @{
     Function = @(
         # 2023-07-29
         'Dotils.Render.ColorName'
+        'Dotils.Format.Color'
         # 2023-07-24
         'Dotils.Format.Write-DimText' # 'Dotils.Format.Write-DimText' = { 'Dotils.Write-DimText' }
         # 2023-07-10
