@@ -4,6 +4,42 @@ function Console.GetColumnCount {
     $w = $host.ui.RawUI.WindowSize.Width
     return $w
 }
+
+
+function Dotils.Format.Write-DimText {
+    <#
+    .SYNOPSIS
+        # sugar for dim gray text,
+    .EXAMPLE
+        # pipes to 'less', nothing to console on close
+        get-date | Dotils.Write-DimText | less
+
+        # nothing pipes to 'less', text to console
+        get-date | Dotils.Write-DimText -PSHost | less
+    .EXAMPLE
+        > gci -Name | Dotils.Write-DimText |  Join.UL
+        > 'a'..'e' | Dotils.Write-DimText  |  Join.UL
+    #>
+    [OutputType('String')]
+    [Alias('Dotils.Write-DimText')]
+    param(
+        # write host explicitly
+        [switch]$PSHost
+    )
+    $ColorDefault = @{
+        ForegroundColor = 'gray60'
+        BackgroundColor = 'gray20'
+    }
+
+    if($PSHost) {
+        return $Input
+            | Pansies\write-host @colorDefault
+    }
+
+    return $Input
+        | New-Text @colorDefault
+        | % ToString
+}
 function Dotils.Write.Info {
     [Alias('Write.Info')]
     param()
@@ -2850,6 +2886,54 @@ function Dotils.Get-NativeCommand {
     return $Found
 }
 
+function Dotils.Render.ColorName {
+    <#
+    .SYNOPSIS
+        emits items one at a time, so you don't have to otherwise split them after, like a join-string
+    .example
+        PS> fmt.Render.ColorName -Text 'darkyellow' -bg | fcc
+
+            ␛[38;2;128;128;0mdarkyellow␛[39m
+    .example
+
+        PS> 'red', '#fefe9e' | fmt.Render.ColorName -fg | Join.UL
+            - red
+            - #fefe9e
+    .example
+        PS> 'red', '#fefe9e' | fmt.Render.ColorName -fg | Join-String | fcc
+
+            ␛[48;2;255;0;0mred␛[49m␛[48;2;254;254;158m#fefe9e␛[49m
+    #>
+    [OutputType('System.String')]
+    # [NinDependsInfo( # this does not yet exist
+    #     Modules='Pansies', Powershell='7.0.0', NativeCommands=$false)]
+    param(
+        [Parameter(Mandatory, Position=0, ValueFromPipeline)]
+        [Alias('Object')][object]$Text,
+
+        [Alias('Bg')][switch]$Background,
+        [Alias('Fg')][switch]$Foreground
+    )
+    begin {
+        if(-not $PSCmdlet.MyInvocation.ExpectingInput) {
+            $target = $Text
+        }
+    }
+    process {
+        if($PSCmdlet.MyInvocation.ExpectingInput) {
+            $target = $Text
+        }
+        if(-not $Foreground -and  -not $Background) {
+            throw 'Missing BG, FG, must be one or the other' }
+        $splat = @{}
+        if($Background) { $splat.fg = $Text }
+        if($Foreground) { $splat.bg = $Text }
+        if($Text) { $splat.Object = $Text }
+        return (Pansies\New-Text @splat).ToString()
+    }
+    end {
+    }
+}
 # function Dotils.Is.Type {
 function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
     <#
@@ -3765,7 +3849,11 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
-        #
+        # 2023-07-29
+        'Dotils.Render.ColorName'
+        # 2023-07-24
+        'Dotils.Format.Write-DimText' # 'Dotils.Format.Write-DimText' = { 'Dotils.Write-DimText' }
+        # 2023-07-10
         'Dotils.Log.Format-WriteHorizontalRule' # 'Dotils.Log.Format-WriteHorizontalRule' = { }
         'Dotils.Log.WriteFromPipe' # 'Dotils.Log.WriteFromPipe' = { }
         'Dotils.Log.WriteNowHeader' # 'Dotils.Log.WriteNowHeader' = { }
@@ -3848,6 +3936,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-07-24
+        'Dotils.Write-DimText' # 'Dotils.Format.Write-DimText' = { 'Dotils.Write-DimText' }
+        #
         'Dotils.ShortString' # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
         'Dotils.ShortString.Basic'  # 'Dotils.Format-ShortString.Basic' = { 'Dotils.ShortString.Basic' }
         # 'Dotils.Format-ShortString' # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
