@@ -969,6 +969,85 @@ function Dotils.Join.Brace {
         }
     }
 }
+function Dotils.Text.Wrap {
+<#
+    .synopsis
+        Suffix string, but do not merge, emit as items
+    .DESCRIPTION
+        alias name controls whether it's a prefix or suffix
+        if alias isn't used, then wrap text on both suffix and prefix
+    .example
+        'a', 'b', 'c'
+            | Dotils.Text.Prefix "- "
+
+        # output:
+
+            - a
+            - b
+            - c
+    .EXAMPLE
+        prefix command with module names
+            gcm
+                | %{
+                    $_ | Dotils.Text.Prefix "$( $_.Source  )\" }
+
+        # output
+
+            Ninmonkey.Console\Ensure->Cwd
+            dotils\Dotils.ConvertTo-DataTable
+            dotils\Dotils.Module.Format-AliasesSummary
+            dotils\Dotils.Where-NotBlankKeys
+            ImportExcel\Export-ExcelSheet
+
+    .example
+        'https://developer.mozilla.org/en-US/docs/Web/API/Node/baseURI'
+            | Dotils.Text.Prefix "<a href='" | Dotils.Text.Suffix "'>name</a>"
+
+        # out:
+            <a href='https://developer.mozilla.org/en-US/docs/Web/API/Node/baseURI'>name</a>
+    .example
+        'a', '2'
+            | Dotils.Text.Wrap '_'
+            | Should -BeExactly '_a_', '_2_'
+    .example
+        PS> Get-Variable | % Name | qr.Text.Prefix '$'
+
+        Get-Variable | % Name | sort -Unique | qr.Text.Prefix '$'
+            $?
+            $$
+            $args
+            $base
+            $bpsItems
+    #>
+    [Alias(
+        'Dotils.Text.Prefix', 'Dotils.Text.Suffix' )]
+    param(
+        # A value of 0 LinesPadding would be a no-op
+        [parameter(Mandatory, Position = 0)]
+        [string]$String,
+
+        # text to pad
+        [Alias('Text')]
+        [parameter(Mandatory, ValueFromPipeline)]
+        [string]$InputObject
+    )
+    process {
+        switch -Regex ($PSCmdlet.MyInvocation.InvocationName)  {
+            'Prefix' {
+                "${String}${InputObject}"
+                break
+            }
+            'Suffix' {
+                "${InputObject}${String}"
+                break
+            }
+            default {
+                "${String}${InputObject}${String}"
+            }
+        }
+    }
+}
+
 function Join.Pad.Item {
     <#
     .SYNOPSIS
@@ -4282,7 +4361,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-07-29
-
+        'Dotils.Text.Wrap' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
         'Dotils.Select-NameIsh' # 'Dotils.NameIsh' = { 'Nameish', 'Namish' }
         'Dotils.md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
         'Dotils.d.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
@@ -4380,6 +4459,8 @@ $exportModuleMemberSplat = @{
         # 2023-07-xx
 
         # 2023-07-24
+        'Dotils.Text.Suffix' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
+        'Dotils.Text.Prefix' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
         'Nameish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
         'Namish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
         'md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
