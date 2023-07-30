@@ -4043,7 +4043,7 @@ function Dotils.md.Write.Url {
     #>
     [Alias(
         'md.Write.Url')]
-    [CmdeltBinding()]
+    [CmdletBinding()]
     param(
         # rquired label, and url
         [Parameter(Mandatory, Position = 0)]
@@ -4061,7 +4061,7 @@ function Dotils.md.Write.Url {
         @(
             '[{0}]' -f @( $EscapedLabel )
             '({0})' -f @(
-                $Url | md.Path.EscapeSpace -AndForwardSlash -UsingFileProtocol:$FileUProtocolURL
+                $Url | Dotils.md.Format.EscapeFilepath -AndForwardSlash -UsingFileProtocol:$FileUProtocolURL
             )
         ) -join ''
 
