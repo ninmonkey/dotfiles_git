@@ -5,6 +5,141 @@ function Console.GetColumnCount {
     return $w
 }
 
+function Dotils.Quick.Pwd {
+    # 2023-05-12 : touch
+    <#
+    .SYNOPSIS
+        ShowLongNames, visual render, easier to read
+    .EXAMPLE
+        Pwsh> QuickPwd
+    .EXAMPLE
+        QuickPwd
+        QuickPwd -Format Reverse
+        QuickPwd Reverse -Options @{ ChunksPerLine = 8 }
+        QuickPwd Default -Options @{ ChunksPerLine = 8 }
+
+        . $PROFILE.MainEntryPoint ; hr -fg magenta 2
+        QuickPwd Reverse -Options @{ ChunksPerLine = 8 }
+        QuickPwd         -Options @{ ChunksPerLine = 8 ; NoHr = $true ; Reverse = $false }
+        QuickPwd Default -Options @{ ChunksPerLine = 8 ; NoHr = $true ; Reverse = $true }
+        QuickPwd Default -Options @{ ChunksPerLine = 8 ; NoHr = $true ; Reverse = $false }
+    #>
+    [Alias(
+        'QuickPwd',
+        '.quick.Pwd'
+    )]
+    param(
+        [ArgumentCompletions(
+            'Default',
+            'Reverse'
+        )]
+        [Alias('Format')]
+        [Parameter(Position = 0)]
+        [string]$OutputFormat = 'Default',
+
+
+        [ArgumentCompletions(
+            '@{ ChunksPerLine = 8 }'
+        )]
+        [hashtable]$Options,
+        [Alias('Copy', 'Cl', 'PassThru')][Parameter()][switch]$Clip
+    )
+
+    $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
+        ChunksPerLine = 5
+        # Reverse       = $true
+        NoHr          = $false
+    }
+
+    $shareSize = @{
+        GroupSize = ($Config)?.ChunksPerLine ?? 5
+    }
+    if ($Config.Reverse) {
+        $shareSize.Options = mergeHashtable -BaseHash $shareSize.Options -OtherHash @{
+            Reverse = $true
+        }
+        # .Reverse = $True
+    }
+    switch ($OutputFormat) {
+        'Gradient' {
+
+        }
+        'Reverse' {
+            if (-not $Config.NoHR) {
+                Hr
+            }
+
+            $renderLongPathNamesSplat = @{
+                Options = @{
+                    Reverse = $True
+                }
+            }
+            Get-Item . | RenderLongPathNames @shareSize @renderLongPathNamesSplat
+            if (-not $Config.NoHR) {
+                Hr
+            }
+
+        }
+        'Default' {
+            if (-not $Config.NoHR) {
+                Hr
+            }
+            $renderLongPathNamesSplat = @{
+
+            }
+
+            Get-Item . | RenderLongPathNames @ShareSize @renderLongPathNamesSplat
+            if (-not $Config.NoHR) {
+                Hr
+            }
+        }
+        default {
+            throw "UnhandledFormatType: '$OutputFormat'"
+        }
+    }
+    if ($clip) {
+        Get-Location | Set-Clipboard
+    }
+}
+
+
+function Dotils.Quick.History {
+    <#
+    .SYNOPSIS
+        .quick. verb is a short summary of something, often with colors or formatting, not raw objects or json
+    #>
+    [Alias(
+        '.quick.History', 'QuickHistory')]
+    [CmdletBinding()]
+    param(
+        [ArgumentCompletions('Default', 'Number', 'Duplicate')]
+        [string]$Template
+    )
+    # Quick, short, without duplicates
+    switch ($Template) {
+        'Number' {
+            Get-History
+            | Sort-Object -Unique -Stable CommandLine
+            | Join-String -sep (Hr 1) {
+                "{0}`n{1}" -f @(
+                    $_.Id, $_.CommandLine )
+            }
+        }
+        'Duplicates' {
+            Get-History
+            | Join-String -sep (Hr 1) {
+                "{0}`n{1}" -f @(
+                    $_.Id, $_.CommandLine )
+            }
+        }
+
+        default {
+            Get-History
+            | Sort-Object -Unique -Stable CommandLine
+            | Join-String CommandLine -sep (Hr 1)
+        }
+    }
+}
 
 function Dotils.Format.Write-DimText {
     <#
@@ -65,6 +200,7 @@ function Dotils.String.Normalize.LineEndings {
         $_ -replace '\r?\n', "`n"
     }
 }
+
 function Dotils.ClampIt {
     # polyfill. Pwsh Can use [Math]::Clamp directly.
     [Alias('ClampIt')]
@@ -120,6 +256,74 @@ function Dotils.Debug.Find-Variable {
 
 }
 
+function Dotils.To.Resolved.CommandName {
+    <#
+    .SYNOPSIS
+        lookup command name from command or alias name
+    .NOTES
+        improvement: support other types
+            [ AliasInfo | Commandinfo | FuncInfo | String ]
+
+        todo: argumenttransformationargument
+
+    warning: currently doesn't grab info from commands, so
+
+        gcm write-host -All | .to.Resolved.CommandName
+            returned not only dropping, but doesn't resolved 2 modules as 1 module
+                Pansies\.
+                Pansies\.
+
+    .example
+    Pwsh> gcm hr | Dotils.To.Resolved.CommandName
+    Pwsh> gcm hr | .to.Resolved.CommandName
+
+        Ninmonkey.Console\Write-ConsoleHorizontalRule
+    .example
+        gcm Ninmonkey.Console\Write-ConsoleHorizontalRule
+        | .to.Resolved.CommandName
+
+            Ninmonkey.Console\Write-ConsoleHorizontalRule
+
+        gcm hr
+        | .to.Resolved.CommandName
+
+            Ninmonkey.Console\Write-ConsoleHorizontalRule
+    #>
+    [CmdletBinding()]
+    [Alias(
+        '.to.Resolved.Command' )]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+    )
+    process {
+        $Target = $InputObject
+        $meta = @{}
+        if($Target -is 'Management.Automation.CommandInfo') {
+            $meta.Source = $Target.Source
+            $meta.CommandType = $Target.CommandType
+            $meta.ModuleName = $Target.Module
+            $meta.ModuleName = $Target.ModuleName
+            $meta.ImplementingType = $Target.ImplementingType
+            $meta.Version = $Target.Version
+
+            $meta
+                | Json -depth 0 -EnumsAsStrings
+                | Join-String -op '[CommandInfo]' -sep "`n"
+                | write-verbose
+
+            return
+        }
+
+        Get-Command $Target
+        | Join-String {
+            '{0}\{1}' -f @(
+                $_.Source ?? '.'
+                $_.ResolvedCommandName ?? '.'
+            )
+        }
+    }
+}
 function Dotils.String.Transform.AlignRight {
     # replace all \r\n sequences with \n
     [Alias('String.Transform.AlignRight')]
@@ -4360,6 +4564,9 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-07-31
+        'Dotils.Quick.Pwd' # 'Dotils.Quick.Pwd' = { '.quick.Pwd', 'QuickPwd' }
+        'Dotils.Quick.History' # 'Dotils.Quick.History' = { '.quick.History', 'QuickHistory' }
         # 2023-07-29
         'Dotils.Text.Wrap' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
         'Dotils.Select-NameIsh' # 'Dotils.NameIsh' = { 'Nameish', 'Namish' }
@@ -4457,6 +4664,14 @@ $exportModuleMemberSplat = @{
         # 2023-07-xx
         # 2023-08-xx
         # 2023-07-xx
+        # 2023-07-31
+        '.to.Resolved.CommandName' # Dotils.To.Resolved.CommandName = { '.to.Resolved.CommandName' }
+
+        '.quick.History' # Dotils.Quick.History = { '.quick.History', 'QuickHistory' }
+        'QuickHistory' # Dotils.Quick.History = { '.quick.History', 'QuickHistory' }
+
+        '.quick.Pwd'  # 'Dotils.Quick.Pwd' = { '.quick.Pwd', 'QuickPwd' }
+        'QuickPwd' # 'Dotils.Quick.Pwd' = { '.quick.Pwd', 'QuickPwd' }
 
         # 2023-07-24
         'Dotils.Text.Suffix' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
