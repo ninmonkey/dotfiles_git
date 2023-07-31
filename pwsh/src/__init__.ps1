@@ -1,7 +1,12 @@
 ﻿# $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
+'trace.👩‍🚀.parse: [2] $Profile.''MainEntryPoint.__init__'' : /pwsh/profile.ps1'
+    | write-verbose
+    # | write-host -bg '7baa7a' -fg black
 
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
+
+Import-Module 'H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
 
 <#
 custom attributes, more detailed info

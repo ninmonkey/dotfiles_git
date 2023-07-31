@@ -1,6 +1,11 @@
 $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
+Import-Module 'Pansies'
+'trace.👩‍🚀.parse: [1] $Profile.MainEntryPoint : /pwsh/profile.ps1'
+    | write-verbose
+    # | write-host -bg '7baa7a' -fg black
+
 
 # required or else it breaks piping 'fd | fzf --preview bat'
 $PSNativeCommandArgumentPassing = [System.Management.Automation.NativeArgumentPassingStyle]::Legacy

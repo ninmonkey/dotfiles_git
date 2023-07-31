@@ -2,6 +2,14 @@
 Use Chezmoi or something better for profile management
 This is a naive copy
 #>
+$PSCommandPath | Fl -Force *
+
+return
+$PSCmdlet.MyInvocation.BoundParameters
+    | ConvertTo-Json -Depth 0 -Compress
+    | Join-String -op 'Func: '
+    | write-verbose -verbose
+
 $FetchConfig = @{
     IAm                = Get-Item $PSCommandPath
     Root               = Get-Item $PSScriptRoot
