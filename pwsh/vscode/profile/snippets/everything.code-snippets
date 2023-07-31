@@ -24,12 +24,34 @@
 
     */
     "Date-Iso": {
-        "scope": "markdown,powerquery,swift,powershell,ps1,typescript,javascriptjson,jsonc,xml,py,python,js,cs,csx,code-workspace,code-snippets,powershell",
+        // "scope": "markdown,powerquery,swift,powershell,ps1,typescript,javascriptjson,jsonc,xml,py,python,js,cs,csx,code-workspace,code-snippets,powershell",
         "prefix": "date ISO",
         "description": "Using ISO format YYYY-MM-DD",
         "body": [
             "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE"
         ]
+    },
+        "File.Current.Name": {
+        "prefix": "cur File.Name",
+        "description": "Current $file.Name",
+        "body": [
+            "$TM_FILENAME"
+        ],
+
+    },
+    "File.Current.FullName": {
+        "prefix": "cur File.FullName",
+        "description": "Current $file.FullName",
+        "body": [
+            "$TM_FILEPATH"
+        ],
+    },
+    "File.Current.DirectoryName": {
+        "prefix": "cur File.Directory",
+        "description": "Current $file.Directory",
+        "body": [
+            "\t${TM_FILEPATH/(.*)\\..+$/$1/}",
+        ],
     },
     "md.tinydate.Date-Iso": {
         "scope": "markdown",
@@ -42,7 +64,7 @@
     },
     "1234 Regex: Escape Backslashes📌": {
         // "scope": "markdown,powerquery,swift,powershell,ps1,typescript,javascriptjson,jsonc,xml,py,python,js,cs,csx,code-workspace,code-snippets,powershell",
-        // "scope": "",
+        "scope": "ruby",
         "prefix": "escape backslash",
         "description": "Converts backslashes to forslashes, for json paths 4321.",
         "body": [
@@ -52,28 +74,8 @@
         ]
         // C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
     },
-    "File.CurrentFilename": {
-        "scope": "markdown,powerquery,swift,powershell,ps1,typescript,javascriptjson,jsonc,xml,py,python,js,cs,csx,code-workspace,code-snippets",
-        "prefix": "[meta].Cur ┐ Current File ",
-        "description": "Current $File.Name",
-        "body": [
-            "$TM_FILENAME"
-        ],
-    },
-    "[meta] Dynamic: Filename Dump": {
-        "prefix": "[meta].Dump ┐ Filename Dump",
-        "description": "get current filename and transform it",
-        "body": [
-            "\n\n<-- start:",
-            "\nFullName:",
-            "\t${TM_FILEPATH}",
-            "Directory: FullName:",
-            "\t${TM_FILEPATH/(.*)\\..+$/$1/}",
-            "\nFilename:\n\t$TM_FILENAME",
-            "\nBaseName:\n\t$TM_FILENAME_BASE",
-            "\nEnd -->\n",
-        ]
-    },
+
+
     // sample snippet using UUID and RELATIVE_FILEPATH
     "[meta] relative Path + new-guid() - iter0": {
         "prefix": "[meta].Guid() ; filepath unique name",
