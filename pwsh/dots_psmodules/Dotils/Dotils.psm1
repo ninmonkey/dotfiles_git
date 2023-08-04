@@ -5,6 +5,59 @@ function Console.GetColumnCount {
     return $w
 }
 
+function Dotils.To.Hashtable {
+    <#
+    .SYNOPSIS
+    .example
+        get-date | .To.Dict -AsJsonMin
+    .EXAMPLE
+        $object | __asDict
+    .EXAMPLE
+        $object | __asDict -DropBlankKeys | Json -c -d 0
+    #>
+    [Alias(
+        '.to.Dict'
+    )]
+    [CmdletBinding()]
+    param(
+        # any type of objec
+        [Parameter(
+            Mandatory, ValueFromPipeline )]
+        [object[]]$InputObject,
+
+        # drop keys when the value is whitespace
+        [switch]$DropBlankKeys,
+
+        # also json for convienence
+        [switch]$AsJsonMin
+    )
+    process {
+        foreach($inner in $inputObject) {
+            $obj = $inner
+            $newHash = @{}
+
+            foreach($prop in $Obj.PSObject.Properties) {
+                $newHash[ $prop.Name ] = $Prop.Value
+            }
+
+            if($DropBlankKeys) {
+                foreach($key in $newHash.Keys.clone()) {
+                    $isBlankValue = [string]::IsNullOrWhiteSpace( $newHash[$key] )
+                    if($isBlankValue) {
+                        $newHash.remove( $key )
+                    }
+                }
+            }
+
+            if($AsJsonMin) {
+                $newHash | ConvertTo-Json -depth 1 -Compress -wa 0
+                continue
+            }
+            return $newHash
+        }
+    }
+}
+
 function Dotils.Quick.Pwd {
     # 2023-05-12 : touch
     <#
@@ -103,6 +156,56 @@ function Dotils.Quick.Pwd {
 }
 
 
+function Dotils.Quick.GetError {
+    <#
+    .SYNOPSIS
+        .quick. show errors when in debug scope
+    #>
+    [Alias(
+        '.quick.Error'
+        # , 'QuickHistory'
+    )]
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0)]
+        [ArgumentCompletions(
+            'Default'
+        )]
+        [string]$Template,
+
+        [uint]$FirstN,
+        [uint]$LastN
+    )
+    $selected_errors = @( $global:error )
+    if($FirstN) {
+        $selected_errors = $selected_errors | Select -first $FirstN
+    }
+    if($LastN) {
+        $selected_errors = $selected_errors | Select -Last $LastN
+    }
+
+    $Template ?? ''
+        | Join-String -op 'Dotils.Quick.GetError => TemplateMode = '
+        | write-verbose
+
+    @(
+        'globalCount: {0}' -f $global:error.count
+        'selected: {0}' -f $selected_errors.count
+    ) | Join-String -sep ',  '
+
+    # Quick, short, without duplicates
+    switch ($Template) {
+        'Default' {
+
+        }
+
+        default {
+
+            $all_errors
+        }
+    }
+}
+
 function Dotils.Quick.History {
     <#
     .SYNOPSIS
@@ -175,6 +278,124 @@ function Dotils.Format.Write-DimText {
         | New-Text @colorDefault
         | % ToString
 }
+
+
+function Dotils.Is.DirectPath {
+    <#
+    .SYNOPSIS
+        currently just used for Env vars, could be extended to scalars
+    .NOTES
+        handling multiple falsy values and negating the negation if present made the code slightly longer than expected
+
+    it works even a UNC Pipe names
+    .EXAMPLE
+
+    gci env: | Dotils.Is.DirectPath
+
+        Name                           Value
+        ----                           -----
+        ALLUSERSPROFILE                C:\ProgramData
+        APPDATA                        C:\Users\cppmo_000\AppData\Roaming
+        CHROME_CRASHPAD_PIPE_NAME      \\.\pipe\LOCAL\crashpad_25500_UMCQTPRWURZIJSPF
+        CommonProgramFiles             C:\Program Files\Common Files
+        CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files
+        CommonProgramW6432             C:\Program Files\Common Files
+        ComSpec                        C:\WINDOWS\system32\cmd.exe
+        DriverData                     C:\Windows\System32\Drivers\DriverData
+        HOMEDRIVE                      C:
+        HOMEPATH                       \Users\cppmo_000
+        Legacy_Nin_Dotfiles            C:\Users\cppmo_000\SkyDrive\Documents\2021\dot
+        Legacy_Nin_Home                C:\Users\cppmo_000\SkyDrive\Documents\2021
+    #>
+    [Alias('.Is.DirectPath')]
+    param(
+        # invert logic
+        [Alias('Not')]
+        [switch]$IsNotADirectory
+    )
+    process {
+        $curItem = $_
+        if( -not $PSBoundParameters.ContainsKey('IsNotADirectory') ) {
+            $curItem | ?{
+                $path? = $_.Value ?? $_
+                Test-Path -LiteralPath $Path?
+            }
+            return
+        }
+
+        $curItem | ?{
+            $path? = $_.Value ?? $_
+            -not ( Test-Path -LiteralPath $Path? )
+        }
+        return
+
+    }
+}
+
+function Dotils.to.EnvVarPath  {
+    <#
+    .SYNOPSIS
+    .notes
+        future: auto grab PSPath, turn into
+    .example
+        PS> $paths = 'C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App\CertifiedExtensions', 'C:\Users\cppmo_000\AppData\Local\Microsoft\Power BI Desktop\CertifiedExtensions'
+
+        PS> $paths | .to.envVarPath | Set-Clipboard -PassThru
+
+        ${Env:USERPROFILE}\Microsoft\Power BI Desktop Store App\CertifiedExtensions
+        ${Env:LOCALAPPDATA}\Microsoft\Power BI Desktop\CertifiedExtensions
+    #>
+    [Alias('.to.envVarPath')]
+    [CmdletBinding()]
+    param(
+        # Also save to clipboard
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        [Alias('cl', 'clip')]
+        [switch]$CopyToClipboard
+    )
+    begin {
+        $options = gci env:
+            | Dotils.Is.DirectPath
+            | sort-Object{ $_.Value.Length } -Descending -Unique
+    }
+    process {
+        # asssume real for now
+        $curInput = Get-Item -ea 'ignore' -LiteralPath $_
+        $asStr = $curInput.FullName ?? $curInput.ToString()
+
+        foreach($item in $options){
+            $pattern = [Regex]::escape( $item.Value )
+            if($asStr -match $Pattern) {
+                $prefixTemplate = '${{Env:{0}}}' -f $Item.Key
+                $render = $asStr -replace $Pattern, $prefixTemplate
+                @{
+                    template = $prefixTemplate
+                    render = $render
+                    pattern = $pattern
+                    asStr = $asStr
+                } | Json | Join-String -sep "`n" | Write-debug
+
+                ## assert
+                #   do I actually need to use expandstring?
+                $resolveItem = Get-Item -ea 'ignore' $render
+                $resolveItem.FullName -eq $curInput.Fullname
+                    | Join-String -op 'IsValidAnswer? '
+                    | write-verbose
+
+                if($CopyToClipboard) {
+                    $render | Set-Clipboard -PassThru
+                    return
+                }
+                return $render
+            }
+        }
+    }
+}
+
+
+
 function Dotils.Write.Info {
     [Alias('Write.Info')]
     param()
@@ -661,6 +882,46 @@ function Dotils.Debug.Compare-VariableScope {
     return
 }
 
+function Dotils.Write-TypeOf {
+     <#
+    .SYNOPSIS
+        Writes object type info to the information stream or host, original object is preserved
+    .NOTES
+
+    .EXAMPLE
+        $res = $sb.Ast.EndBlock.Statements | OutKind
+    #>
+    [Alias(
+        'WriteKindOf', 'OutKind')]
+    [CmdletBinding()]
+    param(
+
+        # format style
+        [ValidateSet(
+            'Default')]
+        [Parameter(Position=0)]
+        $OutputMode = 'Default',
+
+        # actual objects to inspect
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+
+
+    )
+    process {
+
+        $InputObject
+        switch($OutputMode) {
+            'Default' {
+                $InputObject
+                    | Format-TypeName -WithBrackets
+                    | Write-host -bg 'gray30' -fg 'gray80'
+            }
+            default { throw "UnhandledOutputMode: $switch"}
+        }
+    }
+
+}
 function Dotils.Write-NancyCountOf {
     <#
     .SYNOPSIS
@@ -3739,6 +4000,7 @@ function Dotils.Render.CallStack {
     param(
         # Json to make copy-paste easier
         [ValidateSet(
+            'FullNameLineNumber',
             'Default', 'Line',
             'List', 'Json'
         )][string]$OutputFormat = 'Default',
@@ -3800,6 +4062,16 @@ function Dotils.Render.CallStack {
             }
             'List' {
                 $render = $Items | Join-String -Property Command -f "`n - {0}"
+            }
+            'FullNameLineNumber' {
+                $items
+                | Foreach-Object {
+                    $cur  = $_;
+                    $cur | Add-Member -PassThru -Force -ea ignore -NotePropertyMembers @{
+                        FullNameWithLineNumber =
+                            '{0}:{1}' -f @( $cur.ScriptName ?? ''; $cur.ScriptLineNumber ?? 0 )
+                    } }
+                | ft FullNameWithLineNumber
             }
 
             default {
@@ -4564,6 +4836,15 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-04
+        'Dotils.Is.DirectPath' # Dotils.Is.DirectPath = { '.Is.DirectPath' }
+        'Dotils.to.EnvVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
+        # 2023-08-03
+        'Dotils.Format.T.Hashtable' # 'Dotils.To.Hashtable' = { '.to.Dict' }
+        'Dotils.To.Hashtable' # 'Dotils.To.Hashtable' = { '.to.Dict' }
+        # 2023-08-02
+        'Dotils.Write-TypeOf' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
+
         # 2023-07-31
         'Dotils.Quick.Pwd' # 'Dotils.Quick.Pwd' = { '.quick.Pwd', 'QuickPwd' }
         'Dotils.Quick.History' # 'Dotils.Quick.History' = { '.quick.History', 'QuickHistory' }
@@ -4664,6 +4945,18 @@ $exportModuleMemberSplat = @{
         # 2023-07-xx
         # 2023-08-xx
         # 2023-07-xx
+        # 2023-08-04
+        '.Is.DirectPath' # 'Dotils.Is.DirectPath' = { '.Is.DirectPath' }
+        '.to.envVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
+        # 2023-08-03
+        '.to.Dict' # 'Dotils.To.Hashtable' = { '.to.Dict' }
+        # 2023-08-02
+        'Dotils.Write-TypeOf' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
+        'WriteKindOf' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
+        'OutKind' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
+        'LabelKind' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
+
+
         # 2023-07-31
         '.to.Resolved.CommandName' # Dotils.To.Resolved.CommandName = { '.to.Resolved.CommandName' }
 
