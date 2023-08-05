@@ -404,7 +404,9 @@ function Err {
     )]
     [Alias('prof.Err')]
     param(
-        [int]$Num = 10,
+        [Alias('Limit')][int]$Num = 10,
+
+        [Alias('All')][switch]$ShowAll,
         [switch]$Clear,
         [Alias('Count')]
         [switch]$TotalCount,
@@ -414,9 +416,15 @@ function Err {
 
         # write-information
         [Alias('ShowCount')]
-        [switch]$IncludeCounth,
+        [switch]$IncludeCount,
         [switch]$PassThru
     )
+    if($PSBoundParameters.ContainsKey('ShowAll') -and $PSBoundParameters.ContainsKey('Num')) {
+        throw "Error: You cannot use '-ShowAll' and '-Num X' parameters together"
+    }
+    if($PSBoundParameters.ContainsKey('ShowAll')) {
+        $Num = 9999 # to simplify logic, since it wraps after 255 anyway
+    }
     $meta = @{
         CountGlobal = $global:error.count
         Count       = $error.Count
