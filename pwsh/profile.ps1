@@ -30,7 +30,7 @@ Set-Alias @setAliasSplat
 if(-not ($ENV:PATH -split ';' -match 'pnpm')) {
        $ENV:PATH += ';', $Env:PNPM_HOME -join ''
 }
-
+New-Alias 'nin.MergeHash' 'Ninmonkey.Console\mergeHashtable' -PassThru
 function .Assert.Clamp {
     <#
     .SYNOPSIS
