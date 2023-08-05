@@ -1,0 +1,9 @@
+- [ ] functions, alias
+  - [ ] notcontains outer spacing that needs trim
+  - [ ] or function name notcontains spaces anywhere 
+- [ ] functions
+  - [ ] not have multiple definitions as accidental shadow/collisions
+- [ ] functions notcontains backtick continuations
+- [ ] exported function, alises
+  - [ ] exported from manifest but don't acutally exist
+- [ ] function, symbols, alias, symbols of same name with case-sensitive differences `$FileList` `$fileList`

@@ -331,6 +331,439 @@ function Dotils.Is.DirectPath {
 
     }
 }
+function Dotils.Render.InvocationInfo {
+    [Alias('Dotils.NYI.InvocationInfo')]
+    [CmdletBinding()]
+    param()
+
+    throw "NYI"
+    <#
+    $error[0].InvocationInfo
+
+        MyCommand             : Import-Module
+        BoundParameters       : {}
+        UnboundArguments      : {}
+        ScriptLineNumber      : 1
+        OffsetInLine          : 1
+        HistoryId             : 1
+        ScriptName            :
+        Line                  : impo dotils -force -Verbose -DisableNameChecking
+        PositionMessage       : At line:1 char:1
+                                + impo dotils -force -Verbose -DisableNameChecking
+                                + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        PSScriptRoot          :
+        PSCommandPath         :
+        InvocationName        : impo
+        PipelineLength        : 0
+        PipelinePosition      : 0
+        ExpectingInput        : False
+        CommandOrigin         : Internal
+        DisplayScriptPosition :
+#>
+}
+
+'do me first: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
+function Dotils.Describe.Error {
+    <#
+    .SYNOPSIS
+        Is the exception caused by one of several param block syntax errors .more general case, see other func for rendering a single error record
+    .LINK
+        Dotils.Describe.Error
+    .LINK
+        Dotils.Describe.ErrorRecord
+    .EXAMPLE
+        PS>
+        # sample functions that produce these kinds of error:
+
+            function foo1 { param( $x, $y, ) }
+            function foo2 { param(
+                $x
+                $y ) }
+
+        PS> $Error | Dotils.Is.Error.FromParamBlock | CountOf
+
+        # cool it works
+    #>
+    [Alias(
+        '.Describe.Error'
+        # ? '.Describe.Exception',
+    )]
+    [CmdletBinding()]
+    param(
+        [ValidateNotNull()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+        # [switch]$PassThru
+        # invert logic
+        # [Alias('Not')]
+        # [switch]$IsNotADirectory
+    )
+    process {
+        if($null -eq $InputObject) { return }
+        if(-not($InputObject -is 'Management.Automation.ErrorRecord')) {
+            $inputObject
+                | Ninmonkey.Console\Format-ShortTypeName
+                | Join-String -op "InputObject is not an ErrorRecord! Type = "
+                | Write-error
+            return
+        }
+        <#
+    Example of Import-Module which fails, because of an inner syntax or parser error:
+
+    Import-Module dotils -force:
+
+    $error[0]
+
+        Exception:
+            System.IO.FileNotFoundException: The specified module 'dotils' was not loaded because no valid
+                        module file was found in any module directory
+            TargetObject          : dotils
+            CategoryInfo          : ResourceUnavailable: (dotils:String) [Import-Module], FileNotFoundException
+            FullyQualifiedErrorId : Modules_ModuleNotFound,Microsoft.PowerShell.Commands.ImportModuleCommand
+
+    $error[1]
+
+    $error[1] | fl * -Force
+
+        PSMessageDetails      :
+        Exception             : System.Management.Automation.ParentContainsErrorRecordException: At
+                                H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\dotils\dotils.psm1:418 char:26
+                                +             $InputObject.
+                                +                          ~
+                                Missing property name after reference operator.
+
+                                At H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\dotils\dotils.psm1:418 char:26
+                                +             $InputObject.
+                                +                          ~
+                                Missing '=' operator after key in hash literal.
+        TargetObject          :
+        CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+        FullyQualifiedErrorId : MissingPropertyName
+        ErrorDetails          :
+        InvocationInfo        : System.Management.Automation.InvocationInfo
+        ScriptStackTrace      : at <ScriptBlock>, <No file>: line 1
+        PipelineIterationInfo : {}
+
+        #>
+        function __compareErrorKind.FromParamBlockSyntax {
+            param(
+                [ValidateNotNull()]
+                [Parameter(Mandatory, position=0)]
+                [Management.Automation.ErrorRecord]$InputObject
+            )
+            $SourceIsParamBlock = $false
+            $details = @{
+                SourceIsParamBlock = $false
+            }
+            $details.Matches ??= [Collections.Generic.List[Object]]::new()
+
+            [string[]]$regexCases = @(
+                "Missing ')' in function parameter list"
+                "Missing closing '}' in statement block or type definition."
+                "Unexpected token ')' in expression or statement."
+                "Unexpected token '}' in expression or statement."
+            ) | %{ [regex]::Escape( $_ ) }
+
+            foreach($case in $regexCases) {
+                $case | Join-String -op 'test case: ' |  write-debug
+                if( $InputObject.Exception.Message -match $case ) {
+                    $SourceIsParamBlock = $true
+                    $details.Matches.Add( $case )
+                    break
+                }
+            }
+            "item: SourceIsParamBlock?: Final = $SourceIsParamBlock" | write-verbose
+            $details.SourceIsParamBlock = $SourceIsParamBlock
+            $details
+        }
+
+        # # $InputObject.Exception
+        # #     | ? Message -Match ([regex]::Escape("Missing ')' in function parameter list"))
+        # if( $InputObject.Exception.Message -match ([regex]::Escape("Missing ')' in function parameter list"))) {
+        #     $SourceIsParamBlock = $true
+        # }
+        $meta = @{
+            ParamBlockSyntaxError = $true
+            Description = 'default bad stuff'
+            $InputObject.
+        }
+        # ParserError
+
+        if($PassThru) {
+            $InputObject
+            | Add-Member -NotePropertyMembers @{
+                Describe = $Meta.Description
+            } -Force -PassThru -TypeName 'dotils.Describe.ErrorRecord' -ea 'ignore'
+        }
+
+        if($SourceIsParamBlock) {
+            return $InputObject
+        }
+    }
+}
+function Dotils.Is.Error.FromParamBlock {
+    <#
+    .SYNOPSIS
+        Is the exception caused by one of several param block syntax errors ?
+    .EXAMPLE
+        PS>
+        # sample functions that produce these kinds of error:
+
+            function foo1 { param( $x, $y, ) }
+            function foo2 { param(
+                $x
+                $y ) }
+
+        PS> $Error | Dotils.Is.Error.FromParamBlock | CountOf
+
+        # cool it works
+    #>
+    [Alias('.Is.Error.FromParamBlockSyntax')]
+    [CmdletBinding()]
+    param(
+        [ValidateNotNull()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+        [switch]$PassThru
+        # invert logic
+        # [Alias('Not')]
+        # [switch]$IsNotADirectory
+    )
+    process {
+        if($null -eq $InputObject) { return }
+        if(-not($InputObject -is 'Management.Automation.ErrorRecord')) {
+            $inputObject
+                | Ninmonkey.Console\Format-ShortTypeName
+                | Join-String -op "InputObject is not an ErrorRecord! Type = "
+                | Write-error
+            return
+        }
+        $SourceIsParamBlock = $false
+
+        [string[]]$regexCases = @(
+            "Missing ')' in function parameter list"
+            "Missing closing '}' in statement block or type definition."
+            "Unexpected token ')' in expression or statement."
+            "Unexpected token '}' in expression or statement."
+        ) | %{ [regex]::Escape( $_ ) }
+
+        foreach($case in $regexCases) {
+            $case | Join-String -op 'test case: ' |  write-debug
+            if( $InputObject.Exception.Message -match $case ) {
+                $SourceIsParamBlock = $true
+                break
+            }
+        }
+        "item: SourceIsParamBlock?: Final = $SourceIsParamBlock" | write-verbose
+
+        # # $InputObject.Exception
+        # #     | ? Message -Match ([regex]::Escape("Missing ')' in function parameter list"))
+        # if( $InputObject.Exception.Message -match ([regex]::Escape("Missing ')' in function parameter list"))) {
+        #     $SourceIsParamBlock = $true
+        # }
+
+        if($SourceIsParamBlock) {
+            return $InputObject
+        }
+    }
+}
+write-warning 'wip func: Dotils.Is.Error.FromParamBlock'
+write-warning 'wip func: Dotils.Render.FindMember'
+function Dotils.Render.FindMember {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+
+        function __SummarizeMember_Property {
+            $Input
+                | Join-String -sep "`n" {@(
+                    $_.PropertyType
+                        | Join-String -f '[{0}]' { $_ -replace '^System\.', '' }
+
+                    $_.Name
+                        | Join-String -f '${0}'
+                ) | Join-String -sep ''} #| %{ $_ -split '\n' } #| Join.ul
+        }
+    }
+    process {
+        $items.AddRange(@($InputObject))
+        'was here' | write-warning
+    }
+    end {
+
+
+        $items | %{
+            $_ | __SummarizeMember_Property
+            # switch($_.GetType())
+        }
+    }
+
+    # [System.Management.Automation.ErrorCategoryInfo]|fime  -MemberType Property
+    # | __SummarizeMember_Property
+}
+
+function Dotils.Render.Error.CategoryInfo {
+    <#
+    .NOTES
+    ErrorCategoryInfo
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+    if($InputObject -is [Management.Automation.ErrorCategoryInfo] ) {
+        $Target = $InputObject
+    }
+    if($InputObject -is [Management.Automation.ErrorRecord] ) {
+        $Target = $InputObject.CategoryInfo
+    }
+    if($null -eq $Target) {
+        [System.Management.Automation.ErrorCategoryInfo]
+        Write-Error
+    }
+
+    $Target
+        | Join-String -sep ', ' -p {
+                #| Select-Object 'Category', 'Activity', 'Reason', 'TargetName', 'TargetType'
+            $_
+                | %{$_.PSObject.Properties }
+                | Join-string -f "`n    {0}" { $_.Name, $_.value  -join ' ==> ' }
+        }
+}
+write-warning 'wip func: Dotils.Describe.ErrorRecord'
+function Dotils.Describe.ErrorRecord {
+    [Alias('.Describe.ErrorRecord')]
+    [CmdletBinding()]
+    param(
+        [Alias('ErrorRecord')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [Management.Automation.ErrorRecord]$InputObject,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Management.Automation.ErrorCategoryInfo]$CategoryInfo,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Exception]$Exception,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Management.Automation.ErrorDetails]$ErrorDetails,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Management.Automation.InvocationInfo]$InvocationInfo,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string]$ScriptStackTrace,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [object]$TargetObject,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string]$FullyQualifiedErrorId,
+
+        # # ReadOnlyCollection<int>
+        # [Parameter(ValueFromPipelineByPropertyName)]
+        # [Management.Automation.InvocationInfo]$PipelineIterationInfo,
+        <#
+        .ctor
+            CategoryInfo
+            ErrorDetails
+            Exception
+            FullyQualifiedErrorId
+            GetObjectData
+            InvocationInfo
+            PipelineIterationInfo
+            ScriptStackTrace
+            TargetObject
+        #>
+        [switch]$PassThru
+    )
+    process {
+        $PSCmdlet.MyInvocation.BoundParameters
+            | ConvertTo-Json -Depth 1 -Compress
+            | Join-String -op 'Dotils.Describe.ErrorRecord<Process>: '
+            | write-verbose
+
+        [string]$ErrorTypeName = $InputObject | Format-TypeName
+        $InputObject | Format-TypeName
+
+
+        [string]$DisplayString = ''
+
+        $DisplayString +=
+            'foo'
+
+        $DisplayString +=
+            'foo'
+
+        $meta = [ordered]@{
+            PSTypeName = 'Dotils.Describe.ErrorRecord'
+            ErrorTypeName = $ErrorTypeName
+            DisplayString = $DisplayString
+        }
+
+        if($PassThru) {
+            return [pscustomobject]$meta
+        }
+        return [pscustomobject]$meta
+    }
+}
+function Dotils.Is.KindOf {
+    <#
+    .SYNOPSIS
+        select based on types, if they match one or more of the values
+    .NOTES
+    types can be generate from:
+
+        PS> Find-Type Encoding* | Join-String -p FullName -sep ', ' -f "'{0}'" | Join-String -f "@( {0} )"
+
+        # out:
+
+        @( 'System.Text.Encoding', 'System.Text.EncodingInfo', 'System.Text.EncodingProvider', 'System.Text.EncodingExtensions' )
+    .LINK
+        Dotils.Is.KindOf
+    .link
+        Dotils.Select-Namish
+    #>
+    [Alias('.Is.KindOf')]
+    [CmdletBinding()]
+    param(
+        # A list of types, keep items if the match any values
+        [ArgumentCompletions('ErrorRecord')]
+        [string[]]$NameOfKind
+    )
+    begin {
+        # prefer strings to allow dynamic inputs
+        $wantedKinds = switch($NameOfKind) {
+            { $_ -in @('String', 'Text') } {
+                'System.String'
+            }
+            'Encoding' {
+
+            }
+            'Int' {
+                @( 'System.Int16', 'System.Int32', 'System.Int64', 'System.Int128' )
+            }
+            'Directory' { 'IO.DirectoryInfo' }
+            'File' { 'IO.FileInfo' }
+            { $_ -in @('ErrorRecord', 'Error') } {
+                'Management.Automation.ErrorRecord'
+            }
+            default { throw "UnhandledNameOfKind: $NameOfKind!" }
+
+        }
+    }
+    process {
+        throw 'NYI: Enumerate types, emit object'
+        $curItem | Where-Object {
+            $_ -is $wantedKind
+        }
+    }
+}
 
 function Dotils.to.EnvVarPath  {
     <#
@@ -361,7 +794,7 @@ function Dotils.to.EnvVarPath  {
             | sort-Object{ $_.Value.Length } -Descending -Unique
     }
     process {
-        # asssume real for now
+        # assume real for now
         $curInput = Get-Item -ea 'ignore' -LiteralPath $_
         $asStr = $curInput.FullName ?? $curInput.ToString()
 
@@ -1608,6 +2041,7 @@ function Dotils.Start-WatchForFilesModified {
 
         [switch]$NotSilent
     )
+    write-warning 'still NYI? '
     $script:__dotilsStartWatch ??= @{ LastInvokeTime = 0 }
     $state = $script:__dotilsStartWatch
 
@@ -2196,7 +2630,20 @@ function Dotils.Tablify.ErrorRecord {
     }
 }
 function Dotils.Render.ErrorVars {
-    # auto hide values that are empty  or null, from the above functions
+    <#
+    .SYNOPSIS
+    auto hide values that are empty  or null, from the above functions
+    .link
+        Dotils.Describe.ErrorRecord
+    .link
+        Dotils.Describe.Error
+    .link
+        Dotils.Render.Error
+    .link
+        Dotils.Render.ErrorRecord
+    .link
+        Dotils.Render.ErrorRecord.Fancy
+    #>
     [CmdletBinding()]
     param()
     process {
@@ -2215,6 +2662,19 @@ function Dotils.Render.ErrorVars {
     # a bunch of mmaybe
 }
 function Dotils.Render.ErrorRecord.Fancy {
+    <#
+    .SYNOPSIS
+    .link
+        Dotils.Describe.ErrorRecord
+    .link
+        Dotils.Describe.Error
+    .link
+        Dotils.Render.Error
+    .link
+        Dotils.Render.ErrorRecord
+    .link
+        Dotils.Render.ErrorRecord.Fancy
+    #>
     param(
         [ArgumentCompletions(
             'OneLine',
@@ -2222,30 +2682,34 @@ function Dotils.Render.ErrorRecord.Fancy {
         )]
         [string]$OutputFormat
     )
+    begin {
+        write-warning 'WIP: Dotils.Render.ErrorRecord.Fancy'
+    }
     process {
         $InputObject = $_
 
         switch ($OutputFormat) {
             'OneLine' {
                 $InputObject
-                | Dotils.Tablify.ErrorRecord -ListPropertySets
-                | % { $_.PsObject.Properties }
-                | % {
-                    $_.name
-                    $_.Value | Join-String -sep ', ' -op "`n$($_.name)"
-                }
-                | Join-String -sep ( Hr 1 )
+                    | Dotils.Tablify.ErrorRecord -ListPropertySets
+                    | % { $_.PsObject.Properties }
+                    | % {
+                        $_.name, $_.Value
+                            | Join-String -sep ', ' -op "`n$($_.name)"
+                    }
+                    | Join-String -sep ( Hr 1 )
+
                 break
             }
             { $_ -in @('UL', 'List') } {
                 $InputObject
-                | Dotils.Tablify.ErrorRecord -ListPropertySets
-                | % { $_.PsObject.Properties }
-                | % {
-                    $_.name
-                    $_.Value | join.UL
-                }
-                | Join-String -sep ( Hr 1)
+                    | Dotils.Tablify.ErrorRecord -ListPropertySets
+                    | % { $_.PsObject.Properties }
+                    | % {
+                        $_.name, $_.Value
+                            | join.UL
+                    }
+                    | Join-String -sep ( Hr 1)
 
                 break
             }
@@ -4694,6 +5158,10 @@ function Select-NameIsh {
     .EXAMPLE
         gi . | NameIsh Names|fl
         gi . | NameIsh Names -IncludeEmptyProperties |fl
+    .LINK
+        Dotils.Is.KindOf
+    .link
+        Dotils.Select-Namish
     #>
     [Alias(
         'Nameish', 'Dotils.NameIsh',
@@ -4836,6 +5304,20 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-05
+        'Dotils.Render.FindMember'
+        'Dotils.Render.Error.CategoryInfo' # 'Dotils.Render.Error.CategoryInfo' = { }
+        'Dotils.Describe.Error'
+        'Dotils.Render.ErrorVars'
+        'Dotils.Render.ColorName'
+        'Dotils.Render.CallStack'
+
+        'Dotils.Render.InvocationInfo' # NYI
+
+
+        'Dotils.Describe.ErrorRecord' # '.Describe.Error' # 'Dotils.Describe.ErrorRecord' = { '.Describe.Error' }
+        'Dotils.Is.KindOf' # 'Dotils.Is.KindOf' = { '.Is.KindOf' }
+        'Dotils.Is.Error.FromParamBlock' # 'Dotils.Is.Error.FromParamBlock' = { '.Is.Error.FromParamBlockSyntax' }
         # 2023-08-04
         'Dotils.Is.DirectPath' # Dotils.Is.DirectPath = { '.Is.DirectPath' }
         'Dotils.to.EnvVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
@@ -4942,9 +5424,10 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
-        # 2023-07-xx
-        # 2023-08-xx
-        # 2023-07-xx
+        # 2023-08-05
+        '.Describe.Error' # 'Dotils.Describe.ErrorRecord' = { '.Describe.Error' }
+        '.Is.KindOf' # 'Dotils.Is.KindOf' = { '.Is.KindOf' }
+        '.Is.Error.FromParamBlockSyntax' # 'Dotils.Is.Error.FromParamBlock' = { '.Is.Error.FromParamBlockSyntax' }
         # 2023-08-04
         '.Is.DirectPath' # 'Dotils.Is.DirectPath' = { '.Is.DirectPath' }
         '.to.envVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
