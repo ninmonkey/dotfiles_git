@@ -335,6 +335,19 @@ function Dotils.Is.Not {
     <#
     .synopsis
         negate from the pipeline, sometimes cleaner in the shell than requiring parens
+    .description
+        why? Sometimes it's easier, in the console, where you start with this:
+            $error | ? { .Is.Blank $_.Message }
+
+        Instead of using
+            $error | ? { -not ( .Is.Blank $_.Message ) }
+
+        you can use:
+            $error | ? { .Is.Blank $_.Message | .Is.Not }
+    .link
+        Dotils.Is.Blank
+    .link
+        Dotils.Is.Not
     #>
     [Alias('.Is.Not')]
     param(
@@ -350,6 +363,7 @@ function Dotils.Is.Not {
                 -not ( $item )
             }
         }
+
     }
     end {
         if(-not $MyInvocation.ExpectingInput) {
@@ -359,6 +373,51 @@ function Dotils.Is.Not {
         }
     }
 }
+function Dotils.Is.SubType {
+    <#
+    .synopsis
+        take the type of the LeftHandSide, is it a subtype of the RightHandSide?
+    .NOTES
+        if pipeline, then it filters. if not, then it returns the result
+    .EXAMPLE
+    # basically so you can test this
+        [ParseException] -is [Exception]
+    .example
+        [System.IO.IOException].IsSubclassOf( [System.Exception] )
+        # True
+    #>
+    [Alias('.Is.SubType')]
+    [OutputType('bool')]
+    param(
+        # string, or typeinfo
+        [ArgumentCompletions(
+            "[Exception]", "[ErrorRecord]", "[Text.Encoding]"
+        )]
+        [Parameter(Mandatory)]
+        [object]$OtherType,
+
+
+        # Type or Instance of a type
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+
+    )
+    process {
+        if($InputObject -is 'type') {
+            $Tinfo = $InputObject
+        }elseif($InputObject -isnot 'string') {
+            $Tinfo = $InputObject.GetType()
+        } else {
+            throw 'can''t handle strings yet'
+        }
+        $isTrue = $Tinfo.IsSubClassOf( $OtherType )
+        if($MyInvocation.ExpectingInput) {
+            if($IsTrue) { return $InputObject }
+        }
+        return $isTrue
+    }
+}
+
 function Dotils.Distinct {
     <#
     .SYNOPSIS
@@ -405,29 +464,109 @@ function Dotils.Is.Blank {
         return [string]::IsNullOrWhiteSpace( $InputObject )
     }
 }
-function Dotils.Error.Select {
-    [Alias('Dotils.NYI.InvocationInfo')]
+function Dotils.Has.Prop {
+    [Alias('.Has.Prop')]
     [CmdletBinding()]
     param(
-        [Alias('InputObject')]
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [Management.Automation.ErrorRecord[]]$ErrorRecord,
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
 
-        [ValidateSet(
-            'HasMessage'
-        )]
-        [string[]]$SelectorKind,
-        [switch]$PassThru
+        [Alias('Name')]
+        [Parameter(Mandatory)]
+        [string]$PropertyName,
+
+        [switch]$AsRegex
+    )
+    process {
+        $InputObject | ?{
+            if(-not $AsRegex) {
+                $_.PSObject.Properties.Name -contains $PropertyName
+                return
+            }
+            ($_.PSObject.Properties.Name -match $PropertyName).count -gt 0
+        }
+
+    }
+}
+function Dotils.Add.IndexProp {
+    <#
+    .SYNOPSIS
+        add an index property to each object in the chain, starting at 0
+    .example
+        gci ~
+            | Sort-Object LastWriteTime -Descending | .Add.IndexProp
+            | Sort-Object Name | ft Name, Index, LastWriteTime
+    #>
+    [Alias('.Add.IndexProp')]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
     )
     begin {
         [Collections.Generic.List[Object]]$items = @()
+        $INdex = 0
     }
     process {
-        $items.AddRange(@($ErrorRecord))
+        $items.AddRange(@( $InputObject ))
+    }
+    end {
+        $Items | %{
+            $_
+                | Add-Member -NotePropertyName 'Index' -NotePropertyValue ($Index++) -Force -PassThru -ea 'ignore'
+        }
+    }
+}
+function Dotils.Iter.Prop {
+    [Alias('.Iter.Prop')]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+    process {
+        $InputObject.PSObject.Properties
+            | Sort-Object Name
+    }
+}
+function Dotils.Error.Select {
+    <#
+    .notes
+    Exception Properties:
+        'Data', 'HelpLink', 'HResult', 'InnerException',
+        'Message', 'Source', 'StackTrace', 'TargetSite'
+    #>
+    [CmdletBinding()]
+    param(
+        # expect [Exception] or [ErrorRecord]
+        # [Alias('InputObject')]
+        # [Parameter(Mandatory, ValueFromPipeline)]
+        # [object]$InputObject,
+        # [Management.Automation.ErrorRecord[]]$InputObject,
+        # [Management.Automation.ErrorRecord[]]$InputObject,
+
+        [ValidateSet(
+            'HasMessage',
+            'IsException','IsErrorRecord',
+            'HasQualifiedId', 'NotHasQualifiedId'
+
+        )]
+        [string[]]$SelectorKind,
+
+        # categories to include
+        [Management.Automation.ErrorCategory[]]$ErrorCategory,
+        [switch]$PassThru
+    )
+    begin {
+        # [Collections.Generic.List[Object]]$items = @()
+    }
+    process {
+        if($PSBoundParameters.ContainsKey('ErrorCategory')) {
+           throw 'next wip NYI'
+        }
+        # $items.AddRange(@($ErrorRecord))
     }
     end {
         $serr = @( $global:error )
-        $choices = @{}
+        $choices = [ordered]@{}
 
         $choices.FullyQualifiedErrorId =
             @( $serr | % FullyQualifiedErrorid ) | Sort-Object -Unique
@@ -435,16 +574,70 @@ function Dotils.Error.Select {
         $choices.TargetObject =
             @( $serr | % TargetObject | % ToString | Sort -Unique )
 
+        $choices.TypeName =
+            @( $serr | % GetType | .Distinct | Format-ShortTypeName )
+
+        $choices.ErrorCategory =
+            @( $serr | % GetType | .Distinct | Format-ShortTypeName )
+
+        if($PassThru) {
+            return [pscustomobject]$choices
+        }
+
+            <#
+            example type:
+                [CmdletInvocationException], [ErrorRecord], [ParseException]
+            #>
         $serr | %{
-            $curErrorRecord = $_
+            $curObj = $_
+            if($CurObj  -isnot [Exception] -and
+                $CurObj -isnot [Management.Automation.ErrorRecord]) {
+                $CurObj | Format-ShortTypeName
+                    | Join-String -op 'UnexpectedInput, was not [ErrorRecord | Exception]. Type = '
+                    | write-warning
+            }
+
             $keepRecord = $false
             switch($SelectorKind) {
+                { $true } {
+                    $SelectorKind | Join-String -op 'Iter: SelectorKind: ' | write-debug
+                }
+                'IsException' {
+                    if($curObj -is [Exception]) {
+                        $keepRecord = $true
+                    }
+                }
+                'IsErrorRecord' {
+                    if ($curObj -is [Management.Automation.ErrorRecord]) {
+                        $keepRecord = $true
+                    }
+                }
                 'HasMessage' {
-                    if( -not (Dotils.Is.Blank $_.Message ) ) {
+                    if( .Is.Blank $curObj.Message | .Is.Not ) {
+                        $keepRecord = $True
+                    }
+                }
+                'HasQualifiedId' {
+                    if( .Is.Blank $curObj.F | .Is.Not ) {
                         $keepRecord = $True
                     }
                 }
                 default { "UnhandledSelectorKind: $SelectorKind"}
+            }
+            # negations
+            switch($SelectorKind) {
+                { $true } {
+                    $SelectorKind | Join-String -op 'Iter: SelectorKind: ' | write-debug
+                }
+                'HasNoMessage' {
+                    if( .Is.Blank $curObj.Message ) {
+                        $keepRecord = $false
+                    }
+                }
+                default { "UnhandledSelectorKind: $SelectorKind"}
+            }
+            if($KeepRecord){
+                $CurObj
             }
         }
 
@@ -794,6 +987,9 @@ function Dotils.Is.Error.FromParamBlock {
 }
 write-warning 'wip func: Dotils.Is.Error.FromParamBlock'
 write-warning 'wip func: Dotils.Render.FindMember'
+
+"Next: 'Dotils.Render.FindMember', 'Dotils.Describe.ErrorRecord'"
+| Write-Host -back 'darkyellow'
 function Dotils.Render.FindMember {
     [CmdletBinding()]
     param(
@@ -816,7 +1012,7 @@ function Dotils.Render.FindMember {
     }
     process {
         $items.AddRange(@($InputObject))
-        'was here' | write-warning
+        'nyi wip next: was here' | write-warning
     }
     end {
 
@@ -4523,6 +4719,10 @@ function Dotils.Format-ShortString.Basic {    <#
         [int]$maxLength = 80
     )
     begin {
+        <#
+        todo: nyi: rewrite
+                        Silly. I didn't realize -Process will *always* run even without a pipeline
+        #>
         function __apply.SubStr {
             [outputType('String')]
             param(
@@ -5565,6 +5765,10 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-05 - wave B
+        'Dotils.Is.SubType' # 'Dotils.Is.SubType' = { '.Is.SubType' }
+        'Dotils.Add.IndexProp' # 'Dotils.Add.IndexProp' = { '.Add.IndexProp' }
+        'Dotils.Has.Prop' # 'Dotils.Has.Prop' = { '.Has.Prop' }
+        'Dotils.Iter.Prop' # 'Dotils.Iter.Prop' = { '.Iter.Prop' }
         'Dotils.Is.Blank' # 'Dotils.Is.Blank' = { '.Is.Blank' }
         'Dotils.Is.Not' # 'Dotils.Is.Not' = { '.Is.Not' }
         'Dotils.Render.InvocationInfo' # NYI
@@ -5690,8 +5894,12 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-08-05
+        '.Is.SubType' # 'Dotils.Is.SubType' = { '.Is.SubType' }
+        '.Add.IndexProp' # 'Dotils.Add.IndexProp' = { '.Add.IndexProp' }
+        '.Has.Prop' # 'Dotils.Has.Prop' = { '.Has.Prop' }
         '.Is.Not' # 'Dotils.Is.Not' = { '.Is.Not' }
         '.Is.Blank' # 'Dotils.Is.Blank' = { '.Is.Blank' }
+        '.Iter.Prop' # 'Dotils.Iter.Prop' = { '.Iter.Prop' }
         '.Describe.Error' # 'Dotils.Describe.ErrorRecord' = { '.Describe.Error' }
         '.Is.KindOf' # 'Dotils.Is.KindOf' = { '.Is.KindOf' }
         '.Is.Error.FromParamBlockSyntax' # 'Dotils.Is.Error.FromParamBlock' = { '.Is.Error.FromParamBlockSyntax' }
