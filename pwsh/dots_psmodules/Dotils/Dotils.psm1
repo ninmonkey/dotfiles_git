@@ -377,19 +377,30 @@ function Dotils.Is.SubType {
     <#
     .synopsis
         Is LHS a subclass of RHS? Optionally treat the same type as true
+    .DESCRIPTION
+
+
+        when used in a pipeline, it filters as a where,
+        when used as a function, returns boolean
     #>
     [Alias('.Is.SubType')]
     [CmdletBinding()]
     param(
         # type as a [type] or [string]
-        [Parameter(Mandatory)][object]$OtherType,
+        [Parameter(Mandatory)]
+        [object]$OtherType,
+
+
         # base to compare
-        [Parameter(Mandatory, ValueFromPipeline)]$InputObject,
+        [ArgumentCompletions(
+            "([Exception])", "([ErrorRecord])", "([Text.Encoding])" )]
+        [Parameter(Mandatory, ValueFromPipeline)]
+            $InputObject,
+
         # by default, if both sides are the same class or  LHS is a subclass, return true
         [switch]$Strict
     )
     process {
-        write-warning 'if good, replace (Dotils.Is.SubType.NYI) with updated code'
         if($InputObject -is 'type') {
             $Tinfo = $InputObject
         } elseif($InputObject -isnot 'string') {
@@ -398,16 +409,22 @@ function Dotils.Is.SubType {
         $trueSubclass = $Tinfo.IsSubClassOf( $OtherType )
         $equivalentClass = $false
         if($Strict) {
-            return $trueSubclass
+            $isGood = $trueSubclass
+        } else {
+            write-warning '$equivalentClass part NYI'
+            $isGood = $trueSubClass -or $equivalentClass
         }
-        return $trueSubClass -or $equivalentClass
+        if(-not $MyInvocation.ExpectingInput) {
+            return $isGood }
+        if($IsGood){
+            $InputObject }
     }
 }
 
 function Dotils.Is.SubType.NYI {
     <#
     .synopsis
-        take the type of the LeftHandSide, is it a subtype of the RightHandSide?
+
     .NOTES
         if pipeline, then it filters. if not, then it returns the result
     .EXAMPLE
