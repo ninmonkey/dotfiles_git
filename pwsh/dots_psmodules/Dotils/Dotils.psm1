@@ -331,12 +331,164 @@ function Dotils.Is.DirectPath {
 
     }
 }
+function Dotils.Is.Not {
+    <#
+    .synopsis
+        negate from the pipeline, sometimes cleaner in the shell than requiring parens
+    #>
+    [Alias('.Is.Not')]
+    param(
+        [AllowNull()]
+        # [AllowEmptyString()]
+        # [AllowEmptyCollection()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    process {
+        if($MyInvocation.ExpectingInput) {
+            foreach($item in $InputObject) {
+                -not ( $item )
+            }
+        }
+    }
+    end {
+        if(-not $MyInvocation.ExpectingInput) {
+            foreach($item in $InputObject) {
+                -not ( $item )
+            }
+        }
+    }
+}
+function Dotils.Distinct {
+    <#
+    .SYNOPSIS
+        get sorted, distinct list of objects
+    #>
+    [Alias('.Distinct')]
+    param(
+        [object]$Property
+    )
+    $splat = @{ Unique = $true }
+    if($PSBoundParameters.ContainsKey('PropertyName')){
+        $splat.Property = $Property
+    }
+    $Input | Sort-Object @splat
+}
+function Dotils.Is.Blank {
+    <#
+    .synopsis
+        tests for empty values, blanks
+    #>
+    [Alias('.Is.Blank')]
+    param(
+        [AllowNull()]
+        [AllowEmptyString()]
+        [AllowEmptyCollection()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject,
+
+        # Only retury true when it's a true null
+        [switch]$TrueNull,
+
+        # only return true for empty collection or empty string
+        [switch]$TrueEmpty
+
+
+    )
+    process {
+        if($TrueNull) {
+            return $null -eq $InputObject
+        }
+        if($TrueEmpty) {
+            return [string]::IsNullOrEmpty( $InputObject )
+        }
+        return [string]::IsNullOrWhiteSpace( $InputObject )
+    }
+}
+function Dotils.Error.Select {
+    [Alias('Dotils.NYI.InvocationInfo')]
+    [CmdletBinding()]
+    param(
+        [Alias('InputObject')]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Management.Automation.ErrorRecord[]]$ErrorRecord,
+
+        [ValidateSet(
+            'HasMessage'
+        )]
+        [string[]]$SelectorKind,
+        [switch]$PassThru
+    )
+    begin {
+        [Collections.Generic.List[Object]]$items = @()
+    }
+    process {
+        $items.AddRange(@($ErrorRecord))
+    }
+    end {
+        $serr = @( $global:error )
+        $choices = @{}
+
+        $choices.FullyQualifiedErrorId =
+            @( $serr | % FullyQualifiedErrorid ) | Sort-Object -Unique
+
+        $choices.TargetObject =
+            @( $serr | % TargetObject | % ToString | Sort -Unique )
+
+        $serr | %{
+            $curErrorRecord = $_
+            $keepRecord = $false
+            switch($SelectorKind) {
+                'HasMessage' {
+                    if( -not (Dotils.Is.Blank $_.Message ) ) {
+                        $keepRecord = $True
+                    }
+                }
+                default { "UnhandledSelectorKind: $SelectorKind"}
+            }
+        }
+
+        # WasThrownFromThrowStatement
+        <#
+        warning, $Error.TargetObject seemed to trigger errors like
+            InvalidOperation: An error occurred while enumerating through a collection:
+                Collection was modified; enumeration operation may not execute..
+
+        Verses $error | % TargetObject
+            seemed okay
+        #>
+
+        return $choices
+        write-warning 'filter: nyi'
+
+    }
+
+}
 function Dotils.Render.InvocationInfo {
     [Alias('Dotils.NYI.InvocationInfo')]
     [CmdletBinding()]
-    param()
+    param(
+        [Alias('InputObject')]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        $InvocationInfo,
 
-    throw "NYI"
+        [switch]$PassThru
+    )
+    begin {
+
+    }
+    process {
+        $info = [ordered]@{
+            PSTypeName = 'Dotils.Render.InvocationInfo'
+            Obj = $InvocationInfo
+            ExpectingInput = $InvocationInfo.ExpectingInfo
+        }
+
+        if($PassThru) {
+            return [pscustomobject]$info
+        }
+        return [pscustomobject]$info
+
     <#
     $error[0].InvocationInfo
 
@@ -360,6 +512,72 @@ function Dotils.Render.InvocationInfo {
         CommandOrigin         : Internal
         DisplayScriptPosition :
 #>
+    }
+    end {}
+}
+
+function Dotils.Render.MatchInfo {
+    [CmdletBinding()]
+    param(
+        [Alias('MatchInfo')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [Microsoft.PowerShell.Commands.MatchInfo]$InputObject,
+
+        [ValidateSet(
+            'Default',
+            'Irregular'
+        )]
+        [Alias('Format')][string]$OutputFormat = 'Default'
+    )
+    process {
+        $cur = $_
+        write-warning 'NYI: Dotils.Render.MatchInfo'
+        # @(
+        #     @(
+        #         $cur.Filename
+        #         $cur.Path, $cur.LineNumber -join ':'
+        #     ) | Write
+        #     $cur.Line
+        #     hr 1
+        # ) | Join-String -sep ''
+        switch($OutputFormat){
+            'Irregular'{
+                throw "nyi: check out the build in formatters"
+            }
+            'Default' {
+                $cur
+                    | Join-String {@(
+                        $_.Name;
+                        $_.Line;
+                        hr 1
+
+                        $_.Matches
+                            | Json -depth 3 -wa 'ignore'
+                            | Write-Debug
+
+                        ) |Join-String -sep ''
+                    }
+                    | Dotils.Write-DimText
+            }
+            default { "throw: UnhandledOutputFormat: '$OutputFormat'" }
+        }
+
+
+
+    }
+}
+function Dotils.Find.NYI.Functions {
+    <#
+    .SYNOPSIS
+        search self for any 'NYI' functions
+    #>
+    $slsSplat = @{
+        AllMatches = $true
+        Path       = $PSCommandPath
+        Pattern    = '\bnyi\b'
+    }
+
+    Sls @slsSplat
 }
 
 'do me first: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
@@ -398,6 +616,9 @@ function Dotils.Describe.Error {
         # [Alias('Not')]
         # [switch]$IsNotADirectory
     )
+    begin {
+        write-warning 'finish: Describe.Error'
+    }
     process {
         if($null -eq $InputObject) { return }
         if(-not($InputObject -is 'Management.Automation.ErrorRecord')) {
@@ -482,10 +703,11 @@ function Dotils.Describe.Error {
         # if( $InputObject.Exception.Message -match ([regex]::Escape("Missing ')' in function parameter list"))) {
         #     $SourceIsParamBlock = $true
         # }
+
         $meta = @{
             ParamBlockSyntaxError = $true
             Description = 'default bad stuff'
-            $InputObject.
+
         }
         # ParserError
 
@@ -499,6 +721,9 @@ function Dotils.Describe.Error {
         if($SourceIsParamBlock) {
             return $InputObject
         }
+    }
+    end {
+
     }
 }
 function Dotils.Is.Error.FromParamBlock {
@@ -4263,6 +4488,19 @@ function Dotils.Format-ShortString.Basic {    <#
     .NOTES
         future:
             ability to write num chars relative root.
+    .example
+        PS> 'abc', 'defg' | Dotils.ShortString.Basic -maxLength 2
+
+        'ab', 'de'
+
+        PS> 'a'..'e' | Dotils.ShortString.Basic -maxLength 1
+
+        'a', 'b', 'c', 'd', 'e'
+
+        PS> '', $Null, 'abc', 'def' | Dotils.ShortString.Basic -maxLength 1
+
+        '␀', 'a', 'd'
+
     .link
         Dotils\Dotils.Format-ShortString.Basic
     .link
@@ -4278,26 +4516,48 @@ function Dotils.Format-ShortString.Basic {    <#
         [Parameter(Mandatory, Position=0,
             ValueFromPipeline)]
         [AllowEmptyString()]
-        [string]$InputObject,
+        [AllowNull()]
+        [string[]]$InputObject,
 
         # future: validatescript to assert length?
         [int]$maxLength = 80
     )
-    if($null -eq $InputObject) { return '␀' }
+    begin {
+        function __apply.SubStr {
+            [outputType('String')]
+            param(
+                [string]$Text, [int]$maxLength
+            )
+            if($null -eq $Text) { return '␀' }
+            if($Text.length -eq 0) { return '␀' }
+            $Len = $Text.Length
+            $maxOffset = $input.Length - 1 # not used
+            <#
+            must be updated if position is every relative a non-zero
+                because it's not an offset, it's a length
+            #>
+            [int]$selectedCount = [math]::Clamp(
+                <# value #> $maxLength,
+                <# min #> 0, <# max #> $Len )
 
-    $Len = $InputObject.Length
-    $maxOffset = $input.Length - 1 # not used
+            return $Text.SubString(0, $selectedCount )
+        }
 
-    <#
-    must be updated if position is every relative a non-zero
-        because it's not an offset, it's a length
-    #>
-    [int]$selectedCount = [math]::Clamp(
-        <# value #> $maxLength,
-        <# min #> 0, <# max #> $Len )
-
-    return $InputObject.SubString(0, $selectedCount )
-
+    }
+    process {
+        if($MyInvocation.ExpectingInput ) {
+            foreach($item in $InputObject) {
+                __apply.SubStr -Text $item -maxLength $maxLength
+            }
+        }
+    }
+    end {
+        if(-not $MyInvocation.ExpectingInput ) {
+            foreach($item in $InputObject) {
+                __apply.SubStr -Text $item -maxLength $maxLength
+            }
+        }
+    }
 }
 function Dotils.Format-ShortString {    <#
     .synopsis
@@ -5304,20 +5564,25 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
-        # 2023-08-05
-        'Dotils.Render.FindMember'
-        'Dotils.Render.Error.CategoryInfo' # 'Dotils.Render.Error.CategoryInfo' = { }
-        'Dotils.Describe.Error'
-        'Dotils.Render.ErrorVars'
-        'Dotils.Render.ColorName'
-        'Dotils.Render.CallStack'
-
+        # 2023-08-05 - wave B
+        'Dotils.Is.Blank' # 'Dotils.Is.Blank' = { '.Is.Blank' }
+        'Dotils.Is.Not' # 'Dotils.Is.Not' = { '.Is.Not' }
         'Dotils.Render.InvocationInfo' # NYI
-
-
+        'Dotils.Error.Select'
+        'Dotils.Distinct'
+        'Dotils.Find.NYI.Functions'
+        'Dotils.Render.MatchInfo'
+        # 2023-08-05 - wave A
+        'Dotils.Describe.Error'
         'Dotils.Describe.ErrorRecord' # '.Describe.Error' # 'Dotils.Describe.ErrorRecord' = { '.Describe.Error' }
-        'Dotils.Is.KindOf' # 'Dotils.Is.KindOf' = { '.Is.KindOf' }
         'Dotils.Is.Error.FromParamBlock' # 'Dotils.Is.Error.FromParamBlock' = { '.Is.Error.FromParamBlockSyntax' }
+        'Dotils.Is.KindOf' # 'Dotils.Is.KindOf' = { '.Is.KindOf' }
+        'Dotils.Render.CallStack'
+        'Dotils.Render.ColorName'
+        'Dotils.Render.Error.CategoryInfo' # 'Dotils.Render.Error.CategoryInfo' = { }
+        'Dotils.Render.ErrorVars'
+        'Dotils.Render.FindMember'
+
         # 2023-08-04
         'Dotils.Is.DirectPath' # Dotils.Is.DirectPath = { '.Is.DirectPath' }
         'Dotils.to.EnvVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
@@ -5425,9 +5690,12 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-08-05
+        '.Is.Not' # 'Dotils.Is.Not' = { '.Is.Not' }
+        '.Is.Blank' # 'Dotils.Is.Blank' = { '.Is.Blank' }
         '.Describe.Error' # 'Dotils.Describe.ErrorRecord' = { '.Describe.Error' }
         '.Is.KindOf' # 'Dotils.Is.KindOf' = { '.Is.KindOf' }
         '.Is.Error.FromParamBlockSyntax' # 'Dotils.Is.Error.FromParamBlock' = { '.Is.Error.FromParamBlockSyntax' }
+        '.Distinct'
         # 2023-08-04
         '.Is.DirectPath' # 'Dotils.Is.DirectPath' = { '.Is.DirectPath' }
         '.to.envVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
