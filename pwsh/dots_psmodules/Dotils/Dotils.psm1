@@ -376,6 +376,37 @@ function Dotils.Is.Not {
 function Dotils.Is.SubType {
     <#
     .synopsis
+        Is LHS a subclass of RHS? Optionally treat the same type as true
+    #>
+    [Alias('.Is.SubType')]
+    [CmdletBinding()]
+    param(
+        # type as a [type] or [string]
+        [Parameter(Mandatory)][object]$OtherType,
+        # base to compare
+        [Parameter(Mandatory, ValueFromPipeline)]$InputObject,
+        # by default, if both sides are the same class or  LHS is a subclass, return true
+        [switch]$Strict
+    )
+    process {
+        write-warning 'if good, replace (Dotils.Is.SubType.NYI) with updated code'
+        if($InputObject -is 'type') {
+            $Tinfo = $InputObject
+        } elseif($InputObject -isnot 'string') {
+            $Tinfo = $InputObject.GetType()
+        } else { throw 'unhandled type [string]' }
+        $trueSubclass = $Tinfo.IsSubClassOf( $OtherType )
+        $equivalentClass = $false
+        if($Strict) {
+            return $trueSubclass
+        }
+        return $trueSubClass -or $equivalentClass
+    }
+}
+
+function Dotils.Is.SubType.NYI {
+    <#
+    .synopsis
         take the type of the LeftHandSide, is it a subtype of the RightHandSide?
     .NOTES
         if pipeline, then it filters. if not, then it returns the result
@@ -399,22 +430,24 @@ function Dotils.Is.SubType {
 
         # Type or Instance of a type
         [Parameter(Mandatory, ValueFromPipeline)]
-        $InputObject
+        $InputObject,
+
+        # if both sides are the same class, also include it
+        [switch]$AllowEquals
 
     )
     process {
         if($InputObject -is 'type') {
             $Tinfo = $InputObject
-        }elseif($InputObject -isnot 'string') {
+        } elseif($InputObject -isnot 'string') {
             $Tinfo = $InputObject.GetType()
-        } else {
-            throw 'can''t handle strings yet'
-        }
+        } else { throw 'can''t handle strings yet?' }
+
         $isTrue = $Tinfo.IsSubClassOf( $OtherType )
-        if($MyInvocation.ExpectingInput) {
-            if($IsTrue) { return $InputObject }
+        if(-not $MyInvocation.ExpectingInput) {
+            return $isTrue
         }
-        return $isTrue
+        if($IsTrue) { return $InputObject }
     }
 }
 
@@ -598,6 +631,7 @@ function Dotils.Error.Select {
             }
 
             $keepRecord = $false
+            write-warning 'NYI: Continue here'
             switch($SelectorKind) {
                 { $true } {
                     $SelectorKind | Join-String -op 'Iter: SelectorKind: ' | write-debug
