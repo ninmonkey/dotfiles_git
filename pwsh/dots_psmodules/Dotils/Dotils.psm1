@@ -1,3 +1,5 @@
+$PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
+
 function Console.GetColumnCount {
     [OutputType('System.Int32')]
     param()
@@ -154,7 +156,118 @@ function Dotils.Quick.Pwd {
         Get-Location | Set-Clipboard
     }
 }
+function Dotils.Error.GetInfo {
+    <#
+    .SYNOPSIS
+    .LINK
+        Dotils.Error.Select
+    .LINK
+        Dotils.Error.GetInfo
+    #>
+    # ToRefactorAttribute
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0)]
+        [ArgumentCompletions(
+            'InvoInfo', 'ExceptionType'
+        )]
+        [Alias('Kind', 'Has')][string]$FilterKind
 
+        # [switch]$HasInvoInfo,
+
+    )
+    begin {
+        'consolidate code with error select function' | write-host -back 'darkred'
+    }
+    process {
+        # $cur = $_
+        if( $MyInvocation.ExpectingInput ) { throw 'NYI' }
+        $curErr = $global:error # | Select -first 5
+
+        foreach($cur in $curErr) {
+            switch($FilterKind) {
+                'InvoInfo' {
+                    $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.InvocationInfo ) }
+                }
+                'ExceptionType' {
+                    $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.Exception.Type ) }
+                }
+                'Exception' {
+                    $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.Exception) }
+                }
+            }
+
+        }
+
+        <#
+
+        ?{ -not [string]::IsNullOrWhiteSpace( $_.Exception.Type ) }
+            ParserError: Missing ')' in function parameter list.
+        #>
+
+    }
+
+}
+function Dotils.Text.Pad.Segment {
+    <#
+    .SYNOPSIS
+        sugar. join stuff. yet another one.
+    .LINK
+        Dotils.Brace
+    .LINK
+        Dotils.JoinString.As
+    .LINK
+        String.Transform.AlignRight
+    .link
+        Dotils.Pad.Segment
+    #>
+    [Alias(
+        '.Text.Pad.Segment','.Text.Segment'
+        # 'Dotils.Pad.Segment'
+    )]
+    [OutputType('String')]
+    param(
+        [ArgumentCompletions(
+            'Newline', 'Space', 'Dash', 'Bullet', 'Csv', 'UL', 'Tree', 'HR'
+        )]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$SpacingKind,
+        #
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        [string]$accum_text = ''
+    }
+    process {
+
+        # future, make this steppable , or support pipe and non pipe right
+        [string]$renderPad = switch($SpacingKind) {
+            'Newline' { "`n" }
+            'Space' { ' ' }
+            'Dash' { ' - ' }
+            'Bullet' { ' • ' }
+            'Csv' { ', ' }
+            'UL' { ' - '}
+            'Tree' { '⊢' }
+            default { $SpacingKind ?? ''  }
+        }
+
+        if($MyInvocation.ExpectingInput) {
+            $accum_text =
+                Join-String -op $accum_text -inp $InputObject -sep $renderPad
+                return
+        } else {
+            return $renderPad
+        }
+        end {
+
+        }
+    }
+}
+# function tReplace
+
+# gcm -m Dotils |  %{ $_ -replace '\Dotils\.', '' } |  Join.UL -BulletStr •
 
 function Dotils.Quick.GetError {
     <#
@@ -588,7 +701,7 @@ function Dotils.Join-Str.Alias {
 
     )
     begin {
-
+        # 'write-warning NYI: Left off wip' | write-warning
     }
     process {
         # $InputObject  # is [AliasInfo] : [CommandInfo]
@@ -613,6 +726,29 @@ function Dotils.Join-Str.Alias {
 # } |Join.UL
 
 # }
+
+function Dotils.Ansi {
+    param(
+        [Parameter(Position=0)]
+        [Management.Automation.OutputRendering]$Mode,
+
+        [switch]$Enable, [switch]$Disable, [switch]$HostOut
+    )
+    if( $PSBoundParameters.ContainsKey('Mode') ) {
+        $PSStyle.OutputRendering = $mode
+    }
+
+    if($HostOut)  {
+        $PSStyle.OutputRendering = 'Host'
+    }
+    if($Disable) {
+        $PSStyle.OutputRendering = 'PlainText'
+    }
+    if($Enable) {
+        $PSStyle.OutputRendering = 'ansi'
+    }
+}
+
 function Dotils.Summarize.CollectionSharedProperties {
     <#
     .EXAMPLE
@@ -954,12 +1090,57 @@ function Dotils.Iter.Prop {
             | Sort-Object Name -Unique:$false
     }
 }
+
+function Dotils.Regex.Match.Start {
+    <#
+    .notes
+        todo: future: nyi: accept property name of object without drilling manually
+            - [ ]
+    #>
+
+    [Alias('.Match.Start')]
+    param(
+        [Alias('Regex')]
+        [string]$Pattern
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        [switch]$LiteralRegex,
+        [string]$PropertyName
+    )
+    process {
+        $Pattern =
+            $LiteralRegex ? [regex]::Escape( $Pattern ) : $Pattern
+
+        $buildRegex = Join-String -op '^' -inp $Pattern
+        if($PropertyName) {
+            $Target = $Inputobject.$Propertyname
+        } else {
+            $Target = $InputObject
+        }
+        if($null -eq $Target) { return }
+        [bool]$shouldKeep = $target -match $buildRegex
+
+        if( -not $MyInvocation.ExpectingInput ) {
+            return $shouldKeep
+        }
+        if($shouldKeep){
+            $InputObject
+        }
+    }
+}
 function Dotils.Error.Select {
     <#
     .notes
     Exception Properties:
         'Data', 'HelpLink', 'HResult', 'InnerException',
         'Message', 'Source', 'StackTrace', 'TargetSite'
+    .LINK
+        Dotils.Error.Select
+    .LINK
+        Dotils.Error.GetInfo
+
     #>
     [CmdletBinding()]
     param(
@@ -2857,7 +3038,8 @@ function Dotils.Text.Wrap {
             $bpsItems
     #>
     [Alias(
-        'Dotils.Text.Prefix', 'Dotils.Text.Suffix' )]
+        'Dotils.Text.Prefix', 'Dotils.Text.Suffix',
+        '.Text.Suffix', '.Text.Prefix' )]
     param(
         # A value of 0 LinesPadding would be a no-op
         [parameter(Mandatory, Position = 0)]
@@ -6124,6 +6306,21 @@ $what | md.Path.escapeSpace -AndForwardSlash -UsingFileProtocol
     }
 }
 
+function Dotils.Err.Clear {
+    <#
+    .SYNOPSIS
+        sugar for using $global:error.clear()
+    #>
+    [Alias('ec')]
+    param(
+        [Alias('All')][switch]$Get
+    )
+    if($Get) {
+        return $global:error
+    }
+    Err -Clear # should be global
+}
+
 function Dotils.Excel.Write.Sheet.Name {
     <#
     .example
@@ -6374,7 +6571,12 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-07
+        'Dotils.Regex.Match.Start' # Dotils.Regex.MatchStart = { '.Match.Start' }
+        'Dotils.Text.Pad.Segment' # 'Dotils.Text.Pad.Segment' =  { '.Text.Pad.Segment', '.Text.Segment' }'
+        'Dotils.Err.Clear' # 'ec' # 'Dotils.Err.Clear' = { 'ec' }
         # 2023-08-06
+        'Dotils.Ansi' # 'Dotils.Ansi' = { }
         'Dotils.Regex.Wrap' # 'Dotils.Regex.Wrap' = {  }
         'Dotils.Iter.Text' # 'Dotils.Iter.Text' = { '.Iter.Text' }
         'Dotils.Iter.Enumerator'  # 'Dotils.Iter.Enumerator' = { '.Iter.Enumerator' }
@@ -6416,7 +6618,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Quick.Pwd' # 'Dotils.Quick.Pwd' = { '.quick.Pwd', 'QuickPwd' }
         'Dotils.Quick.History' # 'Dotils.Quick.History' = { '.quick.History', 'QuickHistory' }
         # 2023-07-29
-        'Dotils.Text.Wrap' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
+        'Dotils.Text.Wrap' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
         'Dotils.Select-NameIsh' # 'Dotils.NameIsh' = { 'Nameish', 'Namish' }
         'Dotils.md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
         'Dotils.d.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
@@ -6509,6 +6711,11 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-07
+        '.Match.Start' # Dotils.Regex.Match.Start = { '.Match.Start' }
+        'ec' # 'Dotils.Err.Clear' = { 'ec' }
+        '.Text.Pad.Segment' # 'Dotils.Text.Pad.Segment' =  { '.Text.Pad.Segment', '.Text.Segment' }'
+        '.Text.Segment' # 'Dotils.Text.Pad.Segment' =  { '.Text.Pad.Segment', '.Text.Segment' }'
         # 2023-08-06
         '.Iter.Text' # 'Dotils.Iter.Text' = { '.Iter.Text' }
         '.Iter.Enumerator'  # 'Dotils.Iter.Enumerator' = { '.Iter.Enumerator' }
@@ -6546,8 +6753,13 @@ $exportModuleMemberSplat = @{
         'QuickPwd' # 'Dotils.Quick.Pwd' = { '.quick.Pwd', 'QuickPwd' }
 
         # 2023-07-24
-        'Dotils.Text.Suffix' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
-        'Dotils.Text.Prefix' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix' }
+        'Dotils.Text.Prefix' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
+        'Dotils.Text.Suffix'  # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
+        '.Text.Suffix'  # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
+        '.Text.Prefix'  # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
+
+
+
         'Nameish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
         'Namish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
         'md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
@@ -6642,6 +6854,11 @@ H1 'Validate:IsBad: double names'
 Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList | ? IsBad
 # was: $stats | ?{ $_.IsAFunc -and $_.IsAnAlias }
 
+h1 'A few aliases'
+get-alias | ?{ $_.Name -match '^\.' }
+gcm -m dotils | ?{ $_.Name -match 'start|text|begin' -or $_.Name -match '^\.' }
+
+
 @'
 try:
     Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils' | ? IsBad
@@ -6653,3 +6870,4 @@ function Dotils.Stash-NewFileBuffer {
 '
 
 # Dotils.Testing.Validate.ExportedCmds
+
