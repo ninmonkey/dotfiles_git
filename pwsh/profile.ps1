@@ -5,7 +5,10 @@ Import-Module 'Pansies'
 'trace.👩‍🚀.parse: [1] $Profile.MainEntryPoint : /pwsh/profile.ps1'
     | write-verbose
     # | write-host -bg '7baa7a' -fg black
-
+@(
+    New-Alias -PassThru -ea 0 '.short.Type' 'Ninmonkey.Console\Format-ShortTypeName'
+    new-alias -PassThru -ea 0 '.abbr.Type' Ninmonkey.Console\Format-ShortTypeName
+) | Join-String -sep ', ' -op "   => aliases: "
 
 # required or else it breaks piping 'fd | fzf --preview bat'
 $PSNativeCommandArgumentPassing = [System.Management.Automation.NativeArgumentPassingStyle]::Legacy

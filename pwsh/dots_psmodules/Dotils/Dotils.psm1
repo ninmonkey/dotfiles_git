@@ -566,15 +566,389 @@ function Dotils.Add.IndexProp {
         }
     }
 }
+
+function Dotils.Join-Str.Alias {
+    <#
+    .SYNOPSIS
+        render aliases
+    #>
+    [Alias('.JoinStr.Alias')]
+    param(
+        [ValidateSet(
+            'Shortest','Full',
+            'Name,Command',
+            'Name,CommandFullName'
+        )]
+        [string]$OutputFormat,
+
+        # is [AliasInfo] : [CommandInfo]
+        [Alias('Alias')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+
+    )
+    process {
+        # $InputObject  # is [AliasInfo] : [CommandInfo]
+
+    switch($OutputFormat){
+        'Shortest' {
+            $_.Name
+        }
+        'Full' { }
+        'Name,Command' { }
+        'Name,CommandFullName' { }
+        default {
+            throw "UnhandledFormatType: '$OutputFormat'"
+        }
+    }
+    }
+}
+#     function .Join.Alias {
+# }
+# Set-Alias '.Short.Type' -Value Ninmonkey.Console\Format-ShortTypeName -PassThru | %{
+#     $_.Name
+# } |Join.UL
+
+# }
+function Dotils.Summarize.CollectionSharedProperties {
+    <#
+    .EXAMPLE
+        $sampleItems | .Summarize.SharedProperties
+        $sampleItems | .Summarize.SharedProperties  |ft
+    #>
+    [Alias('.Summarize.SharedProperties')]
+    param(
+        # assume string. maybe sb
+        [ValidateNotNullOrEmpty()]
+        [Parameter()]
+        [ArgumentCompletions('Count', 'Name')]
+        [object]$SortBy = 'Name',
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        [switch]$WithValues
+
+    )
+    begin {
+        write-warning 'NYI, Todo, future, next: I think it crashed in the middle of writing this.'
+        [Collections.Generic.List[Object]]$items = @()
+    }
+    process {
+       $items.AddRange(@( $InputObject ))
+    }
+    end {
+
+        if(-not $WithValues) {
+            $Items
+                | .Iter.Prop -NameOnly
+                | Group -NoElement
+                | Sort-Object $SortBy
+            return
+        }
+
+
+        $Items
+            | .Iter.Prop -NameOnly
+            | Group -NoElement
+            | Sort-Object Name
+            | %{
+                # is [Microsoft.PowerShell.Commands.GroupInfoNoElement] : [Microsoft.PowerShell.Commands.GroupInfo]
+                $curName = $_.Name
+                # $Items
+                #     | .Iter.Prop
+                #     | ?{ $_.Name -eq $curName }
+                #     | Join-String { $_.Value } -sep ', '
+                    # | % Value
+                [string]$renderValues =
+                    $Items
+                        | .Iter.Prop
+                        | ?{ $_.Name -eq $curName } | Sort-Object Name -Unique
+                        | Join-String { $_.Value } -sep ', '
+
+                $record = [ordered]@{
+                        PSTypeName = 'Dotils.Summarize.SharedProperties.WithValues'
+                        Count = $cur.Count
+                        Name = $cur.Name
+                        Values = $renderValues
+                }
+                [pscustomobject]$record
+
+            }
+
+                    # | .Iter.Prop -NameOnly
+                # | Group -NoElement
+                # | Sort-Object $SortBy
+                # | %{
+                #     [pscustomobject]@{
+                #         PSTypeName = 'Dotils.Summarize.SharedProperties.WithoutValues'
+                #         Count = $cur.Count
+                #         Name = $cur.Name
+                #     }
+                # }
+
+            # return
+
+            # if ($false -and 'old mode') {
+            #     $Items
+            #         | .Iter.Prop -NameOnly
+            #         | Sort-Object $SortBy
+            #         | Group -NoElement
+            #         | %{
+            #             [pscustomobject]@{
+            #                 PSTypeName = 'Dotils.Summarize.SharedProperties.WithoutValues'
+            #                 Count = $cur.Count
+            #                 Name = $cur.Name
+            #             }
+            #         }
+
+            #     return
+            # }
+
+
+        # $Items
+        #     | .Iter.Prop -NameOnly
+        #     | Sort-Object $SortBy
+        #     | Group -NoElement
+        # | %{
+        #    $cur = $_
+
+        #     # Group  # is [Collection<PSObject>]
+        #     # Values # is [ArrayList]
+        #     [pscustomobject]@{
+        #         PSTypeName = 'Dotils.Summarize.SharedProperties.WithValues'
+        #         Count = $cur.Count
+        #         Name = $cur.Name
+        #         Values =  @(
+        #             $Items
+        #             | %{
+        #                 $_[ $cur.Name ]
+        #             }
+        #         ) | Join-String -sep ' '
+        #     }
+        # }
+    }
+
+    # return
+
+    #   @( get-alias 'ls' ; gcm  '*dim*' )
+    #     | .Iter.Prop -NameOnly | Sort-Object Name | Group -NoElement | %{
+    #     $info = @{
+    #     $_.Count
+    #     }
+
+    # @( get-alias 'ls' ; gcm  '*dim*' )
+    #     | .Iter.Prop -NameOnly | Sort-Object Name | Group -NoElement
+
+
+}
+function Dotils.Iter.Text {
+    <#
+    .EXAMPLE
+        # You can create some weird combinations
+
+        Get-Date | .Iter.Text Colon | Join.UL
+
+        - 8/6/2023 7
+        - 30
+        - 06 PM
+    .example
+        $sample = '  hi world  '
+        $sample
+            | .Iter.Text -IterationKind Trim
+            | Join-string -SingleQuote
+            | Should -BeExactly $( "'{0}'"  -f $sample.Trim() )
+    .example
+        'hi<world,<zed'  | .Iter.Text CustomDelim -OptionalArgument ','
+            # out: 'hi<world', '<zed'
+
+        'hi<world,<zed'  | .Iter.Text CustomDelim -OptionalArgument '<'
+            # out: 'hi', 'world,', 'zed'
+
+    #>
+    [Alias('.Iter.Text')]
+    param(
+        [Alias('Kind')]
+        [ValidateSet(
+            'Char',
+            'Trim',
+            'Words',
+            'Commas',
+            'Lines',
+            'Grapheme',
+            'NonWhitespace',
+            'Numbers',
+            'RegexSplit',
+            'Rune',
+            'Rune',
+            'Sentence',
+            'Delim;',
+            'Semicolon',
+            'Delim:',
+            'DelimCustom',
+            'DelimComma',
+            'Csv',
+            'Delim,',
+            'NonAscii',
+            'ControlChars',
+            'CustomDelim',
+            'Colon'
+        )]
+        [string]$IterationKind = 'Rune',
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+
+        [Alias('Args', 'Value1')][Parameter()]
+        $OptionalArgument
+    )
+    process {
+        $cur = $_.ToString()
+        switch($IterationKind) {
+            'Rune' {
+                return $cur.EnumerateRunes()
+            }
+            'Char' {
+                return $cur.ToCharArray()
+            }
+            'RegexSplit' {
+                return $cur -split ''
+            }
+            'NonAscii' {
+                throw 'the split non ascii regex'
+            }
+            'ControlChars' {
+                throw 'the split control char regex'
+            }
+            'Trim' {
+                return $cur.trim()
+            }
+            'Lines' {
+                return $cur -split '\r?\n'
+            }
+            'Sentence' {
+                return $cur -split '([\.,;\n])'  #  '([\.\,;\n])'
+            }
+            { $_ -in @(
+                'Commas', 'Csv',
+                'Delim,', 'DelimComma'
+            ) } {
+                return $cur -split ',\s*'
+            }
+            { $_ -in @(
+                'CustomDelim',
+                'DelimCustom' ) } {
+                if(-not $PSBoundParameters.ContainsKey('OptionalArgument')) {
+                    throw 'Dotils.Iter.Text<proc> MissingMandatoryArgument: $OptionalArgument for [ CustomDelim | DelimCustom ]'
+                }
+                return $cur -split $OptionalArgument # @($OptionalArgument)[0]
+            }
+            { $_ -in @(
+                'Delim;',
+                'Semicolon') } {
+                return $cur -split ';'
+            }
+            { $_ -in @(
+                'Delim:',
+                'Colon') } {
+                return $cur -split ':'
+            }
+            'Words' {
+                return $cur -split '\s+'
+            }
+            'Numbers' {
+                return $cur -split '\D+'
+            }
+            'NonWhitespace' {
+                return $cur -split '\s+'
+            }
+            'Grapheme' {
+                throw 'I forget, need to  lookup the func name for graphemes'
+                # return $cur.EnumerateGraphemes()
+            }
+            default {
+                throw "UnhandledIterationKind: '$IterationKind'"
+            }
+        }
+
+    }
+}
+function Dotils.Iter.Enumerator {
+    <#
+    .SYNOPSIS
+        get enumerator for each object in the pipeline
+    .EXAMPLE
+        $dict_o = [ordered]@{ 'z' = 'first'; 'name' = 'bob' ; 'area' = 'north' }
+        $hash = @{ 'z' = 'first'; 'name' = 'bob' ; 'area' = 'north' }
+
+    # no auto-enumeration, therefore sort fails
+
+        $dict_o
+            | sort Name
+        $hash
+            | sort Name
+
+    # now both sort
+        $dict_o = [ordered]@{ 'z' = 'first'; 'name' = 'bob' ; 'area' = 'north' }
+        $hash = @{ 'z' = 'first'; 'name' = 'bob' ; 'area' = 'north' }
+
+        $dict_o
+            | .Iter.Enumerator
+            | sort Name
+        $hash
+            | .Iter.Enumerator
+            | Sort Name
+
+    #>
+    [Alias('.Iter.Enumerator')]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    process {
+        $_.GetEnumerator()
+    }
+ }
+
 function Dotils.Iter.Prop {
+    <#
+    .SYNOPSIS
+        default return is: [PSMemberInfoCollection[PSPropertyInfo]]
+    .NOTES
+        future: todo: ugit is throwing errors on enumeration
+            for some commands, like piping to .Iter.Prop then Format-list
+        it happens on
+
+                @( gi . ; get-item C:\Users\cppmo_000\.bash_history ; )
+                    | .Iter.Prop
+
+            'ReferencedMemberName' = 'GitDirty', 'GitChanges', 'GitDiff', etc
+                properties that are from ugit, but the user still sees the errors:
+                    'C:\Users\cppmo_000' is not a git repository
+
+    #>
+    [OutputType(
+        '[PSMemberInfoCollection[PSPropertyInfo]]',
+        'String',
+        # aka
+        'Management.Automation.PSMemberInfoCollection[Management.Automation.PSPropertyInfo]'
+    )]
     [Alias('.Iter.Prop')]
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
-        [object]$InputObject
+        [object]$InputObject,
+
+        # changes return type to be the property name, only
+        [switch]$NameOnly
     )
     process {
+        if($NameOnly) {
+            return $InputObject.PSObject.Properties.Name
+                | Sort-Object -Unique:$false
+        }
         $InputObject.PSObject.Properties
-            | Sort-Object Name
+            | Sort-Object Name -Unique:$false
     }
 }
 function Dotils.Error.Select {
@@ -814,14 +1188,62 @@ function Dotils.Find.NYI.Functions {
     <#
     .SYNOPSIS
         search self for any 'NYI' functions
+    .notes
+        future:
+            - [ ] search for custom attribute types on functions, that tag as partials
+            - [ ] parameters with notimplementedso don't error until used parameter attribute
+
+
     #>
+    param(
+        # grep for comments like 'todo', 'future'... etch
+        [Alias('Grep', 'Sls')]
+        [Parameter(Mandatory, Position=0, ParameterSetName = 'SearchByGrep')]
+        [ValidateSet(
+            'nyi', 'todo', 'future', 'next', 'first', 'grepException',
+            'astException',
+            'refactor', 'collect'
+            )][string]$SearchKind = 'nyi',
+
+        [Parameter(Position=1, ParameterSetName = 'SearchByGrep')]
+        [int[]]$RegexContext,
+
+        [Parameter(Mandatory, Position=0, ParameterSetName = 'SearchByType')]
+        [switch]$FindNYIExceptions = 'nyi'
+    )
+    $regexMap = @{
+        'nyi' = '\bnyi\b'
+        'todo' = '\btodo\b'
+        'future' = '\bfuture\b'
+        'next' = '\bnext\b'
+        'refactor' = '\brefactor\b'
+        'collect' = '\bcollect\b'
+        'first' = '\bfirst\b'
+        'grepException' = @(
+            'NotImplementedException',
+            'AmbiguousImplementationException',
+            'PSNotImplementedException'
+        ) | Join-String -sep '|' -f "(\b{0}\b)"
+    }
+    if(-not $RegexMap.ContainsKey($SearchKind)){
+        throw "PatternName '$SearchKind' does not exist in `$regexMap"
+    }
+
     $slsSplat = @{
         AllMatches = $true
         Path       = $PSCommandPath
         Pattern    = '\bnyi\b'
     }
+    if($RegexContext) {
+        $slsSplat.Context = $RegexContext
+    }
+
+    $slsSplat.Pattern = $regexMap[ $SearchKind ]
 
     Sls @slsSplat
+    write-warning 'future: Search for exception types like: [NotImplementedException]
+[Runtime.AmbiguousImplementationException]
+[PSNotImplementedException]'
 }
 
 'do me first: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
@@ -5657,6 +6079,98 @@ $what | md.Path.escapeSpace -AndForwardSlash -UsingFileProtocol
     }
 }
 
+function Dotils.Excel.Write.Sheet.Name {
+    <#
+    .example
+        PS> $pkg.Workbook.Worksheets    | __render.Sheet.Name
+        PS> $pkg.Workbook.Worksheets[2] | __render.Sheet.Name
+    .example
+        confirmed working:
+            $Pkg.Workbook.Worksheets[3] | __render.Sheet.Name
+            $Pkg.Workbook.Worksheets    | __render.Sheet.Name
+            $Pkg.Workbook               | __render.Sheet.Name
+            $Pkg                        | __render.Sheet.Name
+
+    @ warning
+        colors are not visible on VSCode terminal atm, not sure if that's config of bold or something else
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+    begin {
+        $c_dim1 = @{
+            # ForegroundColor = 'gray50'
+            ForegroundColor = 'gray60'
+            BackgroundColor = 'gray15'
+        }
+        $c_dim2 = @{
+            ForegroundColor = 'gray35'
+            BackgroundColor = 'gray10'
+        }
+        $c_dim3 = @{
+            ForegroundColor = 'gray15'
+            BackgroundColor = 'gray10'
+        }
+        $c_default = @{
+            ForegroundColor = 'gray85'
+        }
+        $c_orange = @{
+            bg = [RgbColor]::FromRgb('#362b1f')
+            fg = [RgbColor]::FromRgb('#f2962d')
+        }
+        function __write.Single {
+            [CmdletBinding()]
+            param(
+                [Parameter(Mandatory, ValueFromPipeline)]
+                [object]$InputObject
+            )
+            process {
+                $cur = $_
+                $cur | Format-ShortTypeName | write-debug
+                $color = switch($InputObject.Hidden) {
+                    ([OfficeOpenXml.eWorkSheetHidden]::VeryHidden) {
+                        $c_orange
+                    }
+                    ([OfficeOpenXml.eWorkSheetHidden]::Hidden) {
+                        $c_dim1
+                    }
+                    default {
+                        $c_default
+                    }
+                }
+                $name = $cur.Name
+                    | New-Text @color
+
+                $num = $Cur.
+                    Index.
+                    ToString().
+                    PadLeft(2, ' ')
+                        | New-Text @c_dim2
+                $name
+                    # | Join-String -op "[$Num] "
+                    | Join-String -op "$Num "
+                    | Join-String -os $(
+                        $Cur.TabColor
+                            | New-Text @c_dim3
+                    )
+            }
+        }
+    }
+    process {
+
+        if($InputObject -is 'OfficeOpenXml.ExcelWorkbook'){
+            $InputObject.WorkSheets | __write.Single
+        } elseif($InputObject -is 'OfficeOpenXml.ExcelPackage'){
+            $InputObject.Workbook.WorkSheets | __write.Single
+        } else {
+            $InputObject | __write.Single
+        }
+    }
+
+}
+
 function Select-NameIsh {
     <#
     .SYNOPSIS
@@ -5815,6 +6329,11 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-06
+        'Dotils.Iter.Text' # 'Dotils.Iter.Text' = { '.Iter.Text' }
+        'Dotils.Iter.Enumerator'  # 'Dotils.Iter.Enumerator' = { '.Iter.Enumerator' }
+        'Dotils.Excel.Write.Sheet.Name'
+        'Dotils.Summarize.CollectionSharedProperties' # 'Dotils.Summarize.CollectionSharedProperties' = { '.Summarize.SharedProperties' }
         # 2023-08-05 - wave B
         'Dotils.Is.SubType' # 'Dotils.Is.SubType' = { '.Is.SubType' }
         'Dotils.Add.IndexProp' # 'Dotils.Add.IndexProp' = { '.Add.IndexProp' }
@@ -5944,6 +6463,10 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-06
+        '.Iter.Text' # 'Dotils.Iter.Text' = { '.Iter.Text' }
+        '.Iter.Enumerator'  # 'Dotils.Iter.Enumerator' = { '.Iter.Enumerator' }
+        '.Summarize.SharedProperties' # 'Dotils.Summarize.CollectionSharedProperties' = { '.Summarize.SharedProperties' }
         # 2023-08-05
         '.Is.SubType' # 'Dotils.Is.SubType' = { '.Is.SubType' }
         '.Add.IndexProp' # 'Dotils.Add.IndexProp' = { '.Add.IndexProp' }
