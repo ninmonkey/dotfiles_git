@@ -587,6 +587,9 @@ function Dotils.Join-Str.Alias {
         $InputObject
 
     )
+    begin {
+
+    }
     process {
         # $InputObject  # is [AliasInfo] : [CommandInfo]
 
@@ -1184,6 +1187,45 @@ function Dotils.Render.MatchInfo {
 
     }
 }
+
+function Dotils.Regex.Wrap {
+    param(
+        [Alias('Kind')]
+        [ValidateSet(
+            'WordBoundary',
+            'CaseSensitive',
+            'GlobWildcard',
+            'CaseInSensitive'
+        )]
+        [string]$OutputType = 'WordBoundary',
+
+        [Alias('Regex', 'Pattern')][Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        # not yet used, but to maintain conformity
+        [Alias('Args', 'Value1')][Parameter()]
+        $OptionalArgument
+    )
+    process {
+        $pattern = $InputObject
+        switch($OutputType) {
+            'GlobWildcard' {
+                Join-String -f "*{0}*" -inp $pattern
+            }
+            'WordBoundary' {
+                Join-String -f "\b{0}\b" -inp $pattern
+            }
+            'CaseSensitive' {
+                Join-String -f '(?-i){0}(?i)' -inp $Pattern
+            }
+            'CaseInSensitive' {
+                Join-String -f '(?i){0}(?-i)' -inp $Pattern
+            }
+            default { Throw "NYI: not implemented: '$OutputType'" }
+        }
+    }
+}
+
 function Dotils.Find.NYI.Functions {
     <#
     .SYNOPSIS
@@ -1200,7 +1242,7 @@ function Dotils.Find.NYI.Functions {
         [Alias('Grep', 'Sls')]
         [Parameter(Mandatory, Position=0, ParameterSetName = 'SearchByGrep')]
         [ValidateSet(
-            'nyi', 'todo', 'future', 'next', 'first', 'grepException',
+            'nyi', 'todo', 'future', 'next', 'first', 'grepException', 'wip',
             'astException',
             'refactor', 'collect'
             )][string]$SearchKind = 'nyi',
@@ -1219,6 +1261,7 @@ function Dotils.Find.NYI.Functions {
         'refactor' = '\brefactor\b'
         'collect' = '\bcollect\b'
         'first' = '\bfirst\b'
+        'wip' = '\bwip\b'
         'grepException' = @(
             'NotImplementedException',
             'AmbiguousImplementationException',
@@ -1246,7 +1289,9 @@ function Dotils.Find.NYI.Functions {
 [PSNotImplementedException]'
 }
 
-'do me first: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
+'do me first: Dotils.Error.Select' | write-host -back 'darkred' -fore 'white'
+'do me second: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
+
 function Dotils.Describe.Error {
     <#
     .SYNOPSIS
@@ -6330,6 +6375,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-06
+        'Dotils.Regex.Wrap' # 'Dotils.Regex.Wrap' = {  }
         'Dotils.Iter.Text' # 'Dotils.Iter.Text' = { '.Iter.Text' }
         'Dotils.Iter.Enumerator'  # 'Dotils.Iter.Enumerator' = { '.Iter.Enumerator' }
         'Dotils.Excel.Write.Sheet.Name'
