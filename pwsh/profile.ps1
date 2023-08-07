@@ -6,8 +6,8 @@ Import-Module 'Pansies'
     | write-verbose
     # | write-host -bg '7baa7a' -fg black
 @(
-    New-Alias -PassThru -ea 0 '.short.Type' 'Ninmonkey.Console\Format-ShortTypeName'
-    new-alias -PassThru -ea 0 '.abbr.Type' Ninmonkey.Console\Format-ShortTypeName
+    Set-Alias -PassThru -ea 'Ignore' '.short.Type' 'Ninmonkey.Console\Format-ShortTypeName'
+    Set-Alias -PassThru -ea 'Ignore' '.abbr.Type' 'Ninmonkey.Console\Format-ShortTypeName'
 ) | Join-String -sep ', ' -op "   => aliases: "
 
 # required or else it breaks piping 'fd | fzf --preview bat'
@@ -20,6 +20,7 @@ $env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is
 Set-Alias 'Tree' 'PSTree\Get-PSTree' -ea 'Ignore'
 
 $setAliasSplat = @{
+    Ea = 'ignore'
     Scope       = 'global'
     Name        = 'TabExpansion2_Original'
     Value       = $ExecutionContext.InvokeCommand.GetCommand(
@@ -33,7 +34,7 @@ Set-Alias @setAliasSplat
 if(-not ($ENV:PATH -split ';' -match 'pnpm')) {
        $ENV:PATH += ';', $Env:PNPM_HOME -join ''
 }
-New-Alias 'nin.MergeHash' 'Ninmonkey.Console\mergeHashtable' -PassThru
+New-Alias -ea 'ignore' 'nin.MergeHash' 'Ninmonkey.Console\mergeHashtable' -PassThru
 function .Assert.Clamp {
     <#
     .SYNOPSIS
