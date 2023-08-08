@@ -1205,7 +1205,7 @@ function Dotils.Regex.Match.End {
             Regex  = $BuildRegex
             Name   = $PropertyName ?? "`u{2400}"
             Keep   = $ShouldKeep
-            Target = $Target
+            Target = $Target.ToString() # perf bonus and simplifies output of fileinfo
         } | Json -Compress -depth 2 | write-debug
 
         if( -not $MyInvocation.ExpectingInput ) {
@@ -1225,6 +1225,18 @@ function Dotils.Regex.Match.Start {
             - [ ]
     .example
         gci . | .Match.Start -Pattern 'r' -PropertyName name
+    .example
+        $stuff = 'cat' , 'bat', 'tats'
+        $stuff | .Match.Start 'c' | Csv
+        $stuff | .Match.End 't' | Csv
+        $stuff | .Match.End '[ts]' | Csv
+        $stuff | .Match.End '[ts]' | .Match.Start 't' | Csv
+
+        # outputs:
+            cat
+            cat, bat
+            cat, bat, tats
+            tats
     .example
         'cat', 'bat', 'bag' | .Match.Start 'b'
         '$bag','cat', 'bat', 'bag' | .Match.Start 'b.*' -Debug
@@ -1288,7 +1300,7 @@ function Dotils.Regex.Match.Start {
             Regex  = $BuildRegex
             Name   = $PropertyName ?? "`u{2400}"
             Keep   = $ShouldKeep
-            Target = $Target
+            Target = $Target.ToString()
         } | Json -Compress -depth 2 | write-debug
 
         if( -not $MyInvocation.ExpectingInput ) {
