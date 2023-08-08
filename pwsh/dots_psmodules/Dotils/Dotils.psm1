@@ -169,7 +169,11 @@ function Dotils.Error.GetInfo {
     param(
         [Parameter(Position = 0)]
         [ArgumentCompletions(
-            'InvoInfo', 'ExceptionType'
+            'InvoInfo',
+            'InvoInfo.Position',
+            'Exception',
+            'Exception.Type',
+            'NoToString'
         )]
         [Alias('Kind', 'Has')][string]$FilterKind
 
@@ -189,13 +193,25 @@ function Dotils.Error.GetInfo {
                 'InvoInfo' {
                     $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.InvocationInfo ) }
                 }
-                'ExceptionType' {
-                    $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.Exception.Type ) }
+                'InvoInfo.Position' {
+                    $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.InvocationInfo.PositionMessage ) }
                 }
                 'Exception' {
                     $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.Exception) }
                 }
+                'Exception.Type' {
+                    $cur | ?{ -not [String]::IsNullOrWhiteSpace( $_.Exception.Type ) }
+                }
+                'NoToString' {
+                    $cur | ?{
+                        $maybeStr = $_.ToString() -join '' -replace '\s+'
+                        $maybeStr.Count -gt 0
+                     }
+                }
+                default { throw "UnhandledFilterKind: '$FilterKind'" }
             }
+
+            # $one.InvocationInfo.PositionMessage
 
         }
 
@@ -1091,36 +1107,189 @@ function Dotils.Iter.Prop {
     }
 }
 
-function Dotils.Regex.Match.Start {
+function Dotils.Quick.PSTypeNames {
+<#
+.notes
+original command was
+    $MyInvocation.MyCommand.ScriptBlock.Ast.EndBlock.Statements.PipelineElements | %{
+    $mine = $_.PSTypenames
+    $mine | Format-ShortTypeName | Join-String -sep ', '
+    }
+
+        $MyInvocation.MyCommand.ScriptBlock.Ast.EndBlock.Statements.PipelineElements | %{ $_ | % pstypenames | Join.UL} | Join-String -sep (hr 1)
+
+#>
+    [Alias('.quick.PSTypes')]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+
+    )
+    process {
+        $InputObject | %{
+            $_.PSTypeNames
+            $mine = $_.PSTypenames
+            $render = $mine | Format-ShortTypeName | Join-String -sep ', '
+            return $render
+        }
+
+    }
+}
+
+
+function Dotils.Join.Csv {
+    [Alias(
+        '.Join.Csv', 'Join.Csv', 'Csv'
+    )]
+    param()
+    $Input | Join-String -sep ', '
+}
+function Dotils.Regex.Match.End {
     <#
+    .SYNOPSIS
+        filters items from the pipeline, else, returns a boolean when not
     .notes
+        could consolidate into one command as aliases
         todo: future: nyi: accept property name of object without drilling manually
             - [ ]
-    #>
+    .example
+        gci . | .Match.Start -Pattern 'r' -PropertyName name
 
-    [Alias('.Match.Start')]
+    .LINK
+        Dotils.Regex.Match.Start
+    .LINK
+        Dotils.Regex.Match.End
+    #>
+    [CmdletBinding(
+        DefaultParameterSetName = 'AsRegex'
+    )]
+    [Alias(
+        '.Match.End', '.Match.Suffix')]
     param(
-        [Alias('Regex')]
-        [string]$Pattern
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsRegex')]
+        [Alias('Regex', 'Re')]
+        [string]$Pattern,
+
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
+        # [Alias('Regex')]
+        [string]$Literal,
+
+        # [string]$Literal,
 
         [Parameter(Mandatory, ValueFromPipeline)]
         [object]$InputObject,
 
-        [switch]$LiteralRegex,
+        # [Alias('AsLiteral')][switch]$LiteralRegex,
         [string]$PropertyName
     )
     process {
-        $Pattern =
-            $LiteralRegex ? [regex]::Escape( $Pattern ) : $Pattern
-
-        $buildRegex = Join-String -op '^' -inp $Pattern
+        switch($PSCmdlet.ParameterSetName){
+            'AsLiteral' {
+                $buildRegex = [Regex]::Escape( $Literal )
+            }
+            'AsRegex' {
+                $buildRegex = $Pattern
+            }
+        }
+        $buildRegex = Join-String -f "({0})$" -inp $buildRegex
         if($PropertyName) {
-            $Target = $Inputobject.$Propertyname
+            $Target = $Inputobject.$PropertyName
         } else {
             $Target = $InputObject
         }
-        if($null -eq $Target) { return }
+        # if($null -eq $Target) { return }
+        if( [string]::IsNullOrEmpty( $Target ) ) { return }
+
         [bool]$shouldKeep = $target -match $buildRegex
+        [ordered]@{
+            Regex  = $BuildRegex
+            Name   = $PropertyName ?? "`u{2400}"
+            Keep   = $ShouldKeep
+            Target = $Target
+        } | Json -Compress -depth 2 | write-debug
+
+        if( -not $MyInvocation.ExpectingInput ) {
+            return $shouldKeep
+        }
+        if($shouldKeep){
+            $InputObject
+        }
+    }
+}
+function Dotils.Regex.Match.Start {
+    <#
+    .SYNOPSIS
+        filters items from the pipeline, else, returns a boolean when not
+    .notes
+        todo: future: nyi: accept property name of object without drilling manually
+            - [ ]
+    .example
+        gci . | .Match.Start -Pattern 'r' -PropertyName name
+    .example
+        'cat', 'bat', 'bag' | .Match.Start 'b'
+        '$bag','cat', 'bat', 'bag' | .Match.Start 'b.*' -Debug
+        '$bag','cat', 'bat', 'bag' | .Match.Start -Literal 'b.*' -Debug
+    .LINK
+        Dotils.Regex.Match.Start
+    .LINK
+        Dotils.Regex.Match.End
+    #>
+    [CmdletBinding(
+        DefaultParameterSetName = 'AsRegex'
+    )]
+    [Alias(
+        '.Match.Start', '.Match.Prefix')]
+    param(
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsRegex')]
+        [Alias('Regex', 'Re')]
+        [string]$Pattern,
+
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
+        # [Alias('Regex')]
+        [string]$Literal,
+
+        # [string]$Literal,
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        # [Alias('AsLiteral')][switch]$LiteralRegex,
+        [string]$PropertyName
+    )
+    process {
+        # if( $PSBoundParameters.ContainsKey('Literal') -and $PSBoundParameters.ContainsKey('Regex') ) {
+        #     throw  'InvalidArgumentsException: Cannot use -Literal and -Regex together'
+        # }
+        # $Regex = $PSBoundParameters.ContainsKey('Literal') ?
+        #     $Literal : $Pattern
+
+        # wait-debugger
+        # $Pattern =  $LiteralRegex ? [regex]::Escape( $Pattern ) : $Pattern
+        # $buildRegex = Join-String -op '^' -inp $Pattern
+        switch($PSCmdlet.ParameterSetName){
+            'AsLiteral' {
+                $buildRegex = [Regex]::Escape( $Literal )
+            }
+            'AsRegex' {
+                $buildRegex = $Pattern
+            }
+        }
+        $buildRegex = Join-String -f "^({0})" -inp $buildRegex
+        if($PropertyName) {
+            $Target = $Inputobject.$PropertyName
+        } else {
+            $Target = $InputObject
+        }
+        # if($null -eq $Target) { return }
+        if( [string]::IsNullOrEmpty( $Target ) ) { return }
+
+        [bool]$shouldKeep = $target -match $buildRegex
+        [ordered]@{
+            Regex  = $BuildRegex
+            Name   = $PropertyName ?? "`u{2400}"
+            Keep   = $ShouldKeep
+            Target = $Target
+        } | Json -Compress -depth 2 | write-debug
 
         if( -not $MyInvocation.ExpectingInput ) {
             return $shouldKeep
@@ -6572,7 +6741,10 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-07
-        'Dotils.Regex.Match.Start' # Dotils.Regex.MatchStart = { '.Match.Start' }
+        'Dotils.Join.Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
+        'Dotils.Quick.PSTypeNames' # 'Dotils.Quick.PSTypeNames' = { '.quick.PSTypes' }
+        'Dotils.Regex.Match.Start' # Dotils.Regex.Match.Start = { '.Match.Start', '.Match.Prefix' }
+        'Dotils.Regex.Match.End' # Dotils.Regex.Match.End = { '.Match.End', '.Match.Suffix' }
         'Dotils.Text.Pad.Segment' # 'Dotils.Text.Pad.Segment' =  { '.Text.Pad.Segment', '.Text.Segment' }'
         'Dotils.Err.Clear' # 'ec' # 'Dotils.Err.Clear' = { 'ec' }
         # 2023-08-06
@@ -6712,7 +6884,16 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-08-07
-        '.Match.Start' # Dotils.Regex.Match.Start = { '.Match.Start' }
+
+        '.Join.Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
+        'Join.Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
+        'Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
+
+        '.quick.PSTypes' # 'Dotils.Quick.PSTypeNames' = { '.quick.PSTypes' }
+        '.Match.Start' # Dotils.Regex.Match.Start = { '.Match.Start', '.Match.Prefix' }
+        '.Match.Prefix' # Dotils.Regex.Match.Start = { '.Match.Start', '.Match.Prefix' }
+        '.Match.End' # Dotils.Regex.Match.End = { '.Match.End', '.Match.Suffix' }
+        '.Match.Suffix' # Dotils.Regex.Match.End = { '.Match.End', '.Match.Suffix' }
         'ec' # 'Dotils.Err.Clear' = { 'ec' }
         '.Text.Pad.Segment' # 'Dotils.Text.Pad.Segment' =  { '.Text.Pad.Segment', '.Text.Segment' }'
         '.Text.Segment' # 'Dotils.Text.Pad.Segment' =  { '.Text.Pad.Segment', '.Text.Segment' }'
