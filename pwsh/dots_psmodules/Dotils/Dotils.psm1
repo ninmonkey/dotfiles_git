@@ -1138,11 +1138,18 @@ original command was
 
 
 function Dotils.Join.Csv {
-    [Alias(
-        '.Join.Csv', 'Join.Csv', 'Csv'
-    )]
-    param()
-    $Input | Join-String -sep ', '
+    # Sugar for CSv. Can't get much simpler than that
+    [Alias('.Join.Csv', 'Join.Csv', 'Csv')]
+    param(
+        [switch]$Unique,
+        [string]$Separator = ', '
+    )
+    if($Unique) {
+        $Input | Sort-Object -Unique | Join-String -sep $Separator
+        return
+    }
+    $Input | Join-String -sep $Separator
+
 }
 function Dotils.Regex.Match.End {
     <#
@@ -1166,21 +1173,22 @@ function Dotils.Regex.Match.End {
     [Alias(
         '.Match.End', '.Match.Suffix')]
     param(
+        # regex
         [Parameter(Mandatory, Position=0, ParameterSetName='AsRegex')]
         [Alias('Regex', 'Re')]
         [string]$Pattern,
 
+        # literals escaped for a regex
         [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
-        # [Alias('Regex')]
         [string]$Literal,
 
-        # [string]$Literal,
+        # If not set, and type is not string,  tostring will end up controlling what is matched against
+        [Parameter(Mandatory, Position=1)]
+        [string]$PropertyName,
 
+        # strings, or objects to filter on
         [Parameter(Mandatory, ValueFromPipeline)]
-        [object]$InputObject,
-
-        # [Alias('AsLiteral')][switch]$LiteralRegex,
-        [string]$PropertyName
+        [object]$InputObject
     )
     process {
         switch($PSCmdlet.ParameterSetName){
@@ -1206,7 +1214,8 @@ function Dotils.Regex.Match.End {
             Name   = $PropertyName ?? "`u{2400}"
             Keep   = $ShouldKeep
             Target = $Target.ToString() # perf bonus and simplifies output of fileinfo
-        } | Json -Compress -depth 2 | write-debug
+        } | ft -auto -HideTableHeaders | out-string | write-debug
+        # } | Json -Compress -depth 2 | write-debug
 
         if( -not $MyInvocation.ExpectingInput ) {
             return $shouldKeep
@@ -1252,21 +1261,22 @@ function Dotils.Regex.Match.Start {
     [Alias(
         '.Match.Start', '.Match.Prefix')]
     param(
+        # regex
         [Parameter(Mandatory, Position=0, ParameterSetName='AsRegex')]
         [Alias('Regex', 'Re')]
         [string]$Pattern,
 
+        # literals escaped for a regex
         [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
-        # [Alias('Regex')]
         [string]$Literal,
 
-        # [string]$Literal,
+        # If not set, and type is not string,  tostring will end up controlling what is matched against
+        [Parameter(Mandatory, Position=1)]
+        [string]$PropertyName,
 
+        # strings, or objects to filter on
         [Parameter(Mandatory, ValueFromPipeline)]
-        [object]$InputObject,
-
-        # [Alias('AsLiteral')][switch]$LiteralRegex,
-        [string]$PropertyName
+        [object]$InputObject
     )
     process {
         # if( $PSBoundParameters.ContainsKey('Literal') -and $PSBoundParameters.ContainsKey('Regex') ) {
@@ -1301,7 +1311,9 @@ function Dotils.Regex.Match.Start {
             Name   = $PropertyName ?? "`u{2400}"
             Keep   = $ShouldKeep
             Target = $Target.ToString()
-        } | Json -Compress -depth 2 | write-debug
+        }
+        | ft -auto -HideTableHeaders | out-string | write-debug
+        # | Json -Compress -depth 2 | write-debug
 
         if( -not $MyInvocation.ExpectingInput ) {
             return $shouldKeep
