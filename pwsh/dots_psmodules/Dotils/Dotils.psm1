@@ -113,10 +113,18 @@ function Dotils.To.Hashtable {
         }
     }
 }
+
 function Dotils.Goto.Kind {
+    <#
+    .SYNOPSIS
+    .example
+        $error[1] | Dotils.Goto.Kind -Name Auto
+        $error[1] | .Go -Kind 'Auto'
+        $error[1] | .Go -Kind 'Error.InvocationInfo'
+    #>
     [CmdletBinding()]
     [Alias(
-        '.Go'
+        '.Go.Kind', '.GoTo.Kind'
         # '.Go.File', '.Go.Module',
         # '.Go.ScriptBlock',
         # '.Go.Error',
@@ -141,7 +149,7 @@ function Dotils.Goto.Kind {
     process {
         switch($KindName) {
             'Auto' {
-                if( $InputObject | .Has.Prop -PropertyName 'InvocationInfo' ) {
+                if( $InputObject | .Has.Prop -PropertyName 'InvocationInfo' -AsTest ) {
                     $KindName = 'Error.InvocationInfo'
                 }
             }
@@ -151,16 +159,23 @@ function Dotils.Goto.Kind {
             default { throw "UnhandledKindName: '$KindName'" }
         }
 
-        # switch($KindName){
-        #     'Error.InvocationInfo' {
+        switch($KindName){
+            'Error.InvocationInfo' {
+                [Management.Automation.InvocationInfo]$iinfo =
+                    $InputObject.InvocationInfo
 
-        #         '{0}:{1}' -f @(  $_.ScriptName; $_.ScriptLineNumber  )}
-        #     }
-        #     'Auto' {
+                $iinfo | ft -auto |oss| write-host
+                '{0}:{1}' -f @(
+                    $iinfo.ScriptName; $iinfo.ScriptLineNumber
+                )
+                write-warning 'InvocationInfo fail message when file is in memory'
 
-        #     }
-        #     default { write-warning "unhandled KindName: $KindName" }
-        # }
+            }
+            'Auto' {
+
+            }
+            default { write-warning "unhandled KindName: $KindName" }
+        }
 
         # write-error 'nyi'
 
@@ -177,21 +192,21 @@ function Dotils.Goto.Kind {
         # # $error[0].InvocationInfo.ScriptName
 
         # # throw 'nyi'
-        foreach($errItem in $InputObject) {
-            $source = @( $errItem )
-            $summary = [ordered]@{
-                QualId = $first.FullyQualifiedErrorId
-                Err0 =
-                    @($source)[0]| Format-ShortTypeName
-                Err1 =
-                    @($source)[1]| Format-ShortTypeName
-                Err2 =
-                    @($source)[2]| Format-ShortTypeName
-            }
-            if($TestOnly){
-                return [pscustomobject]$summary
-            }
-        }
+        # foreach($errItem in $InputObject) {
+        #     $source = @( $errItem )
+        #     $summary = [ordered]@{
+        #         QualId = $first.FullyQualifiedErrorId
+        #         Err0 =
+        #             @($source)[0]| Format-ShortTypeName
+        #         Err1 =
+        #             @($source)[1]| Format-ShortTypeName
+        #         Err2 =
+        #             @($source)[2]| Format-ShortTypeName
+        #     }
+        #     if($TestOnly){
+        #         return [pscustomobject]$summary
+        #     }
+        # }
 
     }
 }
@@ -889,24 +904,27 @@ function Dotils.Has.Property {
 
     process {
         $toKeep = $false
-        if($InputObject.PSObject.Properties.Name -notcontains $PropertyName) {
-            return
-        }
+        $exists = $InputObject.PSObject.Properties.Name -contains $PropertyName
+        $isNotBlank = -not [string]::IsNullOrWhiteSpace( $InputObject.$PropertyName )
 
         switch($TestKind){
             'Exists' {
-                $toKeep = $true
+                if($AsTest){
+                    return $exists
+                }
+                if($exists) {
+                    return $InputObject
+                }
             }
             'IsNotBlank' {
-                if( [string]::IsNullOrWhiteSpace( $InputObject.$PropertyName ) ) {
-                    $toKeep = $false
+                if($AsTest){
+                    return $isNotBlank
+                }
+                if($IsNotBlank){
+                    return $InputObject
                 }
             }
             default { throw "UnhandledTestKind: '$TestKind'"}
-        }
-        if($toKeep){
-            if($AsTest){ return $toKeep }
-            return $InputObject
         }
     }
 }
@@ -7070,6 +7088,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-09
+        'Dotils.Goto.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind', '.Goto.Kind' }
         'Dotils.Has.Property' # 'Dotils.Has.Property' = { '.Has.Prop' }
         'Dotils.Has.Property.Regex' # 'Dotils.Has.Property.Regex' = { '.Has.Prop.Regex' }
         'Dotils.PSDefaultParameters.ToggleAllVerbose'
@@ -7223,7 +7242,8 @@ $exportModuleMemberSplat = @{
         # 2023-08-08
         '.Has.Prop' # 'Dotils.Has.Property' = { '.Has.Prop' }
         '.Has.Prop.Regex' # 'Dotils.Has.Property.Regex' = { '.Has.Prop.Regex' }
-        'Dotils.Goto.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind' }
+        '.Goto.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind', '.Goto.Kind' }
+        '.Go.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind', '.Goto.Kind' }
         '.To.Obj' # 'Dotils.To.PSCustomObject' = { '.To.Obj' }
 
         # 2023-08-07
