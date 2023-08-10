@@ -7,6 +7,60 @@ function Console.GetColumnCount {
     return $w
 }
 
+function Dotils.To.PSCustomObject {
+    <#
+    .SYNOPSIS
+    .example
+        get-date | .To.Dict | .To.Obj
+    .EXAMPLE
+        $object | __asDict
+    .EXAMPLE
+        $object | __asDict -DropBlankKeys | Json -c -d 0
+    #>
+    [Alias(
+        '.To.Obj'
+    )]
+    [CmdletBinding()]
+    param(
+        # any type of objec
+        [Parameter(
+            Mandatory, ValueFromPipeline )]
+        [object[]]$InputObject,
+
+        [Alias('PSTypeName', 'TypeName')][string]$NewTypeName
+
+        # ,
+        # # drop keys when the value is whitespace
+        # [switch]$DropBlankKeys,
+
+        # # also json for convienence
+        # [switch]$AsJsonMin
+    )
+    process {
+        foreach($inner in $inputObject) {
+            # use the most common key func? or build merge a hash?
+            if($PSBoundParameters.ContainsKey('NewTypeName')) {
+                write-warning 'future: explicitly set type name right'
+            }
+            [pscustomobject]$inner
+
+            if($false) {
+
+            <#
+            this method fails on:
+            $hash = nin.MergeHash -BaseHash $inner -OtherHash @{ PSTypeName = $NewTypeName ?? 'Dotils.Obj.PSCustomObject' }
+
+Cannot convert value "System.Collections.Hashtable" to type
+"System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Error: "Cannot process
+argument because the value of argument "item" is not valid. Change the value of the "item" argument
+and run the operation again."
+                [pscustomobject]$hash
+            #>
+            }
+
+        }
+    }
+}
 function Dotils.To.Hashtable {
     <#
     .SYNOPSIS
@@ -59,7 +113,122 @@ function Dotils.To.Hashtable {
         }
     }
 }
+function Dotils.Goto.Kind {
+    [CmdletBinding()]
+    [Alias(
+        '.Go'
+        # '.Go.File', '.Go.Module',
+        # '.Go.ScriptBlock',
+        # '.Go.Error',
+        # '.Go.ScriptBlock',
+        # '.Go.Code', '.Go.Ivy'
+    )]
+    param(
+        [ArgumentCompletions(
+            'Error.InvocationInfo', 'Auto'
+        )]
+        [Parameter(Position=0)]
+        [string]$KindName = 'Auto',
 
+        # go to some kinds
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        [Alias('PassThru')][switch]$TestOnly
+    )
+    # $some = $global:error[0..10]
+    # @( $some[0] ) | Format-ShortTypeName
+    process {
+        switch($KindName) {
+            'Auto' {
+                if( $InputObject | .Has.Prop -PropertyName 'InvocationInfo' ) {
+                    $KindName = 'Error.InvocationInfo'
+                }
+            }
+            {$true} {
+                $KindName | Join-String -op 'New KindName: ' | write-verbose
+            }
+            default { throw "UnhandledKindName: '$KindName'" }
+        }
+
+        # switch($KindName){
+        #     'Error.InvocationInfo' {
+
+        #         '{0}:{1}' -f @(  $_.ScriptName; $_.ScriptLineNumber  )}
+        #     }
+        #     'Auto' {
+
+        #     }
+        #     default { write-warning "unhandled KindName: $KindName" }
+        # }
+
+        # write-error 'nyi'
+
+        # $src = $global:error
+        # $one = $global:error| s -First 1
+        # $two = $global:error| s -First 1 -skip 1
+
+        # # $global:error[0].CategoryInfo
+        # $one.CategoryInfo
+        #     | .Iter.Prop
+        #     | Join-string -sep "`n" { $_.Name, $_.Value -join ': ' }
+
+        # # throw 'go to inner exception position messages'
+        # # $error[0].InvocationInfo.ScriptName
+
+        # # throw 'nyi'
+        foreach($errItem in $InputObject) {
+            $source = @( $errItem )
+            $summary = [ordered]@{
+                QualId = $first.FullyQualifiedErrorId
+                Err0 =
+                    @($source)[0]| Format-ShortTypeName
+                Err1 =
+                    @($source)[1]| Format-ShortTypeName
+                Err2 =
+                    @($source)[2]| Format-ShortTypeName
+            }
+            if($TestOnly){
+                return [pscustomobject]$summary
+            }
+        }
+
+    }
+}
+
+
+function Dotils.Bookmark.EverythingSearch {
+
+$Bookmarks = @(
+
+@{
+    Name = 'Recent code-workspaces'
+    Query = @'
+ext:code-workspace;psm1;ps1;psd1;md;xlsx;js;ts;html dm:last3weeks ext:code-workspace
+'@
+}
+@{
+    Name = 'Recent Excel'
+    Query = @'
+ext:code-workspace;psm1;ps1;psd1;md;xlsx;js;ts;html dm:last3weeks ext:xlsx
+'@
+}
+@{
+    Name = 'bdg_compares_2023-08'
+    Query = @'
+ext:xlsx ( | path:ww:"G:\temp\xl\bdg_compares_2023-08\batch1" | path:ww:"G:\temp\compare.bdg") dm:last2days
+'@
+}
+@{
+    Name = 'bdg_compare2'
+    Query = @'
+ext:xlsx ( dm:last2hours | path:ww:"G:\temp\xl\bdg_compares_2023-08\batch1" | path:ww:"G:\temp\compare.bdg") dm:last2hours
+'@
+}
+) | .To.Obj
+return $Bookmarks
+
+}
 function Dotils.Quick.Pwd {
     # 2023-05-12 : touch
     <#
@@ -305,6 +474,13 @@ function Dotils.Quick.GetError {
         [uint]$FirstN,
         [uint]$LastN
     )
+    $global:error.Exception
+        | group { $_.GetType() }
+        | sort Count -Descending
+        | ft -AutoSize | Out-String
+        | write-verbose -Verbose
+
+
     $selected_errors = @( $global:error )
     if($FirstN) {
         $selected_errors = $selected_errors | Select -first $FirstN
@@ -408,6 +584,37 @@ function Dotils.Format.Write-DimText {
         | % ToString
 }
 
+function Dotils.Select.Variable {
+    # what kinds can be used?>
+    throw 'command not done wip'
+    $all_vars = @(
+        Get-Variable -Scope global
+        Get-Variable -scope script
+        Get-Variable -scope local
+    )
+    <#
+    expected types
+        [sma.LocalVariable]
+        [sma.NullVariable]
+        [sma.PSCultureVariable]
+        [sma.PSUICultureVariable]
+        [sma.PSVariable]
+        [sma.QuestionMarkVariable]
+
+        subs;
+            NullVariable : PSVariable, IHasSessionStateEntryVisibility
+            PSVariable : object, IHasSessionStateEntryVisibility
+
+    #>
+
+    $meta = @{
+        IsLocal =  ''
+        IsGlobal = ''
+        IsTypeX = ''
+        IsAccess = '[internal|public]'
+        Modifiers = '[class]'
+    }
+}
 
 function Dotils.Is.DirectPath {
     <#
@@ -643,8 +850,74 @@ function Dotils.Is.Blank {
         return [string]::IsNullOrWhiteSpace( $InputObject )
     }
 }
-function Dotils.Has.Prop {
+function Dotils.Has.Property {
+    <#
+    .SYNOPSIS
+    .does a property exist? is it not blank ?
+    .EXAMPLE
+        $error
+            | .Has.Prop -PropertyName 'InvocationInfo' | %{ $_.Exception }
+            | Dotils.ShortString.Basic -maxLength 120 | Join.UL
+    .EXAMPLE
+        $error
+            | .Has.Prop -PropertyName 'InvocationInfo'
+            | Join-String { $_ | Dotils.ShortString -maxLength 120 } -sep (hr 1 )
+    .EXAMPLE
+        $error | .Has.Prop -PropertyName 'InvocationInfo' -AsTest
+    .LINK
+        Dotils.Has.Property
+    .LINK
+        Dotils.Has.Property.Regex
+    #>
     [Alias('.Has.Prop')]
+    [CmdletBinding()]
+    param(
+        [Alias('Name')][Parameter(Mandatory, Position=0)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject,
+
+        [Parameter(Position = 1)]
+        [ValidateSet('Exists', 'IsNotBlank')]
+        [string]$TestKind = 'Exists',
+
+        # returns bool instead
+        [Alias('Test')][switch]$AsTest
+
+    )
+
+    process {
+        $toKeep = $false
+        if($InputObject.PSObject.Properties.Name -notcontains $PropertyName) {
+            return
+        }
+
+        switch($TestKind){
+            'Exists' {
+                $toKeep = $true
+            }
+            'IsNotBlank' {
+                if( [string]::IsNullOrWhiteSpace( $InputObject.$PropertyName ) ) {
+                    $toKeep = $false
+                }
+            }
+            default { throw "UnhandledTestKind: '$TestKind'"}
+        }
+        if($toKeep){
+            if($AsTest){ return $toKeep }
+            return $InputObject
+        }
+    }
+}
+function Dotils.Has.Property.Regex {
+    <#
+    .LINK
+        Dotils.Has.Property
+    .LINK
+        Dotils.Has.Property.Regex
+    #>
+    [Alias('.Has.Prop.Regex')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
@@ -1183,7 +1456,7 @@ function Dotils.Regex.Match.End {
         [string]$Literal,
 
         # If not set, and type is not string,  tostring will end up controlling what is matched against
-        [Parameter(Mandatory, Position=1)]
+        [Parameter(Position=1)]
         [string]$PropertyName,
 
         # strings, or objects to filter on
@@ -1271,7 +1544,7 @@ function Dotils.Regex.Match.Start {
         [string]$Literal,
 
         # If not set, and type is not string,  tostring will end up controlling what is matched against
-        [Parameter(Mandatory, Position=1)]
+        [Parameter(Position=1)]
         [string]$PropertyName,
 
         # strings, or objects to filter on
@@ -5578,6 +5851,14 @@ function Dotils.Format-ShortString.Basic {    <#
         future:
             ability to write num chars relative root.
     .example
+        $error  | .Has.Prop -PropertyName 'InvocationInfo'
+                | Dotils.ShortString.Basic -maxLength 120
+                | Join-String -sep (hr 1)
+    .example
+        $error
+            | .Has.Prop -PropertyName 'InvocationInfo' | %{ $_.Exception }
+            | Dotils.ShortString.Basic -maxLength 120 | Join.UL
+    .example
         PS> 'abc', 'defg' | Dotils.ShortString.Basic -maxLength 2
 
         'ab', 'de'
@@ -5685,6 +5966,10 @@ function Dotils.Format-ShortString {    <#
         [Parameter()]
         [int]$startPosition = 0 #
     )
+    write-warning "NYI: make this properly emit pipeline,
+    'foo', 'bar', 'cat' | Dotils.ShortString.Basic -maxLength 2  # works
+    'foo', 'bar', 'cat' | Dotils.ShortString -maxLength 2  # does not
+    "
     if($null -eq $InputObject) { return '␀' }
 
     $Len = $InputObject.Length
@@ -6760,10 +7045,39 @@ function Select-NameIsh {
     }
 }
 
+
+function Dotils.PSDefaultParameters.ToggleAllVerbose {
+    <#
+    .SYNOPSIS
+        enables verbosity on all functions
+    #>
+    param( [string]$ModuleName, [switch]$EnableVerbose, [switch]$DisableAll )
+    Gcm -m $ModuleName
+    | CountOf | %{
+        $Key = $_.Name | Join-String -f "{0}:Verbose"
+        if($EnableVerbose) {
+            $PSDefaultParameterValues[ $Key ] = $EnableVerbose
+        }
+        if($DisableAll) {
+            $PSDefaultParameterValues.Remove('ColumnChart:verbose')
+        }
+    }
+}
+
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-09
+        'Dotils.Has.Property' # 'Dotils.Has.Property' = { '.Has.Prop' }
+        'Dotils.Has.Property.Regex' # 'Dotils.Has.Property.Regex' = { '.Has.Prop.Regex' }
+        'Dotils.PSDefaultParameters.ToggleAllVerbose'
+        'Dotils.Select.Variable'
+        # 2023-08-08
+        'Dotils.Bookmark.EverythingSearch'
+        'Dotils.To.PSCustomObject' # 'Dotils.To.PSCustomObject' = { '.To.Obj' }
+
         # 2023-08-07
         'Dotils.Join.Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
         'Dotils.Quick.PSTypeNames' # 'Dotils.Quick.PSTypeNames' = { '.quick.PSTypes' }
@@ -6781,7 +7095,6 @@ $exportModuleMemberSplat = @{
         # 2023-08-05 - wave B
         'Dotils.Is.SubType' # 'Dotils.Is.SubType' = { '.Is.SubType' }
         'Dotils.Add.IndexProp' # 'Dotils.Add.IndexProp' = { '.Add.IndexProp' }
-        'Dotils.Has.Prop' # 'Dotils.Has.Prop' = { '.Has.Prop' }
         'Dotils.Iter.Prop' # 'Dotils.Iter.Prop' = { '.Iter.Prop' }
         'Dotils.Is.Blank' # 'Dotils.Is.Blank' = { '.Is.Blank' }
         'Dotils.Is.Not' # 'Dotils.Is.Not' = { '.Is.Not' }
@@ -6907,11 +7220,18 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-08
+        '.Has.Prop' # 'Dotils.Has.Property' = { '.Has.Prop' }
+        '.Has.Prop.Regex' # 'Dotils.Has.Property.Regex' = { '.Has.Prop.Regex' }
+        'Dotils.Goto.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind' }
+        '.To.Obj' # 'Dotils.To.PSCustomObject' = { '.To.Obj' }
+
         # 2023-08-07
 
         '.Join.Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
         'Join.Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
         'Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
+
 
         '.quick.PSTypes' # 'Dotils.Quick.PSTypeNames' = { '.quick.PSTypes' }
         '.Match.Start' # Dotils.Regex.Match.Start = { '.Match.Start', '.Match.Prefix' }
