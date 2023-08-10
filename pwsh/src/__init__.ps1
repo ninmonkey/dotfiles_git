@@ -5,6 +5,7 @@
 
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
+import-module 'posh'
 
 Import-Module 'H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
 
@@ -21,19 +22,22 @@ Set-Alias -Name 'Json.From' -Value 'ConvertFrom-Json'
 
 Remove-Module Pipeworks -ea 'ignore' # because it overrides pansies|write-host
 Import-Module pansies
-[Console]::OutputEncoding = [Console]::InputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new()
+$OutputEncoding =
+    [Console]::OutputEncoding =
+        [Console]::InputEncoding =
+            $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
 'Encoding: [Console Input/Output: {0}, {1}, $OutputEncoding: {2}]' -f @(
     # alternate:  @( [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding ) -replace 'System.Text', ''
-    @(  [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding | ForEach-Object WebName )
-) | Write-Verbose -Verbose
+        @( [Console]::OutputEncoding, [Console]::InputEncoding, $OutputEncoding
+        | ForEach-Object WebName )
+    ) | Write-Verbose -Verbose
 
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
-@(
-    Import-Module -wa 0  'ugit' -PassThru
+@(  Import-Module -wa 0  'ugit' -PassThru
     Import-Module -wa 0 'Dotils' -Force -PassThru
-)   | Join-String -p {
+    ) | Join-String -p {
         '{0} = {1}' -f @(
             $_.Name ; $_.Version; ) } -op "Import: `n" -sep ",`n" -single
     | Write-Verbose
