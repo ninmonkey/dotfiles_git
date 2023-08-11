@@ -1994,6 +1994,144 @@ function Dotils.Regex.Match.Start {
         }
     }
 }
+
+
+
+function Dotils.Format.FullName {
+    <#
+    .SYNOPSIS
+        sugar, expands to full name for filepaths and data types
+    .example
+        find-type 'color' | FullName
+    .example
+        PS> gci . | FullName
+            c:\data\somefile -- with spacing.txt
+
+        PS> gci . | FullName -as Path.Forward
+            c:/data/somefile -- with spacing.txt
+
+        PS> gci . | FullName -as Escaped.Md.Path
+            c:/data/somefile%20--%20with spacing.txt
+
+        PS> gci . | FullName -as Escaped.Md.Path -filePrefix
+            file:///c:/data/somefile%20--%20with spacing.txt
+    #>
+    [Alias(
+        'FullName',
+        '.Format.FullName',
+        '.fmt.Name'
+    )]
+    [CmdletBinding()]
+    param(
+        # Objects
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        # Change output types
+        [ValidateSet(
+            'Path.Forward',
+            'Escaped.Md.Path',
+            'ShortType'
+        )]
+        [Alias('As')]
+        [string]$OutputType,
+
+        # append to clipboard?
+        [Alias('Cl', 'ClipTo')][switch]$AsClipboard,
+
+        # treat as type names
+        [Alias('ShortType')][switch]$AsShortType,
+
+        # adds "file:///" protocol prefix
+        [Alias('FilePrefix')][switch]$UsingPrefixFileProtocol
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items  = @()
+    }
+    process {
+        if($InputObject -is 'type'){
+            $OutputType = 'ShortType'
+        }
+        $prefix = if($UsingPrefixFileProtocol) { 'file:///' } else { '' }
+
+        $render = switch($OutputType)  {
+            'Escaped.md.Path' {
+                ($InputObject | % tostring) -replace
+                    '\\', '/' -replace
+                    '\s', '%20'
+                | Join-String -op $Prefix
+            }
+            'Path.Forward' {
+                ($InputObject | % tostring) -replace '\\', '/'
+                | Join-String -op $Prefix
+            }
+            'ShortType' {
+                $InputObject | Format-ShortTypeName
+                | Join-String -op $Prefix
+            }
+            default {
+                $InputObject.FullName
+                | Join-String -op $Prefix
+            }
+        }
+        if($AsClipboard) {
+            $render | Set-Clipboard -PassThru
+            return
+        }
+        $render
+    }
+    end {
+
+
+        # write-warning 'early exit, going to totally rewrite it'
+        # return
+        # $query =
+        #     $items | %{
+        #         $original = $_
+        #         $FullName? = $original.FullName
+        #         if([string]::IsNullOrWhiteSpace( $FullName? )) {
+        #             $fullname? = $original
+        #         }
+        #         if($AsShortType) {
+        #             $tinfo = if($original? -is 'type'){ $original? } else { ($original?).GetType() }
+        #             $tinfo | Format-ShortTypeName
+        #         } else {
+        #             $FullName?
+        #         }
+        #     }
+
+        # # $query = $Items
+
+        # if($AsClipboard) {
+        #     $query | Set-Clipboard -PassThru
+        #     return
+        # }
+        # $query
+    }
+
+}
+
+function Dotils.Ansi.Fg {
+    <#
+    .synopsis
+        color sugar
+    .notes
+        see also:
+
+        PS> find-type -FullName '*PSStyle*' | Format-ShortTypeName
+
+        PSStyle.ForegroundColor
+        [PSStyle]
+        [PSStyle+ForegroundColor]
+        [PSStyle+BackgroundColor]
+        [PSStyle+ProgressConfiguration]
+        [PSStyle+FormattingData]
+        [PSStyle+FileInfoFormatting]
+        [PSStyle+FileInfoFormatting+FileExtensionDictionary]
+    #>
+
+}
+
 function Dotils.Regex.Match.Word {
     <#
     .SYNOPSIS
@@ -7706,6 +7844,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-10
+        'Dotils.Format.FullName' # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
         'Dotils.To.Encoding' # 'Dotils.To.Encoding' = { '.to.Encoding', '.as.Encoding' }
         'Dotils.Regex.Match' # 'Dotils.Regex.Match = { '.Match' }
         'Dotils.Console.Encoding' # 'Dotils.Console.GetEncoding' = { 'Console.Encoding' }
@@ -7866,6 +8005,9 @@ $exportModuleMemberSplat = @{
     Alias    = @(
 
         # 2023-08-10
+        'FullName' # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
+        '.Format.FullName', # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
+        '.fmt.Name' # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
         '.to.Encoding' # 'Dotils.To.Encoding' = { '.to.Encoding', '.as.Encoding' }
         '.as.Encoding' # 'Dotils.To.Encoding' = { '.to.Encoding', '.as.Encoding' }
         'Console.Encoding' # 'Dotils.Console.GetEncoding' = { 'Console.Encoding' }
