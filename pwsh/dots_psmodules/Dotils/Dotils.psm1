@@ -1,11 +1,91 @@
 $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
 
-function Console.GetColumnCount {
+@(
+    Set-Alias -ea 'ignore' -PassThru -name 'st' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias -ea 'ignore' -PassThru -name '.fmt.Type' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias 'Yaml' -Value 'powershell-yaml\ConvertTo-Yaml'
+    Set-Alias 'Yaml.From' -Value 'powershell-yaml\ConvertFrom-Yaml'
+)
+function Console.GetWindowWidth {
+    <#
+    .SYNOPSIS
+        # draw a perfectly sized horizontal line
+    .example
+        # draw a perfectly sized horizontal line
+        '-' * (Console.Width) -join ''
+
+        -----------------------------------------
+    #>
+    [Alias(
+        'Console.Width', 'Console.WindowWidth')]
     [OutputType('System.Int32')]
     param()
     $w = $host.ui.RawUI.WindowSize.Width
     return $w
 }
+function Dotils.Console.GetEncoding {
+    <#
+    .synopsis
+        set the right defaults
+    #>
+    [Alias('Console.Encoding')]
+    [CmdletBinding()]
+    param(
+        # Technically not all, but, good enough
+        [Alias('List')][switch]$All
+    )
+    if($All) {
+        [Text.Encoding]::GetEncodings()
+        [Text.Encoding]::GetEncodings()
+            | sort-Object DisplayName -Descending
+        return
+    }
+    [pscustomobject]@{
+        PSTypeName              = 'Dotils.ConsoleEncoding.Summary'
+        OutputEncoding          = $OutputEncoding
+        Console_OutputEncoding  = [Console]::OutputEncoding # -isa [Encoding]
+        Console_InputEncoding   = [Console]::InputEncoding  # -isa [Encoding]
+
+    }
+}
+function Dotils.Console.SetEncoding {
+    <#
+    .synopsis
+        set the right defaults
+    #>
+    [Alias('Console.SetEncoding')]
+    [CmdletBinding()]
+    param(
+        # Defaults to UTF8 but *without* BOM
+        [Text.Encoding]$Encoding = [Text.UTF8Encoding]::new(),
+        [switch]$PassThru
+    )
+
+
+    $OutputEncoding,
+    [Console]::OutputEncoding,
+        [Console]::InputEncoding
+            | Join-String -sep ', ' {
+                $_ | Format-ShortTypeName
+            } -op "Was: `$OutputEncoding, [Console]::OutputEncoding, [Console]::InputEncoding`n    "
+            | Write-Information -infa 'continue'
+
+    $OutputEncoding =
+            [Console]::OutputEncoding =
+                [Console]::InputEncoding = $Encoding
+
+    $OutputEncoding, [Console]::OutputEncoding, [Console]::InputEncoding
+            | Join-String -sep ', ' {
+                $_ | Format-ShortTypeName
+            } -op "Now: `$OutputEncoding, [Console]::OutputEncoding, [Console]::InputEncoding`n    "
+            | Write-Information -infa 'continue'
+
+    if($PassThru){
+        Dotils.Console.GetEncoding
+        return
+    }
+}
+
 
 function Dotils.To.PSCustomObject {
     <#
@@ -16,6 +96,9 @@ function Dotils.To.PSCustomObject {
         $object | __asDict
     .EXAMPLE
         $object | __asDict -DropBlankKeys | Json -c -d 0
+    .EXAMPLE
+        # coerces keys to strings, allowing you to serialize
+        PS> @{ 10 = 3 } | .To.Obj | .to.Dict | Json -Compress
     #>
     [Alias(
         '.To.Obj'
@@ -70,9 +153,19 @@ function Dotils.To.Hashtable {
         $object | __asDict
     .EXAMPLE
         $object | __asDict -DropBlankKeys | Json -c -d 0
+    .EXAMPLE
+        PS> @{ 10 = 3 } | Json
+        # error: Keys must be strings
+
+        # coerces keys to strings, allowing you to serialize
+        PS> @{ 10 = 3 } | .To.Obj | .to.Dict | Json -Compress
+
+        # output:
+        {"10":3}
     #>
     [Alias(
-        '.to.Dict'
+        '.to.Dict',
+        '.as.Dict'
     )]
     [CmdletBinding()]
     param(
@@ -87,9 +180,14 @@ function Dotils.To.Hashtable {
         # also json for convienence
         [switch]$AsJsonMin
     )
-    process {
-        foreach($inner in $inputObject) {
-            $obj = $inner
+    begin {
+
+        # "test case @{ 3 = 10 }  | .as.Dict | Json"
+        # | write-debug -debug
+        #     write-warning 'not working as of new code'
+        function __parseFrom.Object {
+            param( [object]$InputObject )
+            $obj = $InputObject
             $newHash = @{}
 
             foreach($prop in $Obj.PSObject.Properties) {
@@ -110,7 +208,41 @@ function Dotils.To.Hashtable {
                 continue
             }
             return $newHash
+            # }
         }
+        function __parseFrom.Hashtable {
+            param( [object]$InputObject )
+                $obj = $InputObject
+                $newHash = [hashtable]::new( $InputObject )
+
+            if($DropBlankKeys) {
+                foreach($key in $newHash.Keys.clone()) {
+                    $isBlankValue = [string]::IsNullOrWhiteSpace( $newHash[$key] )
+                    if($isBlankValue) {
+                        $newHash.remove( $key )
+                    }
+                }
+            }
+
+            if($AsJsonMin) {
+                $newHash | ConvertTo-Json -depth 1 -Compress -wa 0
+                continue
+            }
+            return $newHash
+
+        }
+    }
+    process {
+
+        foreach($curObject in $inputObject) {
+            $CurObject | Format-ShortTypeName| Join-String -op 'is a ' | write-debug
+            if($curObject -is 'hashtable') {
+                __parseFrom.Hashtable -Inp $curObject
+            } else {
+                __parseFrom.Object -Inp $curObject
+            }
+        }
+
     }
 }
 
@@ -819,6 +951,133 @@ function Dotils.Is.SubType.NYI {
     }
 }
 
+
+function Dotils.Help.FromType {
+    <#
+    .synopsis
+        Opens the docs for the current type, in your default browser
+    .description
+       copied from:
+            Ninmonkey.Console\HelpFromType.2
+
+       It uses 'Get-Unique -OnType' so you only get 1 result for duplicated types
+    .notes
+        you can always fallback to the url
+            https://docs.microsoft.com/en-us/dotnet/api/
+    .example
+          PS> [math]::Round | HelpFromType -PassThru -infa 'Continue'
+    .outputs
+          [string | None]
+    .link
+        Ninmonkey.Console\Format-TypeName
+    .link
+        Ninmonkey.Console\Get-ObjectTypeHelp
+
+    #>
+    [Alias(
+        '.Help.FromType'
+    # '?Type'
+    )]
+    [CmdletBinding(PositionalBinding = $false)]
+    param(
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [object]$InputObject,
+
+        # Return urls, without opening them
+        [Parameter()]
+        [switch]$PassThru
+    )
+
+    begin {
+        [Collections.Generic.List[object]]$NameList =  @()
+        $TemplateUrl = 'https://docs.microsoft.com/en-us/dotnet/api/{0}'
+        @'
+    bug:
+
+        https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1?view=net-6.0
+
+
+'@ | Out-Null
+
+    }
+    process {
+        if ( [string]::IsNullOrWhiteSpace($InputObject) ) {
+            return
+        }
+        # if generics cause problems, try another method
+
+        # Management.Automation
+        # if ($InputObject -is 'Management.Automation.PSMethod') {
+        # todo: refactor to a ProcessTypeInfo -Passthru
+        # This function just asks on that
+        if ($InputObject -is 'System.Management.Automation.PSMethod') {
+            'methods not completed yet' | Write-Host -fore green
+            $funcName = $InputObject.Name
+            <#
+    example state from: [math]::round | HelpFromType
+        > $InputObject.TypeNameOfValue
+
+            System.Management.Automation.PSMethod
+
+        > $InputObject.GeTType() | %{ $_.Namespace, $_.Name -join '.'}
+
+            System.Management.Automation.PSMethod`1
+
+        > $InputObject.Name
+
+            Round
+
+    #>
+            $maybeFullNameForUrl = $InputObject.GetType().Namespace, $InputObject.Name -join '.'
+            # maybe full url:
+            @(
+                $maybeFullNameForUrl | str prefix 'maybe url' | Write-Color yellow
+                $funcName | Write-Color yellow
+                $InputObject.TypeNameOfValue | Write-Color orange
+                $InputObject.GeTType() | ForEach-Object { $_.Namespace, $_.Name -join '.' } | Write-Color blue
+            ) | Write-Information
+            $NameList.add($maybeFullNameForUrl)
+            return
+
+        }
+        if ($InputObject -is 'type') {
+            $NameList.Add( $InputObject.FullName )
+            $NameList.Add( @(
+                    $InputObject.Namespace, $InputObject.Name -join '.'
+                ) )
+            return
+        }
+        if ($InputObject -is 'string') {
+            $typeInfo = $InputObject -as 'type'
+            $NameList.Add( $typeInfo.FullName )
+            return
+        }
+
+        $NameList.Add( $InputObject.GetType().FullName )
+    }
+    end {
+        # '... | Get-Unique -OnType is' great if you want to limit a list to 1 per unique type
+        # like 'ls . -recursse | Get-HelpFromTypeName'
+        # But I'm using strings, so 'Sort -Unique' works
+        $NameList
+        | Sort-Object -Unique
+        | ForEach-Object {
+            $url = $TemplateUrl -f $_
+
+            "Url: '$url' for '$_'" | Write-Debug
+
+            if ($PassThru) {
+                $url; return
+            }
+            Start-Process -path $url
+        }
+    }
+}
+
+
+
+
+
 function Dotils.Distinct {
     <#
     .SYNOPSIS
@@ -1483,7 +1742,7 @@ function Dotils.Regex.Match.End {
     )
     process {
         switch($PSCmdlet.ParameterSetName){
-            'AsLiteral' {
+            'AsLiteral' {u
                 $buildRegex = [Regex]::Escape( $Literal )
             }
             'AsRegex' {
@@ -1500,6 +1759,7 @@ function Dotils.Regex.Match.End {
         if( [string]::IsNullOrEmpty( $Target ) ) { return }
 
         [bool]$shouldKeep = $target -match $buildRegex
+        $script:matchesNin = $matches
         [ordered]@{
             Regex  = $BuildRegex
             Name   = $PropertyName ?? "`u{2400}"
@@ -1525,6 +1785,8 @@ function Dotils.Regex.Match.Start {
             - [ ]
     .example
         gci . | .Match.Start -Pattern 'r' -PropertyName name
+    .example
+        'the cat, in the hat' -split '\s+' | .Match.Start '[ch]'
     .example
         $stuff = 'cat' , 'bat', 'tats'
         $stuff | .Match.Start 'c' | Csv
@@ -1597,6 +1859,208 @@ function Dotils.Regex.Match.Start {
         if( [string]::IsNullOrEmpty( $Target ) ) { return }
 
         [bool]$shouldKeep = $target -match $buildRegex
+        $script:matchesNin = $matches
+
+        [ordered]@{
+            Regex  = $BuildRegex
+            Name   = $PropertyName ?? "`u{2400}"
+            Keep   = $ShouldKeep
+            Target = $Target.ToString()
+        }
+        | ft -auto -HideTableHeaders | out-string | write-debug
+        # | Json -Compress -depth 2 | write-debug
+
+        if( -not $MyInvocation.ExpectingInput ) {
+            return $shouldKeep
+        }
+        if($shouldKeep){
+            $InputObject
+        }
+    }
+}
+function Dotils.Regex.Match.Word {
+    <#
+    .SYNOPSIS
+        filters items from the pipeline, else, returns a boolean when not
+    .notes
+        does a '\bPattern\b' match
+    .example
+        gci . | .Match.Start -Pattern 'r' -PropertyName name
+    .example
+        'the cat, in the hat' -split '\s+' | .Match.Start '[ch]'
+    .example
+        $stuff = 'cat' , 'bat', 'tats'
+        $stuff | .Match.Start 'c' | Csv
+        $stuff | .Match.End 't' | Csv
+        $stuff | .Match.End '[ts]' | Csv
+        $stuff | .Match.End '[ts]' | .Match.Start 't' | Csv
+
+        # outputs:
+            cat
+            cat, bat
+            cat, bat, tats
+            tats
+    .example
+        'cat', 'bat', 'bag' | .Match.Start 'b'
+        '$bag','cat', 'bat', 'bag' | .Match.Start 'b.*' -Debug
+        '$bag','cat', 'bat', 'bag' | .Match.Start -Literal 'b.*' -Debug
+    .LINK
+        Dotils.Regex.Match.Start
+    .LINK
+        Dotils.Regex.Match.End
+    #>
+    [CmdletBinding(
+        DefaultParameterSetName = 'AsRegex'
+    )]
+    [Alias(
+        '.Match.Word')]
+    param(
+        # regex
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsRegex')]
+        [Alias('Regex', 'Re')]
+        [string]$Pattern,
+
+        # literals escaped for a regex
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
+        [string]$Literal,
+
+        # If not set, and type is not string,  tostring will end up controlling what is matched against
+        [Parameter(Position=1)]
+        [string]$PropertyName,
+
+        # strings, or objects to filter on
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+    process {
+        # if( $PSBoundParameters.ContainsKey('Literal') -and $PSBoundParameters.ContainsKey('Regex') ) {
+        #     throw  'InvalidArgumentsException: Cannot use -Literal and -Regex together'
+        # }
+        # $Regex = $PSBoundParameters.ContainsKey('Literal') ?
+        #     $Literal : $Pattern
+
+        # wait-debugger
+        # $Pattern =  $LiteralRegex ? [regex]::Escape( $Pattern ) : $Pattern
+        # $buildRegex = Join-String -op '^' -inp $Pattern
+        switch($PSCmdlet.ParameterSetName){
+            'AsLiteral' {
+                $buildRegex = [Regex]::Escape( $Literal )
+            }
+            'AsRegex' {
+                $buildRegex = $Pattern
+            }
+        }
+        $buildRegex = Join-String -f "\b({0})\b" -inp $buildRegex
+        if($PropertyName) {
+            $Target = $Inputobject.$PropertyName
+        } else {
+            $Target = $InputObject
+        }
+        # if($null -eq $Target) { return }
+        if( [string]::IsNullOrEmpty( $Target ) ) { return }
+
+        [bool]$shouldKeep = $target -match $buildRegex
+        $script:matchesNin = $matches
+        [ordered]@{
+            Regex  = $BuildRegex
+            Name   = $PropertyName ?? "`u{2400}"
+            Keep   = $ShouldKeep
+            Target = $Target.ToString()
+        }
+        | ft -auto -HideTableHeaders | out-string | write-debug
+        # | Json -Compress -depth 2 | write-debug
+
+        if( -not $MyInvocation.ExpectingInput ) {
+            return $shouldKeep
+        }
+        if($shouldKeep){
+            $InputObject
+        }
+    }
+}
+function Dotils.Regex.Match {
+    <#
+    .SYNOPSIS
+        filters items from the pipeline, else, returns a boolean when not
+    .notes
+        does a '\bPattern\b' match
+    .example
+        gci . | .Match.Start -Pattern 'r' -PropertyName name
+    .example
+        'the cat, in the hat' -split '\s+' | .Match.Start '[ch]'
+    .example
+        $stuff = 'cat' , 'bat', 'tats'
+        $stuff | .Match.Start 'c' | Csv
+        $stuff | .Match.End 't' | Csv
+        $stuff | .Match.End '[ts]' | Csv
+        $stuff | .Match.End '[ts]' | .Match.Start 't' | Csv
+
+        # outputs:
+            cat
+            cat, bat
+            cat, bat, tats
+            tats
+    .example
+        'cat', 'bat', 'bag' | .Match.Start 'b'
+        '$bag','cat', 'bat', 'bag' | .Match.Start 'b.*' -Debug
+        '$bag','cat', 'bat', 'bag' | .Match.Start -Literal 'b.*' -Debug
+    .LINK
+        Dotils.Regex.Match.Start
+    .LINK
+        Dotils.Regex.Match.End
+    #>
+    [CmdletBinding(
+        DefaultParameterSetName = 'AsRegex'
+    )]
+    [Alias(
+        '.Match')]
+    param(
+        # regex
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsRegex')]
+        [Alias('Regex', 'Re')]
+        [string]$Pattern,
+
+        # literals escaped for a regex
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
+        [string]$Literal,
+
+        # If not set, and type is not string,  tostring will end up controlling what is matched against
+        [Parameter(Position=1)]
+        [string]$PropertyName,
+
+        # strings, or objects to filter on
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+    process {
+        # if( $PSBoundParameters.ContainsKey('Literal') -and $PSBoundParameters.ContainsKey('Regex') ) {
+        #     throw  'InvalidArgumentsException: Cannot use -Literal and -Regex together'
+        # }
+        # $Regex = $PSBoundParameters.ContainsKey('Literal') ?
+        #     $Literal : $Pattern
+
+        # wait-debugger
+        # $Pattern =  $LiteralRegex ? [regex]::Escape( $Pattern ) : $Pattern
+        # $buildRegex = Join-String -op '^' -inp $Pattern
+        switch($PSCmdlet.ParameterSetName){
+            'AsLiteral' {
+                $buildRegex = [Regex]::Escape( $Literal )
+            }
+            'AsRegex' {
+                $buildRegex = $Pattern
+            }
+        }
+        $buildRegex = Join-String -f "({0})" -inp $buildRegex
+        if($PropertyName) {
+            $Target = $Inputobject.$PropertyName
+        } else {
+            $Target = $InputObject
+        }
+        # if($null -eq $Target) { return }
+        if( [string]::IsNullOrEmpty( $Target ) ) { return }
+
+        [bool]$shouldKeep = $target -match $buildRegex
+        $script:matchesNin = $matches
         [ordered]@{
             Regex  = $BuildRegex
             Name   = $PropertyName ?? "`u{2400}"
@@ -1805,7 +2269,8 @@ function Dotils.Render.InvocationInfo {
 function Dotils.Render.MatchInfo {
     [CmdletBinding()]
     param(
-        [Alias('MatchInfo')]
+        # [Alias('MatchInfo')]
+        [Alias]
         [Parameter(Mandatory, ValueFromPipeline)]
         [Microsoft.PowerShell.Commands.MatchInfo]$InputObject,
 
@@ -1919,14 +2384,14 @@ function Dotils.Find.NYI.Functions {
         [switch]$FindNYIExceptions = 'nyi'
     )
     $regexMap = @{
-        'nyi' = '\bnyi\b'
-        'todo' = '\btodo\b'
-        'future' = '\bfuture\b'
-        'next' = '\bnext\b'
+        'nyi'      = '\bnyi\b'
+        'todo'     = '\btodo\b'
+        'future'   = '\bfuture\b'
+        'next'     = '\bnext\b'
         'refactor' = '\brefactor\b'
-        'collect' = '\bcollect\b'
-        'first' = '\bfirst\b'
-        'wip' = '\bwip\b'
+        'collect'  = '\bcollect\b'
+        'first'    = '\bfirst\b'
+        'wip'      = '\bwip\b'
         'grepException' = @(
             'NotImplementedException',
             'AmbiguousImplementationException',
@@ -1956,6 +2421,17 @@ function Dotils.Find.NYI.Functions {
 
 'do me first: Dotils.Error.Select' | write-host -back 'darkred' -fore 'white'
 'do me second: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
+
+function Dotils.Describe.Type.Mermaid {
+    <#
+    #>
+    throw 'NYI: emit type data to mermaid using ezout/posh'
+}
+function Dotils.Describe.Error.Mermaid {
+    <#
+    #>
+    throw 'NYI: emit type error record info to mermaid using ezout/posh'
+}
 
 function Dotils.Describe.Error {
     <#
@@ -1991,9 +2467,10 @@ function Dotils.Describe.Error {
         # invert logic
         # [Alias('Not')]
         # [switch]$IsNotADirectory
+        # [Parameter()][switch]$
     )
     begin {
-        write-warning 'finish: Describe.Error'
+        write-warning 'finish: Describe.Error' # wip: here 2023-08-10
     }
     process {
         if($null -eq $InputObject) { return }
@@ -2582,6 +3059,29 @@ function Dotils.To.Resolved.CommandName {
         }
     }
 }
+class RegexHistoryItem {
+    [regex]$Regex
+    [object[]]$Matches
+}
+class Dotils_RegexHistory {
+    [System.Collections.Generic.List[object]]$Records = @()
+
+    static [object[]] AddFromGlobalMatches (){
+        return @()
+    }
+    [string] ToString() {
+        return $this.Records.Count
+            | Join-String -f "Records: {0}"
+    }
+}
+
+"finish 'Dotils_RegexHistory'"
+| write-host -bg 'gray30' -fg 'gray80'
+
+
+$script:__dotilsInnerRegexHistory ??= @()
+function Dotils.Regex.History.Add {
+}
 function Dotils.String.Transform.AlignRight {
     # replace all \r\n sequences with \n
     [Alias('String.Transform.AlignRight')]
@@ -2614,7 +3114,7 @@ function Dotils.String.Transform.AlignRight {
                 | Write.Info
             }
 
-            $width = (Console.GetColumnCount) ?? 120
+            $width = (Console.Width) ?? 120
             $render = $withoutPadding.ToString().PadLeft( $width, ' ')
             if ($ShowDebugOutput) {
                 label 'what' 'new pad'
@@ -7087,6 +7587,13 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-10
+        'Dotils.Regex.Match' # 'Dotils.Regex.Match = { '.Match' }
+        'Dotils.Console.Encoding' # 'Dotils.Console.GetEncoding' = { 'Console.Encoding' }
+        'Dotils.Console.SetEncoding' # 'Dotils.Console.SetEncoding' = { 'Console.SetEncoding' }
+        'Console.GetWindowWidth' # 'Console.GetWindowWidth'  = { 'Console.Width' }
+        'Dotils.Help.FromType' # 'Dotils.Help.FromType' = { '.Help.FromType' }
+        'Dotils.Regex.Match.Word' # Dotils.Regex.Match.Word' # = { '.Match.Word' }
         # 2023-08-09
         'Dotils.Goto.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind', '.Goto.Kind' }
         'Dotils.Has.Property' # 'Dotils.Has.Property' = { '.Has.Prop' }
@@ -7095,7 +7602,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Select.Variable'
         # 2023-08-08
         'Dotils.Bookmark.EverythingSearch'
-        'Dotils.To.PSCustomObject' # 'Dotils.To.PSCustomObject' = { '.To.Obj' }
+        'Dotils.To.PSCustomObject' # 'Dotils.To.PSCustomObject' = { '.To.Obj', '.as.Obj' }
 
         # 2023-08-07
         'Dotils.Join.Csv' # 'Dotils.Join.Csv' = { '.Join.Csv', 'Join.Csv', 'Csv' }
@@ -7137,8 +7644,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Is.DirectPath' # Dotils.Is.DirectPath = { '.Is.DirectPath' }
         'Dotils.to.EnvVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
         # 2023-08-03
-        'Dotils.Format.T.Hashtable' # 'Dotils.To.Hashtable' = { '.to.Dict' }
-        'Dotils.To.Hashtable' # 'Dotils.To.Hashtable' = { '.to.Dict' }
+        'Dotils.To.Hashtable' # 'Dotils.To.Hashtable' = { '.to.Dict', '.as.Dict' }
         # 2023-08-02
         'Dotils.Write-TypeOf' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
 
@@ -7217,7 +7723,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Measure-CommandDuration'
         'Dotils.JoinString.As' # 'Join.As'
         ## some string stuff
-        'Console.GetColumnCount'  # none
+
         'Dotils.Write.Info' # 'Write.Info'
         'Dotils.Write.Info.Fence' # 'Write.Info.Fence'
         'Dotils.String.Normalize.LineEndings' # 'String.Normalize.LineEndings'
@@ -7239,12 +7745,24 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+
+        # 2023-08-10
+        'Console.Encoding' # 'Dotils.Console.GetEncoding' = { 'Console.Encoding' }
+        'Console.SetEncoding' # 'Dotils.Console.SetEncoding' = { 'Console.SetEncoding' }
+
+        '.Help.FromType' # 'Dotils.Help.FromType' = { '.Help.FromType' }
+        'Console.Width' # 'Console.GetWindowWidth'  = { 'Console.Width', 'Console.WindowWidth' }
+        'Console.WindowWidth' # 'Console.GetWindowWidth'  = { 'Console.Width', 'Console.WindowWidth' }
+
+
+        '.Match.Word' # Dotils.Regex.Match.Word' # = { '.Match.Word' }
         # 2023-08-08
         '.Has.Prop' # 'Dotils.Has.Property' = { '.Has.Prop' }
         '.Has.Prop.Regex' # 'Dotils.Has.Property.Regex' = { '.Has.Prop.Regex' }
         '.Goto.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind', '.Goto.Kind' }
         '.Go.Kind' # 'Dotils.Goto.Kind' = { '.Go.Kind', '.Goto.Kind' }
-        '.To.Obj' # 'Dotils.To.PSCustomObject' = { '.To.Obj' }
+        '.To.Obj' # 'Dotils.To.PSCustomObject' = { '.To.Obj', '.as.Obj }
+        '.as.Obj' # 'Dotils.To.PSCustomObject' = { '.To.Obj', '.as.Obj }
 
         # 2023-08-07
 
@@ -7257,6 +7775,7 @@ $exportModuleMemberSplat = @{
         '.Match.Start' # Dotils.Regex.Match.Start = { '.Match.Start', '.Match.Prefix' }
         '.Match.Prefix' # Dotils.Regex.Match.Start = { '.Match.Start', '.Match.Prefix' }
         '.Match.End' # Dotils.Regex.Match.End = { '.Match.End', '.Match.Suffix' }
+        '.Match' # 'Dotils.Regex.Match = { '.Match' }
         '.Match.Suffix' # Dotils.Regex.Match.End = { '.Match.End', '.Match.Suffix' }
         'ec' # 'Dotils.Err.Clear' = { 'ec' }
         '.Text.Pad.Segment' # 'Dotils.Text.Pad.Segment' =  { '.Text.Pad.Segment', '.Text.Segment' }'
@@ -7280,7 +7799,8 @@ $exportModuleMemberSplat = @{
         '.Is.DirectPath' # 'Dotils.Is.DirectPath' = { '.Is.DirectPath' }
         '.to.envVarPath' # 'Dotils.to.EnvVarPath' = { '.to.envVarPath' }
         # 2023-08-03
-        '.to.Dict' # 'Dotils.To.Hashtable' = { '.to.Dict' }
+        '.to.Dict' # 'Dotils.To.Hashtable' = { '.to.Dict', '.as.Dict' }
+        '.as.Dict' # 'Dotils.To.Hashtable' = { '.to.Dict', '.as.Dict' }
         # 2023-08-02
         'Dotils.Write-TypeOf' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
         'WriteKindOf' # 'Dotils.Write-TypeOf' = { 'WriteKindOf',  'OutKind', 'LabelKind'  }
@@ -7357,7 +7877,7 @@ $exportModuleMemberSplat = @{
         'dotils.DeltaOfSB'     # 'Dotils.Measure-CommandDuration'
         'MonkeyBusiness.Vaidate.ExportedCommands' # 'Dotils.Testing.Validate.ExportedCmds'
         ## some string stuff
-        # 'Console.GetColumnCount'  #
+        # 'Console.GetWindowWidth'  #
         'Write.Info' # 'Dotils.Write.Info'
         'Write.Info.Fence' # 'Dotils.Write.Info.Fence'
         'String.Normalize.LineEndings' # 'Dotils.String.Normalize.LineEndings'
