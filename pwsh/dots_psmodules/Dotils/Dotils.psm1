@@ -36,7 +36,6 @@ function Dotils.Console.GetEncoding {
     )
     if($All) {
         [Text.Encoding]::GetEncodings()
-        [Text.Encoding]::GetEncodings()
             | sort-Object DisplayName -Descending
         return
     }
@@ -46,6 +45,84 @@ function Dotils.Console.GetEncoding {
         Console_OutputEncoding  = [Console]::OutputEncoding # -isa [Encoding]
         Console_InputEncoding   = [Console]::InputEncoding  # -isa [Encoding]
 
+    }
+}
+
+function Dotils.To.Encoding {
+    <#
+    .SYNOPSIS
+    .NOTES
+    see also:
+        [Int32]
+        [String]
+        [Text.DecoderFallback]
+        [Text.EncoderFallback]
+    #>
+    [Alias('.to.Encoding', '.as.Encoding')]
+    [CmdletBinding(DefaultParameterSetName='FromName')]
+    [OutputType('System.Text.EncodingInfo[]')]
+    param(
+        [ArgumentCompletions(
+            'utf-8', 'Unicode', 'utf-16le', 'Latin1', 'ASCII', 'BigEndianUnicode', 'UTF32'
+        )]
+        [Parameter(
+            Mandatory,
+            ValueFromPipeline,
+            Position=0,
+            ParameterSetName='FromName')]
+        [string]$Name,
+
+        [Parameter(
+            Mandatory,
+            Position=0,
+            ParameterSetName='FromCodepage')]
+        [int]$Codepage,
+
+        [Parameter(
+            Mandatory,
+            ParameterSetName='ListAll')]
+        [Alias('List')][switch]$All,
+
+        [Parameter()]
+        [Text.EncoderFallback]$EncoderFallback,
+
+        [Parameter()]
+        [Text.DecoderFallback]$DecoderFallback
+    )
+    process {
+        $definedFallbacks = $PSBoundParameters.ContainsKey('EncoderFallback') -and $PSBoundParameters.ContainsKey('DecoderFallback')
+        if($All) {
+            return [Text.Encoding]::GetEncodings()
+                | sort-Object DisplayName -Descending
+        }
+        switch($PSCmdlet.ParameterSetName){
+            'FromName' {
+                $encoding? = try {
+                    [Text.Encoding]::GetEncoding( $Name ) } catch { write-debug $_ }
+            }
+            'FromCodepage' {
+                $encoding? = try {
+                    [Text.Encoding]::GetEncoding( $Codepage ) } catch { write-debug $_ }
+            }
+            default {
+                $nameOrPage = $Codepage ?? $Name
+                if( [string]::IsNullOrWhiteSpace($nameOrPage) ) {
+                    throw 'Name or Codepage not defined!'
+                }
+                if( -not $definedFallbacks) {
+                    $encoding? = try {
+                        [Text.Encoding]::GetEncoding( $Codepage )
+                    } catch { write-debug $_ }
+                }
+                $encoding? = try {
+                    [Text.Encoding]::GetEncoding( $Codepage )
+                } catch { write-debug $_ }
+            }
+        }
+        if(-not $encoding?) {
+            write-error "EncodingNotFound: '$Name'"
+        }
+        $encoding?
     }
 }
 function Dotils.Console.SetEncoding {
@@ -7588,6 +7665,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-10
+        'Dotils.To.Encoding' # 'Dotils.To.Encoding' = { '.to.Encoding', '.as.Encoding' }
         'Dotils.Regex.Match' # 'Dotils.Regex.Match = { '.Match' }
         'Dotils.Console.Encoding' # 'Dotils.Console.GetEncoding' = { 'Console.Encoding' }
         'Dotils.Console.SetEncoding' # 'Dotils.Console.SetEncoding' = { 'Console.SetEncoding' }
@@ -7747,6 +7825,8 @@ $exportModuleMemberSplat = @{
     Alias    = @(
 
         # 2023-08-10
+        '.to.Encoding' # 'Dotils.To.Encoding' = { '.to.Encoding', '.as.Encoding' }
+        '.as.Encoding' # 'Dotils.To.Encoding' = { '.to.Encoding', '.as.Encoding' }
         'Console.Encoding' # 'Dotils.Console.GetEncoding' = { 'Console.Encoding' }
         'Console.SetEncoding' # 'Dotils.Console.SetEncoding' = { 'Console.SetEncoding' }
 
