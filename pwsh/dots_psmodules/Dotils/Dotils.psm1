@@ -2081,44 +2081,61 @@ function Dotils.Format.FullName {
         $render
     }
     end {
-
-
-        # write-warning 'early exit, going to totally rewrite it'
-        # return
-        # $query =
-        #     $items | %{
-        #         $original = $_
-        #         $FullName? = $original.FullName
-        #         if([string]::IsNullOrWhiteSpace( $FullName? )) {
-        #             $fullname? = $original
-        #         }
-        #         if($AsShortType) {
-        #             $tinfo = if($original? -is 'type'){ $original? } else { ($original?).GetType() }
-        #             $tinfo | Format-ShortTypeName
-        #         } else {
-        #             $FullName?
-        #         }
-        #     }
-
-        # # $query = $Items
-
-        # if($AsClipboard) {
-        #     $query | Set-Clipboard -PassThru
-        #     return
-        # }
-        # $query
     }
 
 }
+# class NinColor {
+#     static [NinColor] ConvertFrom_PStyle ( $FromObject ) {
+#         # $PSStyle classes
 
-function Dotils.Ansi.Fg {
+#     }
+#     [string] AsAnsi () {
+
+#     }
+# }
+function Dotils.Ansi.NewColor {
+
+
+
+        #>
+    $PSStyle.Foreground.FromRgb('#348856')
+    throw 'nyi, see also: Dotils.Format.Write-DimText, Dotils.Ansi.Write'
+}
+
+function Dotils.Ansi.Write {
     <#
     .synopsis
         color sugar
     .notes
-        see also:
+        see more:
+        @( find-type -Namespace 'PoshCode.Pansies' | fullname
+            find-type -Namespace 'PoshCode.Pansies' *color* | fullname ) | Sort-Object -Unique
+
+            [Pansies.CmyColor]
+            [Pansies.CmykColor]
+            [Pansies.ColorMode]
+            [Pansies.Entities]
+            [Pansies.Gradient]
+            [Pansies.Harmony]
+            [Pansies.HsbColor]
+            [Pansies.HslColor]
+            [Pansies.HsvColor]
+            [Pansies.HunterLabColor]
+            [Pansies.LabColor]
+            [Pansies.LchColor]
+            [Pansies.LuvColor]
+            [Pansies.NativeMethods]
+            [Pansies.NativeMethods+ConsoleOutputModes]
+            [Pansies.RgbColor]
+            [Pansies.Text]
+            [Pansies.XyzColor]
+            [Pansies.YxyColor]
+
+        see more:
+            RgbColor : Rgb, IColorSpace, IRgb, IEquatable<RgbColor>
 
         PS> find-type -FullName '*PSStyle*' | Format-ShortTypeName
+        PS> find-type -FullName '*PSStyle*' | FullName
 
         PSStyle.ForegroundColor
         [PSStyle]
@@ -2128,7 +2145,23 @@ function Dotils.Ansi.Fg {
         [PSStyle+FormattingData]
         [PSStyle+FileInfoFormatting]
         [PSStyle+FileInfoFormatting+FileExtensionDictionary]
+
+        # function Dotils.Ansi.Write {
+    #     combination of -Fg and -bg
     #>
+    [Alias('.Ansi.Fg', '.Ansi.Bg')]
+    [CmdletBinding()]
+    param(
+
+    )
+    # based on alias, automatically knows whether to use fg or bg
+
+    $PSCmdlet.MyInvocation.BoundParameters
+        | ConvertTo-Json -Depth 0 -Compress
+        | Join-String -op 'Func: '
+        | write-verbose -verbose
+
+    throw 'nyi, see also: Dotils.Format.Write-DimText, Dotils.Ansi.Write'
 
 }
 
@@ -7844,6 +7877,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-10
+        'Dotils.Ansi.Write' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
         'Dotils.Format.FullName' # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
         'Dotils.To.Encoding' # 'Dotils.To.Encoding' = { '.to.Encoding', '.as.Encoding' }
         'Dotils.Regex.Match' # 'Dotils.Regex.Match = { '.Match' }
@@ -8005,6 +8039,12 @@ $exportModuleMemberSplat = @{
     Alias    = @(
 
         # 2023-08-10
+
+        '.Ansi.Fg' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
+        '.Ansi.Bg' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
+        '.Ansi.Write' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
+
+
         'FullName' # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
         '.Format.FullName', # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
         '.fmt.Name' # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
