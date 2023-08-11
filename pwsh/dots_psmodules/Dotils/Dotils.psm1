@@ -1795,8 +1795,18 @@ function Dotils.Regex.Match.End {
         could consolidate into one command as aliases
         todo: future: nyi: accept property name of object without drilling manually
             - [ ]
+    ux:
+        - auto attempts property '.name' even if none are specified
     .example
-        gci . | .Match.Start -Pattern 'r' -PropertyName name
+        gci . | .Match.End -Pattern 'r' -PropertyName name
+        gci . | .Match.End -Pattern 'r'
+
+    .example
+        .to.Encoding -List
+            | .Match.End ibm -PropertyName Name
+
+        .to.Encoding -List
+            | .Match.End ibm
 
     .LINK
         Dotils.Regex.Match.Start
@@ -1831,6 +1841,7 @@ function Dotils.Regex.Match.End {
         [switch]$AlwaysTryProp = $true
     )
     process {
+        # refactor: shared: [9e4642a]: resolveRegexOrLiteral(..).with_escapeLiterals()
         switch($PSCmdlet.ParameterSetName){
             'AsLiteral' {
                 $buildRegex = [Regex]::Escape( $Literal )
@@ -1839,12 +1850,13 @@ function Dotils.Regex.Match.End {
                 $buildRegex = $Pattern
             }
         }
+        # refactor: shared: [9321j523: build_regex(..).with_wordBoundaries().with_escapedLiterals()
+        $buildRegex = Join-String -f "({0})$" -inp $buildRegex
+        # refactor: shared: [0380cfb0]: resolveProperty( $InpObj ).with_default('Name').else_throw()
         if( $AlwaysTryProp -and (-not $PSBoundParameters.ContainsKey('PropertyName'))) {
             $PropertyName = 'Name'
         }
-        $buildRegex = Join-String -f "({0})$" -inp $buildRegex
         if($PropertyName) {
-            # if( $InputObject.PSObject.Properties.Names -inotcontains $PropertyName ) {
             if( .Has.Prop -Inp $InputObject $PropertyName -AsTest | .is.Not ) {
                 "object has no property named $PropertyName'"  | write-error
             }
@@ -1927,18 +1939,14 @@ function Dotils.Regex.Match.Start {
 
         # strings, or objects to filter on
         [Parameter(Mandatory, ValueFromPipeline)]
-        [object]$InputObject
+        [object]$InputObject,
+
+
+        # when no property is specified, usually nicer to try the property name than tostring
+        [switch]$AlwaysTryProp = $true
     )
     process {
-        # if( $PSBoundParameters.ContainsKey('Literal') -and $PSBoundParameters.ContainsKey('Regex') ) {
-        #     throw  'InvalidArgumentsException: Cannot use -Literal and -Regex together'
-        # }
-        # $Regex = $PSBoundParameters.ContainsKey('Literal') ?
-        #     $Literal : $Pattern
-
-        # wait-debugger
-        # $Pattern =  $LiteralRegex ? [regex]::Escape( $Pattern ) : $Pattern
-        # $buildRegex = Join-String -op '^' -inp $Pattern
+        # refactor: shared: [9e4642a]: resolveRegexOrLiteral(..).with_escapeLiterals()
         switch($PSCmdlet.ParameterSetName){
             'AsLiteral' {
                 $buildRegex = [Regex]::Escape( $Literal )
@@ -1947,12 +1955,22 @@ function Dotils.Regex.Match.Start {
                 $buildRegex = $Pattern
             }
         }
+        # refactor: shared: [9321j523: build_regex(..).with_wordBoundaries().with_escapedLiterals()
         $buildRegex = Join-String -f "^({0})" -inp $buildRegex
+
+        # refactor: shared: [0380cfb0]: resolveProperty( $InpObj ).with_default('Name').else_throw()
+        if( $AlwaysTryProp -and (-not $PSBoundParameters.ContainsKey('PropertyName'))) {
+            $PropertyName = 'Name'
+        }
         if($PropertyName) {
+            if( .Has.Prop -Inp $InputObject $PropertyName -AsTest | .is.Not ) {
+                "object has no property named $PropertyName'"  | write-error
+            }
             $Target = $Inputobject.$PropertyName
         } else {
             $Target = $InputObject
         }
+
         # if($null -eq $Target) { return }
         if( [string]::IsNullOrEmpty( $Target ) ) { return }
 
@@ -2031,15 +2049,7 @@ function Dotils.Regex.Match.Word {
         [object]$InputObject
     )
     process {
-        # if( $PSBoundParameters.ContainsKey('Literal') -and $PSBoundParameters.ContainsKey('Regex') ) {
-        #     throw  'InvalidArgumentsException: Cannot use -Literal and -Regex together'
-        # }
-        # $Regex = $PSBoundParameters.ContainsKey('Literal') ?
-        #     $Literal : $Pattern
-
-        # wait-debugger
-        # $Pattern =  $LiteralRegex ? [regex]::Escape( $Pattern ) : $Pattern
-        # $buildRegex = Join-String -op '^' -inp $Pattern
+        # refactor: shared: [9e4642a]: resolveRegexOrLiteral(..).with_escapeLiterals()
         switch($PSCmdlet.ParameterSetName){
             'AsLiteral' {
                 $buildRegex = [Regex]::Escape( $Literal )
@@ -2048,12 +2058,22 @@ function Dotils.Regex.Match.Word {
                 $buildRegex = $Pattern
             }
         }
+        # refactor: shared: [9321j523: build_regex(..).with_wordBoundaries().with_escapedLiterals()
         $buildRegex = Join-String -f "\b({0})\b" -inp $buildRegex
+
+        # refactor: shared: [0380cfb0]: resolveProperty( $InpObj ).with_default('Name').else_throw()
+        if( $AlwaysTryProp -and (-not $PSBoundParameters.ContainsKey('PropertyName'))) {
+            $PropertyName = 'Name'
+        }
         if($PropertyName) {
+            if( .Has.Prop -Inp $InputObject $PropertyName -AsTest | .is.Not ) {
+                "object has no property named $PropertyName'"  | write-error
+            }
             $Target = $Inputobject.$PropertyName
         } else {
             $Target = $InputObject
         }
+
         # if($null -eq $Target) { return }
         if( [string]::IsNullOrEmpty( $Target ) ) { return }
 
