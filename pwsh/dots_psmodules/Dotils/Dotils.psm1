@@ -51,6 +51,14 @@ function Dotils.Console.GetEncoding {
 function Dotils.To.Encoding {
     <#
     .SYNOPSIS
+        .To.Encoding -Name 'ASCII'
+    .EXAMPLE
+        .to.Encoding -List
+
+            # huge list of encodings
+    .EXAMPLE
+        'utf-8', 'ascii' | .to.Encoding | Join-String -sep ', ' { $_ | Format-ShortTypeName }
+        [Text.UTF8Encoding+UTF8EncodingSealed], [Text.ASCIIEncoding+ASCIIEncodingSealed]
     .NOTES
     see also:
         [Int32]
@@ -62,6 +70,7 @@ function Dotils.To.Encoding {
     [CmdletBinding(DefaultParameterSetName='FromName')]
     [OutputType('System.Text.EncodingInfo[]')]
     param(
+        # Name of encoding to create
         [ArgumentCompletions(
             'utf-8', 'Unicode', 'utf-16le', 'Latin1', 'ASCII', 'BigEndianUnicode', 'UTF32'
         )]
@@ -72,6 +81,7 @@ function Dotils.To.Encoding {
             ParameterSetName='FromName')]
         [string]$Name,
 
+        # codepage of encoding to create
         [Parameter(
             Mandatory,
             Position=0,
@@ -90,35 +100,34 @@ function Dotils.To.Encoding {
         [Text.DecoderFallback]$DecoderFallback
     )
     process {
-        $definedFallbacks = $PSBoundParameters.ContainsKey('EncoderFallback') -and $PSBoundParameters.ContainsKey('DecoderFallback')
+        # is null a valid ctore value?.
+        $hasDefinedFallbacks = $PSBoundParameters.ContainsKey('EncoderFallback') -and $PSBoundParameters.ContainsKey('DecoderFallback')
+
         if($All) {
             return [Text.Encoding]::GetEncodings()
                 | sort-Object DisplayName -Descending
         }
+        # $nameOrPage = $Codepage ?? $Name # warning this will fail because neither order coerce to null
         switch($PSCmdlet.ParameterSetName){
-            'FromName' {
-                $encoding? = try {
-                    [Text.Encoding]::GetEncoding( $Name ) } catch { write-debug $_ }
-            }
-            'FromCodepage' {
-                $encoding? = try {
-                    [Text.Encoding]::GetEncoding( $Codepage ) } catch { write-debug $_ }
-            }
-            default {
-                $nameOrPage = $Codepage ?? $Name
-                if( [string]::IsNullOrWhiteSpace($nameOrPage) ) {
-                    throw 'Name or Codepage not defined!'
-                }
-                if( -not $definedFallbacks) {
-                    $encoding? = try {
-                        [Text.Encoding]::GetEncoding( $Codepage )
-                    } catch { write-debug $_ }
-                }
-                $encoding? = try {
-                    [Text.Encoding]::GetEncoding( $Codepage )
-                } catch { write-debug $_ }
-            }
+            'FromName' { $nameOrPage = $Name }
+            'FromCodepage' { $nameOrPage = $Codepage }
+            default {}
         }
+        if( [string]::IsNullOrWhiteSpace($nameOrPage) ) {
+            throw 'Name or Codepage not defined!'
+        }
+
+        if( -not $hasDefinedFallbacks) {
+            $encoding? = try {
+                [Text.Encoding]::GetEncoding( $nameOrPage ) } catch {
+                    write-debug $_ }
+        } else {
+            $encoding? = try {
+                [Text.Encoding]::GetEncoding( $nameOrPage, $EncoderFallback, $DecoderFallback )
+            } catch {
+                write-debug $_ }
+        }
+
         if(-not $encoding?) {
             write-error "EncodingNotFound: '$Name'"
         }
@@ -1815,23 +1824,35 @@ function Dotils.Regex.Match.End {
 
         # strings, or objects to filter on
         [Parameter(Mandatory, ValueFromPipeline)]
-        [object]$InputObject
+        [object]$InputObject,
+
+
+        # when no property is specified, usually nicer to try the property name than tostring
+        [switch]$AlwaysTryProp = $true
     )
     process {
         switch($PSCmdlet.ParameterSetName){
-            'AsLiteral' {u
+            'AsLiteral' {
                 $buildRegex = [Regex]::Escape( $Literal )
             }
             'AsRegex' {
                 $buildRegex = $Pattern
             }
         }
+        if( $AlwaysTryProp -and (-not $PSBoundParameters.ContainsKey('PropertyName'))) {
+            $PropertyName = 'Name'
+        }
         $buildRegex = Join-String -f "({0})$" -inp $buildRegex
         if($PropertyName) {
+            # if( $InputObject.PSObject.Properties.Names -inotcontains $PropertyName ) {
+            if( .Has.Prop -Inp $InputObject $PropertyName -AsTest | .is.Not ) {
+                "object has no property named $PropertyName'"  | write-error
+            }
             $Target = $Inputobject.$PropertyName
         } else {
             $Target = $InputObject
         }
+
         # if($null -eq $Target) { return }
         if( [string]::IsNullOrEmpty( $Target ) ) { return }
 
