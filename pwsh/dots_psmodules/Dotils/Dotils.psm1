@@ -6,6 +6,114 @@ $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $P
     Set-Alias 'Yaml' -Value 'powershell-yaml\ConvertTo-Yaml'
     Set-Alias 'Yaml.From' -Value 'powershell-yaml\ConvertFrom-Yaml'
 )
+
+
+function Dotils.Resolve.TypeInfo.WithDefault {
+    <#
+    .SYNOPSIS
+        try to resolve [type] info, else, always return the original string as the fallback value
+    .notes
+        resolve implies it will always return the original, not null
+    #>
+    [Alias('.Resolve.TypeInfo')]
+    [OutputType('type[]', 'string[]')]
+    param(
+        [Alias('InputObject')][string]$TypeName
+    )
+    process {
+        $type? = $TypeName -as 'type'
+        if( -not $type? ) {
+            return $TypeName
+        }
+        $Type?
+    }
+}
+function Dotils.To.Type.FromPSTypenames {
+    <#
+    .SYNOPSIS
+        sugar to enumerate
+    description
+    it started as
+        gci . | s -First 3 | %{ $_.pstypenames | %{ $_ -as 'type' } }
+    #>
+    [Alias(
+        '.to.Type.FromPStypes', '.to.PSTypes' , '.to.PStypes'
+    )]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline, Position = 0)]
+        [object[]]$InputObject
+    )
+    $InputObject
+        | %{ $_.PSTypeNames | %{ $_ -as 'type' } }
+        | Sort-Object -Unique
+
+}
+
+function Dotils.Help.FromType {
+    <#
+    .SYNOPSIS
+        try to find help on the type of the object
+    .notes
+
+        needs some cleanup when generics are involved.
+    see also:
+        Format-ShortTypeName
+    .link
+        Ninmonkey.Console\Format-ShortTypeName
+    #>
+    [Alias('Help.FromType')]
+    param(
+        # print url to console instead of opening the browser
+        [Parameter(Mandatory, ValueFromPipeline, Position = 0)]
+        [object[]]$InputObject,
+
+        [Alias('PStypes')][switch]$IncludePSTypenames,
+
+        [switch]$PassThru
+    )
+    begin {
+        # This is so can pipe any count of items from the user
+        # and we won't spam him without duplicate results.
+        # imagine opening 100 tabs in one go.
+        [Collections.Generic.List[Object]]$items = @()
+    }
+    process {
+        $items.AddRange(@( $InputObject ))
+    }
+    end {
+        # try to resolve the type of an object, whether it's an object
+        # a type info, or even the string of a type
+        $template_url = 'https://docs.microsoft.com/en-us/dotnet/api/{0}'
+
+        $types = @(
+            $items | % GetType
+            if($IncludePSTypenames) {
+
+            }
+        )
+
+
+        $types | %{
+            $cur = $InputObject
+            if( $cur -is 'type') {
+                $typeInfo = $cur
+            } elseif ( $cur -is 'string' -and  $cur -as 'type' ) {
+                $typeInfo = $cur -as 'type'
+            } else {
+                $typeInfo = $cur.GetType()
+            }
+
+            $render_url = $template_url -f @(
+                $typeInfo.FullName
+            )
+            if($PassThru) {
+                return $render_url
+            }
+            Start-Process -path $render_url
+        }
+    }
+}
 function Console.GetWindowWidth {
     <#
     .SYNOPSIS
@@ -48,6 +156,47 @@ function Dotils.Console.GetEncoding {
     }
 }
 
+# .GroupBy
+
+function Dotils.To.Duration {
+    <#
+    .SYNOPSIS
+
+    .EXAMPLE
+
+    .EXAMPLE
+
+    .NOTES
+    see also:
+        Ninmonkey.Console\New-RelativeDate
+        RelativeDt -> New-RelativeDate
+        RelativeTs -> ConvertTo-Timespan
+public TimeSpan(long ticks);
+public TimeSpan(int hours, int minutes, int seconds);
+public TimeSpan(int days, int hours, int minutes, int seconds);
+public TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds);
+public TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds, int microseconds);
+    #>
+    [Alias('.to.Duration', '.Duration', '.to.Timespan')]
+    [CmdletBinding()]
+    [OutputType('[TimeSpan]')]
+    param(
+        [Parameter()]$Days,
+
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsSingleString')]
+        [string]$QueryString
+
+    )
+    begin {
+        write-warning 'nyi; or requires confirmation; mark;'
+    }
+    process {
+        write-warning 'nyi; or requires confirmation; mark;'
+        # is null a valid ctore value?.
+
+
+    }
+}
 function Dotils.To.Encoding {
     <#
     .SYNOPSIS
@@ -229,6 +378,50 @@ and run the operation again."
 
         }
     }
+}
+function Dotils.Select.Some {
+    # [CmdletBinding()]
+    [Alias('.Some')]
+    param( [switch]$LastOne )
+    @( $Input ) | Select -first 6
+    throw 'nyi; or requires confirmation; mark;'
+}
+
+function Dotils.Select.One {
+    # [Alias('First')]
+    <#
+    .SYNOPSIS
+        sugar for: Select first 1
+    #>
+    [Alias(
+        'One',
+        '.Select.One'
+    )]
+    param(
+        [switch]$LastOne
+    )
+
+    if($LastOne) {
+        return @( $Input ) | Select -Last 1
+    }
+    # one of the rare cases where Input is useful without the dangers
+    @( $Input ) | Select-Object -First 1
+}
+
+write-warning 'see: Dotils.Describe'
+function Dotils.Describe {
+    [Alias(
+        # 'What', '.Desc',
+        '.Describe'
+    )]
+    param(
+
+    )
+    write-warning 'nyi; or requires confirmation; mark;'
+    $stuff = $Input
+
+    @( $Stuff ) | select -first 3 | % GetType | Format-ShortTypeName | Sort -Unique
+    # $trace.Events | % GetType | Group -NoElement
 }
 function Dotils.To.Hashtable {
     <#
@@ -1994,6 +2187,120 @@ function Dotils.Regex.Match.Start {
         }
     }
 }
+function Dotils.Regex.Split {
+    <#
+    .SYNOPSIS
+
+    .notes
+
+    .LINK
+        Dotils.Regex.Split
+    .LINK
+        Dotils.Regex.Match.Start
+    .LINK
+        Dotils.Regex.Match.End
+    #>
+    [OutputType('String[]')]
+    [CmdletBinding(
+        DefaultParameterSetName = 'AsRegex'
+    )]
+    [Alias(
+        '.Split')]
+    param(
+        # regex
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsRegex')]
+        [Alias('Regex', 'Re')]
+        [string]$Pattern,
+
+        [Parameter(Mandatory, Position=0, ParameterSetName='FromTemplate')]
+        [ValidateSet(
+            'LineEnding', 'NL', 'NLCR' )]
+        [Alias('As', 'From', 'Template')][string]$AsTemplate,
+
+
+        # literals escaped for a regex
+        [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
+        [string]$Literal,
+
+        # If not set, and type is not string,  tostring will end up controlling what is matched against
+        [Parameter(Position=1)]
+        [string]$PropertyName,
+
+        # strings, or objects to filter on
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+
+        # when no property is specified, usually nicer to try the property name than tostring
+        [switch]$AlwaysTryProp = $true,
+
+        # maybe dangerous, I am not sure it may not be deterministic using a simple (pattern)*
+        [switch]$Greedy,
+
+        # Extra split arg limits max results
+        [Alias('Limit','Max')][int]$MaxCount
+    )
+    process {
+        # refactor: shared: [9e4642a]: resolveRegexOrLiteral(..).with_escapeLiterals()
+        switch($PSCmdlet.ParameterSetName){
+            'AsLiteral' {
+                $buildRegex = [Regex]::Escape( $Literal )
+            }
+            'AsRegex' {
+                $buildRegex = $Pattern
+            }
+        }
+        # refactor: shared: [9321j523: build_regex(..).with_wordBoundaries().with_escapedLiterals()
+        $buildRegex = Join-String -f "({0})" -inp $buildRegex
+
+        # refactor: shared: [0380cfb0]: resolveProperty( $InpObj ).with_default('Name').else_throw()
+        if( $AlwaysTryProp -and (-not $PSBoundParameters.ContainsKey('PropertyName'))) {
+            $PropertyName = 'Name'
+        }
+        if($PropertyName) {
+            if( .Has.Prop -Inp $InputObject $PropertyName -AsTest | .is.Not ) {
+                "object has no property named $PropertyName'"  | write-error
+            }
+            $Target = $Inputobject.$PropertyName
+        } else {
+            $Target = $InputObject
+        }
+
+        switch($PSCmdlet.ParameterSetName) {
+            'FromTemplate' {
+                switch($AsTemplate){
+                    { 'LineEnding', 'NLCR' -contains $AsTemplate } { $buildRegex = '\r?\n' }
+                    'NL'         { $buildRegex = '\n' }
+                    'Csv'         { $buildRegex = ',\s*' }
+                    'NLCR'       { $buildRegex = '\r?\n' }
+                    { $true } {
+                    }
+                    default { "Unexpected Template: $( $AsTemplate )"}
+                }
+            }
+            'AsRegex' {  <# no-op #> }
+            default { "Unexpected ParameterSet: $( $PSCmdlet.ParameterSetName )"}
+        }
+
+        $buildRegex | Join-string -op "new '$BuildRegex' from tempate '$AsTemplate' " | write-verbose
+        if($Greedy) {
+            # $buildRegex = Join-String -f "({0})*" -inp $buildRegex
+            $buildRegex = Join-String -f "({0})*" -inp $buildRegex # Maybe redundant?
+            $buildRegex | Join-string -op "new greedy regex:, maybe redundant parens " | write-verbose
+        }
+        # if($null -eq $Target) { return }
+        if( [string]::IsNullOrEmpty( $Target ) ) { return }
+
+        if($MaxCount -gt 0){
+            $splitArgs = @($buildRegex, $MaxCount)
+        } else {
+            $splitArgs = @($buildRegex)
+        }
+
+        [string[]]$result = $target -split $splitArgs
+        return $result
+    }
+}
 
 
 
@@ -2710,7 +3017,10 @@ function Dotils.Find.NYI.Functions {
 
 'do me first: Dotils.Error.Select' | write-host -back 'darkred' -fore 'white'
 'do me second: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
-
+function Dotils.Describe.ModuleInfo {
+    'show [sma.PSModuleInfo]'
+    throw 'wip next'
+}
 function Dotils.Describe.Type.Mermaid {
     <#
     #>
@@ -6492,6 +6802,7 @@ function Dotils.Format.Color {
             PansiesResetAll = "${fg:clear}${bg:clear}"
             PSStyleReset = $PSStyle.Reset
         }
+        throw 'nyi; or requires confirmation; mark;'
     }
     process {
         if( [string]::IsNullOrWhiteSpace($InputText)) {
@@ -6562,7 +6873,7 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 
     } else {
         $tInfo = $t
     }
-
+    write-warning 'nyi; or requires confirmation; mark;'
     $info = [pscustomobject]@{
         PSTypeName = 'Dotils.Debug.GetTypeInfo'
 
@@ -6606,6 +6917,65 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 
     }
 
     return $info.$Style
+}
+
+
+function Dotils.Text.NormalizeLineEnding {
+    <#
+    .SYNOPSIS
+        Normalize line ending without splitting and joining
+    #>
+    [alias('.Text.NormalizeNL')]
+    param(
+        [string[]]$InputObject
+    )
+    process {
+        foreach($line in $InputObject) {
+            $line -replace '\r?\n', "`n"
+        }
+    }
+}
+
+function Dotils.VsCode.ConvertTo.Snipet {
+
+    [Alias('.VsCode.ConvertTo.Snipet')]
+    [CmdletBinding()]
+    param(
+        [AllowNull()]
+        [Alias('Lines', 'Text')]
+        [Parameter(
+            # Mandatory,
+            ValueFromPipeline, Position=0)]
+        [object[]]$InputObject
+    )
+    begin {
+        [List[Object]]$Lines = @()
+        write-warning 'nyi; or requires confirmation; mark;'
+    }
+    process {
+        $lines.AddRange(@( $InputObject ))
+    }
+    end {
+        if( -not $MyInvocation.ExpectingInput ) {
+            $Source = Get-Clipboard
+        } else {
+            $Source = $lines | Join-String -sep "`n"
+
+        }
+        $Text =
+            $Source | Join-String -sep "`n"
+        $text =
+            $text -replace '\$', '\\$'
+        $test =
+            $text -split '\r?\n'
+                | Join-string -f "`n`"{0}`","
+
+        $test | Join-String -f "[`n{0}],`n"
+            | Join-String -sep "`n"
+            | Set-Clipboard -Append
+
+    }
+
 }
 
 function Dotils.DB.toDataTable {
@@ -7477,7 +7847,7 @@ either [1] regular argumenttransformatation
     if($null -ne $InputObject) {
         throw 'Finish func, accept both types automagically.'
     }
-
+    write-warning 'nyi; or requires confirmation; mark;'
     $target = $CommandDefinition
     $aList =
         Get-Alias -Definition $CommandDefinition
@@ -7859,6 +8229,23 @@ function Dotils.PSDefaultParameters.ToggleAllVerbose {
         enables verbosity on all functions
     #>
     param( [string]$ModuleName, [switch]$EnableVerbose, [switch]$DisableAll )
+
+    <#
+    note: GCM requires a different kind of crawl that using get module, gcm does other work#>
+    if($false) { # define all props, and set ot false}
+        get-module jumpcloud -ListAvailable
+        | % ExportedCommands
+        | % GetEnumerator
+        | % Key | Sort -Unique
+        | % {
+            $Key = '{0}:Verbose' -f $_
+            # $PSDefaultParameterValues[ $Key ] = -not $global:BdgPerf.MinVerbosity
+            $PSDefaultParameterValues[ $Key ] = $false
+        }
+
+    }
+    # or use Gcm, which is a different list, slower IIRC
+
     Gcm -m $ModuleName
     | CountOf | %{
         $Key = $_.Name | Join-String -f "{0}:Verbose"
@@ -7876,6 +8263,18 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-11
+        'Dotils.Resolve.TypeInfo.WithDefault' # 'Dotils.Resolve.TypeInfo.WithDefault' = { '.Resolve.TypeInfo' }
+        'Dotils.To.Type.FromPSTypenames' # 'Dotils.To.Type.FromPSTypenames' = { '.To.Type.FromPStypes', '.to.PSTypes' }
+        'Dotils.Help.FromType' # 'Dotils.Help.FromType' = { 'Help.FromType', 'Help.From' }
+
+        'Dotils.To.Duration' # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
+        'Dotils.VsCode.ConvertTo.Snipet' # 'Dotils.VsCode.ConvertTo.Snipet' = { '.VsCode.ConvertTo.Snipet' }
+        'Dotils.Describe' # 'Dotils.Describe' = { '.Describe' }
+        'Dotils.Select.Some' # 'Dotils.Select.Some' = { '.Select.Some' }
+        'Dotils.Select.One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
+        'Dotils.Text.NormalizeLineEnding' # 'Dotils.Text.NormalizeLineEnding' = { '.Text.NormalizeNL' }
+
         # 2023-08-10
         'Dotils.Ansi.Write' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
         'Dotils.Format.FullName' # 'Dotils.Format.FullName' = { 'FullName', '.Format.FullName', '.fmt.Name' }
@@ -8039,6 +8438,23 @@ $exportModuleMemberSplat = @{
     Alias    = @(
 
         # 2023-08-10
+        '.Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo.WithDefault' = { '.Resolve.TypeInfo' }
+        '.To.Type.FromPStypes' # 'Dotils.To.Type.FromPSTypenames' = { '.To.Type.FromPStypes', '.to.PSTypes' }
+        '.To.PSTypes' # 'Dotils.To.Type.FromPSTypenames' = { '.To.Type.FromPStypes', '.to.PSTypes' }
+        'Help.FromType' # 'Dotils.Help.FromType' = { 'Help.FromType', 'Help.From' }
+        'Help.From' # 'Dotils.Help.FromType' = { 'Help.FromType', 'Help.From' }
+        'Dotils.Text.NormalizeLineEnding' # 'Dotils.Text.NormalizeLineEnding' = { '.Text.NormalizeNL' }
+        '.to.Duration'  # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
+        '.Duration'  # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
+        '.to.Timespan'  # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
+
+        '.VsCode.ConvertTo.Snipet' # 'Dotils.VsCode.ConvertTo.Snipet' = { '.VsCode.ConvertTo.Snipet' }
+        '.Describe' # 'Dotils.Describe' = { '.Describe' }
+        '.Select.One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
+        'One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
+
+
+        '.Select.Some' # 'Dotils.Select.Some' = { '.Select.Some' }
 
         '.Ansi.Fg' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
         '.Ansi.Bg' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
