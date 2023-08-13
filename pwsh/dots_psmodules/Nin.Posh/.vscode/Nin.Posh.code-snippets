@@ -1,0 +1,48 @@
+{
+    "simpleBdg": {
+        "body": [
+            "snippet"
+        ],
+        "description": "desc 🧪",
+        "prefix": [
+            "NinPosh a",
+        ],
+        "scope": "powershell,json,jsonc"
+    }
+}
+// {
+//     "snippetName": {
+//         "scope": "",
+//         "prefix": [],
+//         "body": "snippet",
+//         "description": "description"
+//     },
+//     "bdg: Silence all": {
+//         // "prefix": "Perf min Verbosity",
+//         "prefix": [
+//             "Bdg Verbosity", "perf min"
+//         ],
+
+//         "scope": "powershell,json,jsonc",
+//         "description": "decrease verbosity when defined",
+//         "body": [
+//             "if( -not \\$global:BdgPerf.MinVerbosity ) {",
+//             "   ${TM_SELECTED_TEXT}",
+//             "}",
+//         ]
+//     },
+//     "bdg: min json": {
+//         // "prefix": "Perf min Verbosity",
+//         "prefix": [
+//             "Bdg json", "perf min json"
+//         ],
+
+//         "scope": "powershell,json,jsonc",
+//         "description": "decrease csv/json logging verbosity when defined",
+//         "body": [
+//             "if( -not \\$global:BdgPerf.MinJsonLogging ) {",
+//             "   ${TM_SELECTED_TEXT}",
+//             "}",
+//         ]
+//     },
+// }
