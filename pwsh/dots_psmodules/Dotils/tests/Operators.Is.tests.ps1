@@ -1,6 +1,25 @@
 BeforeAll {
     Import-Module -ea 'stop' 'Dotils' -force -passthru  | write-host
 }
+Describe 'Dotils.Test-CompareSingleResult' {
+    it '<Sample> expression <Kind> is  <Expected>' -TestCases @(
+        #   ExpectedType = 'bool'
+        # [ValidateSet('True', 'False', 'Null', 'EmptyString', $true, $False)]
+        @{
+            Sample = $true
+            ExpressionKind = $True
+            Expected = $true
+        }
+    ) {
+        $test =
+            $Sample | Dotils.Test-CompareSingleResult -ExpressionKind $Kind
+        $test | Should -BeExactly $Expected
+
+        $test | Should -BeOfType 'bool'
+        # $test | Should -BeExactly $Expected
+
+    }
+}
 Describe 'Dotils.Operator.TypeIs' {
     Context 'Should Not Filter, return bools for -AsTest' {
         it 'Comparing Objects <Type> is <ExpectedType>' -forEach @(

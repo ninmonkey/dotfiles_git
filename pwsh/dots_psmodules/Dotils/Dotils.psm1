@@ -25,9 +25,10 @@ function Dotils.Resolve.TypeInfo.WithDefault {
         if( -not $type? ) {
             return $TypeName
         }
-        $Type?
+        return $Type?
     }
 }
+# write-warning 'collect b dg .resolve.Timespan'
 function Dotils.To.Type.FromPSTypenames {
     <#
     .SYNOPSIS
@@ -422,6 +423,268 @@ function Dotils.Describe {
 
     @( $Stuff ) | select -first 3 | % GetType | Format-ShortTypeName | Sort -Unique
     # $trace.Events | % GetType | Group -NoElement
+}
+
+function Dotils.Test-CompareSingleResult {
+    <#
+    .SYNOPSIS
+        future: there might be cases where bool as string doesn't coerce right, maybe leave it as an object?
+
+    #>
+            [OutputType('bool')]
+            [CmdletBinding()]
+            param(
+                [Parameter(Mandatory, Position=0)]
+                [object]$InputObject,
+
+                [Parameter(Mandatory, Position=1)]
+                [ValidateSet('True', 'False', 'Null', 'EmptyString', $true, $False <# ,$Null#> )]
+                [Alias('Kind', 'ExpectedResult', 'ExpectedKind', 'ShouldBe', 'Is')]
+                $ExpressionKind
+                # [string]$ExpectedKind,
+
+            )
+            $compareResult =
+                switch($ExpectedKind){
+                    'EmptyString' {
+                        $InputObject -is 'string' -and
+                            [string]::Empty -eq $InputObject
+                        break
+                    }
+                    'EmptyList' {
+                        $InputObject -is [Collections.IEnumerable] -and
+                        $InputObject.Count -eq 0
+                        break
+                    }
+                    'Null' {
+                        $null -eq $InputObject
+                        break
+                    }
+                    'True' {
+                        $true -eq $InputObject
+                        break
+                    }
+                    'False' {
+                        $false -eq $InputObject
+                        break
+                    }
+                    default {
+                        throw "ShouldNeverReachException: Unhandled ExpectedKind: $ExpectedKind"}
+                }
+            return $compareResult
+        }
+
+write-warning 'next: do <Dotils.Test-AllResult>'
+function Dotils.Test-AllResult {
+<#
+    .SYNOPSIS
+    Evaluate the pipeline as a single true/false result
+    .NOTES
+        future: could condition on
+        - [ ] require at least 1 or more results
+        - [ ] require OneOrNone
+
+    #>
+    [CmdletBinding()]
+    [Alias(
+        '.test',
+        '.Assert',
+        'Assert',
+        'Test-Results'
+    )]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [ValidateSet('All', 'None', 'Any')]
+        [string]$AmountCondition,
+
+        [Parameter(Mandatory, Position=0)]
+        [ValidateSet('True', 'False', 'Null')]
+        [string]$Comparison,
+        # values from pipeline,
+        # also output object
+        # maybe conditionally based on the assert?
+        [switch]$PassThru = $false,
+
+
+        [Alias('QuitOnFirst')][switch]$ExitEarly = $false,
+
+        # exceptions verses soft null errors?
+        [switch]$UseStrictErrors,
+
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [Parameter( Mandatory, ValueFromPipeline )]
+        [object[]]$InputObject
+    )
+    begin {
+        $finalSuccess = $true
+        if($PSBoundParameters.ContainsKey('ExitEarly')){
+            throw 'wip next. exit early saving pipeline computations.'
+        }
+        if($PSBoundParameters.ContainsKey('UseStrictErrors')){
+            throw 'wip next. exit early saving pipeline computations.'
+        }
+
+
+    }
+    process {
+        write-error 'nyi, next'
+        throw 'first ensure <Dotils.Test-CompareSingleResult> is correct'
+        foreach($Obj in $InputObject){
+            switch($AmountCondition){
+                'All' {
+                    $curTest = Dotils.Test-CompareSingleResult -InputObject $Obj -ExpectedKind $Comparison
+                }
+                'None' {
+
+                }
+                'Any' {
+
+                }
+            }
+            $comparisonResult = $Obj -eq $Comparison
+        }
+#         $InputObject | %{
+# $AmountCondition
+# $Comparison
+#         }
+#         switch($InputObject)
+
+    }
+    end {
+
+    }
+}
+
+function Dotils.Operator.TypeIs {
+    <#
+    .SYNOPSIS
+        sugar for: $Input -is $Type
+    future:
+        also test whether type info is a subclass
+    .example
+        'a', 234, 3.4
+        | Dotils.Operator.TypeIs -Type 'int'
+        | Json -AsArray -Compress
+
+        # out: [234]
+    .example
+        'a', 234, 3.4
+            | Dotils.Operator.TypeIs -Type 'int' -AsTest
+
+        # out: [false,true,false]
+    #>
+    [Alias(
+        # 'Is',
+        '.Is.Type', 'Op.Is'
+    )]
+    param(
+        [Parameter( Mandatory, ValueFromPipeline )]
+        [object[]]$InputObject,
+
+        [Parameter(Mandatory)]
+        $Type,
+
+        # should the values be filtered, or return a bool?
+        # [switch]$AsFilter = $true,
+        [switch]$AsTest = $false
+    )
+    process {
+        foreach($curObj in $inputObject) {
+            [bool]$test = $curObj -is $Type
+            if($AsTest) { $test; continue; }
+            else { if($test) { $curObj }}
+        }
+    }
+}
+function Dotils.Describe.AnyType {
+    param()
+    process {
+        $Obj = $_
+        $ObjCount = $Obj.Count
+        $Meta = [ordered]@{
+            Description  =
+                 ''
+            PSTypeName =
+                 'Dotils.AnyType.Description'
+            RawObject =
+                 $Obj
+            Type =
+                 $Obj | Format-ShortTypeName
+            PSTypes =
+                $Obj.PSTypeNames
+                    | Sort-Object -Unique
+                    | Format-ShortTypeName
+                    | Join-String -Separator ', '
+
+            FirstElement =
+                 @( $Obj )[0] | Format-ShortTYpeName
+            Count =
+                 $ObjCount
+            Length =
+                 $Obj.Length
+            IsCommand =
+                $Obj -is 'Management.Automation.CommandInfo'
+
+            IsTrueNull =
+                 $null -eq $Obj
+            IsBlank = [string]::IsNullOrWhiteSpace( $Obj )
+            IsEmpty = [string]::IsNullOrEmpty( $Obj )
+            IsTypeInfo = $Obj -is 'type'
+            IsTrueString =
+                 $Obj -is 'string'
+        }
+        if($true){
+            $Meta += @{
+                IsEnumerable = $Obj -is [IEnumerable]
+            }
+            # OrderedDictionary
+        }
+        if($meta.IsTrueString) {
+            $meta.IsEmpty =
+                $Obj.Length = 0
+
+            $meta.IsWhitespaceOnly =
+                $Obj -match '^\s*$'
+
+            $meta.HasAnyNonWhitespace =
+                $Obj -match '\S+'
+            $meta.HasOnlyDigits =
+                $Obj -match '^\d+$'
+            $meta.HasOnlyNonDigits =
+                $Obj -match '^\D+$'
+
+            $meta.StrLen_Chars =
+                $Obj.length
+
+            $meta.StrLen_Runes =
+                ($Obj.EnumerateRunes().Value).count
+
+            $meta.ShowControlChars =
+                $Obj
+                | Dotils.ShortString.Basic -maxLength 80
+                | Dotils.ShortString | fcc
+        }
+        # then, add info depending on teh type
+
+            # IsWhitespaceOnly
+        $meta.IsContainer = $Meta.Count -gt 1
+        $Count = $Obj.Count
+
+        $meta.Description =
+            switch($Obj){
+                { $_ -is 'type' } { 'TypeInfo' }
+                { $_ -is 'hashtable' } { 'Hashtable'}
+                # { $_ }
+                default {
+                    'Other'
+                }
+            }
+        # $IsText =
+        # return [pscustomobject]$meta
+        return $meta
+    }
 }
 function Dotils.To.Hashtable {
     <#
@@ -1496,6 +1759,9 @@ function Dotils.Has.Property.Regex {
 
     }
 }
+
+
+
 function Dotils.Add.IndexProp {
     <#
     .SYNOPSIS
@@ -1891,7 +2157,14 @@ function Dotils.Iter.Enumerator {
         [object[]]$InputObject
     )
     process {
-        $_.GetEnumerator()
+        $Obj = $_
+        try {
+            $Obj.GetEnumerator()
+        } catch {
+            '.Iter.Enumerator: Object failed enumeration, emitting original object! '
+                | write-error -ea 'continue'
+            $Obj
+        }
     }
  }
 
@@ -1899,7 +2172,12 @@ function Dotils.Iter.Prop {
     <#
     .SYNOPSIS
         default return is: [PSMemberInfoCollection[PSPropertyInfo]]
+    .examples
+        get-module Dotils | .Iter.Prop | ?{ Test-Path $_.Value  } # some errors because of: param was null or empty
+
+
     .NOTES
+        - future: remember certain properties to ignore
         future: todo: ugit is throwing errors on enumeration
             for some commands, like piping to .Iter.Prop then Format-list
         it happens on
@@ -1910,6 +2188,8 @@ function Dotils.Iter.Prop {
             'ReferencedMemberName' = 'GitDirty', 'GitChanges', 'GitDiff', etc
                 properties that are from ugit, but the user still sees the errors:
                     'C:\Users\cppmo_000' is not a git repository
+
+
 
     #>
     [OutputType(
@@ -1923,8 +2203,20 @@ function Dotils.Iter.Prop {
         [Parameter(Mandatory, ValueFromPipeline)]
         [object]$InputObject,
 
-        # changes return type to be the property name, only
-        [switch]$NameOnly
+        # changes return type to be the property names only.
+        # It can be significantly faster, depending on the type
+        # combinations of gci with ugit 0.4, or active directory, etc
+        # fast. skips any work, like combining
+        [switch]$NameOnly,
+
+        # skip any properties that are blankscoerce
+        [switch]$DropBlankValues,
+
+        # skip any properties that are nulls
+        [switch]$DropNullValues,
+
+
+        [string]$IgnoreSet = 'ugit'
     )
     process {
         if($NameOnly) {
@@ -1932,7 +2224,55 @@ function Dotils.Iter.Prop {
                 | Sort-Object -Unique:$false
         }
         $InputObject.PSObject.Properties
+            | ?{
+                $toKeep = $true
+                if($DropBlankValues) {
+                    $toKeep = $toKeep -and $_.Value -ne ''
+                }
+            }
             | Sort-Object Name -Unique:$false
+    }
+}
+
+function Dotils.Iter.Keys {
+    <#
+    .SYNOPSIS
+        sugar to implicitly enumerate hashtables or enumerable objects
+    #>
+    [Alias(
+        '.Iter.Keys',
+        '.Keys',
+        '%Keys'
+    )]
+    param()
+    process {
+        $Obj = $_
+        if($obj -is 'hashtable' -or ($Obj | .Has.Property -Prop 'Keys' -asTest)) {
+            return $Obj.Keys
+        }
+        return $Obj.GetEnumerator()
+    }
+}
+function Dotils.Cliboard.FixText {
+    [CmdletBinding( SupportsShouldProcess,ConfirmImpact='low')]
+    param(
+        # [string]$TransformType = 'Trimp'
+        [switch]$Append = $false,
+        [switch]$PassThru = $True
+    )
+    process {
+        $origValue = Get-Clipboard -Raw
+        # replace with dotils funcs, quick hack
+        $accum = $accum -replace '\s+', ''
+
+        $origValue | fcc | Label 'was'
+        $accum | fcc | Label 'new'
+        write-warning 'nyi: error, throw this does not stop'
+
+
+        if ($PSCmdlet.ShouldProcess("Write", "Clippy")) {
+            $accum | Set-Clipboard -PassThru:$PassThru -Append:$Append
+        }
     }
 }
 
@@ -5980,21 +6320,16 @@ function Dotils.Select-NotBlankKeys {
     #>
     [Alias(
         'Dotils.DropBlankKeys',
-        'Dotils.Where-NotBlankKeys'
+        'Dotils.Where-NotBlankKeys',
+        '.Drop.BlankKeys'
     )]
     [CmdletBinding()]
     [OutputType('Hashtable')]
     param(
-        [Parameter(mandatory)]
+        [Parameter(mandatory, Position=0, ValueFromPipeline)]
         [hashtable]$InputHashtable,
 
         [switch]$NoMutate
-    )
-    throw 'untested from other module'
-    $strUserKeyId = '[User={2} <CoId={0}, EmpId={1}>]' -f @(
-        $finalObj.companyId
-        $finalObj.employeeIdentifier
-        $finalObj.userName
     )
     if ($NoMutate) {
         $targetHash = [hashtable]::new( $InputHashtable )
@@ -6003,19 +6338,9 @@ function Dotils.Select-NotBlankKeys {
         $targetHash = $InputHashtable
     }
 
-    $msg =
-        $targetHash.GetEnumerator()
-            | Where-Object { [string]::IsNullOrEmpty( $_.Value ) }
-            | ForEach-Object Name | Sort-Object -Unique
-            | Join-String -sep ', ' -op "dropped blank fields on ${strUserKeyId}: "
-
-    @{ Message = $msg }
-        | bdgLog -Category DataIntegrity -Message $msg -PassThru
-        | Write-Verbose
-
     $toDrop =
         $targetHash.GetEnumerator()
-            | Where-Object { [string]::IsNullOrEmpty( $_.Value ) }
+            | Where-Object { -not [string]::IsNullOrEmpty( $_.Value ) }
             | ForEach-Object Name
 
     foreach ($k in $toDrop) {
@@ -8259,10 +8584,17 @@ function Dotils.PSDefaultParameters.ToggleAllVerbose {
 }
 
 
+
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-13
+        'Dotils.Test-AllResult' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        'Dotils.Test-CompareSingleResult' # 'Dotils.Test-CompareSingleResult' = { }
+        'Dotils.Operator.TypeIs' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
+
         # 2023-08-11
         'Dotils.Resolve.TypeInfo.WithDefault' # 'Dotils.Resolve.TypeInfo.WithDefault' = { '.Resolve.TypeInfo' }
         'Dotils.To.Type.FromPSTypenames' # 'Dotils.To.Type.FromPSTypenames' = { '.To.Type.FromPStypes', '.to.PSTypes' }
@@ -8436,6 +8768,16 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+
+
+        '.test' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        '.Assert' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        'Assert' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        'Test-Results' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+
+        # 'Is' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
+        '.Is.Type' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
+        'Op.Is' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
 
         # 2023-08-10
         '.Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo.WithDefault' = { '.Resolve.TypeInfo' }
