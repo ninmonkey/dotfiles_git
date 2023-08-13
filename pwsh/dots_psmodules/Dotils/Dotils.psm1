@@ -444,6 +444,7 @@ function Dotils.Test-CompareSingleResult {
                 # [string]$ExpectedKind,
 
             )
+
             $compareResult =
                 switch($ExpectedKind){
                     'EmptyString' {
@@ -471,11 +472,14 @@ function Dotils.Test-CompareSingleResult {
                     default {
                         throw "ShouldNeverReachException: Unhandled ExpectedKind: $ExpectedKind"}
                 }
+            "Test-CompareSingleResult:`n  Compare: {0}, Was: {1},`n  For: {2}" -f @(
+                $ExpectedKind, $compareResult, $InputObject
+            ) | Write-debug
             return $compareResult
         }
 
-write-warning 'next: do <Dotils.Test-AllResult>'
-function Dotils.Test-AllResult {
+write-warning 'next: do <Dotils.Test-AllResults>'
+function Dotils.Test-AllResults {
 <#
     .SYNOPSIS
     Evaluate the pipeline as a single true/false result
@@ -483,6 +487,8 @@ function Dotils.Test-AllResult {
         future: could condition on
         - [ ] require at least 1 or more results
         - [ ] require OneOrNone
+    .EXAMPLE
+
 
     #>
     [CmdletBinding()]
@@ -497,9 +503,10 @@ function Dotils.Test-AllResult {
         [ValidateSet('All', 'None', 'Any')]
         [string]$AmountCondition,
 
+        [Alias('ResultKind', 'As', 'ExpectedKind')]
         [Parameter(Mandatory, Position=0)]
         [ValidateSet('True', 'False', 'Null')]
-        [string]$Comparison,
+        [string]$ExpectedResult,
         # values from pipeline,
         # also output object
         # maybe conditionally based on the assert?
@@ -529,25 +536,27 @@ function Dotils.Test-AllResult {
 
     }
     process {
-        write-error 'nyi, next'
+        write-error 'nyi, next. first ensure <Dotils.Test-CompareSingleResult> is correct' -ea 'continue'
         throw 'first ensure <Dotils.Test-CompareSingleResult> is correct'
         foreach($Obj in $InputObject){
-            switch($AmountCondition){
-                'All' {
-                    $curTest = Dotils.Test-CompareSingleResult -InputObject $Obj -ExpectedKind $Comparison
-                }
-                'None' {
+            $curTest = Dotils.Test-CompareSingleResult -InputObject $Obj -ExpectedResult $ExpectedResult
 
-                }
-                'Any' {
+            # switch($AmountCondition){
+            #     'All' {
+            #         $curTest = Dotils.Test-CompareSingleResult -InputObject $Obj -ExpectedResult $ExpectedResult
+            #     }
+            #     'None' {
 
-                }
-            }
-            $comparisonResult = $Obj -eq $Comparison
+            #     }
+            #     'Any' {
+
+            #     }
+            # }
+            # $comparisonResult = $Obj -eq $ExpectedResult
         }
 #         $InputObject | %{
 # $AmountCondition
-# $Comparison
+# $ExpectedResult
 #         }
 #         switch($InputObject)
 
@@ -8591,7 +8600,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-13
-        'Dotils.Test-AllResult' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        'Dotils.Test-AllResults' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
         'Dotils.Test-CompareSingleResult' # 'Dotils.Test-CompareSingleResult' = { }
         'Dotils.Operator.TypeIs' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
 
@@ -8770,10 +8779,10 @@ $exportModuleMemberSplat = @{
     Alias    = @(
 
 
-        '.test' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
-        '.Assert' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
-        'Assert' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
-        'Test-Results' # 'Dotils.Test-AllResult' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        '.test' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        '.Assert' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        'Assert' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
+        'Test-Results' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
 
         # 'Is' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
         '.Is.Type' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
