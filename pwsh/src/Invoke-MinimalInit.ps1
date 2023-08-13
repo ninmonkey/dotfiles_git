@@ -3,7 +3,9 @@ $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.PromptBasic = $PSCommandPath | Get-Item
 $global:__ninBag.Profile.PrevErrorCount = 0
 
+$PROFILE | Add-Member -NotePropertyName 'MiniPromptEntry' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
 
+Import-Module -Name 'Dotils'  #-ea 'ignore'
 function minimal.prompt.render.crumbs {
     <#
     .synopsis
@@ -56,7 +58,7 @@ function minimal.prompt.render.crumbs {
 
             $renderLocation = (Get-Location) -split '\\' | Join-String -sep ' ⊢ '
             if ($isSameDir) {
-                '🐧'
+                '🐒'  # '🐧'
             }
             else {
                 $renderLocation
@@ -75,12 +77,72 @@ function minimal.prompt.render.crumbs {
         ) -join ''
     }
 }
+
+$global:__minimalPromptConfig = @{
+    Enable = @{
+        RecentAsUL = $true
+        RecentRecurse_ByDate = $True
+        FiletypeDistribution = $true
+        FiletypeDistribution_B = $True
+        FiletypeDistribution_A = $false
+        QuickDisableAll = $true
+    }
+    Is = @{}
+    In = @{}
+}
+function minimal.Prompt.Render.RecentItems {
+    <#
+    .synopsis
+        render items with recency rather than depth as the primary
+    #>
+    $global:__minimalPromptConfig |  write-debug
+    if($global:__minimalPromptConfig.Enable.QuickDisableAll) {
+        return
+    }
+
+
+
+    # fd --changed-within 2hours -d 3 -tf
+
+
+    if($global:__minimalPromptConfig.Enable.RecentRecurse_ByDate) {
+        fd --changed-within 7hours -d 3 -tf --color always
+            | Join-String -sep ', ' -op ('recent: ' | New-Text -fg 'gray60' -bg '20' )
+            # | Join-String -sep ', ' -op ('recent: ' | Dotils.Write-DimText)
+    }
+    if($global:__minimalPromptConfig.Enable.FiletypeDistribution_B) {
+        # & {
+            $kinds = gci .  | group Extension -NoElement | Sort-Object Count -Descending
+            $i_grads = 0
+            $numberOfCrumbs = $kinds.Count
+            $grads = Get-Gradient -StartColor 'gray75' -EndColor 'gray10' -Width ([Math]::Max($numberOfCrumbs, 3))
+            $numGrads = $grads.count
+            $kinds
+                | Join-String {
+                    Join-String -sep ':' -InputObject $_.Count, $_.Name
+                        | New-Text -fg $grads[ $i_grads++ ]
+                } -sep ', '
+        # }
+    }
+    if($global:__minimalPromptConfig.Enable.FiletypeDistribution_A) {
+        $kinds = gci .  | group Extension -NoElement | Sort-Object Count -Descending
+        $kinds | Join-String { Join-String -sep ':' -InputObject $_.Count, $_.Name } -sep ', '
+
+    }
+    if($global:__minimalPromptConfig.Enable.RecentAsUL) {
+        fd --changed-within 2hours -d 3 -tf --color always | CountOf -CountLabel 'a' | Join.ul
+
+    }
+}
 function minimal.Prompt {
     param(
 
-    )
-    @(
+    ) @(
 
+        if(-not $global:__minimalPromptConfig.Enable.QuickDisableAll) {
+            minimal.Prompt.Render.RecentItems
+
+        }
         # ''
         ''
         minimal.prompt.render.crumbs
@@ -103,5 +165,5 @@ function prompt {
 
 
 Set-PSReadLineOption -ContinuationPrompt ''
-
+# 'minimal.Prompt is controlled by "$global:__minimalPromptConfig.Enable"' | Dotils.Write-DimText
 

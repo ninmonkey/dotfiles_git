@@ -1,3 +1,7 @@
+fit -namespace System.ComponentModel -InheritsType Attribute
+
+fit -Namespace System.Reflection -InheritsType Attribute
+
 function nin.MdTable.old {
     <#
     .SYNOPSIS
