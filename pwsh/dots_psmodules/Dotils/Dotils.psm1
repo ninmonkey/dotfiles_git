@@ -8580,6 +8580,10 @@ function Dotils.Write-StatusEveryN {
     <#
     .synopsis
         emit object as normal, in addition either [a] write every N iterations, or [b] write every X Milliseconds
+    .NOTES
+        future:
+        - [ ] automatically turn into write-progress if wanted
+        - [ ] console output that erases/replaces self
     .example
         0..10 | WriteEveryN -CountStepSize 4 | OutNull
     .example
@@ -8607,7 +8611,10 @@ function Dotils.Write-StatusEveryN {
 
         [Parameter(Mandatory, Position=0, ParameterSetName = 'ByIterationCount')]
         [Alias('IterCount')]
-        [int]$CountStepSize # = 1000,
+        [int]$CountStepSize, # = 1000,
+
+        [Alias('InPlace')]
+        [switch]$AlwaysWriteInPlace
 
     )
     begin {
@@ -8617,6 +8624,7 @@ function Dotils.Write-StatusEveryN {
         [datetime]$time_prevWrite = $time_commandStart
     }
     process {
+        if($AlwaysWriteInPlace) { write-error 'nyi: write in place' }
         $Obj = $InputObject
         $curCount++
         # double check I think the time is fixed
