@@ -8576,6 +8576,80 @@ function Select-NameIsh {
     }
 }
 
+function Dotils.Write-StatusEveryN {
+    <#
+    .synopsis
+        emit object as normal, in addition either [a] write every N iterations, or [b] write every X Milliseconds
+    .example
+        0..10 | WriteEveryN -CountStepSize 4 | OutNull
+    .example
+        0..10 | %{ Sleep -ms 10 } | WriteEveryN -DelayMS 30 | OutNull
+    .EXAMPLE
+        $res = 0..5 | %{ sleep -ms 10 ; $_ ; } | WriteEveryN -CountStepSize 3
+    .LINK
+        Dotils.Write-CountOf
+    #>
+    [Alias(
+        'WriteEveryN',
+        'Write-Status.EveryN',
+        'Write-EveryStatus',
+        '.status.EveryN'
+    )]
+    [CmdletBinding(DefaultParameterSetName = 'ByDelayCount')]
+    param(
+        # pass through items
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject,
+
+        [Parameter(Mandatory, Position=0, ParameterSetName = 'ByDelayCount')]
+        [Alias('TimeMS', 'Ms', 'Delay', 'Milliseconds')]
+        [int]$DelayMS = 500,
+
+        [Parameter(Mandatory, Position=0, ParameterSetName = 'ByIterationCount')]
+        [Alias('IterCount')]
+        [int]$CountStepSize # = 1000,
+
+    )
+    begin {
+        [bool]$isUsingTimer = $CountStepSize -le 0
+        [int]$curCount = 0
+        [datetime]$time_commandStart = [datetime]::Now
+        [datetime]$time_prevWrite = $time_commandStart
+    }
+    process {
+        $Obj = $InputObject
+        $curCount++
+        # double check I think the time is fixed
+
+        if( -not $isUsingTimer) {
+            if($curCount % $CountStepSize -eq 0) {
+                Write-Host "   ...iter ${curCount}" -fg 'gray30'
+            }
+        } else {
+            $time_now = [datetime]::Now
+            $delta = $time_now - $time_prevWrite
+            if($delta.TotalMilliseconds -gt $DelayMS) {
+                $delta
+                    | Ms | Join-String -f  "   ...{0}"
+                    | Write-Host -fg 'gray30'
+                $time_prevWrite = $time_now
+            }
+        }
+        $Obj
+    }
+    end {
+        $time_commandEnd = [datetime]::Now
+        $time_delta = $time_commandEnd - $time_commandStart
+        @{
+            Start = $time_commandStart
+            End = $time_commandEnd
+            Duration = $time_delta
+            TotalSeconds = $time_delta | Sec # future: should be a formatter not string
+            TotalMilliSeconds = $time_delta | Ms # future: should be a formatter not string
+        } | ft -AutoSize | Out-String | Write-Information -infa 'continue'
+    }
+}
+
 
 function Dotils.PSDefaultParameters.ToggleAllVerbose {
     <#
@@ -8636,6 +8710,9 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-14
+        'Dotils.Write-StatusEveryN' # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
+
         # 2023-08-13
         'Dotils.Describe.Timespan.AsSeconds' # 'Dotils.Describe.Timespan.AsSeconds' = { 'Sec', 'Ms', '.Render.Sec', '.Render.Ms' }
         'Dotils.Describe.Timespan.AsMilliseconds' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
@@ -8818,8 +8895,14 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-14
 
+        'WriteEveryN'  # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
+        '.status.EveryN'  # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
+        'status.EveryN'  # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
+        'Write-EveryStatus'  # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
 
+        # 2023-08-13
         '.Render.Sec'   # 'Dotils.Describe.Timespan.AsSeconds' = { 'Sec', '.Render.Sec' }
         'Sec'  # 'Dotils.Describe.Timespan.AsSeconds' = { 'Sec', '.Render.Sec'}
         '.Render.Ms' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
