@@ -8612,7 +8612,24 @@ function Dotils.PSDefaultParameters.ToggleAllVerbose {
     }
 }
 
-
+function Dotils.Describe.Timespan.AsSeconds {
+    [Alias('Sec', '.Render.Sec')]
+    param()
+    process {
+    $Obj = $_
+    $Obj | Dotils.ConvertTo.TimeSpan
+         | Join-String -f '{0:n2} sec' TotalSeconds
+        # $Obj -as [timespan] } else { $null }
+} }
+function Dotils.Describe.Timespan.AsMilliseconds {
+    [Alias('Ms', '.Render.Ms')]
+    param()
+    process {
+    $Obj = $_
+    $Obj | Dotils.ConvertTo.TimeSpan
+         | Join-String -f '{0:n2} ms' TotalMilliseconds
+        # $Obj -as [timespan] } else { $null }
+} }
 
 
 $exportModuleMemberSplat = @{
@@ -8620,6 +8637,9 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-13
+        'Dotils.Describe.Timespan.AsSeconds' # 'Dotils.Describe.Timespan.AsSeconds' = { 'Sec', 'Ms', '.Render.Sec', '.Render.Ms' }
+        'Dotils.Describe.Timespan.AsMilliseconds' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
+
         'Dotils.ConvertTo.TimeSpan' # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
         'Dotils.Test-AllResults' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
         'Dotils.Test-CompareSingleResult' # 'Dotils.Test-CompareSingleResult' = { }
@@ -8799,6 +8819,11 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
 
+
+        '.Render.Sec'   # 'Dotils.Describe.Timespan.AsSeconds' = { 'Sec', '.Render.Sec' }
+        'Sec'  # 'Dotils.Describe.Timespan.AsSeconds' = { 'Sec', '.Render.Sec'}
+        '.Render.Ms' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
+        'Ms' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
 
         # 'Dotils.ConvertTo.TimeSpan' # 'Dotils.ConvertTo.TimeSpan' = {
         '.to.Timespan'  # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
