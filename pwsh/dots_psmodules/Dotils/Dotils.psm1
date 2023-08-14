@@ -2329,6 +2329,26 @@ function Dotils.Join.Csv {
     $Input | Join-String -sep $Separator
 
 }
+function Dotils.ConvertTo.TimeSpan {
+    [OutputType('Timespan')]
+    [Alias(
+        '.as.Timespan', '.To.TimeSpan'
+    )]
+    param()
+    process { $Obj = $_
+    $timespan? = if( $Obj -is 'timespan') {
+        return $Obj
+    } elseif ( $Obj.Time -is 'timespan') { # benchpress
+        return $Obj.Time
+    } elseif( $Obj.Duration -is 'timespan') {
+        return $Obj.Duration
+    } else {
+        write-warning 'No automatic timespan found, searching...'
+        throw "Unexpected type: $( $Obj | Format-ShortTypeName )"
+    }
+    return $timespan?
+} }
+
 function Dotils.Regex.Match.End {
     <#
     .SYNOPSIS
@@ -8600,6 +8620,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-13
+        'Dotils.ConvertTo.TimeSpan' # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
         'Dotils.Test-AllResults' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
         'Dotils.Test-CompareSingleResult' # 'Dotils.Test-CompareSingleResult' = { }
         'Dotils.Operator.TypeIs' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
@@ -8777,6 +8798,11 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+
+
+        # 'Dotils.ConvertTo.TimeSpan' # 'Dotils.ConvertTo.TimeSpan' = {
+        '.to.Timespan'  # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
+        '.as.Timespan'  # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
 
 
         '.test' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
