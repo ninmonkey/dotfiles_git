@@ -5,7 +5,7 @@
 
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
-import-module 'posh'
+
 
 Import-Module 'H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
 
@@ -17,6 +17,8 @@ custom attributes, more detailed info
     - more...
         - [CSharp Advanced Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/reflection-and-attributes/creating-custom-attributes)
 #>
+
+
 
 Set-Alias -Name 'Json.From' -Value 'ConvertFrom-Json'
 
@@ -1547,6 +1549,9 @@ function bPs.Items {
 
 [Collections.Generic.List[Object]]$global:Last_WhereFilterByChoice = @()
 
+$PSCommandPath
+    | Join-String -op 'cleanup: '
+    | write-warning
 function nin.Where-FilterByGroupChoice {
     <#
     .SYNOPSIS
@@ -1582,6 +1587,7 @@ function nin.Where-FilterByGroupChoice {
         [object[]]$InputObject
     )
     begin {
+        write-warning 'nyi; or requires confirmation; mark;'
         $binFzf = Get-Command 'fzf' -ea 'Stop' -CommandType Application | Select-Object -First 1
         [Collections.Generic.List[Object]]$Items = @()
         # did user specify group by?
@@ -1967,3 +1973,8 @@ function prof.Io2 {
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
+
+
+# import-module 'posh'
+# # $Posh.Prompt.After({ WriteErrorRecency | New-Text -fg 'orange'|Join-String -f " {0} "})
+# $Posh.Prompt.After({ WriteErrorRecency })

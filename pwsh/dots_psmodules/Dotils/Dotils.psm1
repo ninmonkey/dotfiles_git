@@ -3386,7 +3386,48 @@ function Dotils.Find.NYI.Functions {
 
 'do me first: Dotils.Error.Select' | write-host -back 'darkred' -fore 'white'
 'do me second: Dotils.Describe.Error' | write-host -back 'darkred' -fore 'white'
+function Dotils.Summarize.Module {
+    <#
+    .example
+        get-module dotils | Dotils.SummarizeModule
+    .notes
+        note: It doesn't currently use module info object to build
+        it just passes it to get-command fo now
+    #>
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+    )
+    if( $InputObject -is [PSModuleInfo] ) {
+        $minfo = $InputObject
+        $cmds = Get-Command -m $minfo.name | CountOf
+    }
+    if(-not $minfo -and $InputObject -is 'string') {
+        $cmds = Get-Command -m $minfo | CountOf
+    }
+    if(-not $Cmds) {
+        throw "Error looking up module from ModuleInfo or string" }
+
+    # $minfo = Get-Command -m $InputObject.Name -ea 0 | CountOf
+
+    $cmd_groups = $cmds  | group verb | sort Name  -Descending
+
+    $cmd_groups | %{
+        $verb = $_.Name
+        if($Verb -eq ''){
+            $Verb = '[empty]' # '␀'
+        }
+        $group = $_.Group
+        Dotils.Render.TextTreeLine $verb -d 0
+        $group | Sort Name | %{
+            $item = $_
+            Dotils.Render.TextTreeLine $item.Name -d 1
+        }
+        # | Join-String -sep ', '
+    }
+}
 function Dotils.Describe.ModuleInfo {
+    # this returns help about something, see Summarize for a text render
     'show [sma.PSModuleInfo]'
     throw 'wip next'
 }
@@ -7824,6 +7865,124 @@ function Dotils.Random.Module { # to refactor, to allow piping
         }
     }
 }
+function Dotils.Render.TextTreeLine {
+    <#
+    .SYNOPSIS
+        Dotils.Render.TextTreeLine 'dots_psmodules'
+        Dotils.Render.TextTreeLine 'Dotils' -Depth 1
+        Dotils.Render.TextTreeLine 'Dotils' -Depth 2
+    .EXAMPLE
+        impo dotils -PassThru -Force | Join-String -prop { $_.Version, $_.Name }
+        hr
+        Dotils.Render.TextTreeLine 'classExplorer'
+        Dotils.Render.TextTreeLine -d 1  @(gcm -m 'ClassExplorer' | Join-String Name -sep ', ' )
+    .EXAMPLE
+        $cmd_groups = gcm -m ImportExcel | group verb | sort Name  -Descending
+        $cmd_groups | %{
+            $verb = $_.Name
+            if($Verb -eq ''){
+                $Verb = '[empty]' # '␀'
+            }
+            $group = $_.Group
+            Dotils.Render.TextTreeLine $verb -d 0
+            $group | Sort Name | %{
+                $item = $_
+                Dotils.Render.TextTreeLine $item.Name -d 1
+            }
+            # | Join-String -sep ', '
+        }
+
+    #>
+    [Alias('.Render.TreeLine', '.Render.TreeItem')]
+    param(
+        [ALias('Text')][string]$Token,
+        [int]$Depth = 0,
+        [hashtable]$Options = @{}
+    )
+
+    $Config = nin.MergeHash -other $Options -BaseHash @{
+        ColorFg1 = "${fg:Gray95}"
+        ColorFg2 = "${fg:gray65}"
+        ColorFgDim = "${fg:gray40}"
+    }
+    $Rune = @{
+        Bar_UpRightDown = '├'
+        Bar_UpDown = '│'
+        Bar_RightLeft = '─'
+    }
+    $prefix_Continue =
+        $Rune.Bar_UpRightDown, ($Rune.Bar_RightLeft * 2), ' ' -join ''
+
+    $prefix_Down =
+        $Rune.Bar_UpRightDown, ($Rune.Bar_RightLeft * 2), ' ' -join ''
+
+    $prefix_spaced =
+        $Rune.Bar_UpDown, (' ' * 3) -join ''
+
+    $TextColor = if($Depth -eq 0) {
+        $Config.ColorFg1
+     } else {
+        $Config.ColorFg2
+     }
+
+    @(
+        $Config.ColorFgDim
+        $prefix_spaced * $Depth -join ''
+        $prefix_Continue
+        $TextColor
+        $Token
+        "${fg:clear}"
+    ) -join ''
+}
+function Dotils.Render.TextTreeLine.Basic {
+    <#
+    .SYNOPSIS
+        Dotils.Format.RenderTextTree 'dots_psmodules'
+        Dotils.Format.RenderTextTree 'Dotils' -Depth 1
+        Dotils.Format.RenderTextTree 'Dotils' -Depth 2
+    .EXAMPLE
+        $cmd_groups = gcm -m ImportExcel | group verb | sort Name  -Descending
+        $cmd_groups | %{
+            $verb = $_.Name
+            if($Verb -eq ''){
+                $Verb = '[empty]' # '␀'
+            }
+            $group = $_.Group
+            Dotils.Format.RenderTextTree.Line $verb -d 0
+            $group | Sort Name | %{
+                $item = $_
+                Dotils.Format.RenderTextTree.Line $item.Name -d 1
+            }
+            # | Join-String -sep ', '
+        }
+
+    #>
+    param(
+        [ALias('Text')][string]$Token,
+        [int]$Depth = 0
+    )
+    $Rune = @{
+        Bar_UpRightDown = '├'
+        Bar_UpDown = '│'
+        Bar_RightLeft = '─'
+    }
+    $prefix_Continue =
+        $Rune.Bar_UpRightDown, ($Rune.Bar_RightLeft * 2), ' ' -join ''
+
+    $prefix_Down =
+        $Rune.Bar_UpRightDown, ($Rune.Bar_RightLeft * 2), ' ' -join ''
+
+    $prefix_spaced =
+        $Rune.Bar_UpDown, (' ' * 3) -join ''
+
+    @(
+        $prefix_spaced * $Depth -join ''
+        $prefix_Continue
+        $Token ) -join ''
+}
+
+
+
 function Dotils.Random.Command { # to refactor, to allow piping
     <#
     .SYNOPSIS
@@ -8718,6 +8877,10 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-15
+        'Dotils.Render.TextTreeLine' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
+        'Dotils.Render.TextTreeLine.Basic'
+        'Dotils.Summarize.Module'
         # 2023-08-14
         'Dotils.Write-StatusEveryN' # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
 
@@ -8903,8 +9066,11 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
-        # 2023-08-14
+        # 2023-08-15
+        '.Render.TreeItem' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
+        '.Render.TreeLine' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
 
+        # 2023-08-14
         'WriteEveryN'  # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
         '.status.EveryN'  # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
         'status.EveryN'  # 'Dotils.Write-StatusEveryN' = { '.status.EveryN', 'status.EveryN', 'Write-EveryStatus','WriteEveryN'}
