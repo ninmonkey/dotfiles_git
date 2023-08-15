@@ -3428,7 +3428,7 @@ function Dotils.Summarize.Module {
         $group = $_.Group
         Dotils.Render.TextTreeLine $GroupdByName -d 0
         $group | Sort Name | %{
-            
+
             $item = $_
             Dotils.Render.TextTreeLine $item.Name -d 1
         }
@@ -4099,6 +4099,94 @@ class Dotils_RegexHistory {
 
 $script:__dotilsInnerRegexHistory ??= @()
 function Dotils.Regex.History.Add {
+    throw 'nyi, wip'
+}
+
+
+function Dotils.String.Transform {
+    # Dotils.String.Transform.AlignRight
+    <#
+    .SYNOPSIS
+        entry point for a ton of transforms
+    .example
+        PS> # round trip
+        $url | .str.Transform -Fn Url.Encode
+             | .str.Transform -Fn Url.Decode
+    #>
+    [Alias('.str.Transform')]
+    param(
+        [Alias('Fn', 'Func', 'T')]
+        [Parameter(Mandatory, Position=0)]
+        [ValidateSet(
+            'Url.Decode',
+            'Url.Encode',
+            'Trim',
+            'Strip.Whitespace',
+            'FormatControlChar',
+            'Join.LineEnding',
+            'Split.LineEndings',
+            'Normalize.LineEndings',
+            'Md.Url.FromPath',
+            'Console.AlignRight'
+        )]
+        [string]$TransformationName,
+
+        [AllowEmptyString()]
+        [AllowNull()]
+        [Parameter(ValueFromPipeline)]
+        [string]$InputObject
+
+    )
+    switch($TransformationName){
+        'Url.Decode' {
+            $InputObject -replace
+                '%3A', ':' -replace
+                '%2F', '/'
+            break
+        }
+        'Url.Encode' {
+            write-warning 'not complete, and not using right func, there''s a couple'
+            $InputObject -replace
+                ':', '%3A' -replace
+                '/', '%2F'
+            break
+        }
+        'Trim' {
+            $InputObject | %{ $_.Trim() }
+            break
+        }
+        'Strip.Whitespace' {
+            $InputObject -replace '\s+', ''
+            break
+        }
+        'FormatControlChar' {
+            $InputObject | Ninmonkey.Console\Format-ControlChar
+            break
+        }
+        'Join.LineEnding' {
+            $InputObject -join "`n"
+        }
+        'Split.LineEndings' {
+            $InputObject -split '\r?\n'
+            break
+        }
+        'Normalize.LineEndings' {
+            $InputObject | Dotils.Text.NormalizeLineEnding
+            break
+        }
+        'Md.Url.FromPath' {
+            $InputObject -replace ' ', '%20' -replace '\\', '/'
+            break
+        }
+        'Console.AlignRight' {
+            $InputObject | Dotils.String.Transform.AlignRight
+            break
+        }
+        default {
+            write-warning "unhandled transformName: $TransformationName"
+        }
+    }
+
 }
 function Dotils.String.Transform.AlignRight {
     # replace all \r\n sequences with \n
@@ -8887,6 +8975,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-15
+        'Dotils.String.Transform' # 'Dotils.String.Transform' = { '.str.Transform' }
         'Dotils.Render.TextTreeLine' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
         'Dotils.Render.TextTreeLine.Basic'
         'Dotils.Summarize.Module'
@@ -9076,6 +9165,7 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-08-15
+        '.str.Transform' # 'Dotils.String.Transform' = { '.str.Transform' }
         '.Render.TreeItem' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
         '.Render.TreeLine' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
 
