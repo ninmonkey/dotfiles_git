@@ -4118,6 +4118,10 @@ function Dotils.String.Transform {
         [Alias('Fn', 'Func', 'T')]
         [Parameter(Mandatory, Position=0)]
         [ValidateSet(
+            'Csv.Distinct',
+            'Csv.SingleQuote',
+            'Csv.DoubleQuote',
+            'Join.UL',
             'Url.Decode',
             'Url.Encode',
             'Trim',
@@ -4129,61 +4133,83 @@ function Dotils.String.Transform {
             'Md.Url.FromPath',
             'Console.AlignRight'
         )]
-        [string]$TransformationName,
+        [string[]]$TransformationNameList,
 
         [AllowEmptyString()]
         [AllowNull()]
         [Parameter(ValueFromPipeline)]
-        [string]$InputObject
+        [string[]]$InputObject
 
     )
-    switch($TransformationName){
-        'Url.Decode' {
-            $InputObject -replace
-                '%3A', ':' -replace
-                '%2F', '/'
-            break
-        }
-        'Url.Encode' {
-            write-warning 'not complete, and not using right func, there''s a couple'
-            $InputObject -replace
-                ':', '%3A' -replace
-                '/', '%2F'
-            break
-        }
-        'Trim' {
-            $InputObject | %{ $_.Trim() }
-            break
-        }
-        'Strip.Whitespace' {
-            $InputObject -replace '\s+', ''
-            break
-        }
-        'FormatControlChar' {
-            $InputObject | Ninmonkey.Console\Format-ControlChar
-            break
-        }
-        'Join.LineEnding' {
-            $InputObject -join "`n"
-        }
-        'Split.LineEndings' {
-            $InputObject -split '\r?\n'
-            break
-        }
-        'Normalize.LineEndings' {
-            $InputObject | Dotils.Text.NormalizeLineEnding
-            break
-        }
-        'Md.Url.FromPath' {
-            $InputObject -replace ' ', '%20' -replace '\\', '/'
-            break
-        }
-        'Console.AlignRight' {
-            $InputObject | Dotils.String.Transform.AlignRight
-            break
-        }
-        default {
-            write-warning "unhandled transformName: $TransformationName"
+    # $Accum = $InputObject
+    $curObj = $InputObject
+    $TransformationNameList | %{
+        $TransformationName = $_
+        $CurObj = switch($TransformationName){
+            'Csv.Distinct' {
+                $CurObj | Sort-Object -Unique | Join-String -sep ', '
+                break
+            }
+            'Csv.DoubleQuote' {
+                $CurObj | Sort-Object -Unique | Join-String -sep ', ' -DoubleQuote
+                break
+            }
+            'Csv.SingleQuote' {
+                $CurObj | Sort-Object -Unique | Join-String -sep ', ' -SingleQuote
+                break
+            }
+            'Join.UL' {
+                $CurObj | Join.UL
+                break
+            }
+            'Url.Decode' {
+                $CurObj -replace
+                    '%3A', ':' -replace
+                    '%2F', '/'
+                break
+            }
+            'Url.Encode' {
+                write-warning 'not complete, and not using right func, there''s a couple'
+                $CurObj -replace
+                    ':', '%3A' -replace
+                    '/', '%2F'
+                break
+            }
+            'Trim' {
+                $CurObj | %{ $_.Trim() }
+                break
+            }
+            'Strip.Whitespace' {
+                $CurObj -replace '\s+', ''
+                break
+            }
+            'FormatControlChar' {
+                $CurObj | Ninmonkey.Console\Format-ControlChar
+                break
+            }
+            'Join.LineEnding' {
+                $CurObj -join "`n"
+                break
+            }
+            'Split.LineEndings' {
+                $CurObj -split '\r?\n'
+                break
+            }
+            'Normalize.LineEndings' {
+                $CurObj | Dotils.Text.NormalizeLineEnding
+                break
+            }
+            'Md.Url.FromPath' {
+                $CurObj -replace ' ', '%20' -replace '\\', '/'
+                break
+            }
+            'Console.AlignRight' {
+                $CurObj | Dotils.String.Transform.AlignRight
+                break
+            }
+            default {
+                write-warning "unhandled transformName: $TransformationName"
+            }
         }
     }
 
