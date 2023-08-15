@@ -4131,6 +4131,7 @@ function Dotils.String.Transform {
             'Split.LineEndings',
             'Normalize.LineEndings',
             'Md.Url.FromPath',
+            'ToUpperInvariant', 'ToUpper', 'ToLower', 'ToLowerInvariant',
             'Console.AlignRight'
         )]
         [string[]]$TransformationNameList,
@@ -4143,6 +4144,7 @@ function Dotils.String.Transform {
     )
     # $Accum = $InputObject
     $curObj = $InputObject
+    write-warning 'Still not sure how I want to abstract the enumeration, because some should process as one item, others process per single item. '
     $TransformationNameList | %{
         $TransformationName = $_
         $CurObj = switch($TransformationName){
@@ -4163,24 +4165,30 @@ function Dotils.String.Transform {
                 break
             }
             'Url.Decode' {
-                $CurObj -replace
+                $CurObj | %{
+                    $_ -replace
                     '%3A', ':' -replace
                     '%2F', '/'
+                }
                 break
             }
             'Url.Encode' {
                 write-warning 'not complete, and not using right func, there''s a couple'
-                $CurObj -replace
+                $CurObj | %{
+                    $_ -replace
                     ':', '%3A' -replace
                     '/', '%2F'
+                }
                 break
             }
             'Trim' {
-                $CurObj | %{ $_.Trim() }
+                $CurObj | %{
+                    $_.Trim() }
                 break
             }
             'Strip.Whitespace' {
-                $CurObj -replace '\s+', ''
+                $CurObj | %{
+                    $_ -replace '\s+', '' }
                 break
             }
             'FormatControlChar' {
@@ -4192,7 +4200,8 @@ function Dotils.String.Transform {
                 break
             }
             'Split.LineEndings' {
-                $CurObj -split '\r?\n'
+                $CurObj | %{
+                    $_ -split '\r?\n' }
                 break
             }
             'Normalize.LineEndings' {
@@ -4200,7 +4209,29 @@ function Dotils.String.Transform {
                 break
             }
             'Md.Url.FromPath' {
-                $CurObj -replace ' ', '%20' -replace '\\', '/'
+                # $CurObj -replace ' ', '%20' -replace '\\', '/'
+                $CurObj | %{
+                    $_ -replace ' ', '%20' -replace '\\', '/' }
+                break
+            }
+            'ToUpperInvariant' {
+                $CurObj | %{
+                    $_.ToString().ToUpperInvariant() }
+                break
+            }
+            'ToUpper' {
+                $CurObj | %{
+                    $_.ToString().ToUpper() }
+                break
+            }
+            'ToLower' {
+                $CurObj | %{
+                    $_.ToString().ToLower() }
+                break
+            }
+            'ToLowerInvariant' {
+                $CurObj | %{
+                    $_.ToString().ToLowerInvariant() }
                 break
             }
             'Console.AlignRight' {
@@ -4212,6 +4243,7 @@ function Dotils.String.Transform {
             }
         }
     }
+    return $CurObj
 
 }
 function Dotils.String.Transform.AlignRight {
