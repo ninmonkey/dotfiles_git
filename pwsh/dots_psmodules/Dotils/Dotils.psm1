@@ -3393,33 +3393,42 @@ function Dotils.Summarize.Module {
     .notes
         note: It doesn't currently use module info object to build
         it just passes it to get-command fo now
+    .example
+        Dotils.Summarize.Module excelant Verb
+        Dotils.Summarize.Module excelant CommandType
     #>
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
-        $InputObject
+        $InputObject,
+
+        [Parameter()]
+        [ValidateSet('Verb', 'CommandType')]
+        [string]$GroupBy = 'Verb'
     )
     if( $InputObject -is [PSModuleInfo] ) {
         $minfo = $InputObject
-        $cmds = Get-Command -m $minfo.name | CountOf
+        [Management.Automation.CommandInfo[]]$cmds = Get-Command -m $minfo.name | CountOf
     }
     if(-not $minfo -and $InputObject -is 'string') {
-        $cmds = Get-Command -m $minfo | CountOf
+        [Management.Automation.CommandInfo[]]$cmds = Get-Command -m $InputObject | CountOf
     }
     if(-not $Cmds) {
         throw "Error looking up module from ModuleInfo or string" }
 
     # $minfo = Get-Command -m $InputObject.Name -ea 0 | CountOf
 
-    $cmd_groups = $cmds  | group verb | sort Name  -Descending
+
+    $cmd_groups = $cmds  | group $GroupBy | sort Name  -Descending
 
     $cmd_groups | %{
-        $verb = $_.Name
-        if($Verb -eq ''){
-            $Verb = '[empty]' # '␀'
+        $GroupdByName = $_.Name
+        if($GroupdByName -eq ''){
+            $GroupdByName = '[empty]' # '␀'
         }
         $group = $_.Group
-        Dotils.Render.TextTreeLine $verb -d 0
+        Dotils.Render.TextTreeLine $GroupdByName -d 0
         $group | Sort Name | %{
+            
             $item = $_
             Dotils.Render.TextTreeLine $item.Name -d 1
         }
