@@ -8,26 +8,30 @@ $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $P
 )
 
 
-function Dotils.Resolve.TypeInfo.WithDefault {
-    <#
-    .SYNOPSIS
-        try to resolve [type] info, else, always return the original string as the fallback value
-    .notes
-        resolve implies it will always return the original, not null
-    #>
-    [Alias('.Resolve.TypeInfo')]
-    [OutputType('type[]', 'string[]')]
-    param(
-        [Alias('InputObject')][string]$TypeName
-    )
-    process {
-        $type? = $TypeName -as 'type'
-        if( -not $type? ) {
-            return $TypeName
-        }
-        return $Type?
-    }
-}
+# function Dotils.Resolve.TypeInfo.WithDefault {
+#     <#
+#     .SYNOPSIS
+#         try to resolve [type] info, else, always return the original string as the fallback value
+#     .notes
+#         resolve implies it will always return the original, not null
+#     #>
+#     [Alias('.Resolve.TypeInfo')]
+#     [OutputType('type[]', 'string[]')]
+#     param(
+#         [Parameter()]
+#         [Alias('InputObject')][string]$TypeName,
+
+#         [Parameter()]
+#         [object]$DefaultValue
+#     )
+#     process {
+#         $type? = $TypeName -as 'type'
+#         if( -not $type? ) {
+#             return $TypeName
+#         }
+#         return $Type?
+#     }
+# }
 # write-warning 'collect b dg .resolve.Timespan'
 function Dotils.To.Type.FromPSTypenames {
     <#
@@ -90,9 +94,13 @@ function Dotils.Help.FromType {
         $types = @(
             $items | % GetType
             if($IncludePSTypenames) {
+                write-warning 'coerce to type, or leave as strings here?'
+                $Items | ?{
+                    $_.PSTypeNames
+                }
 
             }
-        )
+        ) | Sort-object -unique
 
 
         $types | %{
@@ -586,7 +594,8 @@ function Dotils.Operator.TypeIs {
     #>
     [Alias(
         # 'Is',
-        '.Is.Type', 'Op.Is'
+        # '.Is.Type'
+        'Op.Is'
     )]
     param(
         [Parameter( Mandatory, ValueFromPipeline )]
@@ -7422,7 +7431,10 @@ function Dotils.Debug.GetTypeInfo { # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 
         - [ ] if a type does not resolve using 'as type', then attempt
             a 'find-type -fullName *name*' query to resolve it
     #>
-    [Alias('Dotils.Is.Type', 'Is.Type', '.IsType', 'IsType')]
+    [Alias(
+        # 'Dotils.Is.Type', 'Is.Type', '.IsType', 'IsType'
+        'Dotils.Describe.Type'
+    )]
     param(
         [ValidateSet(
             'Type',
@@ -9174,14 +9186,83 @@ function Dotils.Describe.Timespan.AsSeconds {
     }
 }
 
-function Dotils.Test-IsOfType {
+function Dotils.DebugUtil.Format.AliasSummaryLiteral {
+    param(
+        [Parameter(Mandatory, Position= 0 )]
+        [string]$FunctionName,
+
+        [Parameter(Mandatory, Position= 1 )]
+        [string[]]$AliasNames
+    )
+
+    $suffix = Join-String -sep ', ' -single -inp $AliasNames  #| Join-String -f " = {{ {0} }}"
+    $prefix = Join-String -single -inp $FunctionName
+    $finalSuffix = "$prefix = { $suffix }"
+
+    # commands
+        "$prefix # $FinalSuffix"
+    @(foreach($aName in $AliasNames) {
+            "'$aName' # $finalSuffix"
+        }) | Sort-Object -unique
+}
+
+function Dotils.Resolve.TypeInfo {
     <#
     .SYNOPSIS
-        is it one of several types?
+        Get the type of an object, either, [1] it is already a typeinfo, [2] is the name of a type, [3] GetType()
+    .DESCRIPTION
+        Get the type of an object, either, [1] it is already a typeinfo, [2] is the name of a type, [3] GetType()
+    #>
+    [Alias(
+        'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo'
+        # '.Resolve.TypeInfo'
+        # '.to.TypeInfo'
+    )]
+    [OutputType('type')]
+    param(
+        # An object, a type info, or the name of a type
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+    process {
+        if($InputObject -is 'type') {
+            return $InputObject
+        }
+        if($inputObject -is 'string') {
+            return $InputObject -as 'type'
+        }
+        return ($InputObject)?.GetType()
+    }
+}
+
+
+function Dotils.Test-IsOfType.FancyWip {
+    <#
+    .SYNOPSIS
+        Is something one of a type list? sugar for filtering objects by types
     .description
         see also, the TypeInfo is subclass
         related:
             Dotils.Is.SubType
+
+    .example
+        Warning: the current behavior returns the <object> that passed the test
+        this may be unexpected. maybe add another param,
+            - passsThru: returns the good object, as the original type
+            - not passTHru: returns the object after coercion to the new type
+    .example
+        @( get-item .; get-date; 34; 9.1; 'hi world', ([Text.Rune]::new(0x2400)))
+    .example
+            # filter kinds
+
+            123, 24.65, '99' | .Is.Type -TypeNames 'int'
+                # out: [123] # | Json -AsArray -Compress
+
+            123, 24.65, '99' | .Is.Type -TypeNames 'int' -AllowCompatibleType
+                # out: [123,24.65,"99"] # | Json -AsArray -Compress
+w
+    .LINK
+        Dotils.Test-IsOfType
     .LINK
         Dotils.Is.SubType
     #>
@@ -9196,8 +9277,10 @@ function Dotils.Test-IsOfType {
         .SYNOPSIS
         is a type one of types?
 
-            Dotils.Test-IsOfType ([PoshCode.Pansies.RgbColor]) -Debug -AsTest -IsCompatible -InputObject 'red'
+            Dotils.Test-IsOfType ([PoshCode.Pansies.RgbColor]) -Debug -AsTest -AllowCompatibleType -InputObject 'red'
             Dotils.Test-IsOfType ([PoshCode.Pansies.RgbColor]) -Debug -AsTest -InputObject 'red'
+
+
         #>
         # A list of types to compare against, using the -is, sort of
         [Parameter(Mandatory, Position=0, ParameterSetName='ByType')]
@@ -9229,10 +9312,15 @@ function Dotils.Test-IsOfType {
         [Parameter(Mandatory, ValueFromPipeline)]
         [object]$InputObject,
 
+        # if a test, return a boolean
+        # if not, filter objects
         [switch]$AsTest,
 
         # if it fails, maybe -as type coercion will work
-        [switch]$IsCompatible
+        [switch]$AllowCompatibleType,
+
+        # return orignal types
+        [switch]$PassThru
 
 
         # when no property is specified, usually nicer to try the property name than tostring
@@ -9242,6 +9330,13 @@ function Dotils.Test-IsOfType {
 
     }
     process {
+        [bool]$ReturnAsCoercedValue = -not $PassThru
+        if( $PassThru  ) { throw 'command future creep, refactor' }
+        if( $PSCmdlet.ParameterSetName -eq 'ByGroup') {
+            throw 'quickhack'
+
+        }
+        $lastGoodType = 'object'
         [bool]$anyMatches = $false
         [bool]$ShouldReturnBool = $AsTest
         if( [string]::IsNullOrWhiteSpace( $TypeNames ) ) {
@@ -9259,19 +9354,221 @@ function Dotils.Test-IsOfType {
                 }
             }
             # is this redundant?
-            if(-not $ShouldKeep -and $IsCompatible) {
+            if(-not $ShouldKeep -and $AllowCompatibleType) {
                 write-debug "    -is compares failed, trying -as..."
                 foreach($name in $TypeNames) {
                     write-debug "    Test-IsOfType: comparing CurObj is $Name"
                     if($curObj -as $Name -ne $null) {
                         $shouldKeep? = $true
+                        $lastGoodType = $Name
                         $anyMatches = $true
                         break
                     }
                 }
             }
             if($ShouldKeep?) {
-                $curObj
+                @(
+                    'AllowCompatible? {0}' -f $AllowCompatibleType
+                    'ReturnAsCoerced?: {0}' -f $ReturnAsCoercedValue
+                    'LastGoodType?: {0}' -f $lastGoodType
+                ) | Join-String -sep ', ' | Join-String -sep "`n" |  write-verbose
+                if(-not $ReturnAsCoercedValue ) {
+                    $curObj
+                } else {
+                    $curObj -as $LastGoodType
+                }
+            }
+        }
+        if( -not $MyInvocation.ExpectingInput ) {
+            return $anyMatches
+        }
+    }
+}
+
+function __compare-Is.Type {
+    # do I ever want to use type base name, because you can't always instantiate it
+    [OutputType('bool')]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        $InputObject,
+
+        [Alias('Is')]
+        [Parameter(Mandatory, Position=1)]
+        [object]$TypeName,
+
+        # Don't instantiate
+        [Alias('AsString')][switch]$CompareString
+    )
+    if(-not $CompareString) {
+        return $Input -is $TypeName
+    }
+
+    $tinfo = Resolve.TypeInfo -InputObject $InputObject
+    $shortName = $tinfo.Name
+    return $ShortName -eq $TypeName
+
+    $InputObject -is $TypeName
+    # $InputObject.GetType()
+}
+
+
+# [rgbcolor].FullName, 'int', (get-date) | Resolve.TypeInfo | Should -BeOfType 'type'
+
+function Dotils.Test-IsOfType.Basic {
+    <#
+    .SYNOPSIS
+        Is something one of a type list? sugar for filtering objects by types
+    .description
+        see also, the TypeInfo is subclass
+        related:
+            Dotils.Is.SubType
+
+    .example
+        Warning: the current behavior returns the <object> that passed the test
+        this may be unexpected. maybe add another param,
+            - passsThru: returns the good object, as the original type
+            - not passTHru: returns the object after coercion to the new type
+    .example
+        @( get-item .; get-date; 34; 9.1; 'hi world', ([Text.Rune]::new(0x2400)))
+    .example
+            # filter kinds
+
+            123, 24.65, '99' | .Is.Type -TypeNames 'int'
+                # out: [123] # | Json -AsArray -Compress
+
+            123, 24.65, '99' | .Is.Type -TypeNames 'int' -AllowCompatibleType
+                # out: [123,24.65,"99"] # | Json -AsArray -Compress
+w
+    .LINK
+        Dotils.Test-IsOfType.FancyWip
+    .LINK
+        Dotils.Test-IsOfType
+    .LINK
+        Dotils.Is.SubType
+    #>
+    [CmdletBinding(
+        # DefaultParameterSetName = 'AsRegex'
+    )]
+    [Alias(
+        '.Is.Type', '.Is.OfType', 'Dotils.Test-IsOfType'
+        )]
+    param(
+        <#
+        .SYNOPSIS
+        is a type one of types?
+
+            Dotils.Test-IsOfType ([PoshCode.Pansies.RgbColor]) -Debug -AsTest -AllowCompatibleType -InputObject 'red'
+            Dotils.Test-IsOfType ([PoshCode.Pansies.RgbColor]) -Debug -AsTest -InputObject 'red'
+
+
+        #>
+        # A list of types to compare against, using the -is, sort of
+        [Parameter(Mandatory, Position=0, ParameterSetName='ByType')]
+        [Alias('Name', 'IsType')]
+        [ArgumentCompletions(
+            'double', 'int', 'int32', 'int64', 'uint32', 'uint64',
+            'float',
+            'Datetime', 'Timespan', 'CommandTypes'
+        )]
+        [string[]]$TypeNames,
+        [Parameter(Mandatory, Position=0, ParameterSetName='ByGroup')]
+        [Alias('Category', 'Group', 'IsKind')]
+        [ArgumentCompletions(
+            'double', 'int', 'int32', 'int64', 'uint32', 'uint64',
+            'float',
+            'Datetime', 'Timespan', 'CommandTypes'
+        )]
+        [string[]]$TypeCategoryNames,
+
+        # # literals escaped for a regex
+        # [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
+        # [string]$Literal,
+
+        # # If not set, and type is not string,  tostring will end up controlling what is matched against
+        # [Parameter(Position=1)]
+        # [string]$PropertyName,
+
+        # strings, or objects to filter on
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        # if a test, return a boolean
+        # if not, filter objects
+        [Parameter(Mandatory, ParameterSetName='ReturnAstTest')]
+        [switch]$AsTest,
+
+        # if it fails, maybe -as type coercion will work
+        [switch]$AllowCompatibleType,
+
+        # return orignal types
+        [switch]$PassThru
+
+
+        # when no property is specified, usually nicer to try the property name than tostring
+        # [switch]$AlwaysTryProp = $true
+    )
+    begin {
+        # function __resolve.TypeInfo {
+        #     param(
+        #         $InputObject
+        #     )
+        #     if($InputObject -is 'type') {
+        #         return $InputObject
+        #     }
+        #     return ($InputObject)?.GetType()
+        #     $tinfo = @($InputObject.GetType()
+        # }
+
+
+    }
+    process {
+        [bool]$ReturnAsCoercedValue = -not $PassThru
+        if( $PassThru  ) { throw 'command future creep, refactor' }
+        if( $PSCmdlet.ParameterSetName -eq 'ByGroup') {
+            throw 'quickhack'
+
+        }
+        $lastGoodType = 'object'
+        [bool]$anyMatches = $false
+        [bool]$ShouldReturnBool = $AsTest
+        if( [string]::IsNullOrWhiteSpace( $TypeNames ) ) {
+            throw 'BadArgumentsException: -TypeNames was empty'
+        }
+        foreach($CurObj in $InputObject) {
+            [bool]$shouldKeep? = $false
+
+            foreach($name in $TypeNames) {
+                write-debug "    Test-IsOfType: comparing CurObj is $Name"
+                if($curObj -is $Name) {
+                    $shouldKeep? = $true
+                    $anyMatches = $true
+                    break
+                }
+            }
+            # is this redundant?
+            if(-not $ShouldKeep -and $AllowCompatibleType) {
+                write-debug "    -is compares failed, trying -as..."
+                foreach($name in $TypeNames) {
+                    write-debug "    Test-IsOfType: comparing CurObj is $Name"
+                    if($curObj -as $Name -ne $null) {
+                        $shouldKeep? = $true
+                        $lastGoodType = $Name
+                        $anyMatches = $true
+                        break
+                    }
+                }
+            }
+            if($ShouldKeep?) {
+                @(
+                    'AllowCompatible? {0}' -f $AllowCompatibleType
+                    'ReturnAsCoerced?: {0}' -f $ReturnAsCoercedValue
+                    'LastGoodType?: {0}' -f $lastGoodType
+                ) | Join-String -sep ', ' | Join-String -sep "`n" |  write-verbose
+                if(-not $ReturnAsCoercedValue ) {
+                    $curObj
+                } else {
+                    $curObj -as $LastGoodType
+                }
             }
         }
         if( -not $MyInvocation.ExpectingInput ) {
@@ -9308,11 +9605,13 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-18
-        'Dotils.Test-IsOfType' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
-        '.Is.Type' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
-        '.Is.OfType' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
+        'Dotils.Resolve.TypeInfo'          # 'Dotils.Resolve.TypeInfo' = { Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }
+        'Dotils.DebugUtil.Format.AliasSummaryLiteral'
+        'Dotils.Test-IsOfType.FancyWip' # 'Dotils.Test-IsOfType.FancyWip' = { }
+        'Dotils.Test-IsOfType.Basic' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType', 'Dotils.Test-IsOfType' }
         'Dotils.Select-TemporalFirstObject'         # 'Dotils.Select-TemporalFirstObject' = { '.Select.FirstTime' }
         'Dotils.Quick.GetType' # 'Dotils.Quick.GetType' = { 'gt', '.quick.GetType' }
+        'Dotils.Debug.GetTypeInfo' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Describe.Type' }'
         # 2023-08-15
         'Dotils.String.Transform' # 'Dotils.String.Transform' = { '.str.Transform' }
         'Dotils.Render.TextTreeLine' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
@@ -9331,7 +9630,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Operator.TypeIs' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
 
         # 2023-08-11
-        'Dotils.Resolve.TypeInfo.WithDefault' # 'Dotils.Resolve.TypeInfo.WithDefault' = { '.Resolve.TypeInfo' }
+
         'Dotils.To.Type.FromPSTypenames' # 'Dotils.To.Type.FromPSTypenames' = { '.To.Type.FromPStypes', '.to.PSTypes' }
         'Dotils.Help.FromType' # 'Dotils.Help.FromType' = { 'Help.FromType', 'Help.From' }
 
@@ -9433,7 +9732,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Out.XL-AllPropOfBoth' # 'Dotils.Out.XL-AllPropOfBoth' = {}
         'Dotils.Modulebuilder.Format-SummarizeCommandAliases' # 'Dotils.Modulebuilder.Format-SummarizeCommandAliases' = { 'Dotils.Module.Format-AliasesSummary' }
         #
-        'Dotils.Debug.GetTypeInfo' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+
 
         'Dotils.Start-WatchForFilesModified' # 'Dotils.Start-WatchForFilesModified' = { <none> }
         'Dotils.Select-NotBlankKeys' # 'Dotils.Select-NotBlankKeys' = { 'Dotils.DropBlankKeys', 'Dotils.Where-NotBlankKeys' }
@@ -9504,12 +9803,18 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-08-18
-        '.Is.Type' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
-        '.Is.OfType'  # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
+        'Resolve.TypeInfo'          # 'Dotils.Resolve.TypeInfo' = { Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }
+        'Dotils.ConvertTo.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }
+
+        '.Is.Type' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType', 'Dotils.Test-IsOfType' }
+        '.Is.OfType'  # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType', 'Dotils.Test-IsOfType' }
+        'Dotils.Test-IsOfType' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType', 'Dotils.Test-IsOfType' }
 
         '.Select.FirstTime' # 'Dotils.Select-TemporalFirstObject' = { '.Select.FirstTime' }
         'gt' # 'Dotils.Quick.GetType' = { 'gt', '.quick.GetType' }
         '.quick.GetType' # 'Dotils.Quick.GetType' = { 'gt', '.quick.GetType' }(
+        'Dotils.Describe.Type' # 'Dotils.Debug.GetTypeInfo' = { 'Dotils.Describe.Type' }
+
         # 2023-08-15
         '.str.Transform' # 'Dotils.String.Transform' = { '.str.Transform' }
         '.Render.TreeItem' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
@@ -9542,7 +9847,7 @@ $exportModuleMemberSplat = @{
         'Op.Is' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
 
         # 2023-08-10
-        '.Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo.WithDefault' = { '.Resolve.TypeInfo' }
+        # '.Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo.WithDefault' = { '.Resolve.TypeInfo' }
         '.To.Type.FromPStypes' # 'Dotils.To.Type.FromPSTypenames' = { '.To.Type.FromPStypes', '.to.PSTypes' }
         '.To.PSTypes' # 'Dotils.To.Type.FromPSTypenames' = { '.To.Type.FromPStypes', '.to.PSTypes' }
         'Help.FromType' # 'Dotils.Help.FromType' = { 'Help.FromType', 'Help.From' }
@@ -9665,10 +9970,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Module.Format-AliasesSummary' # 'Dotils.Modulebuilder.Format-SummarizeCommandAliases' = { 'Dotils.Module.Format-AliasesSummary' }
         #
 
-        'Dotils.Is.Type' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
-        'Is.Type' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
-        '.IsType' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
-        'IsType' # 'Dotils.Debug.GetTypeInfo' = { '.IsType', 'Dotils.Is.Type', 'Is.Type', 'IsType'  }
+
 
         #
 

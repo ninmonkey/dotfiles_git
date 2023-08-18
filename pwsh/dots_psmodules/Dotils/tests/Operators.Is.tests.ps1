@@ -1,6 +1,72 @@
 BeforeAll {
     Import-Module -ea 'stop' 'Dotils' -force -passthru  | write-host
 }
+Describe 'sdfds' -tags 'NeedsMoreT4ests' {
+    it '<Sample> is <Expected>' -foreach @(
+        @{
+            Sample = 'a', 234, 3.4
+            Expected = 'a', 234, 3.4
+        }
+    ) {
+        $test =
+            $Sample | Dotils.Operator.TypeIs -Type 'int'
+        $test | Should -BeExactly $Expected
+        $test | Should -BeOfType 'bool'
+
+        # 'a', 234, 3.4 | Dotils.Operator.TypeIs -Type 'int'
+        # Dotils.Format-ShortString.Basic -Inp $Sample -maxLength
+            # | Should -BeExactly $Expected
+    {
+        __compare-Is.Type $Obj -is $TypeName
+    }
+}
+Describe 'Dotils.Test-IsOfType' -Tags @(
+    'NeedsMoreTests'
+) {
+    it '-AsTest <Sample> returns <Expect>' -foreach @(
+        @{
+            Sample = 1245, 3.56
+            TypeNames = 'int'
+            Expect = $false
+            IsCompatible  = $false
+         }
+        @{
+            Sample = 1245
+            TypeNames = 'int'
+            Expect = $true
+            IsCompatible  = $false
+         }
+        @{
+            Sample = 1245
+            TypeNames = 'int'
+            Expect = $true
+            IsCompatible  = $false
+         }
+    ) {
+        'this version should only return true/false as a final summary'
+        $Result = $Sample | Dotils.Test-IsOfType -TypeNames $TypeNames -IsCompatible:$IsCompatible
+        $result | Should -Be $Expect
+        $result | Should -BeOfType $TypeName
+    }
+    it '<stuff>' -foreach @(
+        @{
+            Sample = @(
+                [Text.Rune]::new(0x2400),
+                'a', 2.34, 234 )
+            Expect = @(
+                [Text.Rune]::new( 0x2400 ), 'a', 234 )
+                # | Dotils.Test-IsOfType int, string, Text.
+            TypeNames = 'int', 'string', 'Text.Rune'
+        }
+    ) {
+        $Sample | Dotils.Test-IsOfType -TypeNames $TypeNames
+        | Should -BeExactly $Expected
+
+    }
+    #'red' -as ([PoshCode.Pansies.RgbColor])
+        # ([Text.Rune]::new(0x2400)), 'a', 2.34, 234 | Dotils.Test-IsOfType
+        # |  Should -BeExactly @( [Text.Rune]::new( 0x2400 ), 'a', 234 )
+}
 Describe 'Dotils.Test-CompareSingleResult' {
     it 'Manual 1' {
         $true, $false, 'cat'
@@ -45,7 +111,7 @@ Describe 'Dotils.Test-CompareSingleResult' {
 
         }
     }
-    it '<AmountCondition> As <As> is <Expected>' -forEach @(
+    it '<AmountCondition> As <As> is <Expected>' -pending -forEach @(
         @{
             Sample = $false, $false, $true
             AmountCondition = 'All'

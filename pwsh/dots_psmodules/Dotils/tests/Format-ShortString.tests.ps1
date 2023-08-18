@@ -18,6 +18,24 @@ Describe 'Dotils.Format-ShortString.Basic' {
             | Should -BeExactly $Expected
     }
 }
+Describe 'Misc' {
+    it 'Format.AliasSummaryLiteral' -tag 'ExpectToBreak' -Foreach @(
+        @{
+            $Expect = @(
+                "'Dotils.Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { 'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }"
+                "'Dotils.ConvertTo.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { 'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }"
+                "'Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { 'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }"
+            )
+            FunctionName = 'Dotils.Resolve.TypeInfo'
+            AliasNames = @(  'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo'  )
+        }
+
+    ) {
+        Dotils.DebugUtil.Format.AliasSummaryLiteral -FunctionName $FunctionName -AliasNames $AliasNames
+        | Should -BeLike $Expect -because 'ManualTest,ExpectWhitespaceToFail'
+
+    }
+}
 Describe 'Dotils.Format-ShortString' {
     it '"<sample>" at <' -forEach @(
         @{
