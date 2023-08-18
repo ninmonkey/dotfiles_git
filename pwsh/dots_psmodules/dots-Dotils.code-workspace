@@ -1,4 +1,7 @@
-{ // 2023-08-14 : dotils root
+{
+
+     // 2023-08-14 : dotils root
+
 	"folders": [
 		{
 			"path": "Dotils"
@@ -7,5 +10,7 @@
 			"path": "..", "name": "dotfiles_root"
 		}
     ],
-    "settings": {}
+    "settings": {
+        "powershell.cwd": "Dotils"
+    }
 }

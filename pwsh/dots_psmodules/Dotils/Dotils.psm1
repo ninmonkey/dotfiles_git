@@ -2330,24 +2330,27 @@ function Dotils.Join.Csv {
 
 }
 function Dotils.ConvertTo.TimeSpan {
-    [OutputType('Timespan')]
+    [OutputType('Timespan', 'int')]
     [Alias(
         '.as.Timespan', '.To.TimeSpan'
     )]
     param()
-    process { $Obj = $_
-    $timespan? = if( $Obj -is 'timespan') {
-        return $Obj
-    } elseif ( $Obj.Time -is 'timespan') { # benchpress
-        return $Obj.Time
-    } elseif( $Obj.Duration -is 'timespan') {
-        return $Obj.Duration
-    } else {
-        write-warning 'No automatic timespan found, searching...'
-        throw "Unexpected type: $( $Obj | Format-ShortTypeName )"
+    process {
+        $Obj = $_
+
+        $timespan? = if( $Obj -is 'timespan') {
+            return $Obj
+        } elseif ( $Obj.Time -is 'timespan') { # benchpress
+            return $Obj.Time
+        } elseif( $Obj.Duration -is 'timespan') {
+            return $Obj.Duration
+        } else {
+            write-warning 'No automatic timespan found, searching...'
+            throw "Unexpected type: $( $Obj | Format-ShortTypeName )"
+        }
+        return $timespan?
     }
-    return $timespan?
-} }
+}
 
 function Dotils.Regex.Match.End {
     <#
@@ -6538,6 +6541,28 @@ function Dotils.Log.WriteNowHeader {
    throw 'NYI, Get original: <file:///H:\data\2023\pwsh\PsModules.dev\GitLogger.StartLocalhostAzureChildProcess.ps1>'
 }
 
+
+function Dotils.Quick.GetType {
+    <#
+    .SYNOPSIS
+        dump quick typenames, as text, interactively
+    .EXAMPLE
+        Pwsh> gcm | gt # it's distinct by default, so no spam
+    #>
+    [Alias( 'gt', '.quick.GetType' )]
+    param(
+        [hashtable]$Options
+    )
+
+    $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
+    }
+
+    $Input
+        | Dotils.Write-StatusEveryN -DelayMS 100
+        | % GetType
+        | Sort-Object -Unique
+        | Format-ShortTypeName
+}
 function Dotils.Select-NotBlankKeys {
     <#
     .SYNOPSIS
@@ -8890,6 +8915,107 @@ function Select-NameIsh {
     }
 }
 
+function Dotils.Select-TemporalFirstObject {
+    <#
+    .SYNOPSIS
+    this is the temporal analog to 'Out-Host -Paging', because it does not kill your results, it saves what it can
+     .NOTES
+        requires no scriptblock parameter
+
+        exit strategy: as Error or?
+        future:
+        - [ ]
+    .example
+        0..10 | WriteEveryN -CountStepSize 4 | OutNull
+    .example
+        0..10 | %{ Sleep -ms 10 } | WriteEveryN -DelayMS 30 | OutNull
+    .EXAMPLE
+        $res = 0..5 | %{ sleep -ms 10 ; $_ ; } | WriteEveryN -CountStepSize 3
+    .LINK
+        Dotils.Write-CountOf
+    #>
+    # [RelatedCommandsAttributeNYI('Dotils.Select-TemporalFirstObject', 'WriteEveryN')]
+    [Alias('.Select.FirstTime')]
+    [CmdletBinding()]
+    param(
+        # pass through items
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        # default 2 seconds
+        [Parameter(Mandatory, Position=0)]
+        [Alias('TimeMS', 'Ms', 'Delay', 'Milliseconds')]
+        [int]$DelayMS = 2000,
+
+        # [Parameter(Mandatory, Position=0, ParameterSetName = 'ByIterationCount')]
+        # [Alias('IterCount')]
+        # [int]$CountStepSize, # = 1000,
+
+        [Alias('InPlace')]
+        [switch]$AlwaysWriteInPlace,
+        # global to write to
+        [Parameter(Position=1)]
+        [Alias('Var')][string]$WriteToVariableName = 'dotilsTimeoutList',
+
+        # throw or nice quit?
+        [Alias('ErrorOnTimeout')]
+        [switch]$AsError,
+
+        [hashtable]$Options
+    )
+    begin {
+        [bool]$isRunning = $true
+        [datetime]$time_commandStart = [datetime]::Now
+
+        $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
+            # WriteInPlace = $false
+            # SummaryTableWriteInfoAtEnd = $true
+            # UpdateIncludesTotalElapsed = $true
+        }
+        [Collections.Generic.List[Object]]$items = @()
+
+    }
+    process {
+        $time_now = [datetime]::Now
+        # $delta = $time_now - $time_commandStart
+        # foreach($curObj in $InputObject){
+        #     $items.add( $curObj ) # do I even need one? no?
+        #     $curObj
+        # }
+        # if( $WriteToVariableName ) {
+        #     # $global:$VariableName = $Items
+        #     Set-Variable -Name $VariableName -value $items -Scope Global -Description 'global value from Dotils.Select-FirstTime' # do I even need one? no?
+        # }
+        if(-not $IsRunning) {  return  }
+
+        foreach($curObj in $InputObject){
+            $items.Add($curObj)
+            $curObj
+        }
+        $delta = $time_now - $time_commandStart
+        if($delta.TotalMilliseconds -gt $DelayMS) {
+            $delta | Ms | Write-Host -back 'darkgreen'
+            Set-Variable -name $WriteToVariableName -scope 'global' -value $items
+            # Set-Variable -Name $VariableName -value $items -Scope Global -Description 'global value from Dotils.Select-FirstTime'
+            $isRunning = $false
+
+            $errMsg = 'CommandTookTooLongException! {{ Delay: {0}, Elapsed: {1} }}' -f @(
+                $DelayMS | Ms
+                $delta | Ms
+            )
+            if( $AsError ) {
+                throw $errMsg
+            } else {
+                write-error $errMsg
+                return
+            }
+        }
+        # $Obj
+    }
+    end {
+    }
+}
+
 function Dotils.Write-StatusEveryN {
     <#
     .synopsis
@@ -8928,22 +9054,30 @@ function Dotils.Write-StatusEveryN {
         [int]$CountStepSize, # = 1000,
 
         [Alias('InPlace')]
-        [switch]$AlwaysWriteInPlace
+        [switch]$AlwaysWriteInPlace,
 
+        [hashtable]$Options
     )
     begin {
         [bool]$isUsingTimer = $CountStepSize -le 0
         [int]$curCount = 0
         [datetime]$time_commandStart = [datetime]::Now
         [datetime]$time_prevWrite = $time_commandStart
+
+        $Config = mergeHashtable -OtherHash ($Options ?? @{}) -BaseHash @{
+            WriteInPlace = $false
+            SummaryTableWriteInfoAtEnd = $true
+            UpdateIncludesTotalElapsed = $true
+        }
+
     }
     process {
-        if($AlwaysWriteInPlace) { write-error 'nyi: write in place' }
+        if($Config.WriteInPlace) { throw 'nyi: write in place' }
         $Obj = $InputObject
         $curCount++
         # double check I think the time is fixed
 
-        if( -not $isUsingTimer) {
+        if( -not $isUsingTimer -and -not $Config.UpdateIncludesTotalElapsed) {
             if($curCount % $CountStepSize -eq 0) {
                 Write-Host "   ...iter ${curCount}" -fg 'gray30'
             }
@@ -8953,7 +9087,12 @@ function Dotils.Write-StatusEveryN {
             if($delta.TotalMilliseconds -gt $DelayMS) {
                 $delta
                     | Ms | Join-String -f  "   ...{0}"
-                    | Write-Host -fg 'gray30'
+                    | Write-Host -fg 'gray30' -NoNewline
+
+                $time_commandStart - $time_now
+                    | Ms | Join-String -f  "   ...{0}"
+                    | Write-Host -fg 'gray30' -NoNewline
+                Write-Host ''
                 $time_prevWrite = $time_now
             }
         }
@@ -8962,13 +9101,16 @@ function Dotils.Write-StatusEveryN {
     end {
         $time_commandEnd = [datetime]::Now
         $time_delta = $time_commandEnd - $time_commandStart
-        @{
-            Start = $time_commandStart
-            End = $time_commandEnd
-            Duration = $time_delta
-            TotalSeconds = $time_delta | Sec # future: should be a formatter not string
-            TotalMilliSeconds = $time_delta | Ms # future: should be a formatter not string
-        } | ft -AutoSize | Out-String | Write-Information -infa 'continue'
+
+        if($Config.SummaryTableWriteInfoAtEnd) {
+            @{
+                Start = $time_commandStart
+                End = $time_commandEnd
+                Duration = $time_delta
+                TotalSeconds = $time_delta | Sec # future: should be a formatter not string
+                TotalMilliSeconds = $time_delta | Ms # future: should be a formatter not string
+            } | ft -AutoSize | Out-String | Write-Information -infa 'continue'
+        }
     }
 }
 
@@ -9009,21 +9151,154 @@ function Dotils.PSDefaultParameters.ToggleAllVerbose {
 }
 
 function Dotils.Describe.Timespan.AsSeconds {
+    <#
+    .SYNOPSIS
+        render units automatically using the right properties and format for user UX
+    .example
+        [datetime]::Now.AddMilliseconds(1234) - (get-date)
+            | Ms
+
+        #output: 1,232.97 ms
+    #>
     [Alias('Sec', '.Render.Sec')]
     param()
     process {
-    $Obj = $_
-    $Obj | Dotils.ConvertTo.TimeSpan
-         | Join-String -f '{0:n2} sec' TotalSeconds
-        # $Obj -as [timespan] } else { $null }
-} }
+        $Obj = $_
+        if($Obj -is 'int') {
+            $Obj | Join-String -f '{0:n2} sec'
+            return
+        }
+        $Obj | Dotils.ConvertTo.TimeSpan
+            | Join-String -f '{0:n2} sec' TotalSeconds
+            # $Obj -as [timespan] } else { $null }
+    }
+}
+
+function Dotils.Test-IsOfType {
+    <#
+    .SYNOPSIS
+        is it one of several types?
+    .description
+        see also, the TypeInfo is subclass
+        related:
+            Dotils.Is.SubType
+    .LINK
+        Dotils.Is.SubType
+    #>
+    [CmdletBinding(
+        # DefaultParameterSetName = 'AsRegex'
+    )]
+    [Alias(
+        '.Is.Type', '.Is.OfType'
+        )]
+    param(
+        <#
+        .SYNOPSIS
+        is a type one of types?
+
+            Dotils.Test-IsOfType ([PoshCode.Pansies.RgbColor]) -Debug -AsTest -IsCompatible -InputObject 'red'
+            Dotils.Test-IsOfType ([PoshCode.Pansies.RgbColor]) -Debug -AsTest -InputObject 'red'
+        #>
+        # A list of types to compare against, using the -is, sort of
+        [Parameter(Mandatory, Position=0, ParameterSetName='ByType')]
+        [Alias('Name', 'IsType')]
+        [ArgumentCompletions(
+            'double', 'int', 'int32', 'int64', 'uint32', 'uint64',
+            'float',
+            'Datetime', 'Timespan', 'CommandTypes'
+        )]
+        [string[]]$TypeNames,
+        [Parameter(Mandatory, Position=0, ParameterSetName='ByGroup')]
+        [Alias('Category', 'Group', 'IsKind')]
+        [ArgumentCompletions(
+            'double', 'int', 'int32', 'int64', 'uint32', 'uint64',
+            'float',
+            'Datetime', 'Timespan', 'CommandTypes'
+        )]
+        [string[]]$TypeCategoryNames,
+
+        # # literals escaped for a regex
+        # [Parameter(Mandatory, Position=0, ParameterSetName='AsLiteral')]
+        # [string]$Literal,
+
+        # # If not set, and type is not string,  tostring will end up controlling what is matched against
+        # [Parameter(Position=1)]
+        # [string]$PropertyName,
+
+        # strings, or objects to filter on
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        [switch]$AsTest,
+
+        # if it fails, maybe -as type coercion will work
+        [switch]$IsCompatible
+
+
+        # when no property is specified, usually nicer to try the property name than tostring
+        # [switch]$AlwaysTryProp = $true
+    )
+    begin {
+
+    }
+    process {
+        [bool]$anyMatches = $false
+        [bool]$ShouldReturnBool = $AsTest
+        if( [string]::IsNullOrWhiteSpace( $TypeNames ) ) {
+            throw 'BadArgumentsException: -TypeNames was empty'
+        }
+        foreach($CurObj in $InputObject) {
+            [bool]$shouldKeep? = $false
+
+            foreach($name in $TypeNames) {
+                write-debug "    Test-IsOfType: comparing CurObj is $Name"
+                if($curObj -is $Name) {
+                    $shouldKeep? = $true
+                    $anyMatches = $true
+                    break
+                }
+            }
+            # is this redundant?
+            if(-not $ShouldKeep -and $IsCompatible) {
+                write-debug "    -is compares failed, trying -as..."
+                foreach($name in $TypeNames) {
+                    write-debug "    Test-IsOfType: comparing CurObj is $Name"
+                    if($curObj -as $Name -ne $null) {
+                        $shouldKeep? = $true
+                        $anyMatches = $true
+                        break
+                    }
+                }
+            }
+            if($ShouldKeep?) {
+                $curObj
+            }
+        }
+        if( -not $MyInvocation.ExpectingInput ) {
+            return $anyMatches
+        }
+    }
+}
 function Dotils.Describe.Timespan.AsMilliseconds {
+    <#
+    .SYNOPSIS
+        render units automatically using the right properties and format for user UX
+    .example
+        [datetime]::Now.AddMilliseconds(1234) - (get-date)
+            | Ms
+
+        #output: 1,232.97 ms
+    #>
     [Alias('Ms', '.Render.Ms')]
     param()
     process {
-    $Obj = $_
-    $Obj | Dotils.ConvertTo.TimeSpan
-         | Join-String -f '{0:n2} ms' TotalMilliseconds
+        $Obj = $_
+        if($Obj -is 'int') {
+            $Obj | Join-String -f '{0:n2} ms'
+            return
+        }
+        $Obj | Dotils.ConvertTo.TimeSpan
+        | Join-String -f '{0:n2} ms' TotalMilliseconds
         # $Obj -as [timespan] } else { $null }
 } }
 
@@ -9032,6 +9307,12 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-18
+        'Dotils.Test-IsOfType' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
+        '.Is.Type' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
+        '.Is.OfType' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
+        'Dotils.Select-TemporalFirstObject'         # 'Dotils.Select-TemporalFirstObject' = { '.Select.FirstTime' }
+        'Dotils.Quick.GetType' # 'Dotils.Quick.GetType' = { 'gt', '.quick.GetType' }
         # 2023-08-15
         'Dotils.String.Transform' # 'Dotils.String.Transform' = { '.str.Transform' }
         'Dotils.Render.TextTreeLine' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
@@ -9222,6 +9503,13 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-18
+        '.Is.Type' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
+        '.Is.OfType'  # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType' }
+
+        '.Select.FirstTime' # 'Dotils.Select-TemporalFirstObject' = { '.Select.FirstTime' }
+        'gt' # 'Dotils.Quick.GetType' = { 'gt', '.quick.GetType' }
+        '.quick.GetType' # 'Dotils.Quick.GetType' = { 'gt', '.quick.GetType' }(
         # 2023-08-15
         '.str.Transform' # 'Dotils.String.Transform' = { '.str.Transform' }
         '.Render.TreeItem' # 'Dotils.Render.TextTreeLine'  = { '.Render.TreeItem', '.Render.TreeLine' }
