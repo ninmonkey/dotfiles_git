@@ -206,6 +206,48 @@ public TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds,
 
     }
 }
+function Dotils.Compare.Duplicates {
+    param(
+        [Parameter(Position=0)]
+        [string]$PropertyName = 'Name',
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    $query =
+        $InputObject
+            | CountOf 'total'
+            | Group $PropertyName
+            | CountOf "group.${PropertyName}"
+
+    $Unique =
+        $query
+            | ? Count -eq 1 | CountOf 'Uniques'
+    $dupes =
+        $query
+            | ? Count -ne 1 | CountOf 'DuplicatesCount'
+
+    if($PassTHru) {
+        return [pscustomobject]@{
+            Unique = $Unique
+            Duplicates = $Dupes
+        }
+    }
+
+    throw 'left off here'
+    @'
+        $Module = 'dotils'
+        gcm -Module $Module * | CountOf 'gcm' | Group Name | CountOf 'group.Name' | ? Count -gt 1 | CountOf 'DuplicatesCount'
+        hr
+        gcm -Module $Module | CountOf 'gcm' | Group Name | CountOf 'group.Name' | ? Count -gt 1 | CountOf 'DuplicatesCount'
+        hr
+        gmo $Module | % ExportedCommands | % Keys | CountOf 'Keys' | OutNull
+
+'@
+
+}
+
+
 function Dotils.To.Encoding {
     <#
     .SYNOPSIS
@@ -2595,7 +2637,10 @@ function Dotils.Regex.Split {
 
         [Parameter(Mandatory, Position=0, ParameterSetName='FromTemplate')]
         [ValidateSet(
-            'LineEnding', 'NL', 'NLCR' )]
+            'LineEnding', 'NL', 'NLCR'
+            # 'Segment.Word',
+            # 'Segment.CaseChange'
+                )]
         [Alias('As', 'From', 'Template')][string]$AsTemplate,
 
 
@@ -2654,6 +2699,8 @@ function Dotils.Regex.Split {
                     'NL'         { $buildRegex = '\n' }
                     'Csv'         { $buildRegex = ',\s*' }
                     'NLCR'       { $buildRegex = '\r?\n' }
+                    # 'Segment.Word' { $buildRegex = '\W+' }
+                    # 'Segment.CaseChange' { $buildRegex = '.' }
                     { $true } {
                     }
                     default { "Unexpected Template: $( $AsTemplate )"}
@@ -9212,6 +9259,8 @@ function Dotils.Resolve.TypeInfo {
         Get the type of an object, either, [1] it is already a typeinfo, [2] is the name of a type, [3] GetType()
     .DESCRIPTION
         Get the type of an object, either, [1] it is already a typeinfo, [2] is the name of a type, [3] GetType()
+    .EXAMPLE
+        'CommandInfo' | Resolve.TypeInfo
     #>
     [Alias(
         'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo'
@@ -9228,8 +9277,11 @@ function Dotils.Resolve.TypeInfo {
         if($InputObject -is 'type') {
             return $InputObject
         }
-        if($inputObject -is 'string') {
+        if($inputObject -is 'string' -and $InputObject -as 'type') {
             return $InputObject -as 'type'
+        }
+        if($InputObject -is 'string') {
+            return Find-type -Name $InputObject
         }
         return ($InputObject)?.GetType()
     }
@@ -9387,32 +9439,100 @@ w
 
 function __compare-Is.Type {
     # do I ever want to use type base name, because you can't always instantiate it
+    # by default error on nulls
+    <#
+    .SYNOPSIS
+    .DESCRIPTION
+        silently allow nulls by default, to prevent parameter binding errors
+    #>
+    [CmdletBinding()]
     [OutputType('bool')]
     param(
+        # treat left as an object or type info
+        [AllowNull()]
         [Parameter(Mandatory, Position=0)]
+        [Alias('Left')]
         $InputObject,
 
+        # test if it's the type right, or has the typeinfo
         [Alias('Is')]
+        [AllowNull()]
+        [Alias('Right')]
         [Parameter(Mandatory, Position=1)]
         [object]$TypeName,
 
-        # Don't instantiate
-        [Alias('AsString')][switch]$CompareString
+        # # Don't instantiate
+        # [Alias('AsString')][switch]$CompareString,
+
+        [switch]$AllowNull
     )
-    if(-not $CompareString) {
-        return $Input -is $TypeName
+    $Left  = $InputObject
+    $Right = $TypeName
+    if(-not $AllowNull) {
+        if( ($null -eq $Left) -or ($null -eq $Right) ) {
+            throw 'NullArgumentException!'
+        }
     }
+    if($AllowNull) {
+        if (($null -eq $Left) -or ($null -eq $Right)) {
+            return $false
+        }
+    }
+    if($left -eq $Right) { return $true }
+    if($left -is $Right) { return $true }
 
-    $tinfo = Resolve.TypeInfo -InputObject $InputObject
-    $shortName = $tinfo.Name
-    return $ShortName -eq $TypeName
-
-    $InputObject -is $TypeName
-    # $InputObject.GetType()
+    $tinfo_left  = Resolve.TypeInfo -InputObject $Left
+    $tinfo_right = Resolve.TypeInfo -InputObject $Right
+    Join-String -inp $Tinfo, $right -p Name -sep ', ' -op '__compare-Is.Type: =>  ' | write-debug
+    if($tinfo_left -eq $tinfo_right) { return $true }
+    if($tinfo_left.Name -eq $right) { return $true }
+    if($tinfo_left -as $right -ne $Null) { return $true }
+    return $false
 }
 
 
 # [rgbcolor].FullName, 'int', (get-date) | Resolve.TypeInfo | Should -BeOfType 'type'
+function Dotils.Resolve.Command {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+    )
+    process {
+        $InputObject | Format-ShortTypeName | Join-String -op 'typeof: ' | write-verbose
+        <#
+        props:
+            .Module # -is [PSModuleInfo]
+            .CommandType # -is [CommandType]
+
+            # ... -is [string]
+            Definition, ModuleName, Name, Source
+
+        alias info:
+            $InputObject| iot2
+
+        Name                Reported                                                                                  Value
+        ----                --------                                                                                  -----
+        CommandType         [CommandTypes]                                                                            Alias
+        Definition          [string]                                                   Ninmonkey.Console\Write-ConsoleLabel
+        DisplayName         [object]                                                            Label -> Write-ConsoleLabel
+        Module              [PSModuleInfo]                                                                Ninmonkey.Console
+        ModuleName          [string]                                                                      Ninmonkey.Console
+        Name                [string]                                                                                  Label
+        Options             [ScopedItemOptions]                                                                        None
+        Parameters          [Dictionary<string, ParameterMetadata>] …tor, System.Management.Automation.ParameterMetadata]…}
+        ReferencedCommand   [CommandInfo]                                                                Write-ConsoleLabel
+        RemotingCapability  [RemotingCapability]                                                                 PowerShell
+        ResolvedCommand     [CommandInfo]                                                                Write-ConsoleLabel
+        ResolvedCommandName [object]                                                                     Write-ConsoleLabel
+        Source              [string]                                                                      Ninmonkey.Console
+        Version             [Version]                                                                                0.2.49
+        Visibility          [SessionStateEntryVisibility]                                                            Public
+
+        #>
+        Wait-Debugger
+    }
+}
 
 function Dotils.Test-IsOfType.Basic {
     <#
@@ -9605,6 +9725,9 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-18
+        '__compare-Is.Type'
+        'Dotils.Resolve.Command'
+        'Dotils.Compare.Duplicates'
         'Dotils.Resolve.TypeInfo'          # 'Dotils.Resolve.TypeInfo' = { Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }
         'Dotils.DebugUtil.Format.AliasSummaryLiteral'
         'Dotils.Test-IsOfType.FancyWip' # 'Dotils.Test-IsOfType.FancyWip' = { }
