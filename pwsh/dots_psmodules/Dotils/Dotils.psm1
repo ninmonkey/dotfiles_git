@@ -9491,6 +9491,80 @@ function __compare-Is.Type {
 }
 
 
+function Dotils.PStyle.Color.Gray {
+    [Alias(
+        'Dotils.Color.Gray', 'c.Gray')]
+    param(
+        # inte
+        [Parameter(Position = 0)]
+        [ValidateSet('Fg', 'Bg', 'Foreground', 'Fore', 'Background', 'Back', 'Both')]
+        [string]$ColorMode = 'Fg',
+
+        # gray on the range [0.0 - 1.0] , or, Integer on the range [0, 100]
+        [Parameter(Position = 1)]
+        $Ratio = 0.8
+    )
+    if($Ratio -is 'int') {
+        $Ratio = $Ratio / 100
+    }
+    $g = 255 * $Ratio
+    $g = [math]::Clamp( $g, 0, 255 )
+    switch($ColorMode) {
+        'Both' {
+            $PSStyle.Foreground.FromRgb( $g, $g, $g )
+            $PSStyle.Background.FromRgb( $g, $g, $g )
+        }
+        { $_ -in 'Fg', 'Foreground', 'Fore' } {
+            $PSStyle.Foreground.FromRgb( $g, $g, $g )
+        }
+        { $_ -in 'Bg', 'Background', 'Back' } {
+            $PSStyle.Background.FromRgb( $g, $g, $g )
+        }
+        default { throw "ShouldNeverReachException: UnhandledMode $ColorMode" }
+    }
+}
+function Dotils.PStyle.Color.Hex {
+    <#
+    .example
+        gci env:\ | %{
+            $c = c.Gray Fg .4
+            if( $_ | .Is.DirectPath ) {
+                $c = c.Gray Fg .7
+            }
+            $_.Name | Join-String -op ($c)
+            $_.value | Join-String -op (c.Hex fg '#dbdca8')
+        }
+    #>
+    [Alias(
+        'Dotils.Color.Hex', 'c.Hex')]
+    param(
+        [Parameter(Position = 0)]
+        [ValidateSet('Fg', 'Bg', 'Foreground', 'Fore', 'Background', 'Back', 'Both')]
+        [string]$ColorMode = 'Fg',
+
+        [Parameter(Position = 1)]
+        $ColorHex
+    )
+    $Regex = @{
+        Is6DigitHexWithoutPrefix = '^[a-fA-F0-9]{6}$'
+    }
+    if($ColorHex -match $regex.Is6DigitHexWithoutPrefix ) {
+        $ColorHex = "#${ColorHex}"
+    }
+    switch($ColorMode) {
+        'Both' {
+            $PSStyle.Foreground.FromRgb( $ColorHex )
+            $PSStyle.Background.FromRgb( $ColorHex )
+        }
+        { $_ -in 'Fg', 'Foreground', 'Fore' } {
+            $PSStyle.Foreground.FromRgb( $ColorHex )
+        }
+        { $_ -in 'Bg', 'Background', 'Back' } {
+            $PSStyle.Background.FromRgb( $ColorHex )
+        }
+        default { throw "ShouldNeverReachException: UnhandledMode $ColorHex" }
+    }
+}
 # [rgbcolor].FullName, 'int', (get-date) | Resolve.TypeInfo | Should -BeOfType 'type'
 function Dotils.Resolve.Command {
     [CmdletBinding()]
@@ -9500,6 +9574,15 @@ function Dotils.Resolve.Command {
     )
     process {
         $InputObject | Format-ShortTypeName | Join-String -op 'typeof: ' | write-verbose
+        switch($InputObject) {
+            { $_ -is 'Management.Automation.AliasInfo'} {
+                $_.ResolvedCommand
+            }
+            default {
+                write-verbose "DefaultHandlingFallback: For $($InputOBject | Format-ShortTypeName)"
+                $_
+            }
+        }
         <#
         props:
             .Module # -is [PSModuleInfo]
@@ -9528,6 +9611,11 @@ function Dotils.Resolve.Command {
         Source              [string]                                                                      Ninmonkey.Console
         Version             [Version]                                                                                0.2.49
         Visibility          [SessionStateEntryVisibility]                                                            Public
+
+        [FunctionInfo]
+            [ScopedItemOptions]
+            [CommandTypes]
+            [PSModuleInfo]
 
         #>
         Wait-Debugger
@@ -9725,6 +9813,8 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-18
+        'Dotils.PStyle.Color.Gray' # 'Dotils.PStyle.Color.Gray' = { 'Dotils.Color.Gray', 'C.Gray' }
+        'Dotils.PStyle.Color.Hex' # 'Dotils.PStyle.Color.Hex' = { 'Dotils.Color.Hex', 'c.Hex' }
         '__compare-Is.Type'
         'Dotils.Resolve.Command'
         'Dotils.Compare.Duplicates'
@@ -9926,6 +10016,11 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-08-18
+        'Dotils.Color.Hex' # 'Dotils.PStyle.Color.Hex' = { 'Dotils.Color.Hex', 'c.Hex' }
+        'c.Hex' # 'Dotils.PStyle.Color.Hex' = { 'Dotils.Color.Hex', 'c.Hex' }
+
+        'Dotils.Color.Gray' # 'Dotils.PStyle.Color.Gray' = { 'Dotils.Color.Gray', 'C.Gray' }
+        'c.Gray' # 'Dotils.PStyle.Color.Gray' = { 'Dotils.Color.Gray', 'C.Gray' }
         'Resolve.TypeInfo'          # 'Dotils.Resolve.TypeInfo' = { Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }
         'Dotils.ConvertTo.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }
 
@@ -10184,3 +10279,4 @@ function Dotils.Stash-NewFileBuffer {
 
 # Dotils.Testing.Validate.ExportedCmds
 
+"left off '<H:\data\2023\pwsh\temp-describe-sketch.ps1>'" | write-host -back 'darkyellow'
