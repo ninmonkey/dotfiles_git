@@ -24,6 +24,22 @@ sleep 0.3
 #     $Input | Group { $_.GetType() | Format-ShortTypeName } -NoElement
 # }
 
+function Nin.Posh.ConvertTo.TimeSpan {
+    [OutputType('Timespan')]
+    [Alias('.np.to.Timespan')]
+    param()
+    process { $Obj = $_
+    $timespan? = if( $Obj -is 'timespan') {
+        return $Obj
+    } elseif ( $Obj.Time -is 'timespan') {
+        return $Obj.Time
+    } elseif( $Obj.Duration -is 'timespan') {
+        return $Obj.Duration
+    } else {
+        throw "Unexpected type: $( $Obj | Format-ShortTypeName )"
+    }
+    return $timespan?
+} }
 
 function Nin.Posh.GroupBy.TypeName {
     <#
@@ -175,5 +191,4 @@ function NinPosh.Write-ErrorRecency {
         default { "UnhandledFormat: $OutputFormat "}
     }
 }
-
 
