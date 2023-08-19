@@ -20,7 +20,15 @@ custom attributes, more detailed info
 
 
 
-Set-Alias -Name 'Json.From' -Value 'ConvertFrom-Json'
+Set-Alias -PassThru -Name 'Json.From' -Value 'ConvertFrom-Json'
+New-Alias -PassThru -ea 'ignore' -Name 'fa' -value '__format-TableAuto' -desc 'profile sugar'
+
+function __format-TableAuto {
+    # [Alias('fa')] # better as a cmd to be less clobber?
+    param()
+    # profile sugar
+    $Input | ft -auto
+}
 
 Remove-Module Pipeworks -ea 'ignore' # because it overrides pansies|write-host
 Import-Module pansies

@@ -46,8 +46,9 @@ function Nin.Posh.GroupBy.TypeName {
     .SYNOPSIS
         conditionally group
     .notes
-        later coiuld
+        later could
     #>
+    [CmdletBinding()]
     [Alias('GroupBy.TypeName')]
     param(
         [Parameter(Position=0)]
@@ -67,30 +68,39 @@ function Nin.Posh.GroupBy.TypeName {
 
         [switch]$NoElement
     )
-
-    $InputObject | Group-Object -NoElement:$NoElement {
-        $curObj = $_
-        $tinfo = $curObj.GetType()
-        $value = switch($TypeKind) {
-            'ShortType' {
-                $curObj | Format-ShortTypeName
+    begin {
+        [Collections.Generic.List[Object]]$items =  @()
+    }
+    process {
+        foreach($Item in $InputObject) { $items.add( $Item ) }
+    }
+    end {
+        $items | Group-Object -NoElement:$NoElement {
+            $curObj = $_
+            $tinfo = $curObj | Resolve.TypeInfo
+            # $tinfo = $curObj.GetType()
+            $value = switch($TypeKind) {
+                'ShortType' {
+                    $curObj | Format-ShortTypeName
+                }
+                'Name' { $tinfo.Name }
+                'NameSpace' { $tinfo.Namespace, $tinfo.Name }
+                'NameSpace' { $tinfo.Namespace }
+                'PSTypes' { $tinfo.Namespace }
+                'FullName' { $tinfo.FullName }
+                default {
+                    throw "Unhandled TypeKind: $TypeKind"
+                }
             }
-            'Name' { $tinfo.Name }
-            'NameSpace' { $tinfo.Namespace, $tinfo.Name }
-            'NameSpace' { $tinfo.Namespace }
-            'PSTypes' { $tinfo.Namespace }
-            'FullName' { $tinfo.FullName }
-            default {
-                throw "Unhandled TypeKind: $TypeKind"
-            }
+            $value | write-debug
+            return $value
         }
-        return $value
     }
 }
 
 function NinPosh.Group-Kind {
     param(
-        # What kind? fuzyz?
+        # What kind? fuzzy ?
         [Alias('Kind', 'Name')]
         [Parameter( Position=0 )]
         [ValidateSet(
@@ -191,4 +201,3 @@ function NinPosh.Write-ErrorRecency {
         default { "UnhandledFormat: $OutputFormat "}
     }
 }
-

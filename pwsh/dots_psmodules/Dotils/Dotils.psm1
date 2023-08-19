@@ -1755,7 +1755,12 @@ function Dotils.Has.Property {
         $InputObject,
 
         [Parameter(Position = 1)]
-        [ValidateSet('Exists', 'IsNotBlank')]
+        [ValidateSet(
+            'Exists',
+            'IsNotBlank',
+            'IsNull', 'IsNotNull',
+            'IsBlank',
+            'IsNull.AndExists')]
         [string]$TestKind = 'Exists',
 
         # returns bool instead
@@ -1764,26 +1769,37 @@ function Dotils.Has.Property {
     )
 
     process {
-        $toKeep = $false
-        $exists = $InputObject.PSObject.Properties.Name -contains $PropertyName
-        $isNotBlank = -not [string]::IsNullOrWhiteSpace( $InputObject.$PropertyName )
+        # $toKeep     = $false
+        $exists     = $InputObject.PSObject.Properties.Name -contains $PropertyName
+        $PropValue  = ($InputObject)?.$PropertyName
+        $isNotBlank = -not [string]::IsNullOrWhiteSpace( $PropValue )
+        $isBlank    = [string]::IsNullOrWhiteSpace( $PropValue )
+        $isTrueNull = $null -eq $PropValue
 
         switch($TestKind){
             'Exists' {
-                if($AsTest){
-                    return $exists
-                }
-                if($exists) {
-                    return $InputObject
-                }
+                if($AsTest) { return $exists }
+                if($exists) { return $InputObject }
             }
             'IsNotBlank' {
-                if($AsTest){
-                    return $isNotBlank
-                }
-                if($IsNotBlank){
-                    return $InputObject
-                }
+                if($AsTest) { return $isNotBlank }
+                if($IsNotBlank) { return $InputObject }
+            }
+            'IsBlank' {
+                if($AsTest) { return $IsBlank }
+                if($IsBlank) { return $InputObject }
+            }
+            'IsNull' {
+                if($AsTest) { return $isTrueNull }
+                if($isTrueNull) { return $InputObject }
+            }
+            'IsNotNull' {
+                if($AsTest) { return -not $isTrueNull }
+                if(-not $isTrueNull) { return $InputObject }
+            }
+            'IsNull.AndExists' {
+                if($AsTest) { return $exists -and $isTrueNull }
+                if($exists -and $isTrueNull) { return $InputObject }
             }
             default { throw "UnhandledTestKind: '$TestKind'"}
         }
