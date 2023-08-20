@@ -7,6 +7,7 @@ $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $P
     Set-Alias 'Yaml.From' -Value 'powershell-yaml\ConvertFrom-Yaml'
 )
 
+write-warning 'fix: Obj | .Iter.Prop'
 
 # function Dotils.Resolve.TypeInfo.WithDefault {
 #     <#
@@ -2396,9 +2397,15 @@ function Dotils.Join.Csv {
     $Input | Join-String -sep $Separator
 
 }
-function Dotils.ConvertTo.TimeSpan {
+function Dotils.ConvertTo-TimeSpan {
+    <#
+    .EXAMPLE
+        Measure-BasicScriptBlockExecution -ScriptBlock { get-module | outnull }
+            | Ms # outputs: 9.61 ms
+    #>
     [OutputType('Timespan', 'int')]
     [Alias(
+        'Dotils.ConvertTo.TimeSpan',
         '.as.Timespan', '.To.TimeSpan'
     )]
     param()
@@ -2411,6 +2418,8 @@ function Dotils.ConvertTo.TimeSpan {
             return $Obj.Time
         } elseif( $Obj.Duration -is 'timespan') {
             return $Obj.Duration
+        } elseif( $Obj.Elapsed -is 'timespan') {
+            return $Obj.Elapsed
         } else {
             write-warning 'No automatic timespan found, searching...'
             throw "Unexpected type: $( $Obj | Format-ShortTypeName )"
@@ -9233,16 +9242,22 @@ function Dotils.Describe.Timespan.AsSeconds {
 
         #output: 1,232.97 ms
     #>
+    [OutputType('String')]
     [Alias('Sec', '.Render.Sec')]
     param()
     process {
         $Obj = $_
+        [string]$render = ''
         if($Obj -is 'int') {
-            $Obj | Join-String -f '{0:n2} sec'
-            return
+            $render = $Obj | Join-String -f '{0:n2} sec'
+        } else {
+            $render = $Obj | Dotils.ConvertTo.TimeSpan
+                | Join-String -f '{0:n2} sec' TotalSeconds
         }
-        $Obj | Dotils.ConvertTo.TimeSpan
-            | Join-String -f '{0:n2} sec' TotalSeconds
+        if($render -match '0\.00\b\s+sec') {
+            write-verbose 'possible lost precision rounding from a non-zero'
+        }
+        return $render
             # $Obj -as [timespan] } else { $null }
     }
 }
@@ -9807,7 +9822,14 @@ function Dotils.Describe.Timespan.AsMilliseconds {
             | Ms
 
         #output: 1,232.97 ms
+    .LINK
+        Dotils.Describe.Timespan.AsMilliseconds
+    .LINK
+        Dotils.Describe.Timespan.AsSeconds
+    .LINK
+        Dotils.Format.Datetime
     #>
+    [OutputType('String')]
     [Alias('Ms', '.Render.Ms')]
     param()
     process {
@@ -9821,7 +9843,7 @@ function Dotils.Describe.Timespan.AsMilliseconds {
         # $Obj -as [timespan] } else { $null }
 } }
 
-function Dotils.Format.Datetime {
+function Dotils.Format-Datetime {
     <#
     .synopsis
         suger for some datetimes
@@ -9834,7 +9856,7 @@ function Dotils.Format.Datetime {
     .link
         Dotils.Format.Datetime
     #>
-    [Alias('.fmt.Datetime')]
+    [Alias('.fmt.Datetime', 'Dotils.Format.Datetime')]
     [CmdletBinding()]
     param(
         # nyi: todo: completers will show descriptions
@@ -9887,7 +9909,8 @@ $exportModuleMemberSplat = @{
     Function = @(
         # 2023-08-20
         'Dotils.Select-Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
-        'Dotils.Format.Datetime' # 'Dotils.Format.Datetime' = { '.fmt.Datetime' }
+        'Dotils.Format-Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
+        'Dotils.ConvertTo-TimeSpan' # 'Dotils.ConvertTo-TimeSpan' = { '.to.Timespan', '.as.Timespan', 'Dotils.ConvertTo.Timespan' }
 
 
         # 2023-08-18
@@ -9915,7 +9938,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Describe.Timespan.AsSeconds' # 'Dotils.Describe.Timespan.AsSeconds' = { 'Sec', 'Ms', '.Render.Sec', '.Render.Ms' }
         'Dotils.Describe.Timespan.AsMilliseconds' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
 
-        'Dotils.ConvertTo.TimeSpan' # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
+
         'Dotils.Test-AllResults' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
         'Dotils.Test-CompareSingleResult' # 'Dotils.Test-CompareSingleResult' = { }
         'Dotils.Operator.TypeIs' # 'Dotils.Operator.TypeIs' = { 'Is', '.Is.Type', 'Op.Is' }(
@@ -10093,7 +10116,8 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-08-20
-        '.fmt.Datetime' # 'Dotils.Format.Datetime' = { '.fmt.Datetime' }
+        '.fmt.Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
+        'Dotils.Format.Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
         'Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
         'Select.Namish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
 
@@ -10132,9 +10156,8 @@ $exportModuleMemberSplat = @{
         '.Render.Ms' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
         'Ms' # 'Dotils.Describe.Timespan.AsMilliseconds' = { 'Ms', '.Render.Ms' }
 
-        # 'Dotils.ConvertTo.TimeSpan' # 'Dotils.ConvertTo.TimeSpan' = {
-        '.to.Timespan'  # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
-        '.as.Timespan'  # 'Dotils.ConvertTo.TimeSpan' = { '.to.Timespan', '.as.Timespan' }
+        '.to.Timespan'  # 'Dotils.ConvertTo-TimeSpan' = { '.to.Timespan', '.as.Timespan', 'Dotils.ConvertTo.TimeSpan' }
+        '.as.Timespan'  # 'Dotils.ConvertTo-TimeSpan' = { '.to.Timespan', '.as.Timespan', 'Dotils.ConvertTo.TimeSpan' }
 
 
         '.test' # 'Dotils.Test-AllResults' =  { '.test', '.Assert', 'Assert', 'Test-Results' }
