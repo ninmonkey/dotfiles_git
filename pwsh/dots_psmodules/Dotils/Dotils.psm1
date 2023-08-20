@@ -439,6 +439,93 @@ function Dotils.Select.Some {
     throw 'nyi; or requires confirmation; mark;'
 }
 
+function Dotils.Get-UsingStatement {
+    <#
+    .SYNOPSIS
+        remember using statements
+    #>
+    [CmdletBinding()]
+    param(
+        # if no params, return valid keys
+        [Parameter(Position=0)]
+        [validateSet(
+            'sma', 'Generic', 'Collections', 'Management.Automation', 'Linq'
+        )]
+        [string[]]$TemplateName,
+        [switch]$IncludeSystemNamespace,
+
+        [Alias('NoClip')][switch]$NeverSetClipboard
+    )
+    $Config = @{
+        AlwaysCopy = $true
+        StripPrefix_SystemNamespace = $true
+    }
+    if($PSBoundParameters.ContainsKey('NeverSetClipboard')) {
+        $Config.AlwaysCopy = -not $NeverSetClipboard
+    }
+    if($PSBoundParameters.ContainsKey('IncludeSystemNamespace')) {
+        $Config.StripPrefix_SystemNamespace = -not $IncludeSystemNamespace
+    }
+    $Config.StripPrefix_SystemNamespace = $true
+    $PSCmdlet.MyInvocation.BoundParameters
+        | ConvertTo-Json -Depth 0 -Compress
+        | Join-String -op 'Get-UsingStatement: ' -sep "`n"
+        | write-verbose
+
+    [string[]]$render = @(
+        switch($TemplateName) {
+            'Xml' {
+                'System.Xml'
+            }
+            'Linq' {
+                'System.Linq'
+                'System.Linq.Expressions'
+                'System.Linq.Expressions.Interpreter'
+                'System.Xml.Linq'
+            }
+            'Linq.Extra' {
+                'Newtonsoft.Json.Linq'
+                'Newtonsoft.Json.Serialization'
+                'System.Linq'
+                'System.Linq.Expressions'
+                'System.Linq.Expressions.Interpreter'
+                'System.Reactive.Linq'
+                'System.Xml.Linq'
+            }
+            'CodeAnalysis' {
+                'Microsoft.CodeAnalysis'
+                'Microsoft.CodeAnalysis.CSharp'
+                'Microsoft.CodeAnalysis.CSharp.Syntax'
+                'Microsoft.CodeAnalysis.Diagnostics'
+                'Microsoft.CodeAnalysis.Diagnostics.Telemetry'
+                'Microsoft.CodeAnalysis.Emit'
+                'Microsoft.CodeAnalysis.FlowAnalysis'
+                'Microsoft.CodeAnalysis.Operations'
+                'Microsoft.CodeAnalysis.Text'
+            }
+            'ImportExcel' {
+                'OfficeOpenXml'
+                'OfficeOpenXml.Style.XmlAccess'
+            }
+            { $_ -in 'Generic', 'Collections' } {
+                'System.Collections.Generic'
+            }
+            { $_ -in @( 'sma', 'Management.Automation' ) } {
+                'System.Management.Automation'
+            }
+            default { throw "UnhandledTemplate: $TemplateName"}
+        }
+    ) | sort-Object -Unique
+    if($Config.StripPrefix_SystemNamespace) {
+        $render =
+            [regex]::Replace( $render, '^System\.', '', 'multiline')
+    }
+    $render = $render | Join-String -f "`nusing namespace {0}"
+    if($Config.AlwaysCopy) {
+        return $render | Set-Clipboard -PassThru
+    }
+    $render
+}
 function Dotils.Select.One {
     # [Alias('First')]
     <#
@@ -2399,6 +2486,8 @@ function Dotils.Join.Csv {
 }
 function Dotils.ConvertTo-TimeSpan {
     <#
+    .DESCRIPTION
+        todo: future: - [ ] make an [ArgTransformation] which uses this, but still expose this Cmdlet
     .EXAMPLE
         Measure-BasicScriptBlockExecution -ScriptBlock { get-module | outnull }
             | Ms # outputs: 9.61 ms
@@ -9908,6 +9997,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-20
+        'Dotils.Get-UsingStatement' # 'Dotils.Get-UsingStatement' = { }
         'Dotils.Select-Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
         'Dotils.Format-Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
         'Dotils.ConvertTo-TimeSpan' # 'Dotils.ConvertTo-TimeSpan' = { '.to.Timespan', '.as.Timespan', 'Dotils.ConvertTo.Timespan' }
