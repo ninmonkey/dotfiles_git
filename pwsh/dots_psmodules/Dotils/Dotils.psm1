@@ -443,6 +443,24 @@ function Dotils.Get-UsingStatement {
     <#
     .SYNOPSIS
         remember using statements
+    .EXAMPLE
+        Pwsh> Dotils.Get-UsingStatement Collections
+        # output:
+        using namespace Collections.Generic
+
+        Pwsh> Dotils.Get-UsingStatement Collections -IncludeSystemNamespace
+        # output:
+        using namespace System.Collections.Generic
+
+    .EXAMPLE
+        Dotils.Get-UsingStatement -NoClip Linq
+
+        # output:
+        using namespace Linq
+        using namespace Linq.Expressions
+        using namespace Linq.Expressions.Interpreter
+        using namespace Xml.Linq
+
     #>
     [CmdletBinding()]
     param(
@@ -466,7 +484,7 @@ function Dotils.Get-UsingStatement {
     if($PSBoundParameters.ContainsKey('IncludeSystemNamespace')) {
         $Config.StripPrefix_SystemNamespace = -not $IncludeSystemNamespace
     }
-    $Config.StripPrefix_SystemNamespace = $true
+    # $Config.StripPrefix_SystemNamespace = $true
     $PSCmdlet.MyInvocation.BoundParameters
         | ConvertTo-Json -Depth 0 -Compress
         | Join-String -op 'Get-UsingStatement: ' -sep "`n"
@@ -515,12 +533,13 @@ function Dotils.Get-UsingStatement {
             }
             default { throw "UnhandledTemplate: $TemplateName"}
         }
-    ) | sort-Object -Unique
+    )   | sort-Object -Unique
+        | Join-String -f "`nusing namespace {0}"
+
     if($Config.StripPrefix_SystemNamespace) {
         $render =
-            [regex]::Replace( $render, '^System\.', '', 'multiline')
+            [regex]::Replace( $render, '^using namespace System\.', 'using namespace ', 'multiline')
     }
-    $render = $render | Join-String -f "`nusing namespace {0}"
     if($Config.AlwaysCopy) {
         return $render | Set-Clipboard -PassThru
     }
