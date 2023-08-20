@@ -8836,7 +8836,7 @@ function Dotils.Excel.Write.Sheet.Name {
 
 }
 
-function Select-NameIsh {
+function Dotils.Select-NameIsh {
     <#
     .SYNOPSIS
         Select propert-ish categories, wildcard searching for frequent kinds
@@ -8854,9 +8854,7 @@ function Select-NameIsh {
         Dotils.Select-Namish
     #>
     [Alias(
-        'Nameish', 'Dotils.NameIsh',
-        'Namish'
-        )]
+        'Select.Namish', 'NameIsh' )]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, position = 0)]
@@ -9634,7 +9632,7 @@ function Dotils.Resolve.Command {
             [PSModuleInfo]
 
         #>
-        Wait-Debugger
+        # Wait-Debugger
     }
 }
 
@@ -9823,11 +9821,75 @@ function Dotils.Describe.Timespan.AsMilliseconds {
         # $Obj -as [timespan] } else { $null }
 } }
 
+function Dotils.Format.Datetime {
+    <#
+    .synopsis
+        suger for some datetimes
+    .notes
+    wip: future: autobuild this list for a dynamically updated
+    .link
+        Dotils.Describe.Timespan.AsMilliseconds
+    .link
+        Dotils.Describe.Timespan.AsSeconds
+    .link
+        Dotils.Format.Datetime
+    #>
+    [Alias('.fmt.Datetime')]
+    [CmdletBinding()]
+    param(
+        # nyi: todo: completers will show descriptions
+        [Parameter()]
+        [ArgumentCompletions(
+            'o', 'u', 'ShortDate', 'ShortTime'
+        )]
+        [string]$TemplateName = 'template',
+
+        [Parameter(mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias(
+            'LastWriteTime', 'Date', 'Datetime', 'When', 'Time'
+        )]
+        [object]$InputObject
+    )
+    $ResolvedFormatString = switch( $TemplateName ) {
+        'ShortDate' { 'd' }
+        'ShortTime' { 't' }
+        default { $PSItem }
+    }
+    $Config = nin.MergeHash -other $Options -base @{
+        Culture = 'en-us'
+    }
+    $InputObject | Format-ShortTypeName | Join-String -op 'Format.Datetime => ' | write-verbose
+    switch($InputObject) {
+        ($_ -is 'datetime') {
+            $Target = $_
+        }
+        ({ .Has.Prop LastWriteTime Exists -AsTest -Inp $_ }) {
+            $Target = $_.LastWriteTime
+        }
+        { $_ -is 'string' } {
+            $Target = $_ -as 'datetime'
+        }
+        default {
+            'invalid type? {0} attempt to coerce to datetime' -f @( $_ | Format-ShortTypeName )  | write-verbose
+            $target = $_ -as 'datetime'
+        }
+    }
+    if($null -eq $Target) {
+        'invalid type, could not find a datetime! {0}' -f @( $_ | Format-ShortTypeName ) | write-error
+        return
+    }
+    $Target = if($InputObject -is 'datetime') { $InputObject } else { $InputObject.CreationTime }
+}
 
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-20
+        'Dotils.Select-Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
+        'Dotils.Format.Datetime' # 'Dotils.Format.Datetime' = { '.fmt.Datetime' }
+
+
         # 2023-08-18
         'Dotils.PStyle.Color.Gray' # 'Dotils.PStyle.Color.Gray' = { 'Dotils.Color.Gray', 'C.Gray' }
         'Dotils.PStyle.Color.Hex' # 'Dotils.PStyle.Color.Hex' = { 'Dotils.Color.Hex', 'c.Hex' }
@@ -9939,7 +10001,6 @@ $exportModuleMemberSplat = @{
         'Dotils.Quick.History' # 'Dotils.Quick.History' = { '.quick.History', 'QuickHistory' }
         # 2023-07-29
         'Dotils.Text.Wrap' # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
-        'Dotils.Select-NameIsh' # 'Dotils.NameIsh' = { 'Nameish', 'Namish' }
         'Dotils.md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
         'Dotils.d.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
         'Dotils.GetAt' # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
@@ -10031,6 +10092,11 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-20
+        '.fmt.Datetime' # 'Dotils.Format.Datetime' = { '.fmt.Datetime' }
+        'Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
+        'Select.Namish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
+
         # 2023-08-18
         'Dotils.Color.Hex' # 'Dotils.PStyle.Color.Hex' = { 'Dotils.Color.Hex', 'c.Hex' }
         'c.Hex' # 'Dotils.PStyle.Color.Hex' = { 'Dotils.Color.Hex', 'c.Hex' }
@@ -10184,11 +10250,6 @@ $exportModuleMemberSplat = @{
         'Dotils.Text.Suffix'  # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
         '.Text.Suffix'  # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
         '.Text.Prefix'  # 'Dotils.Text.Wrap' = { 'Dotils.Text.Prefix', 'Dotils.Text.Suffix', '.Text.Suffix', '.Text.Prefix' }
-
-
-
-        'Nameish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
-        'Namish' # 'Dotils.Select-NameIsh' = { 'Nameish', 'Namish' }
         'md.Write.Url' # 'Dotils.md.Write.Url' = { 'md.Write.Url' }
         'md.Format.EscapeFilepath' # 'Dotils.md.Format.EscapeFilepath ' = 'md.Format.EscapeFilepath'
         'nat'  # 'Dotils.GetAt' = { 'At', 'Nat', 'gnat' }
@@ -10296,3 +10357,4 @@ function Dotils.Stash-NewFileBuffer {
 # Dotils.Testing.Validate.ExportedCmds
 
 "left off '<H:\data\2023\pwsh\temp-describe-sketch.ps1>'" | write-host -back 'darkyellow'
+'finish code at <file:///H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Dotils._merge_wip.ps1>' | Dotils.Write-DimText | write-warning
