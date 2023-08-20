@@ -536,6 +536,7 @@ function Dotils.Get-UsingStatement {
     )   | sort-Object -Unique
         | Join-String -f "`nusing namespace {0}"
 
+    # see also: https://github.com/PowerShell/PowerShell/blob/a46843de2119203dc9c8db258138450d4a847c12/src/System.Management.Automation/engine/lang/parserutils.cs#L731-L734
     if($Config.StripPrefix_SystemNamespace) {
         $render =
             [regex]::Replace( $render, '^using namespace System\.', 'using namespace ', 'multiline')
@@ -3165,6 +3166,14 @@ function Dotils.Regex.Match {
         Dotils.Regex.Match.Start
     .LINK
         Dotils.Regex.Match.End
+    .LINK
+        https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_comparison_operators?view=powershell-7.4#regular-expressions-substitutions
+    .LINK
+        https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions?view=powershell-7.4
+    .LINK
+        https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_comparison_operators?view=powershell-7.4#regular-expressions-substitutions
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/substitutions-in-regular-expressions
     #>
     [CmdletBinding(
         DefaultParameterSetName = 'AsRegex'
@@ -9704,14 +9713,19 @@ function Dotils.PStyle.Color.Hex {
 }
 # [rgbcolor].FullName, 'int', (get-date) | Resolve.TypeInfo | Should -BeOfType 'type'
 function Dotils.Resolve.Command {
+    [OutputType(' System.Management.Automation.CommandInfo')]
     [CmdletBinding()]
     param(
+        # Accepts [string], [CommandInfo], [AliasInfo], and possibly more
         [Parameter(Mandatory, ValueFromPipeline)]
         $InputObject
     )
     process {
         $InputObject | Format-ShortTypeName | Join-String -op 'typeof: ' | write-verbose
         switch($InputObject) {
+            { $_ -is 'String' } {
+                Get-Command $_ | Dotils.Resolve.Command
+            }
             { $_ -is 'Management.Automation.AliasInfo'} {
                 $_.ResolvedCommand
             }
