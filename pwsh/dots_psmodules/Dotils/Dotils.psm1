@@ -9713,7 +9713,11 @@ function Dotils.PStyle.Color.Hex {
 }
 # [rgbcolor].FullName, 'int', (get-date) | Resolve.TypeInfo | Should -BeOfType 'type'
 function Dotils.Resolve.Command {
-    [OutputType(' System.Management.Automation.CommandInfo')]
+    # I feel like this is resolve, rather than ConvertTo
+    [Alias(
+        'Resolve.Command' # , 'Dotils.ConvertTo-Command'
+    )]
+    [OutputType('System.Management.Automation.CommandInfo')]
     [CmdletBinding()]
     param(
         # Accepts [string], [CommandInfo], [AliasInfo], and possibly more
@@ -10243,6 +10247,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Format.Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
         'Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
         'Select.Namish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
+        'Resolve.Command' # 'Dotils.Resolve.Command' = { 'Resolve.Command' }
 
         # 2023-08-18
         'Dotils.Color.Hex' # 'Dotils.PStyle.Color.Hex' = { 'Dotils.Color.Hex', 'c.Hex' }
