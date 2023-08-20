@@ -9969,6 +9969,7 @@ function Dotils.Describe.Timespan.AsMilliseconds {
         # $Obj -as [timespan] } else { $null }
 } }
 
+'finish: Dotils.Format-Datetime' | Dotils.Write-DimText | write-host
 function Dotils.Format-Datetime {
     <#
     .synopsis
@@ -10029,11 +10030,62 @@ function Dotils.Format-Datetime {
     $Target = if($InputObject -is 'datetime') { $InputObject } else { $InputObject.CreationTime }
 }
 
+function Dotils.Start-TimerToastLoop {
+    [CmdletBinding()]
+    param(
+        [ValidateSet(
+            'TimerOnly',
+            'Alarm',
+            'Silent.Toast'
+        )]
+        [string]$OutputMode = 'TimerOnly',
+
+        [object]$SleepSeconds,
+        [object]$Text
+
+    )
+    $Sound = 'Alarm'
+    $Text ??= 'Alarm'
+    $SleepSeconds ??= 60 * 7.5
+
+    $PSCmdlet.MyInvocation.BoundParameters
+        | ConvertTo-Json -Depth 0 -Compress
+        | Join-String -op 'Start-ToastTimerLoop: ' -sep "`n"
+        | write-verbose -verbose
+
+    if($OutputMode -eq 'TimerOnly') {
+        while($true) {
+            get-date;
+            sleep -Seconds $SleepSeconds
+        }
+        return
+    }
+    if($OutputMode -eq 'Alarm') {
+        while($true) {
+
+            new-BurntToastNotification -Text $Text -Sound $Sound
+            get-date;
+            sleep -Seconds $SleepSeconds
+        }
+        return
+    }
+    if($OutputMode -eq 'Silent.Toast') {
+        while($true) {
+            new-BurntToastNotification -Text $Text -Silent
+            get-date;
+            sleep -Seconds $SleepSeconds
+        }
+        return
+    }
+    throw "UnhandledOutputMode: $OutputMode"
+}
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-20
+        'Dotils.Start-TimerToastLoop'
         'Dotils.Get-UsingStatement' # 'Dotils.Get-UsingStatement' = { }
         'Dotils.Select-Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
         'Dotils.Format-Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
