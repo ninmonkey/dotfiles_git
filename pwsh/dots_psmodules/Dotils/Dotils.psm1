@@ -7,7 +7,9 @@ $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $P
     Set-Alias 'Yaml.From' -Value 'powershell-yaml\ConvertFrom-Yaml'
 )
 
-write-warning 'fix: Obj | .Iter.Prop'
+write-warning 'fix: Obj | .Iter.Prop ; '
+write-warning 'finish Dotils.Get-CachedExpression '
+# https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4
 
 # function Dotils.Resolve.TypeInfo.WithDefault {
 #     <#
@@ -2351,7 +2353,7 @@ function Dotils.Iter.Enumerator {
         }
     }
  }
-
+write-warning 'fix: Dotils.Iter.Prop'
 function Dotils.Iter.Prop {
     <#
     .SYNOPSIS
@@ -2376,6 +2378,7 @@ function Dotils.Iter.Prop {
 
 
     #>
+    [CmdletBinding()]
     [OutputType(
         '[PSMemberInfoCollection[PSPropertyInfo]]',
         'String',
@@ -2864,7 +2867,40 @@ function Dotils.Regex.Split {
     }
 }
 
+function Dotils.Regex.Split.Basic {
+    <#
+    .SYNOPSIS
+        minimal argumentcompletions for templates
+    .DESCRIPTION
+        see 'Dotils.Regex.Split' for more, this is a minimal case example
+    .link
+        Dotils.Regex.Split
+    #>
+    [Alias('Regex.Split.Basic')]
+    [CmdletBinding()]
+    param(
+            [Parameter(Mandatory, Position = 0)]
+            [ArgumentCompletions('LineEnding', 'NL', 'Csv', 'Whitespace', 'OnlySpaces', 'Words')]
+            [string]$PatternOrTemplate,
 
+            [AllowEmptyString()]
+            [AllowEmptyCollection()]
+            [AllowNull()]
+            [Parameter(Mandatory, ValueFromPipeline)]
+            [object[]]$InputObject
+    )
+    process {
+        $resolveRegex = switch($PatternOrTemplate) {
+            { 'NL', 'LineEnding' -contains $_ } { '\r?\n' }
+            'Csv' {         ',\s*' }
+            'Whitespace' {  '\s+' }
+            'OnlySpaces' {       '[ ]+' }
+            'Words' {       '\W+' }
+            default { $PatternOrTemplate }
+        }
+        $InputObject -split $resolveRegex
+    }
+}
 
 function Dotils.Format.FullName {
     <#
@@ -3923,8 +3959,9 @@ function Dotils.Render.Error.CategoryInfo {
         $Target = $InputObject.CategoryInfo
     }
     if($null -eq $Target) {
-        [System.Management.Automation.ErrorCategoryInfo]
-        Write-Error
+        throw 'Target Is Null'
+        # [System.Management.Automation.ErrorCategoryInfo]
+        # Write-Error
     }
 
     $Target
@@ -5870,7 +5907,7 @@ function Dotils.Measure-CommandDuration {
     }
 }
 
-function Dotils.Tablify.ErrorRecord {
+function Dotils.Tablify.ErrorRecord { # nyi: wip: finish: todo: update this to match ExcelAnt
     [CmdletBinding()]
     param (
         [Alias('ErrorRecord', 'Exception')]
@@ -5894,6 +5931,18 @@ function Dotils.Tablify.ErrorRecord {
         [string[]]$PropertySets
     )
     begin {
+        <#
+        other info: <https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/everything-about-exceptions?view=powershell-7.2#psitemexception>
+
+            $_.InvocationInfo
+            $_.ScriptStackTrace
+            $_.Exception
+            $_.Exception.Message
+            $_.Exception.InnerException
+            $_.Exception.StackTrace
+
+
+        #>
         if ($PSBoundParameters.ContainsKey('PropertySets')) { throw "NYI: Property sets are wip: $PSCommandPath" }
         $script:__dPropList ??= @{} # redundanly calculated
         $__propList = $script:__dPropList
@@ -10080,11 +10129,129 @@ function Dotils.Start-TimerToastLoop {
     throw "UnhandledOutputMode: $OutputMode"
 }
 
+
+
+[hashtable]$script:__cachedListState ??= @{}
+function Dotils.Get-CachedExpression {
+    <#
+    .SYNOPSIS
+        super, super, naive, 0cached values optionally save to disk
+    .example
+        # existing keys don't require scriptblock to read
+
+        Dotils.Get-CachedListExpression -key 'all_commands' -Sb { Get-Command | % Name }
+        Dotils.Get-CachedListExpression -key 'all_commands'
+    .example
+        Pwsh>
+        TimeOfSb -Expression {
+            .Cached.SB -KeyName 'mods' -Sb {
+                Get-module -ListAvailable -All | outnull } } | Ms
+
+        Caching 3309 items
+        16,352.01 ms
+
+        Pwsh>
+        TimeOfSb -Expression {
+            .Cached.SB -KeyName 'mods' -Sb {
+                Get-module -ListAvailable -All | outnull } } | Ms
+
+        Caching 3309 items
+        1.53 ms
+
+        # defined values don't require SB param
+        TimeOfSb -Expression { .Cached.SB -KeyName 'mods' } | Ms
+
+        Caching 3309 items
+        8.53 ms
+    .EXAMPLE
+         Pwsh> .Cached.SB -List
+
+         # im'sleep'
+    .example
+        TimeOfSb -Expression {
+            .Cached.SB -KeyName 'mods' -Sb { Get-module -ListAvailable -All | outnull }  }  | Ms
+
+        TimeOfSb -Expression {
+            .Cached.SB -KeyName 'mods' -Sb { Get-module -ListAvailable -All | outnull }  }  | Ms
+    .example
+        TimeofSb -exp {
+            $all_commands = Dotils.Get-CachedListExpression -key 'all_commands' -ScriptBlock {
+                Get-Command -all  | % Name
+            }
+        }| Ms
+    .DESCRIPTION
+        get-module dotils
+    #>
+    [CmdletBinding()]
+    [Alias('.Cached.SB')]
+    param(
+        # save result to disk as JSON, enables saving the list of all modules without crawling or importing anything
+        [Alias('FromDisk')][switch]$UsingDiskCache,
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0, ParameterSetName='Lookup')]
+        [string]$KeyName,
+
+        # script block to execute -- if key does not exist yet
+        [Parameter(Position = 1)]
+        [ValidateNotNull()]
+        [Alias('Sb', 'Expression', 'E')][scriptblock]$ScriptBlock,
+
+        # reset cache before executing
+        [Alias('Force')][switch]$ClearCache,
+
+        [Parameter(mandatory, ParameterSetName='ListOnly')]
+        [switch]$List
+    )
+    if($List){
+        return $script:__cachedListState.keys | sort-object
+    }
+
+    if($ClearCache) {
+        '    => Get-CachedExpression: clearing cache...'
+            | Dotils.Write-DimText
+            | write-information -infa 'continue'
+
+        $script:__cachedListState.clear()
+    }
+    $isHit =  $script:__cachedListState.containsKey( $Keyname )
+    'Get-CachedExpression: CacheHit for key "{0}" is {1}' -f @( $KeyName, $isHit ) | Write-Verbose
+
+    if( -not $IsHit -and -not $PSBoundParameters.ContainsKey('ScriptBlock')) {
+        'Missing ScriptBlock for undefined keys. ( SB is optional for existing keys' | write-error
+        return
+
+    }
+    if($UsingDiskCache) { throw 'nyi' }
+    if($isHit) {
+        '   cached {0} values' -f $script:__cachedListState[ $keyName ]
+        | Dotils.Write-DimText
+        | write-information -infa 'continue'
+
+        return $script:__cachedListState[ $keyName ]
+    }
+    '    => Get-CachedExpression: Evaluating Expression...'
+        | Dotils.Write-DimText
+        | write-information -infa 'continue'
+
+    $query = & $ScriptBlock | Sort-Object -Unique
+    $script:__cachedListState[ $keyName ] = $query
+
+    '   Caching {0} items' -f $script:__cachedListState[ $keyName ].count
+        | Dotils.Write-DimText
+        | write-information -infa 'continue'
+
+    return $query
+}
+
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-21
+        'Dotils.Get-CachedExpression' # 'Dotils.Get-CachedExpression' = { .Cached.Sb }
         # 2023-08-20
+        'Dotils.Regex.Split.Basic' # 'Dotils.Regex.Split.Basic' = { 'Regex.Split.Basic' }
         'Dotils.Start-TimerToastLoop'
         'Dotils.Get-UsingStatement' # 'Dotils.Get-UsingStatement' = { }
         'Dotils.Select-Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
@@ -10294,7 +10461,13 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-21
+        '.Cached.Sb' # 'Dotils.Get-CachedExpression' = { .Cached.Sb }
+
         # 2023-08-20
+
+        'Regex.Split.Basic' # 'Dotils.Regex.Split.Basic' = { 'Regex.Split.Basic' }
+
         '.fmt.Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
         'Dotils.Format.Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
         'Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
