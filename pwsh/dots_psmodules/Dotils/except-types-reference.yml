@@ -1,0 +1,127 @@
+# - step: &id002
+#     instrument:      Lasik 2000
+# - Instrument1: *id001   # refer
+
+errorList:
+- name: ScriptBlockAst
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.scriptblockast?view=powershellsdk-7.3.0
+  namespace: System.Management.Automation.Language
+  props: ['wip']
+- name: Ast
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.ast?view=powershellsdk-7.3.0
+  namespace: System.Management.Automation.Language
+  props: ['wip']
+  derived: [ 'AttributeBaseAst', 'CatchClauseAst', 'CommandElementAst', 'MemberAst', 'NamedAttributeArgumentAst', 'NamedBlockAst', 'ParamBlockAst', 'ParameterAst', 'RedirectionAst', 'ScriptBlockAst', 'StatementAst', 'StatementBlockAst' ]
+
+- name: ScriptExtent
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.scriptextent?view=powershellsdk-7.3.0
+  namespace: System.Management.Automation.Language
+  doc: A script extent used to customize the display of error location information.
+  implements: [ 'IScriptExtent' ]
+  props:
+    - name: EndColumnNumber
+      type: ''
+      doc: The column number at the end of the extent, with the value 1 being the first column.
+    - name: EndLineNumber
+      type: ''
+      doc: The line number at the end of the extent, with the value 1 being the first line.
+    - name: EndOffset
+      type: ''
+      doc: The end offset (always returns 0)
+    - name: EndScriptPosition
+      type: ''
+      doc: The end position of the extent. This position is actually 1 character past the end of the extent.
+    - name: File
+      type: ''
+      doc: The name of the file, or if the script did not come from a file, then null.
+    - name: StartColumnNumber
+      type: ''
+      doc: The column number at the beginning of the extent, with the value 1 being the first column.
+    - name: StartLineNumber
+      type: ''
+      doc: The line number at the beginning of the extent, with the value 1 being the first line.
+    - name: StartOffset
+      type: ''
+      doc: The start offset (always returns 0)
+    - name: StartScriptPosition
+      type: ''
+      doc: The starting position of the extent.
+    - name: Text
+      type: ''
+      doc: The script text that the extent includes.
+- name: IScriptExtent
+  isInterface: true
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.iscriptextent?view=powershellsdk-7.3.0
+  namespace: System.Management.Automation.Language
+  derived: [ 'ScriptExtent' ]
+  props:
+    - name: EndColumnNumber
+      type: ''
+      doc: The column number at the end of the extent, with the value 1 being the first column.
+    - name: EndLineNumber
+      type: ''
+      doc: The line number at the end of the extent, with the value 1 being the first line.
+    - name: EndOffset
+      type: ''
+      doc: The ending offset of the extent.
+    - name: EndScriptPosition
+      type: ''
+      doc: The end position of the extent. This position is actually 1 character past the end of the extent.
+    - name: File
+      type: ''
+      doc: The filename the extent includes, or null if the extent is not included in any file.
+    - name: StartColumnNumber
+      type: ''
+      doc: The column number at the beginning of the extent, with the value 1 being the first column.
+    - name: StartLineNumber
+      type: ''
+      doc: The line number at the beginning of the extent, with the value 1 being the first line.
+    - name: StartOffset
+      type: ''
+      doc: The starting offset of the extent.
+    - name: StartScriptPosition
+      type: ''
+      doc: The starting position of the extent.
+    - name: Text
+      type: ''
+      doc: The script text that the extent includes.
+
+- name: FunctionDefinitionAst
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.functiondefinitionast?view=powershellsdk-7.3.0
+  notes: 'see: <https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.ast.visit?view=powershellsdk-7.3.0#system-management-automation-language-ast-visit(system-management-automation-language-icustomastvisitor)>'
+  namespace: System.Management.Automation
+  inheritanceString: 'Object -> Ast -> StatementAst -> FunctionDefinitionAst'
+  props:
+    - name: Body
+      type: ScriptBlockAst
+      doc: The body of the function. This property is never null.
+    - name: Extent
+      type: IScriptExtent
+      doc: The extent in the script this ast represents. (Inherited from [Ast] )
+    - name: Parent
+      doc: The parent tree for this node. (Inherited from Ast)
+      type: Ast
+    - name: Name
+      doc: The name of the function or filter. This property is never null or empty.
+    - name: Parameters
+      doc: |
+        The parameters specified immediately after the function name, or null if no parameters were specified.
+
+        It is possible that this property may have a value and ParamBlock to also have a value. Normally this is not allowed in a valid script, but in one rare case it is allowed:
+        function foo() { param($a) }
+
+        In this example, the parameters specified after the function name must be empty or the script is not valid.
+- name: StatementAst
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.statementast?view=powershellsdk-7.3.0
+  derived: [ 'BlockStatementAst', 'BreakStatementAst', 'CommandBaseAst', 'ConfigurationDefinitionAst', 'ContinueStatementAst', 'DataStatementAst', 'DynamicKeywordStatementAst', 'ExitStatementAst', 'FunctionDefinitionAst', 'IfStatementAst', 'LabeledStatementAst', 'PipelineBaseAst', 'ReturnStatementAst', 'ThrowStatementAst', 'TrapStatementAst', 'TryStatementAst', 'TypeDefinitionAst', 'UsingStatementAst' ]
+- name: ICustomAstVisitor
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.icustomastvisitor?view=powershellsdk-7.3.0
+  derived: [ 'Microsoft.PowerShell.Workflow.AstToXamlConverter', 'DefaultCustomAstVisitor', 'DefaultCustomAstVisitor2', 'ICustomAstVisitor2' ]
+- name: DefaultCustomAstVisitor2
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.defaultcustomastvisitor2?view=powershellsdk-7.3.0
+  inheritanceString: 'Object -> DefaultCustomAstVisitor -> DefaultCustomAstVisitor2'
+  implements: ['ICustomAstVisitor', 'ICustomAstVisitor2']
+- name: ICustomAstVisitor2
+  url: https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.icustomastvisitor2?view=powershellsdk-7.3.0
+  derived: [ 'DefaultCustomAstVisitor2' ]
+  implements: [ 'CustomAstVisitor' ]
