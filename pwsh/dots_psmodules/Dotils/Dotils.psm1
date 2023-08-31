@@ -10096,7 +10096,10 @@ function Dotils.Write-DictLine {
     .SYNOPSIS
         sugar to print a dict, possibly with some filters
     .NOTES
-
+    future:
+        - [ ] colorize key-value pairs
+            key.fg   = gray80
+            value.fg =gray40
     .EXAMPLE
         Pwsh> @{ 'cat' = 'emoji' ; z = 300 } | Dotils.Write-DictLine
         cat = emoji, z = 300
@@ -10128,8 +10131,10 @@ function Dotils.Write-DictLine {
 
     }
     process {
-        if($InputObject -isnot 'hashtable?') {
-            throw 'expected hashtable'
+        if( $InputObject -isnot 'hashtable' -and
+            $InputObject -isnot 'Collections.IDictionary' -and
+            $InputObject -isnot 'Collections.ICollection' ) {
+            throw 'expected hashable '
         }
         $InputObject.GetEnumerator() | %{
             [string]$key = $_.Key
