@@ -8102,6 +8102,7 @@ function Dotils.New-HashSetString.basic {
     # }
 
     begin {
+        write-warning 'slightly NYI, validate working'
         $InputObject ??= @('')
         $set = [Collections.Generic.HashSet[string]]::new(
             [string[]]$InputObject,
@@ -8114,6 +8115,7 @@ function Dotils.New-HashSetString.basic {
                 # wait-debugger
             throw 'partial wip next'
         }
+        write-warning 'slightly NYI, validate working'
     }
     process {
         if( -not $MyInvocation.ExpectingInput ) {
@@ -8167,6 +8169,7 @@ function Dotils.New-HashSetString.fancy {
         [StringComparer]$Comparer
     )
     begin {
+        write-warning 'slightly NYI, validate working'
     }
     process {
         throw 'Wip sketch, NYI'
@@ -10095,22 +10098,32 @@ function Dotils.Write-DictLine {
     .NOTES
 
     .EXAMPLE
+        Pwsh> @{ 'cat' = 'emoji' ; z = 300 } | Dotils.Write-DictLine
+        cat = emoji, z = 300
+
+        Pwsh> Dotils.Write-DictLine -inp @{ 'cat' = 'emoji' ; z = 300 }
+        cat = emoji, z = 300
     #>
     [OutputType('string')] # or nothing
     [CmdletBinding()]
     param(
         # filepath to add
         [ValidateNotNullOrEmpty()]
-        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ValueFromPipeline)]
         $InputObject,
 
         [Alias('Prefix', 'op')][string]$OutputPrefix  = '',
         [Alias('Suffix', 'os')][string]$OutputSuffix  = '',
         [Alias('Delimiter', 'Sep')][string]$Separator = ', ',
+        [hashtable]$Options = @{},
         [switch]$Sort
         # [switch]$SkipCoercion //
     )
     begin {
+        $Config = nin.MergeHash -other $Options -base @{
+            MaxLength = 30
+        }
+        write-warning 'slightly NYI, validate working'
         $finalHash = [ordered]@{}
 
     }
@@ -10118,25 +10131,37 @@ function Dotils.Write-DictLine {
         if($InputObject -isnot 'hashtable?') {
             throw 'expected hashtable'
         }
-
         $InputObject.GetEnumerator() | %{
-            $finalHash[ $_.Key ] = $_.Value
+            [string]$key = $_.Key
+            $finalHash[ $key ] = $_.Value
         }
     }
     end {
         if($Sort) {
             $finalHash.GetEnumerator()
                 | Sort-Object { $_.Key }
-                | %{
-                    $_.Key, $_.Value -join ' = '
+                | %{ # todo: refactor shared
+                    $isShort = $value.length -gt $Config.MaxLength
+                    $value = $_.Value
+                    $value = Dotils.ShortString.Basic -InputObject $value -maxLength $Config.MaxLength
+                    if($isShort) {
+                        $value += '...'
+                    }
+                    $_.Key, $value -join ' = '
                 }
                 | Join-String -sep $Separator -op $OutputPrefix -os $OutputSuffix
                 return
         }
 
         $finalHash.GetEnumerator()
-            | %{
-                $_.Key, $_.Value -join ' = '
+            | %{ # todo: refactor shared
+                $isShort = $value.length -gt $Config.MaxLength
+                    $value = $_.Value
+                    $value = Dotils.ShortString.Basic -InputObject $value -maxLength $Config.MaxLength
+                    if($isShort) {
+                        $value += '...'
+                    }
+                    $_.Key, $value -join ' = '
             }
             | Join-String -sep $Separator -op $OutputPrefix -os $OutputSuffix
     }
@@ -10144,6 +10169,27 @@ function Dotils.Write-DictLine {
 function Dotils.Select-VariableByType {
     <#
     .SYNOPSIS
+    .EXAMPLE
+    Pwsh> # try a bunch scopes
+        Dotils.Select-VariableByType -ListCategory -Scope local
+        Dotils.Select-VariableByType -ListCategory -Scope global
+        Dotils.Select-VariableByType -ListCategory -Scope 0
+        Dotils.Select-VariableByType -ListCategory -Scope 1
+        Dotils.Select-VariableByType -ListCategory -Scope 2
+
+    # some output
+
+     Count Name
+     ----- ----
+        20 System.String
+        12 System.Collections.Hashtable
+        10 System.Boolean
+        7 System.Management.Automation.ActionPreference
+        4 System.Collections.Generic.List`1[System.Object]
+        4 System.Int32
+        3 System.IO.DirectoryInfo
+        2 System.IO.FileInfo
+        # ...
     #>
     [Alias('Dotils.Find-VariableByType')]
     [CmdletBinding()]
@@ -10154,10 +10200,13 @@ function Dotils.Select-VariableByType {
         $InputObject,
 
         [string[]]$TypePattern,
-        [string[]]$Scope,
+        # get-var command doesn't support array, so will need to enmerate
+        [string]$Scope,
 
         [switch]$ListCategory
     )
+
+    write-warning 'slightly NYI, validate working'
 
     $OptionalParams = @{}
     if($PSBoundParameters.ContainsKey('scope')){
@@ -10168,15 +10217,17 @@ function Dotils.Select-VariableByType {
     if($ListCategory) {
         $grouped =
             $query
-            | Group-Object { $_.Value.GetType() } -NoElement
+            | Group-Object { ($_.Value)?.GetType() } -NoElement
             | Sort-Object Count -Descending | select Count, Name
+
+        $grouped
         return
     }
 
     $query
         | ?{
             $Target = $_.Value
-            $targetType = $Target.GetType()
+            $targetType = ($Target)?.GetType()
             $shortType = $TargetType | Format-ShortTypeName
             foreach($pattern in $TypePattern) {
                 if($targetType -match $pattern) { return $true }
@@ -10186,7 +10237,7 @@ function Dotils.Select-VariableByType {
             }
         }
 
-    # | group  { $_.Value.GetType() } | sort-Object | ft -AutoSize Count, Name
+    # | group  { ($_.Value)?.GetType() } | sort-Object | ft -AutoSize Count, Name
 
 }
 function Dotils.Add-PsModulePath {
@@ -10225,6 +10276,8 @@ function Dotils.Add-PsModulePath {
 
     # write-error 'logic below might be slighlty wrong from pasting'
     # return
+    write-error 'left off, test func runs right'
+     write-warning 'slightly NYI, validate working'
 
     'Dotils.Add-PsModulePath::Add => {0}' -f @( $InputPath )
         | write-verbose
@@ -10811,6 +10864,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-08-31
+        'Dotils.Select-VariableByType' # 'Dotils.Select-VariableByType' = { 'Dotils.Find-VariableByType' }(
         'Dotils.Write-DictLine'
         # 2023-08-30
         'Dotils.New-HashSetString.basic'
