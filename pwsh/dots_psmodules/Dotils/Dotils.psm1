@@ -2774,7 +2774,8 @@ function Dotils.Regex.Split {
 
         [Parameter(Mandatory, Position=0, ParameterSetName='FromTemplate')]
         [ValidateSet(
-            'LineEnding', 'NL', 'NLCR'
+            'LineEnding', 'NL', 'NLCR',
+            'SegmentCapital'
             # 'Segment.Word',
             # 'Segment.CaseChange'
                 )]
@@ -2836,6 +2837,7 @@ function Dotils.Regex.Split {
                     'NL'         { $buildRegex = '\n' }
                     'Csv'         { $buildRegex = ',\s*' }
                     'NLCR'       { $buildRegex = '\r?\n' }
+                    'SegmentCapital' { $buildRegex = '(?x-i)(?=[A-Z])'  }
                     # 'Segment.Word' { $buildRegex = '\W+' }
                     # 'Segment.CaseChange' { $buildRegex = '.' }
                     { $true } {
@@ -4166,14 +4168,43 @@ function Dotils.to.EnvVarPath  {
 
 
 
-function Dotils.Write.Info {
-    [Alias('Write.Info')]
-    param()
-    # render as text, to the information stream
-    # mainly sugar to enable it
-    $Input
-    | Out-String -w 1kb
-    | Write-Information -infa 'Continue'
+function Dotils.Write-Information {
+    <#
+    .SYNOPSIS
+        sugar for : obj | Write-information -infa 'continue'
+    #>
+    [Alias(
+        'wInfo', 'Infa', 'Write.Infa'
+    )]
+    param(
+        [switch]$WithoutInfaContinue
+    )
+    if($WithoutInfaContinue) {
+        $Input | Write-Information
+        return
+    }
+    $Input | Write-Information -infa 'continue'
+}
+
+function Dotils.Write-StringInformation {
+    <#
+    .SYNOPSIS
+        sugar for : obj | out-String | Write-information -infa 'continue'
+    #>
+    [Alias(
+        'Write.StringInfa',
+        'Write.StrInfa'
+    )]
+    param(
+        [switch]$WithoutInfaContinue
+    )
+    if($WithoutInfaContinue) {
+        $Input | Out-String -w 1kb
+               | Write-Information
+        return
+    }
+    $Input | Out-String -w 1kb
+           | Write-Information -infa 'Continue'
 }
 function Dotils.Write.Info.Fence {
     [Alias('Write.Info.Fence')]
@@ -4209,7 +4240,7 @@ function Dotils.String.Visualize.Whitespace {
         | New-Text -bg 'gray30' -fg 'gray80' | % tostring
     }
 }
-function Dotils.Debug.Find-Variable {
+function Dotils.Debug.Find-Variable.old {
     # gives metadata to querry against
     get-variable
         | %{
@@ -7803,6 +7834,105 @@ function Dotils.VsCode.ConvertTo.Snipet {
 
 }
 
+function Dotils.Debug.Find.AstType {
+    <#
+    .EXAMPLE
+    Pwsh> Dotils.Debug.Find.AstType -Condition Variable, Argument
+        | ? IsVariable
+
+        Name         : VariableExpressionAst
+        IsExpression : True
+        IsLiteral    : False
+        IsArgument   : False
+        IsVariable   : True
+    .EXAMPLE
+
+    Pwsh> ( $res = Mark.Find.Ast  -Condition Argument, Array ) | ft -AutoSize
+
+        Name                              IsExpression IsLiteral IsArgument IsArray
+        ----                              ------------ --------- ---------- -------
+        ArrayExpressionAst                        True     False      False    True
+        ArrayLiteralAst                          False      True      False    True
+        AssignmentStatementAst                   False     False      False   False
+        AttributeAst                             False     False      False   False
+        AttributeBaseAst                         False     False      False   False
+        AttributedExpressionAst                   True     False      False   False
+        BaseCtorInvokeMemberExpressionAst         True     False      False   False
+        BinaryExpressionAst                       True     False      False   False
+        BlockStatementAst                        False     False      False   False
+    #>
+    param(
+        [Parameter(Position=0)]
+        [Alias('Is', 'Kind')]
+        [ArgumentCompletions(
+            # 'Expression','Member','Function','Statement'
+            'Argument', 'Array', 'Assignment', 'Ast', 'Attribute', 'Attributed', 'Base', 'Binary', 'Block', 'Break',
+            'Catch', 'Chain', 'Chainable', 'Clause', 'Command', 'Configuration', 'Constant', 'Constraint', 'Continue',
+            'Convert', 'Ctor', 'Data', 'Definition', 'Do', 'Dynamic', 'Each', 'Element', 'Error', 'Exit', 'Expandable',
+            'Expression', 'File', 'For', 'Function', 'Hashtable', 'If', 'Index', 'Invoke', 'Keyword', 'Labeled', 'Literal',
+            'Loop', 'Member', 'Merging', 'Named', 'Param', 'Parameter', 'Paren', 'Pipeline', 'Property', 'Redirection',
+            'Return', 'Script', 'Statement', 'String', 'Sub', 'Switch', 'Ternary', 'Throw', 'Trap', 'Try', 'Type', 'Unary',
+            'Until', 'Using', 'Variable', 'While'
+        )]
+        [string[]]$Condition
+    )
+    $enableAllProperties = $true
+    if($PSBoundParameters.ContainsKey('Condition')) {
+        $enableAllProperties = $false
+    }
+    $AstKinds = @(
+        find-type -Base (find-type -Namespace * -Name Ast) ) | Sort-Object fullname -Unique
+
+    $SegKindsToTest = @(
+        'Argument', 'Array', 'Assignment', 'Ast', 'Attribute', 'Attributed', 'Base', 'Binary', 'Block', 'Break',
+        'Catch', 'Chain', 'Chainable', 'Clause', 'Command', 'Configuration', 'Constant', 'Constraint', 'Continue',
+        'Convert', 'Ctor', 'Data', 'Definition', 'Do', 'Dynamic', 'Each', 'Element', 'Error', 'Exit', 'Expandable',
+        'Expression', 'File', 'For', 'Function', 'Hashtable', 'If', 'Index', 'Invoke', 'Keyword', 'Labeled', 'Literal',
+        'Loop', 'Member', 'Merging', 'Named', 'Param', 'Parameter', 'Paren', 'Pipeline', 'Property', 'Redirection',
+        'Return', 'Script', 'Statement', 'String', 'Sub', 'Switch', 'Ternary', 'Throw', 'Trap', 'Try', 'Type', 'Unary',
+        'Until', 'Using', 'Variable', 'While'
+    )
+
+
+    $AstKinds | %{
+        $cur =  $_
+
+        $compareResult = [ordered]@{
+            PSTypeName = 'Dotils.FindAst.CompareResult'
+            Name = $_.name
+            IsExpression = $cur.Name -match 'Expression'
+            IsLiteral = $cur.Name -match 'Literal'
+            # IsArray = $cur.Name -match 'Array'
+            # IsBinary = $cur.Name -match 'Binary'
+
+            # IsCommand = $cur.Name -match 'Command'
+            # IsParmeter = $cur.Name -match 'Parmeter'
+            # IsBinary = $cur.Name -match 'Binary'
+            # IsBinary = $cur.Name -match 'Binary'
+            # IsBinary = $cur.Name -match 'Binary'
+            # IsBinary = $cur.Name -match 'Binary'
+        }
+        if($enableAllProperties) {
+            $SegKindsToTest | sort-object -Unique | %{
+                $SegmentName = $_
+                $Key = 'Is{0}' -f $SegmentName
+                $compareResult.$Key = $cur.Name -match $SegmentName
+            }
+        } else {
+            $Condition | sort-object -Unique | %{
+                $SegmentName = $_
+                $Key = 'Is{0}' -f $SegmentName
+                $compareResult.$Key = $cur.Name -match $SegmentName
+            }
+        }
+        # auto kinds
+
+
+        [pscustomobject]$CompareResult
+    }
+}
+
+
 function Dotils.DB.toDataTable {
 <#
 .synopsis
@@ -7935,6 +8065,166 @@ function Dotils.Format-ShortString.Basic {    <#
         }
     }
 }
+
+function Dotils.New-HashSetString.basic {
+    <#
+    .SYNOPSIS
+        sugar for a CaseInsensitive Set
+    .EXAMPLE
+        Pwsh> 'bob', 'Bob', 'fred', 'fred' | Dotils.New-HashSetString.basic
+            ["","bob","fred"]
+        Pwsh> Dotils.New-HashSetString.basic -inp 'bob', 'Bob', 'fred', 'fred'
+            ["","bob","fred"]
+    .notes
+
+    related types:
+        [StringComparer]
+        [StringComparison]
+    #>
+
+    [CmdletBinding()]
+    param(
+
+        # autocomplete enum: enum: 'CurrentCulture', 'CurrentCultureIgnoreCase', 'InvariantCulture', 'InvariantCultureIgnoreCase', 'Ordinal', 'OrdinalIgnoreCase', 'value__'
+        [Parameter( Position = 0)]
+        [Alias('StringComparison')]
+        [StringComparison]$CompareKind = 'InvariantCultureIgnoreCase',
+        # is a custom func?
+
+        [StringComparer]$Comparer,
+
+        # [type]$TypeName = 'string'
+        [Alias('Names', 'Text')]
+        [Parameter(Position = 1, ValueFromPipeline)]
+        [string[]]$InputObject
+    )
+    # if( -not $MyInvocation.ExpectingInput) {
+    # }
+
+    begin {
+        $InputObject ??= @('')
+        $set = [Collections.Generic.HashSet[string]]::new(
+            [string[]]$InputObject,
+            [StringComparer]::OrdinalIgnoreCase )
+
+
+        if($PSBoundParameters.ContainsKey('CompareKind') -or $PSBoundParameters.ContainsKey('Comparer')) {
+            # todo, future: can I pass the autocompleting enum for the hash creation ?
+            # or convert it to a [StringComparer] func??
+                # wait-debugger
+            throw 'partial wip next'
+        }
+    }
+    process {
+        if( -not $MyInvocation.ExpectingInput ) {
+            # 'not expecting' | write-host -bg 'red'
+            return
+        }
+
+        foreach($Name in $InputObject) {
+            $Null = $set.Add( $Name )
+        }
+    }
+    end {
+        return $set
+
+
+        # throw 'Wip sketch, NYI'
+        # if( -not $PSBoundParameters.ContainsKey('Names') ) {
+        #     $Names = ''
+        # }
+        # $hash ??= [Collections.Generic.HashSet[string]]::new( [string[]]$names, ())
+
+        # else {
+        #     $hash ??= [Collections.Generic.HashSet[string]]::new( [string[]]$names, $Comparer)
+        # }
+        # $hash ??= [Collections.Generic.HashSet[string]]::new( [string[]]$names, [StringComparer]::OrdinalIgnoreCase)
+    }
+}
+function Dotils.New-HashSetString.fancy {
+    <#
+    .SYNOPSIS
+        sugar for a CaseInsensitive Set
+
+    related types:
+        [StringComparer]
+        [StringComparison]
+    #>
+
+    [CmdletBinding()]
+    param(
+        # [type]$TypeName = 'string'
+        [Alias('InputObject', 'Text')]
+        [Parameter(ValueFromPipeline)]
+        [string[]]$Names,
+
+        # autocomplete enum: enum: 'CurrentCulture', 'CurrentCultureIgnoreCase', 'InvariantCulture', 'InvariantCultureIgnoreCase', 'Ordinal', 'OrdinalIgnoreCase', 'value__'
+        [Parameter( Position = 0)]
+        [Alias('StringComparison')]
+        [StringComparison]$CompareKind = 'InvariantCultureIgnoreCase',
+
+        # is a custom func?
+        [StringComparer]$Comparer
+    )
+    begin {
+    }
+    process {
+        throw 'Wip sketch, NYI'
+        if( -not $PSBoundParameters.ContainsKey('Names') ) {
+            $Names = ''
+        }
+        # $hash ??= [Collections.Generic.HashSet[string]]::new( [string[]]$names, ())
+
+        # else {
+        #     $hash ??= [Collections.Generic.HashSet[string]]::new( [string[]]$names, $Comparer)
+        # }
+        # $hash ??= [Collections.Generic.HashSet[string]]::new( [string[]]$names, [StringComparer]::OrdinalIgnoreCase)
+    }
+}
+# function Dotils.Template.PipelineParametersStandardBehavior {
+#     [CmdletBinding()]
+#     param(
+#         [Alias('InputObject')]
+#         [Parameter(ValueFromPipeline)]
+#         [object[]]$file
+#     )
+#     begin {
+#         [Collections.Generic.List[Object]]$Items = @()
+#     }
+#     process {
+#         if( $MyInvocation.ExpectingInput ) {
+#             $Items.AddRange(@( $file ))
+#         } else {
+#             $Items = @( $file )
+#         }
+#     }
+#     end {
+#         $Items | %{ "Item: $_" }
+#     }
+# }
+
+function Dotils.Template.PipelineParametersStandardBehavior {
+    [CmdletBinding()]
+    param(
+        [Alias('InputObject')]
+        [Parameter(ValueFromPipeline)]
+        [object[]]$file
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Items = @()
+    }
+    process {
+        if( $MyInvocation.ExpectingInput ) {
+            $Items.AddRange(@( $file ))
+        } else {
+            $Items = @( $file )
+        }
+    }
+    end {
+        $Items | %{ "Item: $_" }
+    }
+}
+
 function Dotils.Format-ShortString {    <#
     .synopsis
         Shorten string in a way that never errors. Keep it simple
@@ -9761,6 +10051,238 @@ function Dotils.PStyle.Color.Hex {
     }
 }
 # [rgbcolor].FullName, 'int', (get-date) | Resolve.TypeInfo | Should -BeOfType 'type'
+function Dotils.Resolve.Module {
+    # I feel like this is resolve, rather than ConvertTo
+    [Alias(
+        'Resolve.Module' # , 'Dotils.ConvertTo-Command'
+    )]
+    [OutputType('System.Management.Automation.PSModuleInfo')]
+    [CmdletBinding()]
+    param(
+        # Accepts [string], [CommandInfo], [AliasInfo], and possibly more
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+
+        [Parameter(mandatory, ValueFromPipelineByPropertyName, ParameterSetName='ByModuleInfo')]
+        [Alias('Module')][System.Management.Automation.PSModuleInfo]$PSModuleInfo
+    )
+    process {
+        $InputObject | Format-ShortTypeName | Join-String -op 'typeof: ' | write-verbose
+        switch ($PSCmdlet.ParameterSetName) {
+            'ByModuleInfo' {
+                return $PSModuleInfo
+            }
+            default {
+                write-verbose "DefaultHandlingFallback: For $($InputOBject | Format-ShortTypeName)"
+                $InputObject
+            }
+        }
+        # switch($InputObject) {
+        #     { $_ -is 'String' } {
+        #         Get-Command $_ | Dotils.Resolve.Command
+        #     }
+        #     { $_ -is 'Management.Automation.AliasInfo'} {
+        #         $_.ResolvedCommand
+        #     }
+        # }
+    }
+}
+'-next: migraine bad. Validate confirm code works "Dotils.Add-PsModulePath "' | write-host -bg 'orange'
+function Dotils.Write-DictLine {
+    <#
+    .SYNOPSIS
+        sugar to print a dict, possibly with some filters
+    .NOTES
+
+    .EXAMPLE
+    #>
+    [OutputType('string')] # or nothing
+    [CmdletBinding()]
+    param(
+        # filepath to add
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
+        $InputObject,
+
+        [Alias('Prefix', 'op')][string]$OutputPrefix  = '',
+        [Alias('Suffix', 'os')][string]$OutputSuffix  = '',
+        [Alias('Delimiter', 'Sep')][string]$Separator = ', ',
+        [switch]$Sort
+        # [switch]$SkipCoercion //
+    )
+    begin {
+        $finalHash = [ordered]@{}
+
+    }
+    process {
+        if($InputObject -isnot 'hashtable?') {
+            throw 'expected hashtable'
+        }
+
+        $InputObject.GetEnumerator() | %{
+            $finalHash[ $_.Key ] = $_.Value
+        }
+    }
+    end {
+        if($Sort) {
+            $finalHash.GetEnumerator()
+                | Sort-Object { $_.Key }
+                | %{
+                    $_.Key, $_.Value -join ' = '
+                }
+                | Join-String -sep $Separator -op $OutputPrefix -os $OutputSuffix
+                return
+        }
+
+        $finalHash.GetEnumerator()
+            | %{
+                $_.Key, $_.Value -join ' = '
+            }
+            | Join-String -sep $Separator -op $OutputPrefix -os $OutputSuffix
+    }
+}
+function Dotils.Select-VariableByType {
+    <#
+    .SYNOPSIS
+    #>
+    [Alias('Dotils.Find-VariableByType')]
+    [CmdletBinding()]
+    param(
+        # if not specified, uses get-variable
+        [ValidateScript({throw 'nyi'})]
+        [Parameter(ParameterSetName='FromInput', ValueFromPipeline)]
+        $InputObject,
+
+        [string[]]$TypePattern,
+        [string[]]$Scope,
+
+        [switch]$ListCategory
+    )
+
+    $OptionalParams = @{}
+    if($PSBoundParameters.ContainsKey('scope')){
+        $OptionalParams['Scope'] = $Scope
+    }
+
+    $query = @(  Get-Variable @OptionalParams )
+    if($ListCategory) {
+        $grouped =
+            $query
+            | Group-Object { $_.Value.GetType() } -NoElement
+            | Sort-Object Count -Descending | select Count, Name
+        return
+    }
+
+    $query
+        | ?{
+            $Target = $_.Value
+            $targetType = $Target.GetType()
+            $shortType = $TargetType | Format-ShortTypeName
+            foreach($pattern in $TypePattern) {
+                if($targetType -match $pattern) { return $true }
+                if($targetType -match [Regex]::Escape($Pattern)) { return $true }
+                if($shortType -match $pattern) { return $true }
+                if($shortType -match [Regex]::Escape($Pattern)) { return $true }
+            }
+        }
+
+    # | group  { $_.Value.GetType() } | sort-Object | ft -AutoSize Count, Name
+
+}
+function Dotils.Add-PsModulePath {
+    <#
+    .SYNOPSIS
+        sanitize paths, updating psmodulepath
+
+    .NOTES
+        future: todo: make case-insensitive hashset, there's a FileInfo example somewhere.
+    .EXAMPLE
+        Dotils.Add-PsModulePath -PrependPath -InputPath 'H:\data\2023\pwsh\PsModules.👨.Import'
+
+    #>
+    [OutputType('string')] # or nothing
+    [CmdletBinding(DefaultParameterSetName='AddAsSuffix')]
+    param(
+        # filepath to add
+        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+        [Alias('PSPath', 'Path')]
+        [string]$InputPath,
+
+        # error if the path doesn't yet exist?
+        [Alias('Strict')][switch]$AssertPathExists = $true,
+
+        [Parameter(ParameterSetName='AddAsPrefix', Mandatory)]
+        [Alias( 'Prefix', 'AddAsPrefix')][switch]$PrependPath,
+
+        [Parameter(ParameterSetName='AddAsSuffix')]
+        [Alias('AddAsSuffix')][switch]$AppendPath,
+
+        [Alias('WhatIf')][switch]$TestOnly,
+        # return new value as string
+        [switch]$PassThru
+    )
+
+    # write-error 'logic below might be slighlty wrong from pasting'
+    # return
+
+    'Dotils.Add-PsModulePath::Add => {0}' -f @( $InputPath )
+        | write-verbose
+
+    $info = [hashtable]::new( $PSBoundParameters )
+    $info.GetEnumerator()
+        | %{ # don't JSON render json filepaths as a bomb
+            $_.Key, $_.Value -join ' = '
+        }
+        | Join-String -sep ', ' -op 'PSBoundParameters: '
+        | write-debug
+
+
+        if(-not (Test-Path $InputPath)) {
+            if($AssertPathExists){
+                throw "PathNotFoundException: '$InputPath'"
+            }
+        }
+        return
+        write-error "PathNotFoundException: '$InputPath'"
+
+
+    # mostly redundant
+    if($AssertPathExists ) {
+        $Path? = gi -ea 'stop' -LiteralPath $InputPath
+        throw "PathNotFoundException: '$InputPath?'"
+    } else {
+        $Path? = gi -ea 'ignore' -LiteralPath $InputPath
+        $Path? ??= $InputPath
+    }
+    $Delim = [IO.Path]::PathSeparator
+    $Items = @(
+        $Env:PSModulePath -split $Delim -inotmatch [regex]::Escape( $InputPath )
+            | ?{ $_ } # and drop blanks
+    )
+
+    $renderPaths = if($PSCmdlet.ParameterSetName -eq 'AddAsPrefix') {
+        @( $Path?, $Items ) | Join-String -sep $Delim
+    } else {
+        @( $Items, $Path? ) | Join-String -sep $Delim
+    }
+    $Env:PSModulePath
+        | Join-String -op "old value `$PSModulePaths => `n"
+        | Write-Debug
+    $renderPaths
+        | Join-String -op "new value `$PSModulePaths => `n"
+        | Write-Debug
+
+    if( $TestOnly ) {
+        'TestOnly: Would have set $Env:PSModulePath to: {0}' -f @( $renderPaths )
+            | Write-Verbose
+        return
+    }
+    $Env:PSModulePath = $renderPaths
+    if($PassThru) {
+        return $Env:PSModulePath
+    }
+}
 function Dotils.Resolve.Command {
     # I feel like this is resolve, rather than ConvertTo
     [Alias(
@@ -10244,14 +10766,72 @@ function Dotils.Get-CachedExpression {
 }
 
 
+function Dotils.Split.WordByCase {
+    <#
+    .EXAMPLE
+        SplitWordByCase 'UsingExpressionAst' | Json
+
+        # output: {"InputText":"UsingExpressionAst","Segments":["Using","Expression","Ast"]}
+    .EXAMPLE
+        Pwsh> Dotils.Split.WordByCase 'StatementBlockAstNOConsecutive' | % Segments | Json -Compress
+
+        # Out: ["Statement","Block","Ast","NOConsecutive"]
+    .EXAMPLE
+        Pwsh> Dotils.Split.WordByCase 'StatementBlockAstNOConsecutive' | % SegmentsBasic | Json -Compress
+
+        # Out: ["Statement","Block","Ast","N","O","Consecutive"]
+    #>
+    [Alias(
+        '.Split.WordByCase'
+    )]
+    param(
+        [string]$InputText
+    )
+    process {
+        $Re = @{}
+        $Re.Capital = '(?x-i)(?=[A-Z])'
+        $Re.CapitalMultiple = '(?<![A-Z]|^)(?=[A-Z])'
+
+        $info = [ordered]@{
+            PSTypeName = 'Dotils.Split.WordByCase.Result'
+            InputText  = $InputText
+            Segments  =
+                $InputText -csplit $Re.CapitalMultiple
+            SegmentsBasic   =
+                $InputText -split $Re.Capital | ?{ $_ }
+            # SegmentsMultiCapital  =
+
+        }
+        [pscustomobject]$Info
+    }
+}
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-08-31
+        'Dotils.Write-DictLine'
+        # 2023-08-30
+        'Dotils.New-HashSetString.basic'
+        'Dotils.New-HashSetString.Fancy'
+        # 2023-08-28
+        'Dotils.Add-PsModulePath' # 'Dotils.Add-PsModulePath' = { }
+
+        # 2023-08-26
+        'Dotils.Split.WordByCase' # 'Dotils.Split.WordByCase' = { '.Split.WordByCase' }
+        'Dotils.Debug.Find.AstType' # 'Dotils.Debug.Find.AstType' = {  }
+
+        # 2023-08-24
+        'Dotils.Write-Information' # 'Dotils.Write-Information' = { 'wInfo', 'Infa', 'Write.Infa' }
+        'Dotils.Write-StringInformation' # 'Dotils.Write-StringInformation' = { 'Write.StringInfa', 'Write.StrInfa' }
+
+        'Dotils.Resolve.Module' # 'Dotils.Resolve.Module' = { 'Resolve.Module' }
         # 2023-08-21
         'Dotils.Get-CachedExpression' # 'Dotils.Get-CachedExpression' = { .Cached.Sb }
         # 2023-08-20
         'Dotils.Regex.Split.Basic' # 'Dotils.Regex.Split.Basic' = { 'Regex.Split.Basic' }
+        'Dotils.Regex.Split'
         'Dotils.Start-TimerToastLoop'
         'Dotils.Get-UsingStatement' # 'Dotils.Get-UsingStatement' = { }
         'Dotils.Select-Nameish' # 'Dotils.Select-Nameish' = { 'Select.Namish', 'Nameish' }
@@ -10399,7 +10979,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Random.Command' #  Dotils.Random.Command = { <none> }
         'Dotils.Random.CommandExample' #  Dotils.Random.Command = { <none> }
 
-        'Dotils.Debug.Find-Variable' # <none>
+        'Dotils.Debug.Find-Variable.old' # <none>
         'Dotils.FindExceptionSource' # <none>
         #
         # ...
@@ -10440,7 +11020,7 @@ $exportModuleMemberSplat = @{
         'Dotils.JoinString.As' # 'Join.As'
         ## some string stuff
 
-        'Dotils.Write.Info' # 'Write.Info'
+        # 'Dotils.Write.Info' # 'Write.Info'
         'Dotils.Write.Info.Fence' # 'Write.Info.Fence'
         'Dotils.String.Normalize.LineEndings' # 'String.Normalize.LineEndings'
         'Dotils.ClampIt'  # 'ClampIt'
@@ -10461,12 +11041,26 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-08-31
+        'Dotils.Find-VariableByType' # 'Dotils.Select-VariableByType' = { 'Dotils.Find-VariableByType' }(
+        # 2023-08-26
+        '.Split.WordByCase' # 'Dotils.Split.WordByCase' = { '.Split.WordByCase' }
+
+        # 2023-08-24
+        'Infa' # 'Dotils.Write-Information' = { 'wInfo', 'Infa', 'Write.Infa' }
+        'wInfo' # 'Dotils.Write-Information' = { 'wInfo', 'Infa', 'Write.Infa' }
+        'Write.Infa' # 'Dotils.Write-Information' = { 'wInfo', 'Infa', 'Write.Infa' }
+        'Write.StrInfa' # 'Dotils.Write-StringInformation' = { 'Write.StringInfa', 'Write.StrInfa' }
+        'Write.StringInfa' # 'Dotils.Write-StringInformation' = { 'Write.StringInfa', 'Write.StrInfa' }
+
+        'Resolve.Module' # 'Dotils.Resolve.Module' = { 'Resolve.Module' }
         # 2023-08-21
         '.Cached.Sb' # 'Dotils.Get-CachedExpression' = { .Cached.Sb }
 
         # 2023-08-20
 
         'Regex.Split.Basic' # 'Dotils.Regex.Split.Basic' = { 'Regex.Split.Basic' }
+        '.Split'
 
         '.fmt.Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
         'Dotils.Format.Datetime' # 'Dotils.Format-Datetime' = { '.fmt.Datetime', 'Dotils.Format.Datetime' }
@@ -10658,7 +11252,6 @@ $exportModuleMemberSplat = @{
         'Find-MyWorkspace'  # 'Dotils.Find-MyWorkspace'
 
         'SelectBy-Module' # Dotils.SelectBy-Module
-        'SelectBy-Module' # Dotils.SelectBy-Module
         #
         'Select-ExcludeBlankProperty' # 'Dotils.Select-ExcludeBlankProperty'
         # '.CallStack', 'Render.Stack'
@@ -10674,7 +11267,7 @@ $exportModuleMemberSplat = @{
         'MonkeyBusiness.Vaidate.ExportedCommands' # 'Dotils.Testing.Validate.ExportedCmds'
         ## some string stuff
         # 'Console.GetWindowWidth'  #
-        'Write.Info' # 'Dotils.Write.Info'
+        # 'Write.Info' # 'Dotils.Write.Info'
         'Write.Info.Fence' # 'Dotils.Write.Info.Fence'
         'String.Normalize.LineEndings' # 'Dotils.String.Normalize.LineEndings'
         'ClampIt'  # 'ClampIt'
@@ -10689,6 +11282,7 @@ $exportModuleMemberSplat = @{
 }
 Export-ModuleMember @exportModuleMemberSplat
 
+Dotils.Add-PsModulePath -TestOnly -PrependPath -InputPath 'H:\data\2023\pwsh\PsModules.👨.Import'
 
 Hr -fg magenta
 
@@ -10734,3 +11328,5 @@ function Dotils.Stash-NewFileBuffer {
 
 "left off '<H:\data\2023\pwsh\temp-describe-sketch.ps1>'" | write-host -back 'darkyellow'
 'finish code at <file:///H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Dotils._merge_wip.ps1>' | Dotils.Write-DimText | write-warning
+
+'finisH: "Dotils.Get-CachedExpression"' | Dotils.Write-DimText | write-host
