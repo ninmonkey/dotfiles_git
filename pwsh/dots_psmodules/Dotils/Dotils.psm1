@@ -58,6 +58,117 @@ function Dotils.To.Type.FromPSTypenames {
 
 }
 
+
+function Dotils.Resolve.Ast {
+    <#
+    .synopsis
+        using crazy parameter list, to inspect type relations verses one object param
+    #>
+    # nyi: future: todo: make this arg transformation
+    [Alias('Resolve.Ast')]
+    [CmdletBinding(DefaultParameterSetName='AsObject')]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline,
+            ParameterSetName='AsObject')]
+        $InputObject,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName,
+            ParameterSetName = 'AsAst')]
+        [Management.Automation.Language.Ast]
+        $Ast,
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName,
+            ParameterSetName = 'AsFunctionDefinitionAst')]
+        [Management.Automation.Language.FunctionDefinitionAst]
+        $FunctionDefinitionAst,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName,
+            ParameterSetName = 'AsScriptblock')]
+        [Management.Automation.ScriptBlock]
+        $ScriptBlock,
+
+        [hashtable]$Options = @{}
+    )
+    begin {
+        $Config = nin.MergeHash -OtherHash $Options -BaseHash @{
+            JsonLogging = $false
+        }
+    }
+    process {
+
+        if($Config.JsonLogging) {
+            $PSCmdlet.MyInvocation.BoundParameters
+                | ConvertTo-Json -Depth 0 -Compress
+                | Join-String -op 'Func: '
+                | write-verbose -Verbose
+
+        }
+
+        $PSBoundParameters.Keys
+            | Join-String -op 'PSBoundparameters: ' -sep ', '
+            | write-verbose -Verbose
+        $PSCmdlet.ParameterSetName
+            | Join-String -op 'ParameterSet: '
+            | write-verbose -Verbose
+
+
+        switch ($PSCmdlet.ParameterSetName) {
+            'AsAst' {
+                write-debug '  switch => AsAst'
+                return $Ast
+            }
+            'AsScriptblock' {
+                write-debug '  switch => AsScriptBlock'
+                return $ScriptBlock.Ast
+            }
+            'FunctionDefinitionAst' {
+                write-debug '  switch => FunctionDefinitionAst'
+                [Management.Automation.Language.ScriptBlockAst]$Body =
+                    $InputObject.Body
+                <# contains
+                    Body   [ScriptBlockAst]
+                    Extent [IScriptExtent]
+                    Name   [string]
+                    Parent [Ast]
+
+                [body]: The body of the function. This property is never null.
+                #>
+                'found: {0}' -f @( $Body | Format-SHorttypename ) | write-verbose
+                if($Body) {
+                    return $Body
+                }
+                break
+            }
+            # 'AsCommand' { #
+            #     return $InputObject.ScriptBlock.Ast
+            # }
+            default {
+                write-debug '  switch: => default'
+                if($InputObject | .Has.Prop Ast Exists -AsTest) {
+                    return $InputObject.Ast
+                }
+                if($InputObject | .Has.Prop ScriptBlock Exists -AsTest) {
+                    return $InputObject.ScriptBlock.Ast
+                }
+                $exception = [Exception]::new(
+                    <# message: #> ('Could not resolve [Ast] from object type {0} and ParameterSet: {1}' -f @(
+                        $InputObject | Format-ShortTypeName
+                        $PSCmdlet.ParameterSetName
+                    )), <# innerException: #> $null)
+                $PSCmdlet.WriteError(
+                    [System.Management.Automation.ErrorRecord]::new(
+                        <# exception: #> $exception,
+                        <# errorId: #> 'InputObjectTransformFailed',
+                        <# errorCategory: #> ([System.Management.Automation.ErrorCategory]::InvalidType),
+                        <# targetObject: #> $InputObject))
+
+                # throw "Unhandled ParameterSet: $($PSCmdlet.ParameterSetName for )"
+            }
+
+        }
+    }
+}
+
+
 function Dotils.Help.FromType {
     <#
     .SYNOPSIS
@@ -435,10 +546,16 @@ and run the operation again."
 }
 function Dotils.Select.Some {
     # [CmdletBinding()]
-    [Alias('.Some')]
-    param( [switch]$LastOne )
+    [Alias('Some')]
+    param(
+        [Alias('Descending')][switch]$FromEnd
+    )
+    if($FromEnd) {
+        @( $Input ) | Select -Last 6
+        return
+    }
     @( $Input ) | Select -first 6
-    throw 'nyi; or requires confirmation; mark;'
+
 }
 
 function Dotils.Get-UsingStatement {
@@ -1850,6 +1967,11 @@ function Dotils.Has.Property {
             | Join-String { $_ | Dotils.ShortString -maxLength 120 } -sep (hr 1 )
     .EXAMPLE
         $error | .Has.Prop -PropertyName 'InvocationInfo' -AsTest
+    .EXAMPLE
+        .EXAMPLE
+        $raw_agil = ConvertFrom-HTML -Content $response.Content -Engine AgilityPack  -Raw
+        $listOfNamesToHide = $raw_agil
+                | Dotils.Find.Property.Basic -TestKind Long.Value -NameOnly
     .LINK
         Dotils.Has.Property
     .LINK
@@ -1870,13 +1992,21 @@ function Dotils.Has.Property {
             'IsNotBlank',
             'IsNull', 'IsNotNull',
             'IsBlank',
-            'IsNull.AndExists')]
+            'IsNull.AndExists',
+            'Long.Value',
+            'Short.Value'
+        )]
         [string]$TestKind = 'Exists',
 
         # returns bool instead
         [Alias('Test')][switch]$AsTest
-
     )
+    begin {
+        $Config = nin.MergeHash -OtherHash $Options -base @{
+            LongTextThreshold = 120
+            ShortTextThreshold = 60
+        }
+    }
 
     process {
         # $toKeep     = $false
@@ -1910,6 +2040,16 @@ function Dotils.Has.Property {
             'IsNull.AndExists' {
                 if($AsTest) { return $exists -and $isTrueNull }
                 if($exists -and $isTrueNull) { return $InputObject }
+            }
+            'Long.Value' {
+                $isLong = ([string]$PropValue).length -gt $Config.LongTextThreshold
+                if($AsTest) { return $isLong }
+                if($isLong) { return $InputObject }
+            }
+            'Short.Value' {
+                $isLong = ([string]$PropValue).length -lt $Config.ShortTextThreshold
+                if($AsTest) { return $isLong }
+                if($isLong) { return $InputObject }
             }
             default { throw "UnhandledTestKind: '$TestKind'"}
         }
@@ -1946,6 +2086,74 @@ function Dotils.Has.Property.Regex {
     }
 }
 
+function Dotils.Find.Property {
+    [CmdletBinding()]
+    param(
+        [Alias('Name')][Parameter(Mandatory, Position=0)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject,
+
+        [Parameter(Position = 1)]
+        [ValidateSet(
+            'Exists',
+            'IsNotBlank',
+            'IsNull', 'IsNotNull',
+            'IsBlank',
+            'IsNull.AndExists',
+            'Long.Value',
+            'Short.Value'
+        )]
+        [string]$TestKind = 'Exists',
+
+        # returns bool instead
+        [Alias('Test')][switch]$AsTest
+    )
+    throw 'this will be the less stable version. for that, see:  [Dotils.Find.Property.Basic]'
+}
+Function Dotils.Find.Property.Basic {
+    <#
+    .SYNOPSIS
+        Query for properties using filters
+    .EXAMPLE
+        $raw_agil = ConvertFrom-HTML -Content $response.Content -Engine AgilityPack  -Raw
+        $listOfNamesToHide = $raw_agil
+                | Dotils.Find.Property.Basic -TestKind Long.Value -NameOnly
+    #>
+    param(
+        [ValidateSet(
+            'Exists',
+            'IsNotBlank',
+            'IsNull', 'IsNotNull',
+            'IsBlank',
+            'IsNull.AndExists',
+            'Long.Value',
+            'Short.Value'
+        )]
+        [string]$TestKind = 'IsNotNull',
+
+        [switch]$NameOnly
+    )
+    process {
+        $target = $_
+        $props = $target
+            | Ninmonkey.Console\Inspect-ObjectProperty
+            | Dotils.Has.Property -PropertyName Value -TestKind $TestKind
+            | Sort-Object Name
+
+        if($NameOnly) {
+            return $Props.Name
+        }
+        return $Props
+            # $raw_agil | io | ?{
+            #         $_ | Dotils.Has.Property -PropertyName 'Value' -TestKind 'Long.Value'
+            #     }
+            #     | select * -exclude 'Value'
+
+    }
+
+}
 
 
 function Dotils.Add.IndexProp {
@@ -10281,11 +10489,14 @@ function Dotils.Add-PsModulePath {
 
     # write-error 'logic below might be slighlty wrong from pasting'
     # return
-    write-error 'left off, test func runs right'
+    # write-error 'left off, test func runs right'
      write-warning 'slightly NYI, validate working'
 
     'Dotils.Add-PsModulePath::Add => {0}' -f @( $InputPath )
         | write-verbose
+
+    write-warning ' ==> early exit before test'
+    return
 
     $info = [hashtable]::new( $PSBoundParameters )
     $info.GetEnumerator()
@@ -10868,6 +11079,13 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-09-03
+        'Dotils.Find.Property.Basic' # 'Dotils.Find.Property.Basic' =  { }
+        'Dotils.Find.Property' # 'Dotils.Find.Property' = {  }
+        'Dotils.Select.Some' # 'Dotils.Select.Some' = { 'Some' }
+        # 2023-09-02
+        'Dotils.Resolve.Ast' # 'Dotils.Resolve.Ast' = { 'Resolve.Ast' }
+
         # 2023-08-31
         'Dotils.Select-VariableByType' # 'Dotils.Select-VariableByType' = { 'Dotils.Find-VariableByType' }(
         'Dotils.Write-DictLine'
@@ -10936,7 +11154,7 @@ $exportModuleMemberSplat = @{
         'Dotils.To.Duration' # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
         'Dotils.VsCode.ConvertTo.Snipet' # 'Dotils.VsCode.ConvertTo.Snipet' = { '.VsCode.ConvertTo.Snipet' }
         'Dotils.Describe' # 'Dotils.Describe' = { '.Describe' }
-        'Dotils.Select.Some' # 'Dotils.Select.Some' = { '.Select.Some' }
+
         'Dotils.Select.One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
         'Dotils.Text.NormalizeLineEnding' # 'Dotils.Text.NormalizeLineEnding' = { '.Text.NormalizeNL' }
 
@@ -11100,6 +11318,12 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-09-03
+        'Some'
+
+
+        # 2023-09-02
+        'Resolve.Ast'  # 'Dotils.Resolve.Ast' = { 'Resolve.Ast' }
         # 2023-08-31
         'Dotils.Find-VariableByType' # 'Dotils.Select-VariableByType' = { 'Dotils.Find-VariableByType' }(
         # 2023-08-26
@@ -11192,7 +11416,7 @@ $exportModuleMemberSplat = @{
         'One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
 
 
-        '.Select.Some' # 'Dotils.Select.Some' = { '.Select.Some' }
+
 
         '.Ansi.Fg' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
         '.Ansi.Bg' # 'Dotils.Ansi.Write' = {  '.Ansi.Fg', '.Ansi.Bg', '.Ansi.Write' }
@@ -11389,3 +11613,13 @@ function Dotils.Stash-NewFileBuffer {
 'finish code at <file:///H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Dotils._merge_wip.ps1>' | Dotils.Write-DimText | write-warning
 
 'finisH: "Dotils.Get-CachedExpression"' | Dotils.Write-DimText | write-host
+
+if(-not (gcm 'dom.Render.Element.fromAgilPack' -ea 'ignore')) {
+    'auto-importing dom.* from dom.utils'  | write-host -back 'darkred'
+    'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1' | Join-String -f " => import: {0}" | write-host -back darkgreen
+    . (gi -ea 'continue' 'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1')
+
+} else {
+    'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1' | Join-String -f " => import: {0}" | write-host -back darkgreen
+    gcm 'dom.*' | sort Name | Ft -AutoSize | out-string | write-host
+}
