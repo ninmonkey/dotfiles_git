@@ -2086,6 +2086,47 @@ function Dotils.Has.Property.Regex {
     }
 }
 
+function Dotils.LastOut {
+    [Alias('LastOut')]
+    # append contents to time based rotate
+    param(
+        # if false, path is always 0, else rotates 0 to modulus
+        [switch]$Rotate,
+        # auto open in vs code
+        [switch]$AutoOpen
+    )
+    $Config = @{
+        Mod = 10
+        LogPrependDate = $true
+    }
+    if($Rotate) {
+        $suffix = (get-date).Second % $Config.Mod
+    }
+    $pathCycle = 'temp:\lastOut_{0}.txt' -f @(
+        $rotate ? $suffix : '0'
+    )
+
+    Add-Content -Path $PathCycle -Value @(
+        "`n"
+        '### {0} ###' -f @(
+            (Get-Date).ToString('o')
+        )
+        "`n"
+    )
+
+    Add-Content -Value @( $Input ) -Path $PathCycle
+
+    $item = Get-Item -ea 'stop' $PathCycle
+    $Item | Join-String -f "  => wrote: '{0}'"
+        | Dotils.Write-DimText
+        | wInfo
+
+    if($AutoOpen) {
+        code -g (gi -ea 'stop' $Item)
+    }
+
+}
+
 function Dotils.Find.Property {
     [CmdletBinding()]
     param(
@@ -11080,6 +11121,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-09-03
+        'Dotils.LastOut' # 'Dotils.LastOut' = { 'LastOut' }
         'Dotils.Find.Property.Basic' # 'Dotils.Find.Property.Basic' =  { }
         'Dotils.Find.Property' # 'Dotils.Find.Property' = {  }
         'Dotils.Select.Some' # 'Dotils.Select.Some' = { 'Some' }
@@ -11320,6 +11362,7 @@ $exportModuleMemberSplat = @{
     Alias    = @(
         # 2023-09-03
         'Some'
+        'LastOut' # 'Dotils.LastOut' = { 'LastOut' }
 
 
         # 2023-09-02
