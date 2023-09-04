@@ -1,4 +1,16 @@
 
+performance: `PayloRest_CompanyResourceCode`
+
+double chekc
+New or updated functions: 
+[].VsCode.ConvertTo.Snipet 
+[ ] .Select.One 
+[ ] .Select.Some 
+.Text.NormalizeLineEnding 
+[ ] .To.Duration 
+[x] .To.Type.FromPSTypenames 
+- [] dotils-ToBe.nin-Where-FilterByGroupChoice
+
 
 ```ps1
 goto 'H:\data\2023\pwsh\sketches'

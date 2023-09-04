@@ -1993,6 +1993,8 @@ function Dotils.Has.Property {
             'IsNull', 'IsNotNull',
             'IsBlank',
             'IsNull.AndExists',
+            'IsTrue.Bool',
+            'IsTrue.Null',
             'Long.Value',
             'Short.Value'
         )]
@@ -2024,6 +2026,18 @@ function Dotils.Has.Property {
             'IsNotBlank' {
                 if($AsTest) { return $isNotBlank }
                 if($IsNotBlank) { return $InputObject }
+            }
+            'IsTrue.Bool' {
+                $isTrueBool =
+                    ($null -ne $PropValue) -and ($PropValue -is 'bool')
+
+                if($AsTest) { return $IsTrueBool }
+                if($IsTrueBool) { return $InputObject }
+            }
+            'IsTrue.Null' {
+                $isTrueNull = $null -eq $PropValue
+                if($AsTest) { return $IsTrueNull }
+                if($isTrueNull) { return $InputObject }
             }
             'IsBlank' {
                 if($AsTest) { return $IsBlank }
@@ -2139,12 +2153,12 @@ function Dotils.Find.Property {
         [Parameter(Position = 1)]
         [ValidateSet(
             'Exists',
-            'IsNotBlank',
-            'IsNull', 'IsNotNull',
-            'IsBlank',
-            'IsNull.AndExists',
-            'Long.Value',
-            'Short.Value'
+            'IsNotBlank'
+            # 'IsNull', 'IsNotNull',
+            # 'IsBlank',
+            # 'IsNull.AndExists',
+            # 'Long.Value',
+            # 'Short.Value'
         )]
         [string]$TestKind = 'Exists',
 
@@ -2169,6 +2183,8 @@ Function Dotils.Find.Property.Basic {
             'IsNull', 'IsNotNull',
             'IsBlank',
             'IsNull.AndExists',
+            'IsTrue.Bool',
+            'IsTrue.Null',
             'Long.Value',
             'Short.Value'
         )]
@@ -10911,6 +10927,349 @@ function Dotils.Format-Datetime {
     $Target = if($InputObject -is 'datetime') { $InputObject } else { $InputObject.CreationTime }
 }
 
+function Dotils.Format-HexString {
+    <#
+    .SYNOPSIS
+        converts numbers or strings to hexstrings
+    .EXAMPLE
+        'hi 🐒 world' | Dotils.Format-HexString
+            | Join-string -sep ', '
+
+        68, 69, 20, 1f412, 20, 77, 6f, 72, 6c, 64
+    .EXAMPLE
+        244, 200 | Dotils.Format-HexString|Join-string -sep ', '
+
+    .example
+        # original func:
+        ($_ ?? '').EnumerateRunes().value | Join-string -sep ' ' -f "`n{0,6:x}"
+    #>
+    [CmdletBinding()]
+    [Alias(
+        '.As.HexString',
+        'fmt.HexString',
+        'HexString'
+    )]
+    param(
+        [Alias('Text')]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [AllowEmptyCollection()]
+        [Parameter(Mandatory,ValueFromPipeline)]
+        $InputObject,
+
+        [switch]$AlignRightSwitch,
+        [switch]$PadZerosSwitch,
+
+        [ValidateScript({throw 'Formatting for command is NYI'})]
+        [ValidateSet(
+            'PowerShell.Literal', # ex: "`u{2400}"
+            'PowerQuery.Literal', # ex: "#(00002400)"
+            'WebColor' # ex: "#123123" or "#123123ff"
+        )]
+        [string]$OutputFormat,
+
+        [ArgumentCompletions(
+            '@{ PrefixWithHex = $true }',
+            '@{ PrefixAsHexColor = $true }',
+            '@{ PrefixWithU = $true }'
+        )]
+        [hashtable]$Options = @{}
+    )
+    begin {
+        $Config = nin.MergeHash -OtherHash $Options -Base @{
+            FormatStr = '{0:x}'
+            WriteNullSymbolWhenNull = $true
+            PrefixWithU = $false
+            PadZero = $PadZerosSwitch
+        }
+        if($AlignRight) {
+            $Config.FormatStr = '{0,6:x}'
+        }
+        # if($Config.PrefixWithU) {
+        #     $Config.FormatStr = 'U+', $Config.FormatStr -join ''
+        # }
+
+    }
+    process {
+        $Obj = $InputObject
+        if($null -eq $Obj -and $Config.WriteNullSymbolWhenNull) {
+            return "`u{2400}" # null symbol or emit nothing?
+        }
+
+
+        # $fStr = $Config.FormatStr # if($AlignRight) { '{0,6:x}' } else { '{0:x2}' }
+        if($Obj -is 'string') {
+            $values = $Obj.EnumerateRunes() | % Value
+        } else {
+            write-verbose 'try non-string enumeration'
+            $values = $Obj
+        }
+        foreach($item in $values) {
+            [string]$render = $Config.FormatStr -f $Item
+            if($Config.PadZero) {
+                $render = $render.PadLeft(6, '0')
+            }
+            if($Config.PrefixWithU) {
+                $render = 'U+', $render -join ''
+            }
+            if($Config.PrefixWithHex) {
+                $render = '0x', $render -join ''
+            }
+            if($Config.PrefixAsHexColor) {
+                $render = '#', $render -join ''
+                # warning: doesn't pad, but, then, that's valid css...
+            }
+            $render
+        }
+
+
+    }
+}
+function Dotils.PowerBI.FindRecentLog {
+    <#
+    .SYNOPSIS
+        find logs to parse
+    .example
+        Dotils.PowerBI.FindRecentLog -ChangedWithin 40minutes
+            | Dotils.PowerBi.Parse.LogName
+    .link
+        Dotils.PowerBI.FindRecentLog
+    .link
+        Dotils.PowerBI.CaptureLogs
+    #>
+    param(
+        [ArgumentCompletions( '2minutes', '20minutes', '1days', '20seconds')]$ChangedWithin = '5minutes'
+    )
+    $Sources = @{
+        LocalTracesPerformance = gi (Join-path $Env:localAppData 'Microsoft/Power BI Desktop/Traces/Performance')
+    }
+    # gci -path $Sources.LocalTracesPerformance -Recurse -file *.log
+    pushd -StackName 'pbi.capture' -Path (gi $Sources.LocalTracesPerformance -ea 'stop')
+    $found = fd -e log --changed-within $ChangedWithin | gi
+    popd -StackName 'pbi.capture'
+
+    return $Found
+}
+
+function Dotils.PowerBI.CaptureLogs {
+    <#
+    .SYNOPSIS
+        copy / save logs for profiling
+    .example
+        Pwsh> Saving logs literally this easy:
+        Dotils.PowerBI.CaptureLogs -ChangedWithin 2minutes
+    .link
+        Dotils.PowerBI.FindRecentLog
+    .link
+        Dotils.PowerBI.CaptureLogs
+    #>
+    [CmdletBinding()]
+    param(
+            #[ValidateNotNullOrEmpty()]
+            [Parameter()]
+            [string]$SearchPath,
+            [string]$Other,
+
+            [ArgumentCompletions( '2minutes', '20minutes', '1days', '20seconds')]
+            [string]$ChangedWithin = '2minutes'
+    )
+
+    $destRootPath = Join-path 'H:\datasource_staging_area\2023-09-03-PowerQueryTrace' (SafeFileTimeString)
+    mkdir -path $destRootPath | OutNull
+    'copy files to: {0}' -f $DestRootPath | Write-verbose
+
+    Dotils.PowerBI.FindRecentLog -ChangedWithin $ChangedWithin | Copy-Item -Destination $destRootPath -PassThru | CountOf
+
+    $files = gci -path $destRootPath *.log
+    if($files.count -eq 0) {
+        $destRootPath | gi | % Fullname
+        'empty dir, removing it?' | write-verbose -verbose
+        rm -Path $destRootPath
+    }
+
+    'wrote: {0}' -f $destRootPath | write-host
+
+    return
+   $SearchPath = [String]::IsNullOrEmpty( $SearchPath ) ? $(Join-Path $Env:LocalAppData 'Microsoft\Power BI Desktop\Traces\Performance') : $SearchPath
+   if( [string]::IsNullOrEmpty( $SearchPath) ) { throw 'MissingSearchpath' }
+   pushd -StackName 'pbi.capture' -Path (gi $Searchpath -ea 'stop')
+   fd -e log --changed-within $ChangedWithin | gi
+   popd -StackName 'pbi.capture'
+}
+
+
+function Dotils.PowerBI.ParseLog {
+    <#
+    .SYNOPSIS
+        powerquery log tracing0
+    #>
+    param(
+        [string]$LogPath,
+        [ValidateSet(
+            'Microsoft.Mashup.Container.NetFX45'
+        )]
+        [string]$LogFormatStyle = 'Microsoft.Mashup.Container.NetFX45'
+    )
+
+
+    function __importLog.MashupContainerBasic-v0 {
+        param(
+            [Parameter(Mandatory)]
+            [string]$LogPath
+        )
+        # example filename: 'C:\Users\cppmo_000\AppData\Local\Microsoft\Power BI Desktop\Traces\Performance\Microsoft.Mashup.Container.NetFX45.28180.2023-09-04T00-06-44-036885.log'
+        # gi (Join-Path $Env:LocalAppData 'Microsoft\Power BI Desktop\Traces\Performance\Microsoft.Mashup.Container.NetFX45.28180.2023-09-04T00-06-44-036885.log')
+        gc $LogPath | %{ $_ -split '\{', 2  | select -Skip 1 |Join-String -op '{' | json.from }
+    }
+    function __importLog.MashupContainerBasic {
+        param(
+            [Parameter(Mandatory)]
+            [string]$LogPath
+        )
+        $Regex = @{}
+        $Regex.LogLine0 = @'
+(?xi)
+            # https://regex101.com/r/ll4eGo/1
+            # Ex: DataMashup.Trace Information: 24579 : {"Start":"2023-09-04T00:20:36.9651477Z", ...}
+            ^
+            (?<Preamble>
+            (?<Prefix>.*?)
+            \s
+            (?<SeverityLevel>\w+)
+
+            )
+            \s:\s
+            (?<Json>
+                \{
+                .*
+                \}
+            )
+            (?<Rest>.*)
+            $
+'@
+        $Regex.LogLine = @'
+(?xi)
+        # https://regex101.com/r/ll4eGo/1
+        # https://regex101.com/r/VAAT6X/1
+
+        # Ex: DataMashup.Trace Information: 24579 : {"Start":"2023-09-04T00:20:36.9651477Z", ...}
+        ^
+        (?<Preamble>
+            (?<Prefix>\S+)
+
+            \s
+
+            (?<SeverityLevel>\S*)
+
+            \:\s+
+
+            (?<Number>.*)
+        )
+        \s:\s
+        (?<Json>
+            \{
+            .*
+            \}
+        )
+        # (?<Rest>.*)
+        $
+'@
+        # example filename: 'C:\Users\cppmo_000\AppData\Local\Microsoft\Power BI Desktop\Traces\Performance\Microsoft.Mashup.Container.NetFX45.28180.2023-09-04T00-06-44-036885.log'
+        # gi (Join-Path $Env:LocalAppData 'Microsoft\Power BI Desktop\Traces\Performance\Microsoft.Mashup.Container.NetFX45.28180.2023-09-04T00-06-44-036885.log')
+        gc $LogPath | %{
+            $curLine = $_
+            if($curLine -match $Regex.LogLine) {
+                $matches.remove(0)
+                [pscustomobject]$matches
+             } else {
+                'Failed Parsing line: {0}' -f $curLine
+                | write-warning
+             }
+        }
+    }
+
+    switch($LogFormatStyle) {
+        'Microsoft.Mashup.Container.NetFX45' {
+            __importLog.MashupContainerBasic -LogPath $LogPath
+        }
+        default { throw "UnhandledLogFormat: $Switch" }
+    }
+
+    'don''t forget to try the the SDK to view query tracing a lot easier!'
+        | New-Text -fg 'orange' -bg 'gray30' | write-host
+
+    # |ft
+}
+function Dotils.PowerBi.Parse.LogName {
+        <#
+        .synopsis
+            Get log metadata from the filename itself
+        .example
+            Dotils.PowerBI.FindRecentLog -ChangedWithin 40minutes
+                | Dotils.PowerBi.Parse.LogName
+        .example
+        __parse.LogName -LogPath 'C:\Users\cppmo_000\AppData\Local\Microsoft\Power BI Desktop\Traces\Performance\Microsoft.Mashup.Container.NetFX45.15012.2023-09-04T00-29-41-341141.log'
+
+            Source      : Microsoft.Mashup.Container
+            App         : NetFX45.15012
+            Rest        : 2023-09-04T00-29-41-341141.log
+            WhenStr     : 2023-09-04T00-29-41-341141
+            DateStr     : 2023-09-04
+            TimeZoneStr : T00-29-41
+        .notes
+            see also: [Globalization.DateTimeStyles]
+        #>
+        [CmdletBinding()]
+        param(
+            # pipe or pass log name
+            [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
+            [Alias('PSPath', 'FullName', 'Path')]
+            [string]$LogPath
+        )
+        process {
+
+            # $names | nat 4 | %{
+            #     $App, $Version, $Date, $rest   =  $_ -split '\.', -4
+            # }
+            'Parsing log: {0}' -f $LogPath | write-verbose
+
+            $sampleDate = '2023-09-04T00-29-41'
+            $dateString = '2023-09-04T00-29-41'
+            $formatString = 'yyyy-MM-ddTHH-mm-ss'
+            try {
+                $When = [DateTime]::ParseExact($dateString, $formatString, $null)
+            } catch {
+                write-warning 'File appears to not be the same format'
+                return
+            }
+
+            $Log = Get-Item $LogPath
+            $crumbs = $Log.Name -split '\.'
+            $whenStr = $crumbs | select  -Skip 5 -First 1
+
+            # [datetime]::ParseExact(  ($zzz -split '-', -2 | select -First 1) , 'yyyy-MM-ddTHH-mm-ss', $null  )
+            try {
+                $parsedDate = [datetime]::ParseExact(
+                    ($whenStr -split '-', -2 | select -First 1),
+                    'yyyy-MM-ddTHH-mm-ss', $null )
+                } catch {
+                    write-warning 'File appears to not be the same format'
+                    return
+                }
+
+            [pscustomobject]@{
+                PSTypeName = 'Dotils.Powerbi.Parsed.LogName'
+                Date    = $ParsedDate
+                Source  = $crumbs | Select -First 3          | Join-string -sep '.'
+                App     = $crumbs | Select  -Skip 3 -first 2 | Join-string -sep '.'
+                # Rest    = $crumbs | Select  -Skip 5          | Join-string -sep '.'
+                Path    = (gi -ea 'ignore' $Log.FullName) ?? $Log
+                DateTimeStr = $crumbs | select  -Skip 5 -First 1
+                DateStr = $crumbs[5].Substring(0, 10)
+                TimeZoneStr = $crumbs[5].Substring(10, 9)
+            }
+        }
+    }
 function Dotils.Start-TimerToastLoop {
     [CmdletBinding()]
     param(
@@ -11125,9 +11484,18 @@ $exportModuleMemberSplat = @{
         'Dotils.Find.Property.Basic' # 'Dotils.Find.Property.Basic' =  { }
         'Dotils.Find.Property' # 'Dotils.Find.Property' = {  }
         'Dotils.Select.Some' # 'Dotils.Select.Some' = { 'Some' }
+        'Dotils.Format-HexString' # 'Dotils.Format-HexString' = { '.As.HexString', 'fmt.HexString', 'HexString' }
+        'Dotils.PowerBI.CaptureLogs' # 'Dotils.PowerBI.CaptureLogs' =  { }
+        'Dotils.PowerBI.FindRecentLog' # 'Dotils.PowerBI.FindRecentLog' = { }
+        'Dotils.PowerBi.Parse.LogName'
+        'Dotils.Powerbi.ParseLog' # Dotils.Powerbi.ParseLog = { }
+
+
+
+
+
         # 2023-09-02
         'Dotils.Resolve.Ast' # 'Dotils.Resolve.Ast' = { 'Resolve.Ast' }
-
         # 2023-08-31
         'Dotils.Select-VariableByType' # 'Dotils.Select-VariableByType' = { 'Dotils.Find-VariableByType' }(
         'Dotils.Write-DictLine'
@@ -11363,6 +11731,11 @@ $exportModuleMemberSplat = @{
         # 2023-09-03
         'Some'
         'LastOut' # 'Dotils.LastOut' = { 'LastOut' }
+        '.As.HexString' # 'Dotils.Format-HexString' = { '.As.HexString', 'fmt.HexString', 'HexString' }
+        'fmt.HexString' # 'Dotils.Format-HexString' = { '.As.HexString', 'fmt.HexString', 'HexString' }
+        'HexString' # 'Dotils.Format-HexString' = { '.As.HexString', 'fmt.HexString', 'HexString' }
+
+
 
 
         # 2023-09-02
@@ -11660,9 +12033,12 @@ function Dotils.Stash-NewFileBuffer {
 if(-not (gcm 'dom.Render.Element.fromAgilPack' -ea 'ignore')) {
     'auto-importing dom.* from dom.utils'  | write-host -back 'darkred'
     'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1' | Join-String -f " => import: {0}" | write-host -back darkgreen
-    . (gi -ea 'continue' 'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1')
+    # . (gi -ea 'continue' 'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1')
 
 } else {
-    'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1' | Join-String -f " => import: {0}" | write-host -back darkgreen
+    'toCollect: H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1'
+        | Join-String -f " => import: {0}"
+        | write-host -back darkgreen
+
     gcm 'dom.*' | sort Name | Ft -AutoSize | out-string | write-host
 }

@@ -37,25 +37,95 @@ $impo_list
 | Describe.Module
 
 h1 'group by query'
-$query ??= [Ordered]@{
+$query = [Ordered]@{
     All = @( Gcm -m 'Dotils'  )
+    | %{
+        $curRecord = $_
+        $curRecord
+            | Add-Member -force -PassThru -ea 'ignore' -NotePropertyMembers @{
+                DefinitionAbbr =
+                    $curRecord.Definition.ToString() -join "`n" -replace '\r?\n', '␊'
+                    | Dotils.ShortString.Basic -maxLength 140
+                ParametersAbbr =
+                    ($curRecord)?.Parameters.Keys
+                        | Sort-Object -Unique
+                            | Join-String -sep "`n┟┝ "
+                ParametersAbbrSingleLine =
+                    ($curRecord)?.Parameters.Keys
+                        | Sort-Object -Unique
+                            | Join-String -sep ', '
+            }
+        $curRecord
+    }
 }
 $query.Is = @(
     # $query.All | ?
 )
-PropDump =
+write-warning 'insert: should be rename or alias property Definition to keep default views'
+# PropDump =
+$SelectProps_splat = @{
+    ErrorAction = 'ignore'
+    Property = '*'
+    ExcludeProperty = @(
+        'Definition', 'Parameters'
+    )
+}
+
 $Pkg =
     $query.All
-    | Export-Excel -wo 'All' -PassThru -TableStyle Light1 -Title 'all'
+        | Select @SelectProps_splat
+        | Export-Excel -wo 'All' -PassThru -TableStyle Light1 -Title 'all'
+    # | %{
+
+    #     $o = [PSObject]::new()
+    #     $o.psobject.Properties.Add([Management.Automation.PSNoteProperty]::new('a','b'))
+    #     $o.psobject.Properties.Add([Management.Automation.PSNoteProperty]::new('c','d'))
+    #     $o
+    # }
 
 $Pkg =
     $query.All
     | Select -Prop $propNames.CommandInfo
-    | Export-Excel -wo 'All' -ExcelPackage $Pkg -PassThru -TableStyle Light1 -Title 'all'
+    | Select @SelectProps_splat
+    | Export-Excel -wo 'All2' -ExcelPackage $Pkg -PassThru -TableStyle Light1 -Title 'all'
 
-Close-ExcelPackage -ExcelPackage $Pkg -show -SaveAs 
 
-$x | Select @selectSplat
+$mySheet = $pkg.Workbook.Worksheets['All']
+$myTab = $mySheet.Tables | Select -first 1
+$myCol =
+    $myTab.Columns | ? Name -eq 'ParametersAbbrSingleLine'
+
+
+<#
+from docs
+
+    Set-ExcelColumn -Worksheet $ws -Heading "WinsToFastLaps"  -Value {"=E$row/C$row"} -Column 7 -AutoSize -AutoNameRange
+    Set-ExcelColumn -Worksheet $ws -Heading "Link" -Value {"https://en.wikipedia.org" + $worksheet.cells["B$Row"].value  }  -AutoSize
+
+#>
+# $colFmt = Set-ExcelColumn -ExcelPackage $pkg -WorksheetName 'all' -Column 'ParametersAbbrSingleLine' -Width 64 -WrapText  -pass
+$colFmt = Set-ExcelColumn -ExcelPackage $Pkg -Worksheet $mySheet -heading 'ShortedDef' -value {"=E$row"} -Column $MyCol.Id -AutoSize -AutoNameRange -pass
+# -ExcelPackage $pkg -WorksheetName 'all' -Column 'ParametersAbbrSingleLine' -Width 64 -WrapText  -pass
+
+
+
+
+
+$myCol | iot2 -NotSkipMost
+$myTab.Columns|ft
+
+$mySheet
+    | join-string Name -sep ', '
+    | Dotils.Write-DimText | Join-String -op 'Sheets: '
+$myTab.Columns
+    | join-string Name -sep ', '
+    | Dotils.Write-DimText | Join-String -op 'ColsOnSheet: '
+
+
+# Close-ExcelPackage -ExcelPackage $Pkg -show -SaveAs
+Close-ExcelPackage -ExcelPackage $Pkg -show
+
+
 <#
 example
 
@@ -64,7 +134,7 @@ Name                Reported                                                    
 CommandType         [CommandTypes]                                                                 Alias
 Definition          [string]                                                            Dotils.Iter.Prop
 DisplayName         [object]                                              .Iter.Prop -> Dotils.Iter.Prop
-Module              [PSModuleInfo]                                                                dotils
+Module              [PSMo   duleInfo]                                                                dotils
 ModuleName          [string]                                                                      dotils
 Name                [string]                                                                  .Iter.Prop
 Options             [ScopedItemOptions]                                                             None
@@ -75,7 +145,7 @@ RemotingCapability  [RemotingCapability]                                        
 ResolvedCommand     [CommandInfo]                                                       Dotils.Iter.Prop
 ResolvedCommandName [object]                                                            Dotils.Iter.Prop
 Source              [string]                                                                      dotils
-Version             [Version]                                                                        0.0
+Version             [Version]                                                                         0.0
 Visibility          [SessionStateEntryVisibility]                                                 Public
 
 #>
@@ -91,14 +161,14 @@ $impo_list
             | Join-String -sep ' '
             | join.UL -Options @{ ULHeader =  @( (hr 1) ; Label $Name $Version ) | Join-String ; ULFooter  = (hr 0); }
     }
-# | Join-String -f "`n    => " -P { $_.Name, $_.Version -join ': '}
+# | Join-String -f "`n    => " -P { $_.Name, $_.Version -join ':$ '}
 
 
 # 0..4 | %{ 10 / 0 }
-return
+close-ExcelPackage $Pkg -ea 'ignore'
+# return
 NinPosh.Write-ErrorRecency -WithoutSave -Debug
 NinPosh.Write-ErrorRecency -WithoutSave -Debug
-
 # import-module 'posh'
 # # $Posh.Prompt.After({ WriteErrorRecency | New-Text -fg 'orange'|Join-String -f " {0} "})
 # $Posh.Prompt.After({ WriteErrorRecency })

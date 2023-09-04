@@ -5,10 +5,15 @@ Import-Module 'Pansies'
 'trace.👩‍🚀.parse: [1] $Profile.MainEntryPoint : /pwsh/profile.ps1'
     | write-verbose
     # | write-host -bg '7baa7a' -fg black
-@(
-    Set-Alias -PassThru -ea 'Ignore' '.short.Type' 'Ninmonkey.Console\Format-ShortTypeName'
-    Set-Alias -PassThru -ea 'Ignore' '.abbr.Type' 'Ninmonkey.Console\Format-ShortTypeName'
-) | Join-String -sep ', ' -op "   => aliases: "
+& {
+    $splatAlias = @{ PassThru = $true ; ea = 'ignore'}
+    Set-Alias @splatAlias -name '.short.Type' 'Ninmonkey.Console\Format-ShortTypeName'
+    Set-Alias @splatAlias -name '.abbr.Type' 'Ninmonkey.Console\Format-ShortTypeName'
+    Set-Alias @splatAlias -name 'st' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias @splatAlias -name '.fmt.Type' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias @splatAlias -name 'Yaml' -Value 'powershell-yaml\ConvertTo-Yaml'
+    Set-Alias @splatAlias -name 'Yaml.From' -Value 'powershell-yaml\ConvertFrom-Yaml'
+ } | Join-String -sep ', ' -op "   => aliases: "
 
 # required or else it breaks piping 'fd | fzf --preview bat'
 $PSNativeCommandArgumentPassing = [System.Management.Automation.NativeArgumentPassingStyle]::Legacy
