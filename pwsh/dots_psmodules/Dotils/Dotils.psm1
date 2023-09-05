@@ -6980,6 +6980,178 @@ function Dotils.GetCommand {
         )
     }
 }
+
+# function .Str.Substr { }
+function __Dotils.Format.WrapLongLine {
+    [Alias('.Format.Split-StringIntoLines')]
+    param(
+        [string]$InputString,
+        [int]$MaxLineLength = 80
+    )
+
+    $regex = [regex]::new(".{1,$MaxLineLength}(?:\s|$)", [Text.RegularExpressions.RegexOptions]::multiline)
+
+    $matches = $regex.Matches($InputString)
+
+    foreach ($match in $matches) {
+        $match.Value.TrimEnd()
+    }
+}
+
+function Dotils.Format.WrapLongLine  {
+    <#
+    .SYNOPSIS
+        sugar to quickly wrap max line length
+    .notes
+        Warning: Super Naive, Uses [char[]] not Rune enumeration
+    #>
+    [Alias('.Format.Wrap.LongLines')]
+    param(
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [Parameter(ValueFromPipeline)]
+        [string[]]$InputObject,
+
+        [parameter()]
+        [ArgumentCompletions(
+            "(Console.Width)",
+            "((Console.Width) - 20)"
+        )]
+        [Alias('Cols', 'Width', 'LimitWidth')]
+        [int]$MaxLineLength = 80,
+
+        [switch]$AutoSize
+    )
+    process {
+        if($AutoSize) {
+            $MaxLineLength = Console.Width
+        }
+        foreach($CurLine in $InputObject) {
+            [string]$Text = $CurLine -join '' -replace '\r?\n', "`n"
+            $charLength = $Text.Length
+            $runeLength = $Text.EnumerateRunes().Value.Count
+
+            __Dotils.Format.WrapLongLine -Inp $Text -MaxLineLength $MaxLineLength
+        }
+    }
+}
+function Dotils.Format.TextMargin {
+    <#
+    .synopsis
+        mimic a box-model
+    .EXAMPLE
+        $one.InnerHtml
+            | Dotils.Format.TextMargin -Top 2 -Bottom 2
+    #>
+    param(
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [Parameter(ValueFromPipeline)]
+        [string[]]$InputObject,
+
+        # [string]$AlignmentStyle = 'center',
+
+        [Alias('Predent', 'Left')]
+        [Parameter()]$MarginLeft = 0,
+
+        [Alias('Right')]
+        [Parameter()]$MarginRight = $Null,
+
+        [Parameter()]
+        [Alias('Center', 'MarginCenter', 'Middle', 'Both', 'PadBoth')]
+        $MarginBoth = $null,
+
+        [Alias('Top')]
+        [Parameter()]
+        [int]$MarginTop = 0,
+
+        [Alias('Bottom')]
+        [Parameter()]$MarginBottom = 0,
+
+        # auto alight left and right equally
+        [switch]$AutoAlignSides,
+
+
+        # currently in chars
+        # is it optional? make length null by default?
+        [parameter()]
+        [ArgumentCompletions(
+            "(Console.Width)",
+            "((Console.Width) - 20)"
+        )]
+        [Alias('Cols', 'Width', 'LimitWidth')]
+        [int]$MaxLineLength = $null
+    )
+    begin {
+        [Text.StringBuilder]$strBuild = ''
+    }
+    process {
+        $Null = $strBuild.AppendJoin( "`n", @($InputObject))
+        throw  'not sure whether this function (logically) makes sense as a multi-line, wrapping line. write it expecting a single line, wrapping to fit constraints? or, separation of details, where Format-SplitLongLines is to be used?'
+
+
+        # [string]$Text = $InputObject -join "`n"
+        # $NL = "`n"
+        # [string]$render = '...nyi...'
+        if($PSBoundParameters.ContainsKey('MarginLeft')) { write-warning 'param NYI' }
+        if($PSBoundParameters.ContainsKey('MarginRight')) { write-warning 'param NYI' }
+    }
+    end {
+
+        if($PSBoundParameters.ContainsKey('MarginCenter')) {
+            $availableColsPerLine = $MaxLineLength ?? (Console.Width)
+
+        }
+
+
+        [string]$final_linesPrefix = "`n" * $MarginTop -join ''
+        [string]$final_linesSuffix = "`n" * $MarginBottom -join ''
+        write-warning 'command NYI, partial WIP'
+        [string]$rend = Join-String -inp $strBuild.ToString() -op $final_linesPrefix -os $final_linesSuffix
+        # $final_linesPrefix, $render, $final_linesSuffix -join ''
+        return $rend
+        <#
+        next:
+            - [ ] set left and right margins
+            - [ ] auto-wrap when too long
+            - [ ] or align center, automatically
+        #>
+
+    }
+}
+
+
+#         $maxChunkLen = 40
+# $chunkSize = [int]$wrapLongSrc.Length / $maxChunkLen
+# $offset = 0
+# while($offset -lt $wrapLongSrc.Length) {
+#     $wrapLongSrc[ $offset..($offset + $chunkSize)]
+#     $offset += $chunkSize
+#     hr;
+
+# $wrapLongSrc
+
+
+
+
+
+    # }
+    # not performant at all
+    # $maxChunkLen = 40
+    # $chunkSize = [int]$wrapLongSrc.Length / $maxChunkLen
+    # $offset = 0
+    # while($offset -lt $wrapLongSrc.Length) {
+    #     $wrapLongSrc[ $offset..($offset + $chunkSize)]
+    #     $offset += $chunkSize
+    #     hr;
+    # }
+
+    # $wrapLongSrc
+
+# }
+
 function Dotils.Out.Grid2 {
     <#
     .SYNOPSIS
@@ -8241,6 +8413,42 @@ function Dotils.DB.toDataTable {
 
 # 'Dotils.Format-ShortString.Basic' = { 'Dotils.ShortString.Basic' }
 # 'Dotils.Format-ShortString' = { 'Dotils.ShortString' }
+
+# function Shorten {
+#     <#
+#     .SYNOPSIS
+#         truncate string length, never throw errors
+#     #>
+#     [CmdletBinding()]
+#     [Alias('Dotils.Text.Shorten')]
+#     param(
+#         # text to shorten
+#         [AllowEmptyString()]
+#         [AllowNull()]
+#         [Alias('InputObject', 'Text')]
+#         [Parameter(ValueFromPipeline)]
+#         [string]$InputText,
+
+#         [int]$MaxLength = 120
+#     )
+#     process {
+#         if($Null -eq $InputText) { return '' }
+#         if( [string]::IsNullOrEmpty( $InputText) ) { return '' }
+#         $inputLen = $InputText.length
+#         $maxValidCount = [Math]::Clamp(
+#             <# value #> $inputLen,
+#             <# min #> 0, <# max #> $MaxLength )
+
+#         $InputText.Substring( 0, $maxValidCount )
+
+#         <# or WinPS #>
+#         if($false) {
+#             $reFirst = '^(.{1,50}).*' # silly regex, grab the first 300 chars
+#             $InputText -replace $reFirst, '$1'
+#         }
+#     }
+# }
+
 function Dotils.Format-ShortString.Basic {    <#
     .synopsis
         Shorten string in a way that never errors. Keep it simple
@@ -9041,6 +9249,85 @@ function Dotils.Render.Bool {
         }
         $selectedColor = $selectedColor -join ''
         $Text | Join-String -op $selectedColor -os $PSStyle.Reset -sep ''
+    }
+}
+function Dotils.Render.Dom.Attributes {
+    <#
+    .SYNOPSIS
+        render attributes, sorted to the most important ones first, then truncates if wanted
+    .NOTES
+        currently sorts keys based on
+            - specific Attributes to the front, others to the end
+            - generic LongLengthValues to the end
+            - finally by alpha
+
+        future:
+        - [ ] auto-exclude some keys
+    .EXAMPLE
+
+    #>
+    [Alias('Render.Dom.Attributes')]
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Alias('InputText','Text', 'InputElement')]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('Attributes')]
+        $ObjectAttributes,
+
+        [ArgumentCompletions(
+            "', '",
+            "' '",
+            "''",
+            '"`n"'
+        )]
+        [string]$Separator = ' '
+    )
+    begin {
+        $c = @{
+            AttrKey = "${fg:#aad3a8}"
+            AttrValue = "${fg:#94c5e4}"
+        }
+    }
+    process {
+        if(-not $ObjectAttributes) {
+            $ObjectAttributes = $InputObject.Attributes
+        }
+        if($null -eq $ObjectAttributes) {
+            $errMsg = 'MissingField: Object {0} could not find .Attributes' -f @(
+                $InputObject | Format-ShortTypeName )
+            throw $errMsg
+        }
+
+        # [string]$Text = $InputObject
+        # $InputObject
+        # $sep = ' ' # { '', ', ', ", " }
+        # $lone.Attributes
+        $ObjectAttributes
+            # custom priorities
+            | Sort-Object -Descending {@(
+                -not ($_.Value.Length -gt 50)
+                $_.Value.Length -lt 15
+                $_.Name -match 'class|id|name'
+                $_.Name -match 'href|src|url'
+                $_.Name -notmatch 'alt'
+                $_.Name
+            )}
+            | Join-String -sep $Separator {
+            '{0}: {1}' -f @(
+                $_.Name
+                    | Join-String -op $c.AttrKey -os $PSStyle.Reset
+                ( $_.Value ?? '')
+                    | Join-String -DoubleQuote -op $c.AttrValue -os $PSStyle.Reset
+            )
+        }
+
     }
 }
 
@@ -11621,8 +11908,12 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-09-04
+        'Dotils.Format.TextMargin'
+        '__Dotils.Format.WrapLongLine'
+        'Dotils.Format.WrapLongLine'
         'Dotils.DebugUtil.Format.UpdateTypedataLiteral' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
         'Dotils.Render.Bool' # 'Dotils.Render.Bool' = { '.Render.Bool' }
+        'Dotils.Render.Dom.Attributes' # 'Dotils.Render.Dom.Attributes' = { 'Render.Dom.Attributes' }
 
         # 2023-09-03
         'Dotils.LastOut' # 'Dotils.LastOut' = { 'LastOut' }
@@ -11870,6 +12161,9 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-09-04
+        '.Format.Split-StringIntoLines'
+        '.Format.Wrap.LongLines'
+        'Render.Dom.Attributes' # 'Dotils.Render.Dom.Attributes' = { 'Render.Dom.Attributes' }
         '.Render.Bool' # 'Dotils.Render.Bool' = { '.Render.Bool' }
         '.debug.format-UpdateTypedata.Literal' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
         'literal.UpdateTypeDataProperty' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
@@ -12185,3 +12479,6 @@ if(-not (gcm 'dom.Render.Element.fromAgilPack' -ea 'ignore')) {
 
     gcm 'dom.*' | sort Name | Ft -AutoSize | out-string | write-host
 }
+write-host -back 'orange' 'manual importing of TypeData, move to dotils'
+. (gi -ea 'continue' 'H:\data\2023\pwsh\notebooks\Pwsh\TypeData-FormatData\Intro-Truncate-EditingOuterHtml-Props\Intro-Truncate-EditingOuterHtml-Props.ps1'
+)
