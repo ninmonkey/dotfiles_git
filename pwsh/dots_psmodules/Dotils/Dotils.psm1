@@ -8969,7 +8969,80 @@ function Dotils.Render.TextTreeLine.Basic {
         $Token ) -join ''
 }
 
+function Dotils.Render.Bool {
+    <#
+    .SYNOPSIS
+        render something bool-like
+    .example
+        Pwsh>
+        $sample = 'true,$true,$null,null,none,false,$false,1,0,, ,y,Yes,n,No,not' -split ','
 
+        $sample | Render.Bool | fcc |
+    .EXAMPLE
+        # current expected value
+'true,$true,␀,$null,null,none,false,$false,1,0,, ,y,Yes,n,No,not' -split
+     ',' | Render.Bool | Join-String -sep "`n" { $_ | fcc }
+        | cl -Append
+
+            ␛[38;2;0;95;0mtrue␛[0m
+            ␛[38;2;153;153;153m$true␛[0m
+            ␛[38;2;190;116;73m␛[48;2;51;51;51m␀␛[0m
+            ␛[38;2;190;116;73m␛[48;2;51;51;51m$null␛[0m
+            ␛[38;2;190;116;73m␛[48;2;51;51;51mnull␛[0m
+            ␛[38;2;190;116;73m␛[48;2;51;51;51mnone␛[0m
+            ␛[38;2;95;0;0mfalse␛[0m
+            ␛[38;2;153;153;153m$false␛[0m
+            ␛[38;2;0;95;0m1␛[0m
+            ␛[38;2;95;0;0m0␛[0m
+            ␛[38;2;153;153;153m␛[0m
+            ␛[38;2;153;153;153m␠␛[0m
+            ␛[38;2;0;95;0my␛[0m
+            ␛[38;2;0;95;0mYes␛[0m
+            ␛[38;2;95;0;0mn␛[0m
+            ␛[38;2;95;0;0mNo␛[0m
+            ␛[38;2;153;153;153mnot␛[0m
+    #>
+    [Alias('.Render.Bool')]
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [Parameter(ValueFromPipeline)]
+        $InputObject
+    )
+    process {
+        [string]$Text = $InputObject
+        $C = @{
+            FgDim   = $PSStyle.Foreground.FromRgb('#999999')
+            FgBad1  = $PSStyle.Foreground.FromRgb('#5f0000')
+            FgBad2  = $PSStyle.Foreground.FromRgb('#c75f48')
+            FgGood4 = $PSStyle.Foreground.FromRgb('#248000')
+            FgGood1 = $PSStyle.Foreground.FromRgb('#005f00')
+            FgGood2 = $PSStyle.Foreground.FromRgb('#9cc1be')
+            FgGood3 = $PSStyle.Foreground.FromRgb('#a4dcff')
+            FgNull  = "${fg:#be7449}${bg:#333333}"
+        }
+        $C.FgBad = $C.FgBad2
+        $C.FgGood = $C.FgGood4
+
+        if( $InputObject -isnot 'bool' ) {
+            'InputObject type {0} is not a true [bool]' -f @( $InputObject | Format-ShortTypeName )
+            | Write-verbose
+        }
+        $fg = $C.FgDIm
+        $selectedColor = switch -Regex ( $Text ) {
+            # too wide as nonzero
+            # '^(true|1||[^0]+)$
+            '^(\$?null|␀|none)$' { $C.FgNull }
+            '^(true|1|y|yes)$' { $C.FgGood ; break; }
+            '^(false|0|n|no)$' { $C.FgBad  ; break; }
+            default { $C.FgDim }
+        }
+        $selectedColor = $selectedColor -join ''
+        $Text | Join-String -op $selectedColor -os $PSStyle.Reset -sep ''
+    }
+}
 
 function Dotils.Random.Command { # to refactor, to allow piping
     <#
@@ -10004,6 +10077,74 @@ function Dotils.DebugUtil.Format.AliasSummaryLiteral {
     @(foreach($aName in $AliasNames) {
             "'$aName' # $finalSuffix"
         }) | Sort-Object -unique
+}
+
+
+function Dotils.DebugUtil.Format.UpdateTypedataLiteral {
+    <#
+    .SYNOPSIS
+        random sugar, generates template for example DefaultDisplayPropertySet
+        Pwsh>
+            $what = $agiltypackload.SelectNodes('//a') | one
+            $what = $AgilityPack.SelectNodes('//a') | Select -First 1
+            $what | Dotils.DebugUtil.Format.UpdateTypedataLiteral
+
+        # Outputs
+
+            # For Type: [HtmlAgilityPack.HtmlNode]
+
+            'Attributes' # -is [HtmlAgilityPack.HtmlAttributeCollection]
+            'ChildNodes' # -is [HtmlAgilityPack.HtmlNodeCollection]
+            'Closed' # -is [System.Boolean]
+            'ClosingAttributes' # -is [HtmlAgilityPack.HtmlAttributeCollection]
+            'Depth' # -is [System.Int32]
+            'EndNode' # -is [HtmlAgilityPack.HtmlNode]
+            'FirstChild' # -is [HtmlAgilityPack.HtmlNode]
+            'HasAttributes' # -is [System.Boolean]
+            'HasChildNodes' # -is [System.Boolean]
+            'HasClosingAttributes' # -is [System.Boolean]
+            'Id' # -is [System.String]
+            'InnerHtml' # -is [System.String]
+            'InnerLength' # -is [System.Int32]
+            'InnerStartIndex' # -is [System.Int32]
+            'InnerText' # -is [System.String]
+            'LastChild' # -is [HtmlAgilityPack.HtmlNode]
+            'Line' # -is [System.Int32]
+            'LinePosition' # -is [System.Int32]
+            'Name' # -is [System.String]
+            'NextSibling' # -is [HtmlAgilityPack.HtmlNode]
+            'NodeType' # -is [HtmlAgilityPack.HtmlNodeType]
+            'OriginalName' # -is [System.String]
+            'OuterHtml' # -is [System.String]
+            'OuterLength' # -is [System.Int32]
+            'OuterStartIndex' # -is [System.Int32]
+            'OwnerDocument' # -is [HtmlAgilityPack.HtmlDocument]
+            'ParentNode' # -is [HtmlAgilityPack.HtmlNode]
+            'PreviousSibling' # -is [HtmlAgilityPack.HtmlNode]
+            'StreamPosition' # -is [System.Int32]
+            'XPath' # -is [System.String]
+    #>
+    [Alias(
+        '.debug.format-UpdateTypedata.Literal',
+        'literal.UpdateTypeDataProperty'
+    )]
+    param(
+        [Parameter(Mandatory, Position= 0, ValueFromPipeline )]
+        [object]$InputObject
+    )
+    $what
+        | Format-ShortTypename | Label 'For Type' | Write.Infa
+
+    $what
+        | Find-Member -MemberType Property | Sort-Object Name
+        | Join-String -f "`n{0}" {
+            @(
+                '{0} # -is [{1}]' -f @(
+                    $_.Name | Join-String -SingleQuote
+                    $_.PropertyType
+                )
+            )-join ' '
+    }
 }
 
 function Dotils.Resolve.TypeInfo {
@@ -11479,6 +11620,10 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-09-04
+        'Dotils.DebugUtil.Format.UpdateTypedataLiteral' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
+        'Dotils.Render.Bool' # 'Dotils.Render.Bool' = { '.Render.Bool' }
+
         # 2023-09-03
         'Dotils.LastOut' # 'Dotils.LastOut' = { 'LastOut' }
         'Dotils.Find.Property.Basic' # 'Dotils.Find.Property.Basic' =  { }
@@ -11489,11 +11634,6 @@ $exportModuleMemberSplat = @{
         'Dotils.PowerBI.FindRecentLog' # 'Dotils.PowerBI.FindRecentLog' = { }
         'Dotils.PowerBi.Parse.LogName'
         'Dotils.Powerbi.ParseLog' # Dotils.Powerbi.ParseLog = { }
-
-
-
-
-
         # 2023-09-02
         'Dotils.Resolve.Ast' # 'Dotils.Resolve.Ast' = { 'Resolve.Ast' }
         # 2023-08-31
@@ -11534,6 +11674,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Compare.Duplicates'
         'Dotils.Resolve.TypeInfo'          # 'Dotils.Resolve.TypeInfo' = { Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }
         'Dotils.DebugUtil.Format.AliasSummaryLiteral'
+        'Dotils.DebugUtil.Format.UpdateTypedataLiteral'
         'Dotils.Test-IsOfType.FancyWip' # 'Dotils.Test-IsOfType.FancyWip' = { }
         'Dotils.Test-IsOfType.Basic' # 'Dotils.Test-IsOfType' = { '.Is.Type', '.Is.OfType', 'Dotils.Test-IsOfType' }
         'Dotils.Select-TemporalFirstObject'         # 'Dotils.Select-TemporalFirstObject' = { '.Select.FirstTime' }
@@ -11728,15 +11869,17 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-09-04
+        '.Render.Bool' # 'Dotils.Render.Bool' = { '.Render.Bool' }
+        '.debug.format-UpdateTypedata.Literal' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
+        'literal.UpdateTypeDataProperty' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
+
         # 2023-09-03
         'Some'
         'LastOut' # 'Dotils.LastOut' = { 'LastOut' }
         '.As.HexString' # 'Dotils.Format-HexString' = { '.As.HexString', 'fmt.HexString', 'HexString' }
         'fmt.HexString' # 'Dotils.Format-HexString' = { '.As.HexString', 'fmt.HexString', 'HexString' }
         'HexString' # 'Dotils.Format-HexString' = { '.As.HexString', 'fmt.HexString', 'HexString' }
-
-
-
 
         # 2023-09-02
         'Resolve.Ast'  # 'Dotils.Resolve.Ast' = { 'Resolve.Ast' }
