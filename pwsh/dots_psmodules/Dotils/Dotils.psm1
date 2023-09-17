@@ -1308,6 +1308,28 @@ function Dotils.Error.GetInfo {
         Dotils.Error.Select
     .LINK
         Dotils.Error.GetInfo
+    .LINK
+        .Describe.Error
+    .LINK
+        .Is.Error.FromParamBlockSyntax
+    .LINK
+        Dotils.Describe.Error
+    .LINK
+        Dotils.Describe.ErrorRecord
+    .LINK
+        Dotils.Error.GetInfo
+    .LINK
+        Dotils.Error.Select
+    .LINK
+        Dotils.Is.Error.FromParamBlock
+    .LINK
+        Dotils.Render.Error.CategoryInfo
+    .LINK
+        Dotils.Render.ErrorRecord.Fancy
+    .LINK
+        Dotils.Render.ErrorVars
+    .LINK
+        Dotils.Tablify.ErrorRecord
     #>
     # ToRefactorAttribute
     [CmdletBinding()]
@@ -4101,6 +4123,240 @@ function Dotils.Describe.Error {
 
     }
 }
+function Dotils.Uri.GetInfo {
+    <#
+    .EXAMPLE
+        $sampleNewUrl = 'https://gitloggerfunction.azurewebsites.net/ShowGitLogger?Repository=https://github.com/ninmonkey/ExcelAnt&Metric=CommitsByLanguage&Year=2023&Month=07'
+        $sampleNewUrl
+    .EXAMPLE
+        $info = Dotils.Uri.GetInfo $smapleNewUrl
+
+        # check out methods
+        $info.AsUri | fime
+        $info.Original | Fime
+    .EXAMPLE
+        [Web.HttpUtility]::ParseQueryString( $asUri.PathAndQuery ) | Join-String -sep ', '
+        # out:
+            /ShowGitLogger?Repository, Metric, Year, Month
+
+        [Web.HttpUtility]::ParseQueryString( $asUri.Query ) | Join-String -sep ', '
+        # out:
+            Repository, Metric, Year, Month
+    #>
+    [Alias('.Dotils.URL.GetInfo')]
+    param(
+        # future, maybe use object to allow as URI as raw type
+        [Alias('URI', 'URL')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject,
+
+        [switch]$ListRelatedTypes
+    )
+    process {
+        if($ListRelatedTypes) {
+            find-type *uri*
+                | ?{ $_.FullName -match 'Uri' }| Group Namespace
+                | ft -auto | out-string | write-host
+
+            hr
+
+
+            @(
+                find-type *uri* | ?{ $_.FullName -match '\buri' }
+                find-type *Uri*
+                find-type *Url*
+            )
+                | sort -Unique { $_.Namespace, $_.Name }
+
+            hr
+            Find-type '*Uri*' | % FullName | rg -i 'ur[il]' --color=always
+                | out-string | write-host
+
+
+            return
+        }
+        $cur = $InputObject
+
+
+        $cur | Format-ShortTypeName
+            | Join-string -op 'InputObject is a '
+            | Dotils.Write-DimText
+            | winfo
+
+        $asUri = [System.Uri]::new( $cur )
+        $asParseQuery = [Web.HttpUtility]::ParseQueryString( $AsUri.Query )
+        $asParsePathAndQuery = [Web.HttpUtility]::ParseQueryString( $AsUri.PathAndQuery )
+
+
+        # $u1 = [Uri]$myUrl
+        # ( $u2 = [Web.HttpUtility]::ParseQueryString( $u1.Query ) )
+
+        $info = [ordered]@{
+            PSTypeName = 'dotils.nin.Uri.MetaInfo'
+            AsUri = $asUri
+            AsParseQuery = $asParseQuery
+            AsParsePathAndQuery = $asParsePathAndQuery
+            RawString = [string]$cur
+            Original = $InputObject
+            OriginalType = $InputObject | Format-ShortTypeName
+        }
+        return [pscustomobject]$info
+#     $u1 = [Uri]$myUrl
+# ( $u2 = [HttpUtility]::ParseQueryString( $u1.Query ) )
+#     [Uri], then [HttpUtility]::ParseQueryString('...')
+    }
+    end {
+        if($ListRelatedTypes) { return }
+    }
+}
+
+function Dotils.TypeData.GetFormatAndTypeData {
+    <#
+    .SYNOPSIS
+        sugar grab both kinds
+
+    .NOTES
+        future: goal was to find the formatter for SLS to make it
+        render like ripgrep instread.
+
+        note: maybe see 'Irregualr' or 'Posh' for regex formatters
+    .EXAMPLE
+        impo Dotils -Force
+        $slsQuery ??= Find-type '*Uri*' | % FullName | sls -Pattern 'Ur[il]' -AllMatches
+        Dotils.TypeData.GetFormatAndTypeData -InputObject $slsQuery
+    #>
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObject
+    )
+    process {
+        $First = @( $InputObject )[0]
+        $typeName = $first.GetType()
+        $shortType = $First | Format-ShortTypeName
+        $shortType | Join-String -f  'Type: {0}' | write-verbose -verbose
+        # ex: $typeName = 'Microsoft.PowerShell.Commands.MatchInfo'
+        $tdInfo = @( Get-TypeData -TypeName $typeName )
+        $fdInfo = @( Get-FormatData -TypeName $typeName )
+
+        $Info = [ordered]@{
+            PSTypeName = 'dotils.CombinedTypeFormatInfo.Record'
+            ShortType = $shortType
+            TypeData = $tdInfo
+            FormatData = $fdInfo
+            TargetObject = $InputObject
+            PSTypes = $InputObject.PSTypeNames | Join-String -sep ', '
+        }
+
+        return [pscustomobject]$Info
+    }
+}
+
+function Dotils.Import.Macro {
+    [Alias('Import.Macro')]
+    param(
+        [ArgumentCompletions('dotils', 'ugit')]$ModuleName,
+
+        [Alias('NotSilent')][switch]$Loud
+    )
+    write-warning 'check in chat if global import should be using scope global or not when this is nested'
+
+    remove-module "*${ModuleName}*"
+    if(-not $Loud) {
+        $impoSplat = @{
+            DisableNameChecking = $true
+            Force               = $true
+            Name                = $ModuleName
+            PassThru            = $true
+            Scope               = 'Global'
+            SkipEditionCheck    = $true
+            WarningAction       = 'ignore'
+        }
+
+        impo @impoSplat *>&1
+            | OutNull
+        return
+    }
+    $impoSplat = @{
+        DisableNameChecking = $true
+        Force               = $true
+        Name                = $ModuleName
+        PassThru            = $true
+        Scope               = 'Global'
+        SkipEditionCheck    = $true
+        WarningAction       = 'continue'
+    }
+
+    impo @impoSplat
+        | select -exp exportedFunctions
+        | % keys | jsUtil.UL
+    return
+}
+
+# & $binFx @('-new-tab', 'https://www.google.com/search?q=stuff')
+
+function Dotils.Firefox.Invoke {
+    <#
+    .SYNOPSIS
+    .notes
+        command line args at: https://wiki.mozilla.org/Firefox/CommandLineOptions
+    #>
+    'NYI: first implement debugger and enter using debug state args from: <https://wiki.mozilla.org/Firefox/CommandLineOptions>'
+    | write-warning
+
+    function newParam {
+        param(
+            [string]$Value,
+            [string]$Description = '',
+            [string]$ExtraInfo = '' )
+        return [pscustomobject][ordered]@{
+            PSTypeName = 'dotils.firefox.newParam'
+            Name = $Value -replace '-', ''
+            Value = $Value
+            ExtraInfo = $ExtraInfo
+            Description  = $Description
+        }
+    }
+    $paramGroup = @{}
+    $paramGroup.UserProfile = @(
+        newParam '-allow-downgrade'
+        newParam '-CreateProfile' -ExtraInfo 'profile_name'
+        newParam '-CreateProfile' -ExtraInfo "profile_name profile_dir"
+        newParam '-migration'
+        newParam '-new-instance'
+        newParam '-no-remote'
+        newParam '-override' -ExtraInfo '/path/to/override.ini'
+        newParam '-ProfileManager'
+        newParam '-P' -ExtraInfo "profile_name"
+        newParam '-profile' -ExtraInfo "profile_path"
+    )
+    $paramGroup.Browser = @(
+        newParam '-browser'
+        newParam '-foreground'
+        newParam '-headless'
+        newParam '-new-tab' -ExtraInfo 'URL'
+        newParam '-new-window' -ExtraInfo 'URL'
+        newParam '--kiosk' -ExtraInfo 'URL'
+        newParam '-preferences'
+        newParam '-private'
+        newParam '-private-window'
+        newParam '-private-window' -ExtraInfo 'URL'
+        newParam '-search term'
+        newParam '-setDefaultBrowser'
+        newParam '-url URL'
+    )
+    $paramGroup.Other = @(
+        newParam '-devtools'
+        newParam '-inspector' -ExtraInfo 'URL'
+        newParam '-jsdebugger'
+        newParam '-jsconsole'
+        newParam '-purgecaches'
+        newParam '-start-debugger-server' -ExtraInfo 'PORT'
+        newParam '-venkman'
+    )
+    return $paramGroup
+}
+
+
 function Dotils.Is.Error.FromParamBlock {
     <#
     .SYNOPSIS
@@ -4374,6 +4630,23 @@ function Dotils.to.EnvVarPath  {
     .SYNOPSIS
     .notes
         future: auto grab PSPath, turn into
+    .EXAMPLE
+        Pwsh7🐒>  $query
+            | Dotils.to.EnvVarPath QuoteNL
+
+        "${Env:LOCALAPPDATA}\Microsoft\SQL Server Management Studio\18.0_IsoShell\1033\"
+        "${Env:LOCALAPPDATA}\Microsoft\SQL Server Management Studio\18.0_IsoShell\1033\ResourceCache.dll"
+
+        Pwsh7🐒>  $query
+            | Dotils.to.EnvVarPath Pwsh.Block
+
+        gi "${Env:LOCALAPPDATA}\Microsoft\SQL Server Management Studio\18.0_IsoShell\1033\"
+        gi "${Env:LOCALAPPDATA}\Microsoft\SQL Server Management Studio\18.0_IsoShell\1033\ResourceCache.dll"
+        Pwsh7🐒>  $query
+                | Dotils.to.EnvVarPath Pwsh.SingleLine
+
+        (gi "${Env:LOCALAPPDATA}\Microsoft\SQL Server Management Studio\18.0_IsoShell\1033\")
+        (gi "${Env:LOCALAPPDATA}\Microsoft\SQL Server Management Studio\18.0_IsoShell\1033\ResourceCache.dll")
     .example
         PS> $paths = 'C:\Users\cppmo_000\Microsoft\Power BI Desktop Store App\CertifiedExtensions', 'C:\Users\cppmo_000\AppData\Local\Microsoft\Power BI Desktop\CertifiedExtensions'
 
@@ -4385,24 +4658,66 @@ function Dotils.to.EnvVarPath  {
     [Alias('.to.envVarPath')]
     [CmdletBinding()]
     param(
+        [Parameter(Position=0)]
+        [ValidateSet(
+            'QuoteNL', 'Pwsh.Block', 'Pwsh.SingleLine')]
+        [string]$OutputFormat = 'QuoteNL',
+
         # Also save to clipboard
         [Parameter(Mandatory, ValueFromPipeline)]
         [object]$InputObject,
 
+
         [Alias('cl', 'clip')]
-        [switch]$CopyToClipboard
+        [switch]$CopyToClipboard,
+
+        [Alias('Config', 'Kwargs')]
+        [ArgumentCompletions(
+            '@{ JoinSeparator = "`n" ; JoinStringFormat = ''gi "{0}"'' }'
+        )]
+        [hashtable]$Options = @{}
     )
     begin {
-        $options = gci env:
+        $potentialOptions = gci env:
             | Dotils.Is.DirectPath
             | sort-Object{ $_.Value.Length } -Descending -Unique
+        $defaults = @{
+            PassThru = $true
+            DirectoryAsForwardSlash = $true
+            JoinSeparator = ', '
+            JoinStringFormat = '"{0}"'
+        }
+        switch($OutputFormat){
+            'QuoteNL' {
+                $defaults.JoinSeparator = ', '
+                $defaults.JoinStringFormat = '"{0}"'
+            }
+            'Pwsh.Block' {
+                $defaults.JoinSeparator = "`n"
+                $defaults.JoinStringFormat = 'gi "{0}"'
+            }
+            'Pwsh.SingleLine' {
+                $defaults.JoinSeparator = "; "
+                $defaults.JoinStringFormat = '(gi "{0}")'
+            }
+             default {
+                write-warning "UnhandledOutputFormat: $Switch"
+                $defaults.JoinSeparator = ', '
+                $defaults.JoinStringFormat = '"{0}"'
+                # no-op
+            }
+        }
+        $defaults | Json | Join-String -op '$defaults = [ ' -os "`n]" -sep "`n" | Write-debug
+
+        $Config = nin.MergeHash -other $Options -BaseHash $defaults
+        $defaults | Json | Join-String -op '$config = [ ' -os "`n]" -sep "`n" | Write-debug
     }
     process {
         # assume real for now
         $curInput = Get-Item -ea 'ignore' -LiteralPath $_
         $asStr = $curInput.FullName ?? $curInput.ToString()
 
-        foreach($item in $options){
+        foreach($item in $potentialOptions){
             $pattern = [Regex]::escape( $item.Value )
             if($asStr -match $Pattern) {
                 $prefixTemplate = '${{Env:{0}}}' -f $Item.Key
@@ -4414,15 +4729,35 @@ function Dotils.to.EnvVarPath  {
                     asStr = $asStr
                 } | Json | Join-String -sep "`n" | Write-debug
 
+
+                # switch($OutputFormat){
+                #     'QuoteNL' {
+                #         # $render = $render
+                #         # | Join-String -f '"{0}"' -Separator ', '
+                #     }
+                #     'Pwsh.Block' {
+                #         $render = $render
+                #         | Join-String -f 'gi "{0}"' -sep "`n"
+                #     }
+
+                # }
+
                 ## assert
                 #   do I actually need to use expandstring?
                 $resolveItem = Get-Item -ea 'ignore' $render
-                $resolveItem.FullName -eq $curInput.Fullname
-                    | Join-String -op 'IsValidAnswer? '
-                    | write-verbose
+                # $resolveItem.FullName -eq $curInput.Fullname
+                #     | Join-String -op 'IsValidAnswer? '
+                #     | write-verbose
+
+                $joinStr_splat = @{
+                    FormatString = $Config.JoinStringFormat
+                    Separator = $Config.JoinStringFormat
+                }
+
+                $render = $render | Join-String @joinStr_splat
 
                 if($CopyToClipboard) {
-                    $render | Set-Clipboard -PassThru
+                    $render | Set-Clipboard -PassThru:( $Config.PassThru )
                     return
                 }
                 return $render
@@ -8229,9 +8564,9 @@ function Dotils.Text.NormalizeLineEnding {
     }
 }
 
-function Dotils.VsCode.ConvertTo.Snipet {
+function Dotils.VsCode.ConvertTo.Snippet {
 
-    [Alias('.VsCode.ConvertTo.Snipet')]
+    [Alias('.VsCode.ConvertTo.Snippet')]
     [CmdletBinding()]
     param(
         [AllowNull()]
@@ -8242,7 +8577,7 @@ function Dotils.VsCode.ConvertTo.Snipet {
         [object[]]$InputObject
     )
     begin {
-        [List[Object]]$Lines = @()
+        [Collections.Generic.List[Object]]$Lines = @()
         write-warning 'nyi; or requires confirmation; mark;'
     }
     process {
@@ -8251,6 +8586,7 @@ function Dotils.VsCode.ConvertTo.Snipet {
     end {
         if( -not $MyInvocation.ExpectingInput ) {
             $Source = Get-Clipboard
+            'default fallback to using ClipBoard' | write-verbose -verbose
         } else {
             $Source = $lines | Join-String -sep "`n"
 
@@ -9210,7 +9546,7 @@ function Dotils.Render.Bool {
             ␛[38;2;95;0;0mNo␛[0m
             ␛[38;2;153;153;153mnot␛[0m
     #>
-    [Alias('.Render.Bool')]
+    [Alias('Render.Bool', '.Render.Bool')]
     [CmdletBinding()]
     [OutputType([string])]
     param(
@@ -11038,7 +11374,38 @@ function Dotils.Add-PsModulePath {
     }
 }
 function Dotils.Resolve.Command {
-    # I feel like this is resolve, rather than ConvertTo
+    <#
+    .synopsis
+        Resolve Command From String or Objects
+    .notes
+        I feel like this is resolve, rather than ConvertTo
+        Or an transformation attribute
+    .example
+        PS> (gcm Label | Resolve.Command -Clipboard)
+        # copies: "Ninmonkey.Console\Write-ConsoleLabel"
+    .example
+        (gcm Write-ConsoleLabel | Resolve.Command) -eq ( gcm Write-ConsoleLabel )
+        # returns: True
+    .example
+        Get-alias | Resolve.Command | Get-Random -Count 20
+            | sort Name, Source | ft -AutoSize
+
+        CommandType Name                                    Version   Source
+        ----------- ----                                    -------   ------
+        Function    Copy-RelativeItemTree                   0.2.49    Ninmonkey.Console
+        Function    Dotils.ConvertTo-TimeSpan               0.0       dotils
+        Function    Dotils.Describe.Timespan.AsMilliseconds 0.0       dotils
+        Function    Dotils.Format-Datetime                  0.0       dotils
+        Function    Dotils.Format.Write-DimText             0.0       dotils
+        Function    Dotils.Is.KindOf                        0.0       dotils
+        Function    Dotils.LogObject                        0.0       dotils
+        Cmdlet      ForEach-Object                          7.3.6.500 Microsoft.PowerShell.Core
+        Function    Format-Html.Table.FromHashtable
+        Cmdlet      Format-Wide                             7.0.0.0   Microsoft.PowerShell.Utility
+        Function    Get-NinVerbName                         0.2.49    Ninmonkey.Console
+        Function    GoClip
+        Function    Goto-Module                             0.2.49    Ninmonkey.Console
+    #>
     [Alias(
         'Resolve.Command' # , 'Dotils.ConvertTo-Command'
     )]
@@ -11047,22 +11414,35 @@ function Dotils.Resolve.Command {
     param(
         # Accepts [string], [CommandInfo], [AliasInfo], and possibly more
         [Parameter(Mandatory, ValueFromPipeline)]
-        $InputObject
+        $InputObject,
+
+        # Will render the the source ModuleName\CommandName"
+        [Alias('CopyIt', 'FullyResolvedId')][switch]$Clipboard
+
     )
+    begin {
+        [string[]]$FinalClip = ''
+    }
     process {
         $InputObject | Format-ShortTypeName | Join-String -op 'typeof: ' | write-verbose
         switch($InputObject) {
             { $_ -is 'String' } {
-                Get-Command $_ | Dotils.Resolve.Command
+                $resolved = Get-Command $_ | Dotils.Resolve.Command
             }
             { $_ -is 'Management.Automation.AliasInfo'} {
-                $_.ResolvedCommand
+                $resolved = $_.ResolvedCommand
             }
             default {
                 write-verbose "DefaultHandlingFallback: For $($InputOBject | Format-ShortTypeName)"
-                $_
+                $resolved = $_
             }
         }
+
+        if($CLipBoard) {
+            $finalClip +=
+                Join-String -sep '\' -Inp @( $resolved.Namespace, $resolved.Name )
+        }
+        return $resolved
         <#
         props:
             .Module # -is [PSModuleInfo]
@@ -11099,6 +11479,17 @@ function Dotils.Resolve.Command {
 
         #>
         # Wait-Debugger
+    }
+    end {
+        if($Clipboard) {
+            $finalClip
+                | ?{ -not [string]::IsNullOrWhitespace( $_ ) }
+                | CountOf 'Copied...'
+                | Set-Clipboard -PassTHru
+                | Dotils.Write-DimText | wInfo
+
+                # | write-information -infa 'continue'
+        }
     }
 }
 
@@ -11862,6 +12253,77 @@ function Dotils.Get-CachedExpression {
     return $query
 }
 
+function Dotils.Gh.Gist.Cmds {
+    <#
+    .SYNOPSIS
+    .EXAMPLE
+        Pwsh> dotils.Gh.Gist.Cmds Clone
+
+            found Vs Code Splat expression Hotkey
+            Cloning into 'Vs Code Splat expression Hotkey'...
+            remote: Enumerating objects: 3, done.
+    #>
+    param(
+        [ArgumentCompletions(
+            'List',
+            'Clone'
+        )]
+        [string]$CommandName,
+
+        [switch]$ColorAlways
+    )
+    switch( $CommandName ) {
+        'List' {
+            gh gist list
+            | %{
+                $Segments = $_ -split '\t+'
+                $header = [ordered]@{
+                    PSTypeName = 'dotils.gh.gist.metadata'
+                    Hash    = $Segments[0]
+                    Title   = $Segments[1]
+                    Files   = $Segments[2]
+                    Private = $Segments[-2]
+                    Date    = $Segments[-1]
+                    # Ansi = $_
+                    # Rest    = $Segments[2..10]
+                }
+                if($ColorAlways) {
+                    $header.AnsiString = $_
+                }
+                [pscustomobject]$header
+            }
+        }
+        'Clone' {
+            goto 'H:\data\2023\my_gist'
+
+            $gh = dotils.Gh.Gist.Cmds List
+            $one = $gh[0]
+            'found {0}' -f $one.Title
+                | Dotils.Write-DimText
+                | Write-Information -infa 'Continue'
+
+            gh gist clone $one.Hash $one.Title
+
+            goto $One.Title
+        }
+        default { throw "UnhandledCommand: $CommandName" }
+    }
+}
+
+function Dotils.Basic.Prefix {
+    <#
+    .SYNOPSIS
+        gci . | % name | s -First 2 | Prefix 'someFile'
+    #>
+    # Sugar to prefix text with a label
+    param(
+        [Parameter(Mandatory, Position=0)][string]$Prefix,
+        [Parameter(ValueFromPipeline)]$InputObject
+    )
+    process {
+        $InputObject | Join-String -op "${Prefix}`n"
+    }
+}
 
 function Dotils.Split.WordByCase {
     <#
@@ -11907,12 +12369,20 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-09-11
+        'Dotils.TypeData.GetFormatAndTypeData'
+        'Dotils.Import.Macro'
+        'Dotils.Error.GetInfo'
+        'Dotils.Firefox.Invoke'
+        'Dotils.Uri.GetInfo' #  'Dotils.Uri.GetInfo' = { 'Dotils.URL.GetInfo' }
+        # 2023-09-08
+        'Dotils.Gh.Gist.Cmds'
         # 2023-09-04
         'Dotils.Format.TextMargin'
         '__Dotils.Format.WrapLongLine'
         'Dotils.Format.WrapLongLine'
         'Dotils.DebugUtil.Format.UpdateTypedataLiteral' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
-        'Dotils.Render.Bool' # 'Dotils.Render.Bool' = { '.Render.Bool' }
+        'Dotils.Render.Bool' # 'Dotils.Render.Bool' = { 'Render.Bool', '.Render.Bool' }
         'Dotils.Render.Dom.Attributes' # 'Dotils.Render.Dom.Attributes' = { 'Render.Dom.Attributes' }
 
         # 2023-09-03
@@ -11994,7 +12464,7 @@ $exportModuleMemberSplat = @{
         'Dotils.Help.FromType' # 'Dotils.Help.FromType' = { 'Help.FromType', 'Help.From' }
 
         'Dotils.To.Duration' # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
-        'Dotils.VsCode.ConvertTo.Snipet' # 'Dotils.VsCode.ConvertTo.Snipet' = { '.VsCode.ConvertTo.Snipet' }
+        'Dotils.VsCode.ConvertTo.Snippet' # 'Dotils.VsCode.ConvertTo.Snippet' = { '.VsCode.ConvertTo.Snippet' }
         'Dotils.Describe' # 'Dotils.Describe' = { '.Describe' }
 
         'Dotils.Select.One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
@@ -12160,11 +12630,16 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-09-11
+        'Import.Macro'
+        'Dotils.URL.GetInfo' #  'Dotils.Uri.GetInfo' = { 'Dotils.URL.GetInfo' }
+
         # 2023-09-04
         '.Format.Split-StringIntoLines'
         '.Format.Wrap.LongLines'
         'Render.Dom.Attributes' # 'Dotils.Render.Dom.Attributes' = { 'Render.Dom.Attributes' }
-        '.Render.Bool' # 'Dotils.Render.Bool' = { '.Render.Bool' }
+        'Render.Bool' # 'Dotils.Render.Bool' = { 'Render.Bool', '.Render.Bool' }
+        '.Render.Bool' # 'Dotils.Render.Bool' = { 'Render.Bool', '.Render.Bool' }
         '.debug.format-UpdateTypedata.Literal' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
         'literal.UpdateTypeDataProperty' # 'Dotils.DebugUtil.Format.UpdateTypedataLiteral' = { '.debug.format-UpdateTypedata.Literal', 'literal.UpdateTypeDataProperty' }
 
@@ -12263,7 +12738,7 @@ $exportModuleMemberSplat = @{
         '.Duration'  # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
         '.to.Timespan'  # 'Dotils.To.Duration' = { '.to.Duration', '.Duration', '.to.Timespan' }
 
-        '.VsCode.ConvertTo.Snipet' # 'Dotils.VsCode.ConvertTo.Snipet' = { '.VsCode.ConvertTo.Snipet' }
+        '.VsCode.ConvertTo.Snippet' # 'Dotils.VsCode.ConvertTo.Snippet' = { '.VsCode.ConvertTo.Snippet' }
         '.Describe' # 'Dotils.Describe' = { '.Describe' }
         '.Select.One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
         'One' # 'Dotils.Select.One' = { '.Select.One', 'One' }
@@ -12473,12 +12948,13 @@ if(-not (gcm 'dom.Render.Element.fromAgilPack' -ea 'ignore')) {
     # . (gi -ea 'continue' 'H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1')
 
 } else {
-    'toCollect: H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1'
-        | Join-String -f " => import: {0}"
-        | write-host -back darkgreen
 
     gcm 'dom.*' | sort Name | Ft -AutoSize | out-string | write-host
 }
 write-host -back 'orange' 'manual importing of TypeData, move to dotils'
-. (gi -ea 'continue' 'H:\data\2023\pwsh\notebooks\Pwsh\TypeData-FormatData\Intro-Truncate-EditingOuterHtml-Props\Intro-Truncate-EditingOuterHtml-Props.ps1'
-)
+'toCollect: H:\data\2023\pwsh\notebooks\Pwsh\TypeData-FormatData\Intro-Truncate-EditingOuterHtml-Props\Intro-Truncate-EditingOuterHtml-Props.ps1'
+'toCollect: H:\data\2023\pwsh\sketches\2023-09▸AngleParse WebDOM\2023-09 ⁞ PSParseHtml - xpath query ⁞ iter3.ps1'
+        | Join-String -f " => import: {0}"
+        | write-host -back darkgreen
+# . (gi -ea 'continue' 'H:\data\2023\pwsh\notebooks\Pwsh\TypeData-FormatData\Intro-Truncate-EditingOuterHtml-Props\Intro-Truncate-EditingOuterHtml-Props.ps1'
+# )
