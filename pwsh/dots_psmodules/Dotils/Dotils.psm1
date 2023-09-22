@@ -10703,6 +10703,134 @@ function Dotils.DebugUtil.Format.AliasSummaryLiteral {
 }
 
 
+function Dotils.Accumulate.Hashtables {
+    <#
+    .SYNOPSIS
+        accumulate hashtables
+    .example
+        # default usage starts with a base hash, then  merges all tables from the pipeline
+
+        @{ blue = 99 } | dtil.Accum.Hash -BaseHash @{ blue = '33' }
+    .example
+        # You can omit -BaseHash, and it'll accumulate off a new blank table
+        @{ blue = 99 ; name = 'jen' } | dtil.Accum.Hash
+    .EXAMPLE
+        # no bash hash, all InputObject
+        dtil.Accum.Hash -InputObject @(
+            @{ red = 3 } ; @{ orange = 99 }; @{ red = 'red' } )
+    .EXAMPLE
+        # pipe to base
+            @( @{ red = 3 } ; @{ orange = 99 }; @{ red = 'red' } )
+                | dtil.Accum.Hash
+
+            @( @{ red = 3 } ; @{ orange = 99 }; @{ red = 'red' } )
+                | dtil.Accum.Hash
+    #>
+    [Alias(
+        'Dotils.Accum.Hash', 'nin.Accum.Hash'
+    )]
+    param(
+        # list of hashes to merge. assumes list of hashtables
+        [Alias('HashList')]
+        [Parameter(ValueFromPipeline, Mandatory)]
+        [Object[]]$InputObject = @{},
+
+        # base hash, if not a new one is created at the start of the pipeline
+        [Alias('PrependHash', 'InputPrefix', 'Prefix', 'HeadHash')]
+        [Parameter()]
+        [hashtable]$BaseHash,
+
+        # sort of like baseHash, except, merge as the final item.
+        # sugar for declaring more messy pipelines
+        [Alias('AppendHash', 'OutputSuffix', 'Suffix', 'Tail')]
+        [Parameter()]
+        [hashtable]$TailHash,
+        # later: allow mutating original
+        # [Alias('Mutate')][switch]$WriteToOriginal
+        [ValidateScript({throw 'nyi'})]
+        [switch]$WithoutOrdered,
+
+        [ValidateScript({throw 'nyi'})]
+        [switch]$SortAlpha = $false,
+
+        # set arbitrary config using kwargs-style options.
+        # for semantics, externally it is passed as '$options'
+        # however, internally it's treated essentially as read-only.
+        # all access uses '$Config' or '$default'
+        [hashtable]$Options,
+
+
+        # [System.StringComparer]
+        # [System.StringComparison]
+        # [System.StringComparison]
+        # [StringComparer]
+        [Parameter()]
+        # [IComparer]
+        [string]
+        [ArgumentCompletions(
+            # to rebuild, run: [StringComparer] | fime -MemberType Property | % Name | sort -Unique | join-string -sep ",`n" -SingleQuote
+            # todo: make re-usable string comparer transformation attribute, if PSRL doesn't already do it
+            'InvariantCulture',
+            'InvariantCultureIgnoreCase',
+            'CurrentCulture',
+            'CurrentCultureIgnoreCase',
+            'Ordinal',
+            'OrdinalIgnoreCase'
+        )]
+        $ComparerType = 'CurrentCultureIgnoreCase'
+            # [StringComparer]::CurrentCultureIgnoreCase
+    )
+    begin {
+        <#
+        #>
+        # $testCompare = [StringComparer]::FromComparison(
+        #     [StringComparison]::OrdinalIgnoreCase ) # -is [OrdinalIgnoreCaseComparer : OrdinalComparer : IComparer]
+
+
+        $Defaults = @{}
+        [hashtable]$Config = nin.MergeHash -OtherHash $Options -BaseHash $Defaults -CompareAs $ComparerType
+
+        $mergeCount = 0
+        $nestedDepthCount = 0
+        $NonDistinctKeyCount = 0
+
+
+        if( $null -ne $BaseHash ) {
+            $NonDistinctKeyCount += $baseHash.Keys.Count
+            $mergeCount++
+        }
+        $baseHash ??= [ordered]@{}
+        $accum = $BaseHash
+    }
+    process {
+        foreach( $hash in $InputObject ) {
+            $mergeCount++
+            $NonDistinctKeyCount += $hash.Keys.Count
+            $accum = nin.MergeHash -BaseHash $accum -OtherHash $hash
+        }
+        # foreach( $hash in $InputObject.GetEnumerator()) {
+        #     $Name = $hash.key
+        #     $Obj = $hash.Value
+
+        #     $accum = nin.MergeHash -BaseHash $accum -OtherHash $Obj
+        #     $mergeCount++
+        # }
+    }
+    end {
+
+        'final hash has {0} keys across {1} merges from {2} parsed keys ( nestedDepth: {3} )' -f @(
+            $accum.keys.count
+            $mergeCount
+            $NonDistinctKeyCount
+            $nestedDepthCount
+        )
+            | Dotils.Write-DimText | wInfo
+        $accum
+    }
+}
+
+
+
 function Dotils.DebugUtil.Format.UpdateTypedataLiteral {
     <#
     .SYNOPSIS
@@ -12369,6 +12497,8 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-09-22
+        'Dotils.Accumulate.Hashtables' # 'Dotils.Accumulate.Hashtables' = { 'Dotils.Accum.Hash', 'nin.Accum.Hash' }
         # 2023-09-11
         'Dotils.TypeData.GetFormatAndTypeData'
         'Dotils.Import.Macro'
@@ -12630,6 +12760,10 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-09-22
+        'Dotils.Accum.Hash' # 'Dotils.Accumulate.Hashtables' = { 'Dotils.Accum.Hash', 'nin.Accum.Hash' }
+        'nin.Accum.Hash' # 'Dotils.Accumulate.Hashtables' = { 'Dotils.Accum.Hash', 'nin.Accum.Hash' }
+
         # 2023-09-11
         'Import.Macro'
         'Dotils.URL.GetInfo' #  'Dotils.Uri.GetInfo' = { 'Dotils.URL.GetInfo' }
@@ -12902,23 +13036,6 @@ Hr -fg magenta
     $exportModuleMemberSplat.Alias
 ) | Sort-Object -Unique
 
-H1 'Validate: ByCmdList'
-Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList
-
-H1 'Validate: ModuleName'
-Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils'
-Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils' | ? IsBad
-# return
-# Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList
-
-# hr -fg magenta
-
-# Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils'
-
-# $stats | ft -AutoSize
-H1 'Validate:IsBad: double names'
-Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList | ? IsBad
-# was: $stats | ?{ $_.IsAFunc -and $_.IsAnAlias }
 
 h1 'A few aliases'
 get-alias | ?{ $_.Name -match '^\.' }
@@ -12958,3 +13075,27 @@ write-host -back 'orange' 'manual importing of TypeData, move to dotils'
         | write-host -back darkgreen
 # . (gi -ea 'continue' 'H:\data\2023\pwsh\notebooks\Pwsh\TypeData-FormatData\Intro-Truncate-EditingOuterHtml-Props\Intro-Truncate-EditingOuterHtml-Props.ps1'
 # )
+
+H1 'Validate: ByCmdList'
+$skipFinalValidateCommands = $True
+if($SkipFinalValidateCommands) {
+    '-Skipped final "Testing.Validate.ExportedCmds"' | write-host -back 'darkyellow'
+} else {
+    Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList
+
+    H1 'Validate: ModuleName'
+    Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils'
+    Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils' | ? IsBad
+    # return
+    # Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList
+
+    # hr -fg magenta
+
+    # Dotils.Testing.Validate.ExportedCmds -ModuleName 'Dotils'
+
+    # $stats | ft -AutoSize
+    H1 'Validate:IsBad: double names'
+    Dotils.Testing.Validate.ExportedCmds -CommandName $CmdList | ? IsBad
+    # was: $stats | ?{ $_.IsAFunc -and $_.IsAnAlias }
+}
+
