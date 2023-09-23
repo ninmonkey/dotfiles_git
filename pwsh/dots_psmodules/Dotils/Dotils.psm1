@@ -843,6 +843,131 @@ function Dotils.Test-AllResults {
     }
 }
 
+function Dotils.Operator.TypeAs {
+    <#
+    .SYNOPSIS
+        sugar for: $Input -as $Type
+    future:
+        also test whether type info is a subclass
+    .example
+        'a', 234, 3.4
+        | Dotils.Operator.TypeIs -Type 'int'
+        | Json -AsArray -Compress
+
+        # out: [234]
+    .example
+        'a', 234, 3.4
+            | Dotils.Operator.TypeIs -Type 'int' -AsTest
+
+        # out: [false,true,false]
+    #>
+    [Alias(
+         # for when the keyword has to roll up
+        # extra variations
+        '-As',
+        # 'Dotils.AsType',
+        'Op.As'
+        # '.As.Type',
+        # '.Op.As'
+    )]
+    [CmdletBinding()]
+    param(
+
+        # [ArgumentCompletions(
+        #     'Int', '([Int])', '[Int]',
+            # '[Text.Rune[]]'
+        # )]
+        [Alias('TypeInfo')][Parameter(Mandatory, Position = 0, ValueFromRemainingArguments)]
+        $TypeObject,
+
+        [Parameter( Mandatory, ValueFromPipeline )]
+        [object[]]$InputObject,
+        # should the values be filtered, or return a bool?
+        # [switch]$AsFilter = $true,
+        [ValidateScript({throw 'nyi'})]
+        [switch]$AsTest = $false,
+
+        # use the full array as the coerce
+        [switch]$NoEnumerate
+    )
+    begin {
+        Write-warning @'
+Left off here on this test,
+
+10, 1.34, '123', 'fe', 'abc' | -as -TypeObject 'int'
+    # InvalidOperation: You cannot call a method on a null-valued expression.
+'@
+
+        if($NoEnumerate) {
+            [Collections.Generic.List[Object]]$Items = @()
+            if( -not $TypeObject -is 'type' -and -not $TypeObject -is 'string' ) {
+                throw ('-TypeObject must be a [type] or [string], was: {0}' -f ( $TypeObject | Format-ShortTypeName ))
+            }
+        }
+        <#
+        # // future: sugar piping to throw instead
+        '-TypeObject must be a [type] or [string], was: {0}' -f ( $TypeObject | Format-ShortTypeName )
+            | ThrowIt
+            #>
+    }
+    process {
+        if( $Null -eq $InputObject ) { return }
+        if( [string]::IsNullOrEmpty( $InputObject) ) { return }
+        if($MyInvocation.ExpectingInput ) {
+            $Items.AddRange(@( $InputObject ))
+        }
+
+        # if($NoEnumerate) {
+        #     $Items.AddRange(@( $InputObject ))
+        #     return
+        # }
+
+    }
+    end {
+
+        if( $NoEnumerate ) {
+            $tinfo_container = $items.GetType()
+            $tinfo_First = @( $Items)[0]
+            @{
+                Container =
+                    $tinfo_container | Format-ShortTypeName
+                FirstElement =
+                    $tinfo_first | Format-ShortTypeName
+            } | Json -depth 1 | Join-String -op 'Operator.As -NoEnumerate types = ' | Write-Verbose
+
+            'Operator.As [items[]] -as $TargetType {0}' -f $TargetType
+                | write-verbose
+
+            $Items -as $TargetType
+            return
+
+        }
+        foreach($curObj in $items) {
+            try {
+
+                $curObj -as $TargetType
+                '{0} -as {1}' -f @(
+                    $curObj | Format-ShortTypeName
+                    $TargetType
+                ) | Join-String -op 'Operator.As | Conversion | ' | Write-Verbose
+            } catch {
+                'Operator.As : Error attempting to coerce {0} to {1}' -f @(
+                    $curObj | Format-ShortTypeName
+                    $TargetType
+                )
+                $inner = $_
+                $writeException = @{
+                    Message      = ('Inner failed to convert: {0}' -f $inner.ToString() )
+                    ErrorId      = 'Dotils.Operator.AsType'
+                    Category     = 'InvalidType'
+                    TargetObject = $inner
+                }
+                Write-Error @writeException
+            }
+        }
+    }
+}
+
 function Dotils.Operator.TypeIs {
     <#
     .SYNOPSIS
@@ -10788,7 +10913,7 @@ function Dotils.Accumulate.Hashtables {
 
 
         $Defaults = @{}
-        [hashtable]$Config = nin.MergeHash -OtherHash $Options -BaseHash $Defaults -CompareAs $ComparerType
+        [hashtable]$Config = nin.MergeHash -OtherHash $Options -BaseHash $Defaults -ComparerKind $ComparerType # -CompareAs $ComparerType
 
         $mergeCount = 0
         $nestedDepthCount = 0
@@ -10806,7 +10931,7 @@ function Dotils.Accumulate.Hashtables {
         foreach( $hash in $InputObject ) {
             $mergeCount++
             $NonDistinctKeyCount += $hash.Keys.Count
-            $accum = nin.MergeHash -BaseHash $accum -OtherHash $hash
+            $accum = nin.MergeHash -BaseHash $accum -OtherHash $hash -ComparerKind $ComparerType
         }
         # foreach( $hash in $InputObject.GetEnumerator()) {
         #     $Name = $hash.key
@@ -12453,6 +12578,164 @@ function Dotils.Basic.Prefix {
     }
 }
 
+function Dotils.Discover.ExampleCommands {
+    [CmdletBinding()]
+    param(
+        # Return scriptBlocks instead?
+        [switch]$PassThru )
+    # h1 'Find "operators"'
+# @'
+# ( $query = gcm -m ninmonkey.Console, Dotils  -All )
+#     | .Match.Start -Pattern '.?(Op|As)'
+#     | sort -Unique
+# '@
+#     | Dotils.Write-DimText | wInfo
+
+    $query = gcm -m ninmonkey.Console, Dotils  -All
+    if($query.count -eq 0){
+        throw 'gcm Found no commands!'
+    }
+    # $query
+    #     | .Match.Start -Pattern '.?(Op|As)'
+    #     | sort -Unique
+
+#     h1 'By ending suffix'
+# @'
+# $query
+#     | .Match.End -Pattern 'json|yaml|csv|xlsx' | Sort -Unique
+# '@
+#     | Dotils.Write-DimText | wInfo
+
+#         $query
+#         | .Match.End -Pattern 'json|yaml|csv|xlsx' | Sort -Unique
+
+#     h1 'Special Charactors'
+# @'
+# $query
+#     | .Match -Literal '->'
+# '@
+#     | Dotils.Write-DimText | wInfo
+
+#         $query
+#         | .Match -Literal '->'
+
+    [Collections.Generic.List[Object]]$DemoCommands = @(
+        {
+            param()
+            $input
+            | .Match.Start -Pattern '.?(Op|As)'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match.End -Pattern 'json|yaml|csv|xlsx|svg'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal 'Resolve'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal 'Convert'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal 'Test'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal 'Write'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal 'Read'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal '->'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal ' '
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal '_'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match -Literal '.'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match 'Which|Where|Filter'
+            | Sort-Object -Unique
+        }
+        {
+            param()
+            $input
+            | .Match 'Debug|dbg'
+            | Sort-Object -Unique
+        }
+    )
+    if($PassThru) {
+        return $DemoCommands
+    }
+
+$template = @'
+$query
+    {0}
+'@
+    foreach($ScriptBlock in $DemoCommands) {
+
+        $template -f @(
+            $ScriptBlock.ToString()
+        ) | Dotils.Write-DimText | WInfo
+
+        try {
+            # $Query |  & $ScriptBlock
+            write-warning 'Problem here, having issues piping'
+            # $Query | %{ $_ | & $ScriptBlock }
+                # |
+            # & $ScriptBlock @query
+            $query | & $ScriptBlock
+        } catch {
+
+                $inner = $_
+                $writeException = @{
+                    Message      = ('Error Invoking a ScriptBlock example: Inner: {0}' -f $inner.ToString() )
+                    ErrorId      = 'Dotils.Discover.CommandExample'
+                    Category     = 'InvalidOperation'
+                    TargetObject = $inner
+                }
+                Write-Error @writeException
+            }
+    }
+    hr -fg orange
+    Get-Command -Module Dotils | & $DemoCommands[4]
+}
+
 function Dotils.Split.WordByCase {
     <#
     .EXAMPLE
@@ -12497,6 +12780,9 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-09-23
+        'Dotils.Operator.TypeAs' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
+        'Dotils.Discover.ExampleCommands' # 'Dotils.Discover.ExampleCommands' = { 'Dotils.Discover.ExampleCommands' }
         # 2023-09-22
         'Dotils.Accumulate.Hashtables' # 'Dotils.Accumulate.Hashtables' = { 'Dotils.Accum.Hash', 'nin.Accum.Hash' }
         # 2023-09-11
@@ -12760,6 +13046,14 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-09-23
+        # All one, disable most
+        '-As' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
+        # '.As.Type' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
+        # '.Op.As' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
+        # 'Dotils.AsType' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
+        'Op.As' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
+
         # 2023-09-22
         'Dotils.Accum.Hash' # 'Dotils.Accumulate.Hashtables' = { 'Dotils.Accum.Hash', 'nin.Accum.Hash' }
         'nin.Accum.Hash' # 'Dotils.Accumulate.Hashtables' = { 'Dotils.Accum.Hash', 'nin.Accum.Hash' }
