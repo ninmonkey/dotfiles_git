@@ -12690,6 +12690,91 @@ function Dotils.Discover.TokenFrequency {
         $grouped
     }
 }
+
+function Dotils.Where.MatchesOne {
+    <#
+    .SYNOPSIS
+        Does object match 1 or more of a list of regexs
+    .example
+        gcm -m dotils |  Dotils.Where.MatchesOne -LiteralRegex 'data' | CountOf|some
+        hr
+        gcm -m dotils |  Dotils.Where.MatchesOne -re '(module|split)' | CountOf|some
+    #>
+    [Alias(
+        'Where.One',
+        '?One'
+    )]
+    [CmdletBinding()]
+    param(
+
+        # non-escaped patterns
+        [Parameter(ValueFromPipeline, Position=0)]
+        # [Alias('Regex')]
+        [string[]]$RegexList,
+
+        # a list of regex-escaped text as literals
+        [Parameter(ValueFromPipeline, Position=1)]
+        # [Alias('LiteralRegex', 'RegexLiteral')]
+        [string[]]$LiteralRegexList,
+
+        [Parameter(ValueFromPipeline, Mandatory)]
+        [object]$InputObject,
+
+        # property to match?
+        [ValidateScript({throw 'nyi'})]
+        [string[]]$PropertyNames
+    )
+    process {
+        $curObj = $InputObject
+        $found = $false
+        foreach($pattern in $LiteralRegexList) {
+            if($curObj -match [Regex]::Escape($pattern) ) {
+                $found = $true
+                break
+            }
+        }
+        foreach($pattern in $RegexList) {
+            if($found) { break }
+            if($curObj -match $pattern ) {
+                $found = $true
+                break
+            }
+        }
+        if($Found) {
+            return $curObj
+        }
+        return
+
+    }
+}
+function Dotils.Where.MatchesOne.Simple {
+    <#
+    .SYNOPSIS
+    .EXAMPLE
+        gcm -m dotils |  Dotils.Where.MatchesOne.Simple -LiteralRegex 'data'
+    #>
+    param(
+        [Parameter(ValueFromPipeline, Mandatory)]
+        $InputObject,
+
+        [string[]]$LiteralRegex
+    )
+    process {
+        $curObj = $InputObject
+        $found = $false
+        foreach($pattern in $LiteralRegex) {
+            if($curObj -match [Regex]::Escape($pattern) ) {
+                $found = $true
+                break
+            }
+        }
+        if(-not $Found) {
+            return
+        }
+
+        return $curObj
+    }
+}
 function Dotils.Discover.ExampleCommands {
     [CmdletBinding()]
     param(
@@ -12893,6 +12978,8 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-09-23
+        'Dotils.Where.MatchesOne.Simple' # 'Dotils.Where.MatchesOne.Simple' = { '' }
+        'Dotils.Where.MatchesOne' # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
 
         'Dotils.Format.WildcardPattern' # 'Dotils.Format.WildcardPattern' = { 'Dotils.Format.WildcardPattern' }
         'Dotils.Operator.TypeAs' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
@@ -13163,6 +13250,10 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-09-23
+        'Where.One'   # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
+        '?AnyMatch'  # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
+        '?AnyOne' # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
+
         'WildStr' # 'Dotils.Format.WildcardPattern'
         'Join.Wild' # 'Dotils.Format.WildcardPattern'
         # 'Dotils.Format.WildcardPattern' # 'Dotils.Format.WildcardPattern' = { 'Dotils.Format.WildcardPattern', 'WWi }
