@@ -12695,14 +12695,26 @@ function Dotils.Where.MatchesOne {
     <#
     .SYNOPSIS
         Does object match 1 or more of a list of regexs
+    .NOTES
+        See the simplified <Dotils.Where.MatchesOne.Simple>
+    .example
+        gmo
+            | ?AnyOne -liter 'script', 'binary' -PropertyNames ModuleType
+            | ?AnyOne 'ninmonk', 'dotils' -PropertyNames Name
+
+    .example
+        gmo | ?AnyOne 'ninmonk', 'dotils' -PropertyNames Name
+
     .example
         gcm -m dotils |  Dotils.Where.MatchesOne -LiteralRegex 'data' | CountOf|some
         hr
         gcm -m dotils |  Dotils.Where.MatchesOne -re '(module|split)' | CountOf|some
     #>
     [Alias(
-        'Where.One',
-        '?One'
+        # 'Where.One',
+        # '?One',
+        '?AnyMatch',
+        '?AnyOne'
     )]
     [CmdletBinding()]
     param(
@@ -12721,26 +12733,58 @@ function Dotils.Where.MatchesOne {
         [object]$InputObject,
 
         # property to match?
-        [ValidateScript({throw 'nyi'})]
         [string[]]$PropertyNames
     )
+    begin {
+        function __.MatchesOne {
+            [OutputTYpe('Bool')]
+            param(
+                [object]$InputObject,
+                [string[]]$RegexList,
+                [string[]]$LiteralRegexList
+            )
+            $found = $false
+
+            return $found
+        }
+    }
     process {
+        $found? = $false
         $curObj = $InputObject
-        $found = $false
-        foreach($pattern in $LiteralRegexList) {
-            if($curObj -match [Regex]::Escape($pattern) ) {
-                $found = $true
-                break
+        if( $PSBoundParameters.ContainsKey('PropertyNames') -and
+            -not [string]::IsNullOrWhiteSpace( $PropertyNames ) ) {
+
+            $found? = __.MatchesOne -InputObject $InputObject -RegexList $RegexList -LiteralRegexList $Literal
+            if( $found? ) {
+                return $curObj
             }
+            # // else maybe auto property
+
+            # $InputObject = $InputObject | Select-Object -Property $PropertyNames
         }
-        foreach($pattern in $RegexList) {
-            if($found) { break }
-            if($curObj -match $pattern ) {
-                $found = $true
-                break
+        if( [string]::IsNullOrWhiteSpace( $PropertyNames ) ) {
+            $PropertyNames = 'Name'
+        }
+
+        foreach($PropName in $PropertyNames) {
+            $target = $CurObj.$PropName
+            foreach($pattern in $LiteralRegexList) {
+                if($target -match [Regex]::Escape($pattern) ) {
+                    $found? = $true
+                    break
+                }
             }
+            foreach($pattern in $RegexList) {
+                if($found?) { break }
+                if($target -match $pattern ) {
+                    $found? = $true
+                    break
+                }
+            }
+
         }
-        if($Found) {
+
+        if($found?) {
             return $curObj
         }
         return
@@ -12750,6 +12794,8 @@ function Dotils.Where.MatchesOne {
 function Dotils.Where.MatchesOne.Simple {
     <#
     .SYNOPSIS
+    .NOTES
+        See the fancy version at <Dotils.Where.MatchesOne>
     .EXAMPLE
         gcm -m dotils |  Dotils.Where.MatchesOne.Simple -LiteralRegex 'data'
     #>
@@ -13250,7 +13296,7 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-09-23
-        'Where.One'   # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
+        # 'Where.One'   # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
         '?AnyMatch'  # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
         '?AnyOne' # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
 
