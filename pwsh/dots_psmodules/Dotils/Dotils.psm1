@@ -968,6 +968,97 @@ Left off here on this test,
     }
 }
 
+function Dotils.Format.WildcardPattern {
+    <#
+    .SYNOPSIS
+        handle wildcards, prevent duplicates, auto join and spaces
+    .description
+        parsing sugar for nicer wildcards
+    .EXAMPLE
+        # examples in Dotils/tests/Format.WildCardPattern.tests.ps1
+        Pwsh> Join.Wild 'to csv*' -WithoutWrapOutside -SpacesToWildcard
+    .example
+        gcm (wildstr to csv)
+
+        wildStr *to csv -NoWrap -Verbose
+            *to*csv
+
+        wildStr to csv
+            *to*csv*
+    #>
+    [Alias(
+        'WildStr',
+        'Join.Wild'
+    )]
+    [CmdletBinding()]
+    [OutputType('String')]
+    param(
+        # for example
+        [Alias('InputObject')]
+        [Parameter(ValueFromPipeline, ValueFromRemainingArguments)]
+        [string[]]$WildcardSegments,
+
+        # should single string spaces be considered segments?
+        [Alias('PreserveWhitespace')]
+        [switch]$WithoutSpacesToWildcard,
+
+
+        # Normally 'foo bar*' => '*foo*bar*' but this alters endings
+        # so that  'foo bar*' => 'foo*bar*'
+        [Alias('NoWrap')][switch]$WithoutWrapOutside
+
+        # [switch]$PassThru
+    )
+    begin {
+        [Collections.Generic.List[Object]]$Segments = @()
+    }
+    process {
+        if( $WithoutSpacesToWildcard ) {
+            $Segments.AddRange(@( $WildcardSegments ))
+            return
+        }
+        $Segments.AddRange(@(
+            $WildcardSegments -split '\s+'
+        ))
+
+    }
+
+    end {
+        $segments
+            | Join-String -sep ' ' -SingleQuote
+            | Join-String -op 'Segments: @( ' -os ' )'
+            | Write-Verbose
+
+        # ensure no duplicates if the user already endcapped
+        if($WithoutWrapOutside) {
+            $joined =
+                ($Segments | Join-String -sep '*') -replace '[*]{2}', '*'
+        } else {
+            $joined =
+                ($Segments | Join-String -sep '*' -op '*' -os '*') -replace '[*]{2}', '*'
+
+        }
+        $Joined | Join-String -op 'Dotils.Format.WildcardPattern: ' | Write-verbose
+        $Joined
+    }
+}
+
+
+    # ('fred*', 'foo', 'bar', 'cat' | Join-String -sep '*' -op '*' -os '*') -replace '[*]{2}', '*'
+    # original:
+# ('fred*', 'foo', 'bar', 'cat' | Join-String -sep '*' -op '*' -os '*') -replace '[*]{2}', '*'
+
+#     throw 'NYI, next'
+#     'chain wild, actuall command syntax
+
+
+# was
+#     gcm Dotils*alias*lia
+
+# now
+#     dgcm dotils alias lia
+#     chain wild'
+
 function Dotils.Operator.TypeIs {
     <#
     .SYNOPSIS
@@ -12578,6 +12669,27 @@ function Dotils.Basic.Prefix {
     }
 }
 
+function Dotils.Discover.TokenFrequency {
+    param(
+        [Alias('Name')][switch]$AsNameOnly
+    )
+    $allWords = @(
+        gcm -m dotils
+        | ?{
+            $_.Name -match '\.'
+        }
+        | %{
+            $_.Name -split '\.'
+        }
+    )
+    $grouped = $allWords | Group -NoElement | sort Count -Descending
+    if($AsNameOnly) {
+        $grouped | % Name | Sort-Object
+        return
+    } else {
+        $grouped
+    }
+}
 function Dotils.Discover.ExampleCommands {
     [CmdletBinding()]
     param(
@@ -12781,8 +12893,12 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-09-23
+
+        'Dotils.Format.WildcardPattern' # 'Dotils.Format.WildcardPattern' = { 'Dotils.Format.WildcardPattern' }
         'Dotils.Operator.TypeAs' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
         'Dotils.Discover.ExampleCommands' # 'Dotils.Discover.ExampleCommands' = { 'Dotils.Discover.ExampleCommands' }
+        'Dotils.Discover.TokenFrequency' # 'Dotils.Discover.TokenFrequency' = { 'Dotils.Discover.TokenFrequency' }
+
         # 2023-09-22
         'Dotils.Accumulate.Hashtables' # 'Dotils.Accumulate.Hashtables' = { 'Dotils.Accum.Hash', 'nin.Accum.Hash' }
         # 2023-09-11
@@ -13047,6 +13163,9 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2023-09-23
+        'WildStr' # 'Dotils.Format.WildcardPattern'
+        'Join.Wild' # 'Dotils.Format.WildcardPattern'
+        # 'Dotils.Format.WildcardPattern' # 'Dotils.Format.WildcardPattern' = { 'Dotils.Format.WildcardPattern', 'WWi }
         # All one, disable most
         '-As' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
         # '.As.Type' # 'Dotils.Operator.TypeAs' = { 'Dotils.AsType', '-As', 'Op.As', '.As.Type', '.Op.As' }
