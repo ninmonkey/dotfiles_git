@@ -847,16 +847,16 @@ nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
 #     'H:\data\2023\pwsh\PsModules\ExcelAnt\Output'
 # ) -join ([IO.Path]::PathSeparator)
 
-function Help.Example {
+function Help.Example.prof_obsolete {
     <#
     .SYNOPSIS
         sugar for getting help, future: unify as one command
     .EXAMPLE
         gcm get-help | Help.Param showwindow, role
     #>
-    $Input | Get-Help -exam
+    $Input | Get-Help -Examples
 }
-function Help.Online {
+function p.Help.Online.prof_obsolete {
     <#
     .SYNOPSIS
         sugar for getting help, future: unify as one command
@@ -877,7 +877,7 @@ function Help.Online {
 
     }
 }
-function Collect.Distinct {
+function Collect.Distinct.prof_obsolete {
     <#
     .SYNOPSIS
 
@@ -896,9 +896,9 @@ function Collect.Distinct {
     .NOTES
     General notes
     #>
-    throw 'nyi'
+    $Input | Sort-Object -Unique
 }
-function Help.Param {
+function Help.Param.prof_obsolete {
     <#
     .SYNOPSIS
         directly wrap 'Get-Help -Parameter [names[]]'
@@ -944,82 +944,86 @@ function Help.Param {
     # foreach($x in $Input) { Get-Help -param $_ }
 }
 
-function Regex.SplitOn {
-    <#
-    .SYNOPSIS
-        making -split easier to use in the pipeline
-    #>
-    [CmdletBinding()]
-    param(
-        [ArgumentCompletions("'\r?\n'")]
-        [Parameter(Mandatory, position = 0)]$SplitRegex,
+# function p.obsolete.Regex.SplitOn.prof_obsolete {
+#     <#
+#     .SYNOPSIS
+#         making -split easier to use in the pipeline
+#     .notes
+#     obsolete with dotils
+#     #>
+#     [CmdletBinding()]
+#     param(
+#         [ArgumentCompletions("'\r?\n'")]
+#         [Parameter(Mandatory, position = 0)]$SplitRegex,
 
-        [Parameter(ValueFromPipeline)][string]$InputObject
-    )
-    process { $InputObject -split $SplitRegex }
-}
-function Regex.ReplaceOn {
-    <#
-    .SYNOPSIS
-        making -replace easier to use in the pipeline
-    .NOTES
-        ensure proper support with script block syntax
-    .EXAMPLE
-        'afds' | Regex.ReplaceOn -Regex 'fd' -ReplaceWith { "${fg:#70788b}", $_, "${fg:clear}" -join "" }
-    #>
-    [CmdletBinding()]
-    param(
-        [ArgumentCompletions("'\r?\n'")]
-        [Parameter(Mandatory, position = 0)]$Regex,
+#         [Parameter(ValueFromPipeline)][string]$InputObject
+#     )
+#     process { $InputObject -split $SplitRegex }
+# }
+# function p.obsolete.Regex.ReplaceOn.prof_obsolete {
+#     <#
+#     .SYNOPSIS
+#         making -replace easier to use in the pipeline
+#     .NOTES
+#         obsolete with dotils
+#     .EXAMPLE
+#         'afds' | Regex.ReplaceOn -Regex 'fd' -ReplaceWith { "${fg:#70788b}", $_, "${fg:clear}" -join "" }
+#     #>
+#     [CmdletBinding()]
+#     param(
+#         [ArgumentCompletions("'\r?\n'")]
+#         [Parameter(Mandatory, position = 0)]$Regex,
 
-        [ArgumentCompletions(
-            "'\r?\n'",
-            # '{ "${fg:red}", $_, "${fg:clear}" -join "" }',
-            '{ "${fg:#70788b}", $_, "${fg:clear}" -join "" }',
-            '{ @( $PSStyle.Foreground.FromRgb(''aeae23''); $_; $PSStyle.Reset ) | Join-String -sep '''' }'
-        )]
-        [Parameter(Mandatory, position = 0)]$ReplaceWith,
+#         [ArgumentCompletions(
+#             "'\r?\n'",
+#             # '{ "${fg:red}", $_, "${fg:clear}" -join "" }',
+#             '{ "${fg:#70788b}", $_, "${fg:clear}" -join "" }',
+#             '{ @( $PSStyle.Foreground.FromRgb(''aeae23''); $_; $PSStyle.Reset ) | Join-String -sep '''' }'
+#         )]
+#         [Parameter(Mandatory, position = 0)]$ReplaceWith,
 
-        [Parameter(ValueFromPipeline)][string]$InputObject
-    )
-    begin {
+#         [Parameter(ValueFromPipeline)][string]$InputObject
+#     )
+#     begin {
 
-    }
-    process {
-        $InputObject -replace $Regex, $ReplaceWith
-    }
-}
-function Regex.JoinOn {
-    <#
-    .SYNOPSIS
-        making -Join easier to use in the pipeline
+#     }
+#     process {
+#         $InputObject -replace $Regex, $ReplaceWith
+#     }
+# }
+# function prof.Regex.JoinOn.prof_obsolete {
+#     <#
+#     .SYNOPSIS
+#         making -Join easier to use in the pipeline
+#     .NOTES
+#         obsolete with dotils
 
-    #>
-    [CmdletBinding()]
-    param(
+#     #>
+#     [CmdletBinding()]
+#     param(
 
-        [Alias('-Sep')]
-        [ArgumentCompletions(
-            '"`n"',
-            "','",
-            "' | '",
-            '"`n - "',
-            '( hr 1 )'
-        )]
-        [Parameter(Mandatory, position = 0)]$JoinText,
+#         [Alias('-Sep')]
+#         [ArgumentCompletions(
+#             '"`n"',
+#             "','",
+#             "' | '",
+#             '"`n - "',
+#             '( hr 1 )'
+#         )]
+#         [Parameter(Mandatory, position = 0)]$JoinText,
 
-        [Parameter(ValueFromPipeline)][string]$InputObject
-    )
-    begin {
+#         [Parameter(ValueFromPipeline)][string]$InputObject
+#     )
+#     begin {
 
-    }
-    process {
-        $InputObject -join $JoinText
+#     }
+#     process {
+#         $InputObject -join $JoinText
 
-    }
-}
+#     }
+# }
 
-function Select-NameIsh {
+function Select-NameIsh.ToRefactor {
     <#
     .SYNOPSIS
         Select propert-ish categories, wildcard searching for frequent kinds
@@ -1029,7 +1033,7 @@ function Select-NameIsh {
         gi . | NameIsh Names|fl
         gi . | NameIsh Names -IncludeEmptyProperties |fl
     #>
-    [Alias('NameIsh')]
+    [Alias('NameIsh.toRefactor')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, position = 0)]

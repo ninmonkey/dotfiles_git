@@ -1,4 +1,5 @@
-﻿# $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
+﻿$PSDefaultParameterValues['wait-debugger:verbose'] = 'continue'
+# $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
 'trace.👩‍🚀.parse: [2] $Profile.''MainEntryPoint.__init__'' : /pwsh/profile.ps1'
     | write-verbose
     # | write-host -bg '7baa7a' -fg black
@@ -18,6 +19,11 @@ custom attributes, more detailed info
         - [CSharp Advanced Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/reflection-and-attributes/creating-custom-attributes)
 #>
 
+# fix pipeworks creating errors when piping to write-host, like:
+    # 'stuff' | write-host -bg 'gray30' -fg 'gray60'
+if(get-module pipeworks) {
+   set-alias 'Write-Host' -Value 'Pansies\Write-Host'
+}
 
 
 Set-Alias -PassThru -Name 'Json.From' -Value 'ConvertFrom-Json'
@@ -45,7 +51,13 @@ $OutputEncoding =
 
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
-@(  Import-Module -wa 0  'ugit' -PassThru
+# impo -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
+#     | ft
+Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
+    |Join-String -f "`n`t{0}" { $_.Name, $_.Path } -op 'impo "my🍴" ... [ = ' -sep '' -os "`n]"
+    | Write-host -back 'darkred'
+
+@(  #Import-Module -wa 0  'ugit' -PassThru
     Import-Module -wa 0 'Dotils' -Force -PassThru
     ) | Join-String -p {
         '{0} = {1}' -f @(
@@ -263,6 +275,7 @@ Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
 
 
 function Join.Lines {
+    # Super Minimal
 
     # [Text.StringBuilder]::new(@(
     #     $Input
@@ -887,45 +900,44 @@ function Regex.ReplaceOn {
         $InputObject -replace $Regex, $ReplaceWith
     }
 }
-function Regex.JoinOn {
-    <#
-    .SYNOPSIS
-        making -Join easier to use in the pipeline
+# function Regex.JoinOn {
+#     <#
+#     .SYNOPSIS
+#         making -Join easier to use in the pipeline
 
-    #>
-    [Alias(
-        '.Join.fromDotfile',
-        '.Join.Lines'
-    )]
-    [CmdletBinding()]
-    param(
+#     #>
+#     [Alias(
+#         '.Join.fromDotfile', '.Join.Lines'
+#     )]
+#     [CmdletBinding()]
+#     param(
 
-        [Alias('-Sep')]
-        [ArgumentCompletions(
-            '"`n"',
-            "','",
-            "' | '",
-            '"`n - "',
-            '( hr 1 )'
-        )]
-        [Parameter(position = 0)]$JoinText,
+#         [Alias('-Sep')]
+#         [ArgumentCompletions(
+#             '"`n"',
+#             "','",
+#             "' | '",
+#             '"`n - "',
+#             '( hr 1 )'
+#         )]
+#         [Parameter(position = 0)]$JoinText,
 
-        [Parameter(ValueFromPipeline)][string]$InputObject
-    )
-    begin {
+#         [Parameter(ValueFromPipeline)][string]$InputObject
+#     )
+#     begin {
 
-    }
-    process {
-        throw "NotYetImplemented $PSCommandPath"
+#     }
+#     process {
+#         throw "NotYetImplemented $PSCommandPath"
 
-        if( $MyInvocation.MyCommand.Name -match '\.Join\.Lines'){
-            write-host 'yeah' -back red
-        }
-        if(-not $JoinText) { throw 'assert: no implicit default' }
-        $InputObject -join $JoinText
+#         # if( $MyInvocation.MyCommand.Name -match '\.Join\.Lines'){
+#         #     write-host 'yeah' -back red
+#         # }
+#         # if(-not $JoinText) { throw 'assert: no implicit default' }
+#         # $InputObject -join $JoinText
 
-    }
-}
+#     }
+# }
 function NewestItem {
     <#
     .SYNOPSIS
@@ -1957,7 +1969,7 @@ function fAll {
     }
 }
 
-
+write-host -back 'darkred' 'fix ugit'
 
 function prof.Io2 {
     <#
