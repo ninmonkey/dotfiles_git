@@ -10917,8 +10917,30 @@ function Dotils.DebugUtil.Format.AliasSummaryLiteral {
             "'$aName' # $finalSuffix"
         }) | Sort-Object -unique
 }
+function Dotils.Get-Item.FromClipboard {
+    <#
+    .SYNOPSIS
+        sugar for resolving path as an object from the paste
+    .EXAMPLE
+        Pwsh> 'C:\Users\cppmo_000\AppData\Local\Microsoft\Windows' | cl
 
+        Pwsh> Gcl.Gi
+        # prints: gi =: C:\Users\cppmo_000\AppData\Local\Microsoft\Windows
+    .EXAMPLE
+        Pwsh> # error terminates pipeline if not valid path
+        Gcl.Gi | Goto
 
+        Pwsh> # error terminates pipeline if not valid path
+        Dotils.get-Item.FromClipboard | %{ Test-Path $_ }
+    #>
+    [Alias('Gcl.GetItem', 'Gcl.Gi')]
+    param()
+    $global:gi  = Get-Clipboard | Get-Item -ea 'stop'
+        $global:gi ?? "`u{2400}"
+            | Dotils.Format.Write-DimText
+            | Join-String -op 'gi =: '
+            | wInfo
+}
 function Dotils.Accumulate.Hashtables {
     <#
     .SYNOPSIS
@@ -12732,6 +12754,8 @@ function Dotils.Where.MatchesOne {
         [Parameter(ValueFromPipeline, Mandatory)]
         [object]$InputObject,
 
+        # if not set, attempts to compare against a string
+        # then, if failed, default to property 'name'
         # property to match?
         [string[]]$PropertyNames
     )
@@ -13019,10 +13043,14 @@ function Dotils.Split.WordByCase {
     }
 }
 
+
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-10-01
+        'Dotils.Get-Item.FromClipboard' # 'Dotils.Get-Item.FromClipboard' = { 'Gcl.Gi' }
         # 2023-09-23
         'Dotils.Where.MatchesOne.Simple' # 'Dotils.Where.MatchesOne.Simple' = { '' }
         'Dotils.Where.MatchesOne' # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
@@ -13295,6 +13323,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-10-01
+        'Gcl.Gi' # 'Dotils.Get-Item.FromClipboard' = { 'Gcl.Gi' }
+        'Gcl.GetItem' # 'Dotils.Get-Item.FromClipboard' = { 'Gcl.Gi' }
         # 2023-09-23
         # 'Where.One'   # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
         '?AnyMatch'  # 'Dotils.Where.MatchesOne' = { 'Where.One',  '?AnyMatch', '?AnyOne' }
