@@ -51,8 +51,27 @@ function template.Func {
             [Parameter(Mandatory)]
             [string]$Property
         )
-
+        class OperandSummary {
+            # meta per object (2)
+            [bool]$IsNull = $null
+            [bool]$IsFalsy = $null
+            [bool]$IsTruthy = $null
+            [bool]$IsEmptyStr = $null
+            [bool]$IsBlank = $null
+            [bool]$IsObjectCompareEqual = $null
+            [bool]$IsEqualAfterCoercion = $null
+            [bool]$BasicType = $null
+            [bool]$NumberType = $null
+            [bool]$IsValueType = $null
+            [bool]$IsTypeInfo = $null
+            [bool]$IsEnum = $null
+            [bool]$IsGeneric = $null
+            [bool]$IsGenericRelated = $null
+            [object]$GenericParams = 'nyi'
+            [object]$GenericAttrs = 'nyi'
+        }
         class ComparisonResult {
+            # metadata of the summary, the same for both
             [bool]$ExactEqual
             hidden [object]$LeftObject
             hidden [object]$RightObject
@@ -61,53 +80,96 @@ function template.Func {
 
             [bool]$IsSameType = $false
 
-            [hashtable]$Left = @{
-                IsNull = $null
-                IsBlank = $null
-                TypeIsGeneric = $null
-            }
-            [hashtable]$Right = @{
-                IsNull = $null
-                IsBlank = $null
-                TypeIsGeneric = $null
-            }
+            # [hashtable]$Left = @{
+            #     IsNull = $null
+            #     IsBlank = $null
+            #     TypeIsGeneric = $null
+            # }
+            # [hashtable]$Right = @{
+            #     IsNull = $null
+            #     IsBlank = $null
+            #     TypeIsGeneric = $null
+            # }
 
             ComparisonResult( [object]$Left, [object]$Right) {
+                # //record of the compare
 
-                $TypeOfLeft =  $LtInfo = ($Left)?.GetType()
-                $TypeOfRight = $RtInfo = ($Right)?.GetType()
+                $this.TypeOfLeft =  $LtInfo = ($Left)?.GetType()
+                $this.TypeOfRight = $RtInfo = ($Right)?.GetType()
+
+                $leftInfo  = [OperandSummary]::new()
+                $rightInfo = [OperandSummary]::new()
                 # first group of tests easly support null parameters
 
-               $this.ExactEqual = $LeftObj -eq $Right
+                $leftInfo.IsNull =  $null -eq $Left
+                $leftInfo.IsString = $Left -is 'string'
+                $leftInfo.IsFalsy = -not $Left
+                $leftInfo.IsTruthy = [bool]( $Left )
+                $leftInfo.IsEmptyString = $LeftInfo.IsString -and [string]::empty -eq $Left
+                $leftInfo.IsValueType = $Left -is 'ValueType'
+                $leftInfo.IsEnumType = $left -is 'enum'
+                $leftInfo.IsTypeInfo = $left -is 'type'
+                $LeftInfo.IsGeneric = $LtInfo.IsGenericType
+                $LeftInfo.IsGenericRelated =
+                    $ltInfo.IsGeneric -or
+                    $ltInfo.IsGenericMethodParameter -or
+                    $ltInfo.IsGenericParameter -or
+                    $ltInfo.IsGenericType -or
+                    $ltInfo.IsGenericTypeDefinition -or
+                    $ltInfo.IsGenericTypeParameter
 
-               $this.Left.IsNull = $null -eq $Left
-               $this.Right.IsNull = $null -eq $Right
 
-               $this.Left.IsFalsy = -not $Left
-               $this.Left.IsTruthy = [bool]( $Left )
+                    $ltInfo.GenericParameterAttributes -or
+                #     @(
 
-               $this.Left.IsEmptyStr =
-                    $Left -is 'string' -and [string]::Empty -eq $Left
+                #     ) |?{ $_ }
+                # ).Count -gt 0
 
-               $this.Right.IsEmptyStr =
-                    $Right -is 'string' -and [string]::Empty -eq $Right
+                write-warning 'left off
+                    [System.Collections.Generic.List[IO.FileInfo]]$files = gi .\unins000.msg
+                    $files
+                    '
 
-               $this.Right.IsBlank =
-                    [string]::IsNullOrWhiteSpace( $Left )
 
-               $this.Right.IsBlank =
-                    [string]::IsNullOrWhiteSpace( $Right )
+                $leftInfo.Psobject.Properties | ?{ $null -eq $_.Value } | Join-String -sep ', ' -op 'missing left: ' -p Name    | write-host -back 'red'
+                $RightInfo.Psobject.Properties | ?{ $null -eq $_.Value } | Join-String -sep ', ' -op 'missing left: '  -p Name | write-host -back 'red'
+                return
 
-                $this.Left.IsObjectCompareEqual =
-                    [Object]::Equals( $Left, $Right )
+                 # return
+                if($false) {
+                    # $leftSummary.IsBlankStr = $Left -is 'string' -and [string]::IsNullOrWhiteSpace( $Left )
 
-                $this.Right.IsObjectCompareEqual =
-                    [Object]::Equals( $Right, $Left )
+                    # $this.ExactEqual = $LeftObj -eq $Right
 
-                $this.Left.IsEqualAfterCoercion =
-                    $left -eq $Right -and $
+                    # $this.Left.IsNull = $null -eq $Left
+                    # $this.Right.IsNull = $null -eq $Right
 
-                $this.Right.IsEqualAfterCoercion = $Right -eq $Left
+                    # $this.Left.IsFalsy = -not $Left
+                    # $this.Left.IsTruthy = [bool]( $Left )
+
+                    # $this.Left.IsEmptyStr =
+                    #         $Left -is 'string' -and [string]::Empty -eq $Left
+
+                    # $this.Right.IsEmptyStr =
+                    #         $Right -is 'string' -and [string]::Empty -eq $Right
+
+                    # $this.Right.IsBlank =
+                    #         [string]::IsNullOrWhiteSpace( $Left )
+
+                    # $this.Right.IsBlank =
+                    #         [string]::IsNullOrWhiteSpace( $Right )
+
+                    #     $this.Left.IsObjectCompareEqual =
+                    #         [Object]::Equals( $Left, $Right )
+
+                    #     $this.Right.IsObjectCompareEqual =
+                    #         [Object]::Equals( $Right, $Left )
+
+                    #     $this.Left.IsEqualAfterCoercion =
+                    #         $left -eq $Right -and $
+
+                    #     $this.Right.IsEqualAfterCoercion = $Right -eq $Left
+                }
 
                 # further tests may waytto exit here, if the values were true null
 
@@ -132,10 +194,13 @@ function template.Func {
         $cresult  = [CompareResult]::new( $Left, $Right )
         $info = [ordered]@{
             PSTypeName = 'dotils.{0}' -f $MyInvocation.MyCommand.Name # 'dotils.Operator.{0}'
-            Left  = $Left
-            Right = $Right
+            LeftObject  = $Left
+            RightObject = $Right
             Property = $Property
             CompareResult = $cResult
+            Left = 'next: $cResult.LeftInfo '
+            Right = 'next: $cResult.RightInfo '
+
         }
         return [pscustomobject]$info
 
