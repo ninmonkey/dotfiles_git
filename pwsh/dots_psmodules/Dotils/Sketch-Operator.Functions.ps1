@@ -56,6 +56,7 @@ function Operator.Compare.SingleComparison {
         this data is the summary of the comparison of Left and Right. Drill down to []
         #>
         # meta per object (2)
+
         [bool]$IsNull = $null
         [bool]$IsFalsy = $null
         [bool]$IsFalsyWithoutNull = $null
@@ -83,29 +84,32 @@ function Operator.Compare.SingleComparison {
 
         [hashtable]$Extra = @{} # extra items that may be thropwn out, or don't always exist
 
-        [object]$GenericParams = 'nyi, see: .extra'
-        [object]$GenericTypeArgs = 'nyi see: .extra'
-
         hidden [type]$OriginalTypeInfo
         hidden [object]$OriginalObject
 
-        OperandSummary ( [object]$InputObject ) {
-            $this.OriginalObject = $InputObject
-            $this.OriginalTypeInfo = $tInfo
+        [type]$UnderlyingType = $nul
 
+        hidden [string]$DisplayString = [string]::Empty
+        [object]$GenericParams = 'nyi, see: .extra'
+        [object]$GenericTypeArgs = 'nyi see: .extra'
+
+        OperandSummary ( [object]$InputObject ) {
             $RefObj = $InputObject
             $tInfo = ($RefObj)?.GetType()
 
+            $this.OriginalObject = $InputObject
+            $this.OriginalTypeInfo = $tInfo
+
             $this.IsNull =  $null -eq $RefObj
             $this.IsFalsy = -not $RefObj
-            $this.IsFalsyWithoutNull = -not $LeftInfo.IsNull -and $leftInfo.IsFalsy
+            $this.IsFalsyWithoutNull = -not $this.IsNull -and $this.IsFalsy
             $this.IsTruthy = [bool]( $RefObj )
 
             $this.IsString = $RefObj -is 'string'
-            $this.IsEmptyString = $LeftInfo.IsString -and [string]::empty -eq $RefObj
+            $this.IsEmptyString = $this.IsString -and [string]::empty -eq $RefObj
             $this.IsBlank = [string]::IsNullOrWhiteSpace( $RefObj )
 
-            $this.IsBlankWithoutNull = -not $LeftInfo.IsNull -and $leftInfo.IsBlank
+            $this.IsBlankWithoutNull = -not $this.IsNull -and $this.IsBlank
 
             $this.IsValueType = $RefObj -is 'ValueType'
             $this.IsEnumType = $RefObj -is 'enum' -or $tInfo.IsEnum
@@ -115,7 +119,7 @@ function Operator.Compare.SingleComparison {
                     'Int32', 'Int16', 'long', 'double', 'Byte', 'String', 'enum'
                 ))
             $this.IsNumberType =
-                $tinfo.IsValueType -and
+                $this.IsValueType -and
                 $tinfo.Name -match '(u?long)|(u?short)|(u?Int\d+)|(u?short)(byte)'
                     '(u?Int\d+)|u?long|double|byte|Decimal'
 
@@ -123,8 +127,34 @@ function Operator.Compare.SingleComparison {
             $this.AssemblyFullyQualifiedName = $tInfo.AssemblyFullyQualifiedName
             $this.Namespace = $tInfo.Namespace
             $this.Name = $tInfo.Name
+            $this.UnderlyingType = $Tinfo.UnderlyingSystemType
+            $this.DisplayString = ($Tinfo)?.DisplayString ?? $Tinfo.Name # from ClassExplorer
 
-            $this.Extra.FirstChild = @( $RefObj )?[0] ?? $null
+
+            # $this.IsGeneric =
+
+            $this.IsGeneric = $tInfo.IsGenericType
+            $this.IsGenericRelated =
+                $tInfo.IsGeneric -or
+                $tInfo.IsGenericMethodParameter -or
+                $tInfo.IsGenericParameter -or
+                $tInfo.IsGenericType -or
+                $tInfo.IsGenericTypeDefinition -or
+                $tInfo.IsGenericTypeParameter
+
+            $this.Extra.FirstChild =
+                ( $RefObj )?[0] ?? $null
+
+            # $this.Extra.MemberType = $tinfo.MemberType
+            # https://learn.microsoft.com/en-us/dotnet/api/system.reflection.memberinfo?view=net-7.0
+            # see also [Reflection.MemberInfo]
+            # MemberInfo[]
+
+            $this.Extra.IsAnything =
+                $tInfo | Select -Prop 'Is*'  -ea 'ignore'
+
+            $this.Extra.IsAnythingElse =
+                $tinfo | Select -Exclude 'Is*'
 
         }
     }
@@ -139,20 +169,12 @@ function Operator.Compare.SingleComparison {
         hidden [type]$TypeOfLeft
         hidden [type]$TypeOfRight
 
+        [OperandSummary]$Left
+        [OperandSummary]$Right
+
         [bool]$IsSameType = $false
         [bool]$IsObjectCompareEqual = $null
         [bool]$IsEqualAfterCoercion = $null
-
-        # [hashtable]$Left = @{
-        #     IsNull = $null
-        #     IsBlank = $null
-        #     TypeIsGeneric = $null
-        # }
-        # [hashtable]$Right = @{
-        #     IsNull = $null
-        #     IsBlank = $null
-        #     TypeIsGeneric = $null
-        # }
 
         ComparisonResult( [object]$Left, [object]$Right) {
             # //record of the compare
@@ -162,28 +184,41 @@ function Operator.Compare.SingleComparison {
 
             $leftInfo  = [OperandSummary]::new( $Left )
             $rightInfo = [OperandSummary]::new( $Right )
+            $this.Left = $leftInfo
+            $this.Right = $rightInfo
             # first group of tests easly support null parameters
 
+            <#
+            TryMore
+                <https://learn.microsoft.com/en-us/dotnet/api/system.object?view=net-7.0>
+                <https://learn.microsoft.com/en-us/dotnet/api/system.type?view=net-7.0>
 
-            $leftInfo.IsValueType = $Left -is 'ValueType'
-            $leftInfo.IsEnumType = $left -is 'enum' -or $lTYpe.IsEnum
-            $leftInfo.IsTypeInfo = $left -is 'type'
-            $leftInfo.FullName = $LType.FullName
-            $leftInfo.AssemblyFullyQualifiedName = $LType.AssemblyFullyQualifiedName
-            $leftInfo.Namespace = $LType.Namespace
-            $leftInfo.Name = $LType.Name
+            try both, diff conversion paths
 
-            $LeftInfo.IsGeneric = $LType.IsGenericType
-            $LeftInfo.IsGenericRelated =
-                $LType.IsGeneric -or
-                $LType.IsGenericMethodParameter -or
-                $LType.IsGenericParameter -or
-                $LType.IsGenericType -or
-                $LType.IsGenericTypeDefinition -or
-                $LType.IsGenericTypeParameter
+                Left.Equals( Right )
+                Equals( Left, Right )
 
-            $LeftInfo.UnderlyingType = $LType.UnderlyingSystemType
-            $leftInfo.DisplayString = ($LType)?.DisplayString ?? $LType.Name # from ClassExplorer
+                > docs: Object.ReferenceEquals(x.GetType(),y.GetType()) returns true
+
+                Object.ReferenceEquals( tinfo1, tinfo2 )
+                Object.Equals( Left, Right ) )
+
+            #>
+
+            write-warning 'left off:
+            > docs: Object.ReferenceEquals(x.GetType(),y.GetType()) returns true
+
+        datatypes for OperandSummary, which datatypes are right for referencing generic parameter attributes
+
+            <https://learn.microsoft.com/en-us/dotnet/api/system.type?view=net-7.0#properties>
+
+            '
+            $now1 ??= get-date; sleep -sec 2
+            $now2 ??= get-date
+
+            $leftInfo.Psobject.Properties | ?{ $null -eq $_.Value } | Join-String -sep ', ' -op 'missing left: ' -p Name    | write-host -back 'red'
+            $RightInfo.Psobject.Properties | ?{ $null -eq $_.Value } | Join-String -sep ', ' -op 'missing left: '  -p Name | write-host -back 'red'
+            return
 
 
             $LeftInfo.Extra.IsSomething =
@@ -212,9 +247,6 @@ function Operator.Compare.SingleComparison {
                 $files
                 '
 
-
-            $leftInfo.Psobject.Properties | ?{ $null -eq $_.Value } | Join-String -sep ', ' -op 'missing left: ' -p Name    | write-host -back 'red'
-            $RightInfo.Psobject.Properties | ?{ $null -eq $_.Value } | Join-String -sep ', ' -op 'missing left: '  -p Name | write-host -back 'red'
             return
 
                 # return
@@ -273,6 +305,8 @@ function Operator.Compare.SingleComparison {
         # [object]$Right
     }
 
+
+
     $cresult  = [ComparisonResult]::new( $Left, $Right )
     $info = [ordered]@{
         PSTypeName = 'dotils.{0}' -f $MyInvocation.MyCommand.Name # 'dotils.Operator.{0}'
@@ -314,19 +348,32 @@ function Operator.Compare.ByProperty {
     )
 
 
-
-
-    $Property | %{
-        $curProp = $_
-        $LeftValue? = ($LeftObj)?[ $curProp ]
-    }
-    $LeftObj
+    $propName = 'Ticks'
+    $Shared =
+            Operator.Compare.SingleComparison -Left $LeftObj -Right $RightObj -Property $PropName
     $info = [ordered]@{
         PSTypeName = 'dotils.{0}' -f $MyInvocation.MyCommand.Name # 'dotils.Operator.{0}'
-        Left  = 10
+        Left = $Shared
+        # ByProp = $Shared
+
     }
+    # // new early exit
     [pscustomobject]$info | ft -auto | out-host
     return [pscustomobject]$info
+
+
+
+    # $Property | %{
+    #     $curProp = $_
+    #     $LeftValue? = ($LeftObj)?[ $curProp ]
+    # }
+    # $LeftObj
+    # $info = [ordered]@{
+    #     PSTypeName = 'dotils.{0}' -f $MyInvocation.MyCommand.Name # 'dotils.Operator.{0}'
+    #     Left  =
+    # }
+    # [pscustomobject]$info | ft -auto | out-host
+    # return [pscustomobject]$info
     # $naive =
     #     $Left.$Property -eq $Right.$Property
 }
@@ -341,9 +388,14 @@ function fastTestQuit () {
 
     Operator.Compare.SingleComparison -Left $now1 -Right $now2 Year
 
-    return
+    hr -fg 'green'
     Operator.Compare.ByProperty -Left $now1 -Right $now2 -Property 'Year'
     Operator.Compare.ByProperty -Left $now1 -Right $now2 -Property 'Ticks'
+
+    hr -fg 'magenta'
+    Operator.Compare.SingleComparison -Left $now1 -Right $now2 Year|json -d 1
+    hr -fg 'orange'
+    return
 }
 
 if($true) { return (fastTEstQuit)}
