@@ -52,12 +52,19 @@ function template.Func {
             [string]$Property
         )
         class OperandSummary {
+            <#
+            this data is the summary of the comparison of Left and Right. Drill down to []
+            #>
             # meta per object (2)
             [bool]$IsNull = $null
             [bool]$IsFalsy = $null
+            [bool]$IsFalsyWithoutNull = $null
             [bool]$IsTruthy = $null
-            [bool]$IsEmptyStr = $null
+
+            [bool]$IsString = $null
+            [bool]$IsEmptyString = $null
             [bool]$IsBlank = $null
+
             [bool]$IsObjectCompareEqual = $null
             [bool]$IsEqualAfterCoercion = $null
             [bool]$BasicType = $null
@@ -67,11 +74,15 @@ function template.Func {
             [bool]$IsEnum = $null
             [bool]$IsGeneric = $null
             [bool]$IsGenericRelated = $null
-            [object]$GenericParams = 'nyi'
-            [object]$GenericAttrs = 'nyi'
+            [object]$GenericParams = 'nyi, see: .extra'
+            [object]$GenericTypeArgs = 'nyi see: .extra'
+            [hashtable]$Extra = @{} # extra items that may be thropwn out, or don't always exist
         }
         class ComparisonResult {
             # metadata of the summary, the same for both
+            <#
+            this summarizes the object by itself, metadata before comparing Left and Right
+            #>
             [bool]$ExactEqual
             hidden [object]$LeftObject
             hidden [object]$RightObject
@@ -94,32 +105,58 @@ function template.Func {
             ComparisonResult( [object]$Left, [object]$Right) {
                 # //record of the compare
 
-                $this.TypeOfLeft =  $LtInfo = ($Left)?.GetType()
-                $this.TypeOfRight = $RtInfo = ($Right)?.GetType()
+                $this.TypeOfLeft =  $LType = ($Left)?.GetType()
+                $this.TypeOfRight = $RType = ($Right)?.GetType()
 
                 $leftInfo  = [OperandSummary]::new()
                 $rightInfo = [OperandSummary]::new()
                 # first group of tests easly support null parameters
 
                 $leftInfo.IsNull =  $null -eq $Left
-                $leftInfo.IsString = $Left -is 'string'
                 $leftInfo.IsFalsy = -not $Left
+                $leftInfo.IsFalsyWithoutNull = -not $LeftInfo.IsNull -and $leftInfo.IsFalsy
                 $leftInfo.IsTruthy = [bool]( $Left )
+
+                $leftInfo.IsString = $Left -is 'string'
                 $leftInfo.IsEmptyString = $LeftInfo.IsString -and [string]::empty -eq $Left
+
                 $leftInfo.IsValueType = $Left -is 'ValueType'
-                $leftInfo.IsEnumType = $left -is 'enum'
+                $leftInfo.IsEnumType = $left -is 'enum' -or $lTYpe.IsEnum
                 $leftInfo.IsTypeInfo = $left -is 'type'
-                $LeftInfo.IsGeneric = $LtInfo.IsGenericType
+                $leftInfo.FullName = $LType.FullName
+                $leftInfo.AssemblyFullyQualifiedName = $LType.AssemblyFullyQualifiedName
+                $leftInfo.Namespace = $LType.Namespace
+                $leftInfo.Name = $LType.Name
+
+                $LeftInfo.IsGeneric = $LType.IsGenericType
                 $LeftInfo.IsGenericRelated =
-                    $ltInfo.IsGeneric -or
-                    $ltInfo.IsGenericMethodParameter -or
-                    $ltInfo.IsGenericParameter -or
-                    $ltInfo.IsGenericType -or
-                    $ltInfo.IsGenericTypeDefinition -or
-                    $ltInfo.IsGenericTypeParameter
+                    $LType.IsGeneric -or
+                    $LType.IsGenericMethodParameter -or
+                    $LType.IsGenericParameter -or
+                    $LType.IsGenericType -or
+                    $LType.IsGenericTypeDefinition -or
+                    $LType.IsGenericTypeParameter
+
+                $LeftInfo.UnderlyingType = $LType.UnderlyingSystemType
+                $leftInfo.DisplayString = ($LType)?.DisplayString ?? $LType.Name # from ClassExplorer
 
 
-                    $ltInfo.GenericParameterAttributes -or
+                $LeftInfo.Extra.IsSomething =
+                    $LType | select -Prop Is* -ea 'ignore'
+                $LeftInfo.Extra.NotIsSomething =
+                    $LType | Select -excl 'Is*' -ea 'ignore'
+
+                $LeftInfo.Extra.Attributes =
+                    $LType.Attributes
+                $LeftInfo.Extra.CustomAttributes =
+                    $LType.CustomAttributes
+
+                $LeftINfo.Extra = 2
+
+                $LeftInfo.Extra.MemberType = $LType.MemberType
+
+
+                    # $LType.GenericParameterAttributes -or
                 #     @(
 
                 #     ) |?{ $_ }
@@ -191,13 +228,13 @@ function template.Func {
             # [object]$Right
         }
 
-        $cresult  = [CompareResult]::new( $Left, $Right )
+        $cresult  = [ComparisonResult]::new( $Left, $Right )
         $info = [ordered]@{
             PSTypeName = 'dotils.{0}' -f $MyInvocation.MyCommand.Name # 'dotils.Operator.{0}'
             LeftObject  = $Left
             RightObject = $Right
             Property = $Property
-            CompareResult = $cResult
+            ComparisonResult = $cResult
             Left = 'next: $cResult.LeftInfo '
             Right = 'next: $cResult.RightInfo '
 
@@ -250,14 +287,24 @@ function Operator.Compare.ByProperty {
 }
 
 function fastTestQuit () {
-    Operator.Compare.ByProperty -Left $x -Right $y -Property 'Date'
+    # Operator.Compare.ByProperty -Left $x -Right $y -Property 'Date'
+    hr -fg 'orange'
+    # Operator.Compare.SingleComparison -Left $now1 -Right $now2
+
+    $now1 ??= get-date && sleep -s 1
+    $now2 ??= get-date
+
+    Operator.Compare.SingleComparison -Left $now1 -Right $now2 Year
+
+    return
+    Operator.Compare.ByProperty -Left $now1 -Right $now2 -Property 'Year'
+    Operator.Compare.ByProperty -Left $now1 -Right $now2 -Property 'Ticks'
 }
 
 if($true) { return (fastTEstQuit)}
 
 $results = @(
     Operator.Compare.ByProperty -Left $x -Right $y -Property 'Date'
-    Operator.Compare.ByProperty -Left $x -Right $y -Property 'Ticks'
 )
 $results| ft -AutoSize
 
