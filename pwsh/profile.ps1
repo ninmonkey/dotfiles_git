@@ -3,20 +3,22 @@ $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
 Import-Module 'Pansies'
 'trace.👩‍🚀.parse: [1] $Profile.MainEntryPoint : /pwsh/profile.ps1'
-    | write-verbose
+    | write-verbose -verb
     # | write-host -bg '7baa7a' -fg black
 & {
     $splatAlias = @{ PassThru = $true ; ea = 'ignore'}
-    Set-Alias @splatAlias -name '.short.Type' 'Ninmonkey.Console\Format-ShortTypeName'
-    Set-Alias @splatAlias -name '.abbr.Type' 'Ninmonkey.Console\Format-ShortTypeName'
-    Set-Alias @splatAlias -name 'st' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
-    Set-Alias @splatAlias -name '.fmt.Type' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
-    Set-Alias @splatAlias -name 'Yaml' -Value 'powershell-yaml\ConvertTo-Yaml'
-    Set-Alias @splatAlias -name 'Yaml.From' -Value 'powershell-yaml\ConvertFrom-Yaml'
+    Set-Alias @splatAlias -name '.short.Type' -va 'Ninmonkey.Console\Format-ShortTypeName'
+    Set-Alias @splatAlias -name '.abbr.Type'  -va 'Ninmonkey.Console\Format-ShortTypeName'
+    Set-Alias @splatAlias -name 'st'          -va 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias @splatAlias -name '.fmt.Type'   -Va 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias @splatAlias -name 'Yaml'        -Va 'powershell-yaml\ConvertTo-Yaml'
+    Set-Alias @splatAlias -name 'Yaml.From'   -Va 'powershell-yaml\ConvertFrom-Yaml'
  } | Join-String -sep ', ' -op "   => aliases: "
 
 # required or else it breaks piping 'fd | fzf --preview bat'
 $PSNativeCommandArgumentPassing = [System.Management.Automation.NativeArgumentPassingStyle]::Legacy
+$PSNativeCommandArgumentPassing | Join-String -f 'Setting: $PSNativeCommandArgumentPassing = {0}'
+    | write-verbose
 
 # edit: 2023-05-02
 
@@ -56,7 +58,7 @@ function .Assert.Clamp {
         [switch]$NullOnError
 
     )
-    throw 'WIP: Assert returns bool'
+    throw 'WIP: NYI: Assert returns bool'
 }
 function .fmt.Clamp {
     <#
@@ -352,14 +354,18 @@ $Env:PSModulePath = @(
     $Env:PSModulePath
 ) | Join-String -sep ';'
 
+$Env:PSModulePath -split ';'
+    | Join-String -sep ', ' -op 'updated PSModulePath := [ ' -os ' ] '
+    | Write-Verbose -Verb
+
 Import-Module 'Ninmonkey.Console' -PassThru
     | Join-String { $_.Name, $_.Version -join ' = '}
     | New-Text -fg 'gray30' -bg 'gray10' | Join-String
 
 if($false) {
-Import-Module H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter -Force -PassThru -DisableNameChecking -wa Ignore
-  | Join-String { $_.Name, $_.Version -join ': ' } -f "{0}" -sep ', '
-  | New-Text -bg 'gray15' -fg 'gray40' | Join-String
+    Import-Module H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter -Force -PassThru -DisableNameChecking -wa Ignore
+    | Join-String { $_.Name, $_.Version -join ': ' } -f "{0}" -sep ', '
+    | New-Text -bg 'gray15' -fg 'gray40' | Join-String
 }
 
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
@@ -477,6 +483,11 @@ function nin.GroupByLinqChunk {
 }
 
 function nin.RenderUnicodeRange {
+    <#
+    .EXAMPLE
+        Pwsh> nin.RenderUnicodeRange -InputRunes @(0x2400..0x2410)
+        Pwsh> nin.RenderUnicodeRange -InputRunes (0x2400..0x2410 -as [Text.Rune[]])
+    #>
     param(
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ValueFromPipeline)]
         [System.Text.Rune[]]$InputRunes,
@@ -488,10 +499,8 @@ function nin.RenderUnicodeRange {
     }
     process {
         $Runes.AddRange($InputRunes )
-
     }
     end {
-
         $minCellsPerRecord = ' 0xffff00 => __ '.Length
 
         $w = $host.ui.RawUI.WindowSize.Width
