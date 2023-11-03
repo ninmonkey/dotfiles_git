@@ -1,3 +1,8 @@
+using namespace System.Collections.Generic
+
+$script:CountersListForAddLabel ??= @{}
+
+
 $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
 
 @(
@@ -544,19 +549,20 @@ and run the operation again."
         }
     }
 }
-function Dotils.Select.Some {
-    # [CmdletBinding()]
-    [Alias('Some')]
-    param(
-        [Alias('Descending')][switch]$FromEnd
-    )
-    if($FromEnd) {
-        @( $Input ) | Select -Last 6
-        return
-    }
-    @( $Input ) | Select -first 6
+# function Dotils.Select.Some {
+#     # [CmdletBinding()]
+#     [Alias('Some')]
+#     param(
+#         [Alias('Descending')][switch]$FromEnd
+#     )
+#     'todo: merge as subcase of with <Dotils.Select.Some.NoMore>' | Dotils.Write-DimText | write-verbose -verb
+#     if($FromEnd) {
+#         @( $Input ) | Select -Last 6
+#         return
+#     }
+#     @( $Input ) | Select -first 6
 
-}
+# }
 
 function Dotils.Get-UsingStatement {
     <#
@@ -665,25 +671,133 @@ function Dotils.Get-UsingStatement {
     }
     $render
 }
-function Dotils.Select.One {
+function Dotils.Select.NoMore.Template {
+    <#
+    .SYNOPSIS
+        template of a steppable function to exit early
+    .EXAMPLE
+        0..100 | NoMore
+    #>
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object] $InputObject,
+
+        [Parameter(Position = 0)]
+        [uint] $First = 3
+    )
+
+    begin {
+        $selectSplat = @{
+            First = $First
+        }
+        $pipe = { Select-Object @selectSplat }.GetSteppablePipeline()
+        $pipe.Begin($PSCmdlet)
+    }
+    process {
+        $pipe.Process($InputObject)
+    }
+    end {
+        $pipe.End()
+    }
+}
+
+@'
+left off, finish 'Some.NoMore'
+    {0}
+'@ -f $PSCommandPath | write-host -back 'darkred'
+function Dotils.Select.Some.NoMore {
+    <#
+    .SYNOPSIS
+        better version of 'one' and 'some' that exits early if possible, and saves the value
+    #>
+    [Alias('Some', 'One')]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object] $InputObject,
+
+        [Alias('Count', 'Limit')]
+        [Parameter(Position = 0)]
+        [int] $FirstN = 5,
+
+        [switch]$LastOne
+    )
+
+    begin {
+        [bool]$IsUsingOne =
+            $MyInvocation.InvocationName -eq 'One'
+        $isUsingOne = $false
+
+
+        $selectSplat = @{}
+
+        # if($FirstN -lt 0) {
+        #     $LastOne = -not ( $LastOne ?? $false )
+        #     $FirstN *= -1 }
+        if($LastOne)      { $selectSplat.Last  = $FirstN }
+        if(-not $LastOne) { $selectSplat.First = $FirstN }
+
+        $pipe = { Select-Object @selectSplat }.GetSteppablePipeline()
+        $pipe.Begin($PSCmdlet)
+    }
+    process {
+        $pipe.Process($InputObject)
+    }
+    end {
+        wait-debugger
+        if($IsUsingOne) {
+            $global:One = $pipe.End()
+            'One := {0}' -f @(
+                $query | Format-ShortTypeName
+            )   | Dotils.Write-DimText
+                | Infa
+        } else {
+            $global:Some = $pipe.End()
+            'Some := {0}' -f @(
+                $query
+                | CountOf | Format-ShortTypeName
+            )   | Dotils.Write-DimText
+                | Infa
+        }
+    }
+}
+
+
+function Dotils.Select.One.Basic.Deprecated {
     # [Alias('First')]
     <#
     .SYNOPSIS
-        sugar for: Select first 1
+        replaced by [Dotils.Select.Some.NoMore] ;  sugar for: Select first 1,  and storing the value
+    .EXAMPLE
+        Pwsh> gci . -recurse | one
+        Pwsh> $one.LastWriteTime
     #>
     [Alias(
-        'One',
-        '.Select.One'
+        # 'One',
+        # '.Select.One'
     )]
     param(
         [switch]$LastOne
     )
-
     if($LastOne) {
-        return @( $Input ) | Select -Last 1
+       $query = $Input | Select -Last 1
+    } else {
+        $query = $Input | Select-Object -First 1
     }
+
+    <# try 1: was not able to end gci early
+    if($LastOne) {
+       ( $query = @( $Input ) | Select -Last 1 )
+    } else {
+        ( $query = @( $Input ) | Select-Object -First 1 )
+    }
+    #>
+    $global:One = $query
+    'Saved $One {0}' -f @(
+        $query | Format-ShortTypeName
+    )   | Dotils.Write-DimText
+        | Infa
+
     # one of the rare cases where Input is useful without the dangers
-    @( $Input ) | Select-Object -First 1
 }
 
 write-warning 'see: Dotils.Describe'
@@ -9000,6 +9114,107 @@ function Dotils.DB.toDataTable {
 #         }
 #     }
 # }
+function Dotils.Culture.Get {
+    <#
+    .SYNOPSIS
+        return culture info, later will be able to filter
+    .NOTES
+
+        When a new application thread is started, its current culture and current UI culture are defined by the current system culture, and not by the current thread culture.
+
+        All cultures that are recognized by .NET, including neutral and specific cultures and custom cultures created by the user.
+
+        On .NET Framework 4 and later versions and .NET Core running on Windows, it includes the culture data available from the Windows operating system. On .NET Core running on Linux and macOS, it includes culture data defined in the ICU libraries.
+
+        AllCultures is a composite field that includes the NeutralCultures, SpecificCultures, and InstalledWin32Cultures values.
+
+    # if not auto completed
+    # 'AllCultures', 'FrameworkCultures', 'InstalledWin32Cultures', 'NeutralCultures', 'ReplacementCultures', 'SpecificCultures', 'UserCustomCulture', 'WindowsOnlyCultures'
+    .link
+        https://learn.microsoft.com/en-us/dotnet/api/system.globalization.culturetypes?view=net-7.0
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.getcultures?view=net-7.0#system-globalization-cultureinfo-getcultures(system-globalization-culturetypes)
+    .link
+
+    #>
+    [Alias('Dotils.Culture.Gci')]
+    param(
+        # What kinds? # <https://learn.microsoft.com/en-us/dotnet/api/system.globalization.culturetypes?view=net-7.0>
+        [Parameter()]
+        [Globalization.CultureTypes]
+        $CultureTypes = [Globalization.CultureTypes]::AllCultures
+    )
+
+    ( $query =
+        [Globalization.CultureInfo]::GetCultures( $CultureTypes ) )
+}
+function Dotils.Format-TextCase {
+
+    <#
+    .synopsis
+        Format text case using culture's [TextInfo]
+    .NOTES
+        note
+            Get-Culture # default
+            Get-Culture '' # invariant
+
+        curious, is this ever *not* equivalent ?
+            'sdf'.ToUpper( $cult )
+            $cult.TextInfo.ToUpper( 'sdf' )
+    .link
+        https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo?view=net-7.0
+    .example
+        $randCult = Get-Random -inp (Get-Culture -ListAvailable) -Count 1
+        '13e S" DFSIJf "Ejedsfj' | Dotils.Format-TextCase Title $randCult
+    #>
+    [Alias('Text.Case')]
+    param(
+        # Which mode, Upper, TitleCase, LowerCase and invariant versions
+        [ValidateSet('Title', 'Upper', 'Lower',
+            'LowerInvariant', 'UpperInvariant')]
+        [Parameter()]
+        [string]$OutputMode,
+
+        [Parameter()]
+        [ArgumentCompletions(
+            "en-us",
+            "(Get-Culture 'de-de')",
+            "(Get-Culture "
+        )][string]$CultureName = (Get-culture).Name,
+
+        [Alias('InputObject')]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [string]$TextInput
+
+    )
+    begin {
+
+        $cult = Get-Culture -Name $CultureName }
+    process {
+        if($null -eq $TextInput) { return }
+        if( $TextInput.length -eq 0) { return }
+        [string]$obj = $TextInput ?? ''
+
+        switch($OutputMode) {
+           'Title' {
+                $cult.TextInfo.ToTitleCase( $obj ) }
+           'Upper' {
+                $cult.TextInfo.ToUpper( $obj ) }
+           'Lower' {
+                $cult.TextInfo.ToLower( $obj ) }
+           'LowerInvariant' {
+                $obj.ToLowerInvariant() }
+            'UpperInvariant' {
+                $obj.ToUpperInvariant() }
+           default { $obj }
+        }
+    }
+}
+
+
+
 
 function Dotils.Format-ShortString.Basic {    <#
     .synopsis
@@ -10922,7 +11137,13 @@ function Dotils.Get-Item.FromClipboard {
     .SYNOPSIS
         sugar for resolving path as an object from the paste
     .EXAMPLE
-        Pwsh> 'C:\Users\cppmo_000\AppData\Local\Microsoft\Windows' | cl
+        # normal usage
+        Pwsh> Gcl.Gi | Goto
+
+        # or
+        Pwsh> $JsonPath = Gcl.Gi
+    .EXAMPLE
+        Pwsh> 'C:\Users\cppmo_000\AppData\Local\Microsoft\Windows' | Set-Clipboard
 
         Pwsh> Gcl.Gi
         # prints: gi =: C:\Users\cppmo_000\AppData\Local\Microsoft\Windows
@@ -10934,12 +11155,17 @@ function Dotils.Get-Item.FromClipboard {
         Dotils.get-Item.FromClipboard | %{ Test-Path $_ }
     #>
     [Alias('Gcl.GetItem', 'Gcl.Gi')]
+    [OutputType('System.IO.FileSystemInfo')]
     param()
     $global:gi  = Get-Clipboard | Get-Item -ea 'stop'
-        $global:gi ?? "`u{2400}"
-            | Dotils.Format.Write-DimText
-            | Join-String -op 'gi =: '
-            | wInfo
+
+    # write console, but also return GI as well
+    $global:gi ?? "`u{2400}"
+        | Dotils.Format.Write-DimText
+        | Join-String -op 'gi =: '
+        | wInfo
+
+    return $global:gi
 }
 function Dotils.Accumulate.Hashtables {
     <#
@@ -13002,6 +13228,34 @@ $query
     hr -fg orange
     Get-Command -Module Dotils | & $DemoCommands[4]
 }
+function Dotils.FixNativeCommandReference {
+    <#
+    .SYNOPSIS
+        [re]set alias to the native command, useful when experimenting with pipescript\inherit examples
+    .NOTES
+        # original 1liner
+        # Set-Alias 'gh' -PassThru -Value $executionContext.SessionState.InvokeCommand.GetCommand('gh', 'Application')
+    .EXAMPLE
+        #
+        Pwsh> Dotils.FixNativeCommandReference 'gh'
+    #>
+    param(
+        [ArgumentCompletions(
+            'gh', 'git', 'jq', 'code',
+            'python', 'py'
+        )]
+        [ValidateNotNullOrEmpty()]
+        [string]$CommandName
+    )
+    $nativeLookup = $executionContext.SessionState.InvokeCommand.GetCommand('gh', 'Application')
+    Set-Alias $CommandName -PassThru -Value $nativeLookup -Scope 'Global'
+
+    "FixNativeAlias: alias: '{0}' => `n  {1}" -f @(
+        $CommandName
+        $nativeLookup
+    )
+        | Dotils.Write-DimText | wInfo
+}
 
 function Dotils.Split.WordByCase {
     <#
@@ -13043,12 +13297,168 @@ function Dotils.Split.WordByCase {
     }
 }
 
+$script:binBat ??= Get-Command 'bat' -CommandType Application -TotalCount 1 -ea 'stop'
+
+function Dotils.Colorize.Json {
+    <#
+    .NOTES
+        original:
+            '{"ParamState":{"IsPresent":true}}' | bat -l json --force-colorization --style plain | echo
+    .EXAMPLE
+        get-date | select * | ConvertTo-Json -Depth 3 -Compress | Json.Colorize
+    #>
+    [Alias('Json.Colorize')]
+    param()
+
+    [List[Object]]$BatArgs = @(
+        # will use an Inline render, colors, without any headers
+        '--language', 'json',
+        '--force-colorization',
+        '--style', 'plain'
+    )
+
+    return $Input | & $binBat @BatArgs
+}
+
+function Dotils.AddLabel {
+    <#
+    .SYNOPSIS
+        add properties, or, names to results
+    .EXAMPLE
+        gci . | select Name, Length
+            | AddLabel -Name 'User' -Value 'Bob'
+    .EXAMPLE
+        gci . | select Name, Length
+            | AddLabel -Name 'test' -AsCounter -ResetCounter
+    .EXAMPLE
+        gci . | select Name, Length
+            | AddLabel -Name 'test' -AsCounter
+    #>
+    [Alias('AddLabel')]
+    param(
+        [Parameter(Position=0)]
+        [Alias('Text')]
+        [ValidateNotNull()]
+        [string]$Value,
+
+        [Alias('Key')]
+        [ValidateNotNull()]
+        [string]$Name = 'Name',
+
+        [Parameter(ValueFromPipeline)]
+        [object]$InputObject,
+
+        [switch]$AsCounter,
+        [switch]$ResetCounter
+    )
+    begin {
+        if($AsCounter) {
+            $script:CountersListForAddLabel[ $Name ] ??= 0
+            if($ResetCounter) {
+                $script:CountersListForAddLabel[ $Name ] = 0
+            }
+        }
+    }
+    process {
+        $members = [ordered]@{}
+        if( -not $AsCounter ) {
+            $members[ $Name ] = $Value
+        } else {
+            # $script:CountersListForAddLabel[ $Name ] ??= 0
+            $members[ $Name ] = $script:CountersListForAddLabel[ $Name ]++
+        }
+        # $members = @{
+        #     $LabelName = $Label
+        # }
+
+        $InputObject
+            | Add-Member -Pass -Force -TypeName 'SillyLabel' -NotePropertyMembers $members # sorry
+    }
+}
+
+function Dotils.Format-RenderBool {
+    <#
+    .SYNOPSIS
+        hack, do not use for anything. mutates object, summarizes bools as symbols
+    #>
+    [Alias('Format-RenderBool')]
+    param(
+        [Parameter(ValueFromPipeline)]
+        [object[]]$InputObject
+    )
+    begin {
+        $c = @{
+            Red = "${fg:#8b6756}"
+            Green = "${fg:#445a49}"
+        }
+
+    }
+    process {
+        foreach($CurObj in $InputObject) {
+            $CurObj.PSObject.Properties | %{
+                $CurProp = $_
+                $Val = $CurProp.Value
+                if($Val -is 'bool') {
+                    $NewVal = switch ( $Val ) {
+                        { $_ -eq $true -or $_ -match 'true|ok|\b1\b|yes' } {
+                            @(
+                                $c.Green
+                                $Switch # $Val
+                                '✔'
+                            ) -join ''
+                        }
+                        { $null -eq $_ -or  $_ -eq $false -or $_ -match 'false|0|\no' } {
+                            @(
+                                $c.Red
+                                $Switch # $Val
+                                '✘'
+                            ) -join ''
+                        }
+                        default {
+                            $Switch # $val
+                                                        # @(
+                            #     $c.Red
+                            #     $Switch # $Val
+                            #     '✘'
+                            # ) -join ''
+                        }
+                    }
+                    # $newVal =
+                    #     $Val -replace 'True', '✔' -replace 'False', '✘'
+
+                    #     $Val -replace 'True', '✔' -replace 'False', '✘'
+
+                    $curProp.Value = $newVal
+                    #  @(
+                    #     $c.Red
+                    #     $newVal
+                    # ) -join ''
+                }
+            }
+            $curObj
+        }
+    }
+}
 
 
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-03
+        'Dotils.AddLabel' # 'Dotils.AddLabel' = { 'AddLabel' }
+        'Dotils.Colorize.Json' # 'Dotils.Colorize.Json' = { 'Json.Colorize' }
+        'Dotils.Format-RenderBool' # 'Dotils.Format-RenderBool'  = { 'Format-RenderBool' }
+
+        # 2023-10-30
+        'Dotils.FixNativeCommandReference'
+        # 2023-10-12
+        'Dotils.Select.Some.NoMore' # 'Dotils.Select.Some.NoMore' = { 'Some', 'One' }
+
+        # 2023-10-11
+        'Dotils.Culture.Get' # 'Dotils.Culture.Get' = { 'Dotils.Culture.Gci' }
+        'Dotils.Format-TextCase' # 'Dotils.Format-TextCase' = { }
+
         # 2023-10-01
         'Dotils.Get-Item.FromClipboard' # 'Dotils.Get-Item.FromClipboard' = { 'Gcl.Gi' }
         # 2023-09-23
@@ -13323,6 +13733,18 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-11-03
+        'AddLabel' # 'Dotils.AddLabel' = { 'AddLabel' }
+        'Format-RenderBool' # 'Dotils.Format-RenderBool'  = { 'Format-RenderBool' }
+        'Json.Colorize' # 'Dotils.Colorize.Json' = { 'Json.Colorize' }
+        # 2023-10-12
+
+        'Some' # 'Dotils.Select.Some.NoMore' = { 'Some', 'One' }
+        'One' # 'Dotils.Select.Some.NoMore' = { 'Some', 'One' }
+        # 2023-10-11
+        'Text.Case'
+        'Dotils.Culture.Gci' # 'Dotils.Culture.Get' = { 'Dotils.Culture.Gci' }
+
         # 2023-10-01
         'Gcl.Gi' # 'Dotils.Get-Item.FromClipboard' = { 'Gcl.Gi' }
         'Gcl.GetItem' # 'Dotils.Get-Item.FromClipboard' = { 'Gcl.Gi' }
