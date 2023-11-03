@@ -13737,8 +13737,8 @@ $exportModuleMemberSplat = @{
         'AddLabel' # 'Dotils.AddLabel' = { 'AddLabel' }
         'Format-RenderBool' # 'Dotils.Format-RenderBool'  = { 'Format-RenderBool' }
         'Json.Colorize' # 'Dotils.Colorize.Json' = { 'Json.Colorize' }
-        # 2023-10-12
 
+        # 2023-10-12
         'Some' # 'Dotils.Select.Some.NoMore' = { 'Some', 'One' }
         'One' # 'Dotils.Select.Some.NoMore' = { 'Some', 'One' }
         # 2023-10-11
