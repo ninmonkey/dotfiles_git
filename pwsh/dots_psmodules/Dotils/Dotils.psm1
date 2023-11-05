@@ -11600,6 +11600,53 @@ function __compare-Is.Type {
 }
 
 
+function Dotils.Show-Escapes {
+    <#
+    .SYNOPSIS
+        show color control sequence escapes as safe symbols
+    .EXAMPLE
+        1..255 | Join-String -f "`e[38;5;{0}m{0}`e[0m" -sep ' '
+            | Dotils.Show-Escapes
+
+        # ␛[38;5;1m1␛[0m ␛[38;5;2m2␛[0m ␛[38;5;3m3␛[0m ␛[38;5;4m4␛[0m ␛[38;5;5m5␛[0m ␛[38;5;6m6␛[0m ␛[38;5 ...
+    #>
+    [Alias('Show-Escapes', 'ShowEscapes')]
+    param()
+    process {
+       $_ -replace  "`e", '␛'
+    }
+}
+
+function Dotils.Test.IsModulus {
+    <#
+    .SYNOPSIS
+    .EXAMPLE
+        # get even values
+        1..10 | ?{ Is.Mod $_ 2 }
+    .EXAMPLE
+        # insert newlines to wrap text every X segments
+        1..255 | %{ if( Is.Mod $_ 15 ) { "`n" } ; $_ ; } | Join-String -f '{0,4}'
+
+        1   2   3   4   5   6   7   8   9  10  11  12  13  14
+        15  16  17  18  19  20  21  22  23  24  25  26  27  28  29
+        30  31  32  33  34  35  36  37  38  39  40  41  42  43  44
+        45  46  47  48  49  50  51  52  53  54  55  56  57  58  59
+        60  61  62  63  64  65  66  67  68  69  70  71  72  73  74
+    #>
+    [OutputType('Boolean')]
+    [Alias('Is.Modulus', 'Is.Mod')]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [int]$InputObject,
+
+        [Parameter(Mandatory, Position=1)]
+        [int]$Modulus
+    )
+    $result  = ($InputObject % $Modulus) -eq 0
+    return $result
+}
+
+
 function Dotils.PStyle.Color.Gray {
     [Alias(
         'Dotils.Color.Gray', 'c.Gray')]
@@ -11631,6 +11678,7 @@ function Dotils.PStyle.Color.Gray {
         }
         default { throw "ShouldNeverReachException: UnhandledMode $ColorMode" }
     }
+
 }
 function Dotils.PStyle.Color.Hex {
     <#
@@ -13445,6 +13493,9 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-05
+        'Dotils.Show-Escapes' # 'Dotils.Show-Escapes' = { 'ShowEscapes', 'Show-Escapes' }
+        'Dotils.Test.IsModulus' # 'Dotils.Test.IsModulus' = { 'Is.Modulus', 'Is.Mod' }
         # 2023-11-03
         'Dotils.AddLabel' # 'Dotils.AddLabel' = { 'AddLabel' }
         'Dotils.Colorize.Json' # 'Dotils.Colorize.Json' = { 'Json.Colorize' }
@@ -13733,6 +13784,12 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-11-05
+        'ShowEscapes' # 'Dotils.Show-Escapes' = { 'ShowEscapes', 'Show-Escapes' }
+        'Show-Escapes' # 'Dotils.Show-Escapes' = { 'ShowEscapes', 'Show-Escapes' }
+
+        'Is.Mod' # 'Dotils.Test.IsModulus' = { 'Is.Modulus', 'Is.Mod' }
+        'Is.Modulus' # 'Dotils.Test.IsModulus' = { 'Is.Modulus', 'Is.Mod' }
         # 2023-11-03
         'AddLabel' # 'Dotils.AddLabel' = { 'AddLabel' }
         'Format-RenderBool' # 'Dotils.Format-RenderBool'  = { 'Format-RenderBool' }
