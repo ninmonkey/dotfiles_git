@@ -1,0 +1,2 @@
+- Format-RenderBool
+- from: <file:///H:/data/2023/pwsh/sketches/using%20subtle%20not%20defined%20with%20nullable%20switches-page3.ps1>
