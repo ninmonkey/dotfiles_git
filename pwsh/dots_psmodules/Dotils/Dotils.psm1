@@ -743,7 +743,7 @@ function Dotils.Select.Some.NoMore {
         $pipe.Process($InputObject)
     }
     end {
-        wait-debugger
+        # wait-debugger
         if($IsUsingOne) {
             $global:One = $pipe.End()
             'One := {0}' -f @(
@@ -11397,6 +11397,30 @@ function Dotils.Resolve.TypeInfo {
 }
 
 
+function Dotils.Format-ModuleName {
+    <#
+    .SYNOPSIS
+        visually summarize a module, maybe make a EzFormat
+    .EXAMPLE
+        Get-Module | RenderModuleName
+    #>
+    [Alias('Render.ModuleName')]
+    param()
+    $Input
+    | Join-String {
+        $cDim = "${fg:gray30}${bg:gray40}"
+        $cBold = "${fg:gray80}${bg:gray20}"
+        $cDef =   $PSStyle.Reset # or "${fg:clear}${bg:clear}"
+
+        "${cBold}{0} = {1}${cDef}`n`t${cDim}{2}${cDef}`n" -f @(
+            $_.Name
+            $_.Version
+            $_.Path
+        )
+    } | Join-String -os $PSStyle.Reset
+}
+
+
 function Dotils.Test-IsOfType.FancyWip {
     <#
     .SYNOPSIS
@@ -13493,6 +13517,8 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-06
+        'Dotils.Format-ModuleName' # 'Dotils.Format-ModuleName' = { 'Render.ModuleName' }
         # 2023-11-05
         'Dotils.Show-Escapes' # 'Dotils.Show-Escapes' = { 'ShowEscapes', 'Show-Escapes' }
         'Dotils.Test.IsModulus' # 'Dotils.Test.IsModulus' = { 'Is.Modulus', 'Is.Mod' }
@@ -13784,6 +13810,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-11-06
+        'Render.ModuleName' # 'Dotils.Format-ModuleName' = { 'Render.ModuleName' }
+
         # 2023-11-05
         'ShowEscapes' # 'Dotils.Show-Escapes' = { 'ShowEscapes', 'Show-Escapes' }
         'Show-Escapes' # 'Dotils.Show-Escapes' = { 'ShowEscapes', 'Show-Escapes' }
