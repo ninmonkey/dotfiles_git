@@ -1,4 +1,4 @@
-﻿$PSDefaultParameterValues['wait-debugger:verbose'] = 'continue'
+﻿# $PSDefaultParameterValues['wait-debugger:verbose'] = 'continue'
 # $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
 'trace.👩‍🚀.parse: [2] $Profile.''MainEntryPoint.__init__'' : /pwsh/profile.ps1'
     | write-verbose
@@ -8,7 +8,11 @@ $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
 
-Import-Module 'H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
+write-warning 'to extract: H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
+'early exit: {0}' -f $PSCommandPath | write-warning
+# return
+
+# Import-Module 'H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
 
 <#
 custom attributes, more detailed info
@@ -21,13 +25,17 @@ custom attributes, more detailed info
 
 # fix pipeworks creating errors when piping to write-host, like:
     # 'stuff' | write-host -bg 'gray30' -fg 'gray60'
-if(get-module pipeworks) {
-   set-alias 'Write-Host' -Value 'Pansies\Write-Host'
-}
+@(
+    if(get-module pipeworks) {
+        set-alias 'Write-Host' -Value 'Pansies\Write-Host' -PassThru
+    }
 
-
-Set-Alias -PassThru -Name 'Json.From' -Value 'ConvertFrom-Json'
-New-Alias -PassThru -ea 'ignore' -Name 'fa' -value '__format-TableAuto' -desc 'profile sugar'
+    Set-Alias -PassThru -Name 'Json.From' -Value 'ConvertFrom-Json'
+    New-Alias -PassThru -ea 'ignore' -Name 'fa' -value '__format-TableAuto' -desc 'profile sugar'
+)
+    | Join.UL -Options @{
+        ULHeader =  @( (hr 1) ; Label "New/Set" "Alias"  ) | Join-String
+        ULFooter  = (hr 0) }
 
 function __format-TableAuto {
     # [Alias('fa')] # better as a cmd to be less clobber?
@@ -53,9 +61,6 @@ Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
 # impo -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
 #     | ft
-Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
-    |Join-String -f "`n`t{0}" { $_.Name, $_.Path } -op 'impo "my🍴" ... [ = ' -sep '' -os "`n]"
-    | Write-host -back 'darkred'
 
 @(  #Import-Module -wa 0  'ugit' -PassThru
     Import-Module -wa 0 'Dotils' -Force -PassThru
@@ -63,6 +68,12 @@ Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit
         '{0} = {1}' -f @(
             $_.Name ; $_.Version; ) } -op "Import: `n" -sep ",`n" -single
     | Write-Verbose
+
+Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
+    | Render.ModuleName
+# Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
+#     | Join-String -f "`n`t{0}" { $_.Name, $_.Path } -op 'impo "my🍴" ... [ = ' -sep '' -os "`n]"
+#     | Write-host -back 'darkred'
 
 ## refactor, move to Nancy 2023-05-15
 
@@ -101,6 +112,7 @@ function Export.PipeScript {
     #
     # Import-Module pipescript -MaximumVersion 0.2.2 -Scope Global -PassThru
     Import-Module pipescript -Scope Global -PassThru
+        | Render.ModuleName
     if ($All) {
         Export-Pipescript
         return

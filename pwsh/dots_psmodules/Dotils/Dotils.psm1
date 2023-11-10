@@ -13512,11 +13512,61 @@ function Dotils.Format-RenderBool {
     }
 }
 
+function Dotils.ColorTest.ShowNumberedVariations {
+    <#
+    .NOTES
+        from thread: <https://discord.com/channels/180528040881815552/180528040881815552/1171228957874602096>
+
+    #>
+    $gci = gci fg:\
+    h1 'as table'
+    $Grouped =
+        $gci| Group { $_.X11ColorName -replace '\d+', '' }
+
+    h1 'as short'
+    $Grouped
+        | Sort-Object { $_.Group.Count } -Descending
+        | %{@(
+            $_.Name
+            $_.Group | Join-String -sep ' ' -Property {
+            $_.X11ColorName | New-Text -bg $_
+            }
+        ) | Join-String -sep ', ' }
+          | Join.UL
+
+
+    hr
+    $Grouped =
+        $gci | Group-Object -Property { @(
+           $name= $_.X11ColorName
+           $name -match 'red|green'
+           $name -match 'gray|yellow'
+        ) -join '-' }
+
+    $Grouped
+        | %{@(
+            $_.Name
+            $_.Group
+               | Sort-Object -Property { $_.ToHsl().H }
+               | Join-String -sep ' ' -Property {
+                  $_.X11ColorName, $_.ToString()
+                      | New-Text -bg $_ -Separator ', '
+               }
+        ) | Join-String -sep ' => ' }
+          | Join-String -sep "`n`n`n --------- `n`n`n "
+
+
+
+
+}
+
 
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-08
+        'Dotils.ColorTest.ShowNumberedVariations'
         # 2023-11-06
         'Dotils.Format-ModuleName' # 'Dotils.Format-ModuleName' = { 'Render.ModuleName' }
         # 2023-11-05
