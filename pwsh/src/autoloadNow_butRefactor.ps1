@@ -204,15 +204,7 @@ function nin.addProp {
 
 
 }
-function One {
-    # [Alias('First')]
-    <#
-    .SYNOPSIS
-        sugar for: Select first 1
-    #>
-    # one of the rare cases where Input is useful without the dangers
-    $Input | Select-Object -First 1
-}
+
 
 function b.fm {
     <#
@@ -291,22 +283,25 @@ function Format-Html.Table.FromHashtable {
         '.to.Html.Table'
     )]
     param(
-        [Parameter(Mandatory)]
-        [hashtable]$InputHashtable
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputHashtable
+        # [hashtable]$InputHashtable
     )
-    $renderBody = $InputHashTable.GetEnumerator() | ForEach-Object {
-        '<tr><td>{0}</td><td>{1}</td></tr>' -f @(
-            $_.Key ?? '?'
-            $_.Value ?? '?'
-        )
+    process {
+        $renderBody = $InputHashTable.GetEnumerator() | ForEach-Object {
+            '<tr><td>{0}</td><td>{1}</td></tr>' -f @(
+                $_.Key ?? '?'
+                $_.Value ?? '?'
+            )
 
-    } | Join-String -sep "`n"
-    $renderFinal = @(
-        '<table>'
-        $renderBody
-        '</table>'
-    ) | Join-String -sep "`n"
-    return $renderFinal
+        } | Join-String -sep "`n"
+        $renderFinal = @(
+            '<table>'
+            $renderBody
+            '</table>'
+        ) | Join-String -sep "`n"
+        return $renderFinal
+    }
     # '<table>'
     # '</table>'
 

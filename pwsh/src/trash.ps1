@@ -1,9 +1,26 @@
-fit -namespace System.ComponentModel -InheritsType Attribute
+$q ??= @{}
+@( $q.Component = fit -namespace System.ComponentModel -InheritsType Attribute )
 
-fit -Namespace System.Reflection -InheritsType Attribute
+@( $q.Reflect = fit -Namespace System.Reflection -InheritsType Attribute )
+$regex ??= @{}
+$regex.StartUpper = @'
+(?-i)[A-Z]+[a-z]+
+'@
 
+# $q.Component | s -f 4 | %{
+#     $mms = $_.Fullname | sls -Pattern $regex.StartUpper -AllMatches
+#     $mms.Matches | Ft -auto
+#     $mms.Matches.Value |Join.UL
+# }
+$q.Component | s -f 4 | %{
+    $Tinfo = $_
+    $mms = $tinfo.Fullname | sls -Pattern $regex.StartUpper -AllMatches
+    h1 ($tinfo | Format-ShortTypeName)
+    $mms.Matches.Value |Join-String -sep ', '
+}
 
-
+hr
+return
 function nin.MdTable.old {
     <#
     .SYNOPSIS

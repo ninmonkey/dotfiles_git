@@ -106,7 +106,7 @@ $splat_Show = @{
 # | Join-String -op "${fg:a4dcf1}"
 # | Write-ConsoleColorZd -Fg '#a4dcf1'
 
-
+Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
 if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
