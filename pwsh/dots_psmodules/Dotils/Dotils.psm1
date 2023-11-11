@@ -9036,6 +9036,209 @@ function Dotils.Debug.Find.AstType {
 }
 
 
+
+
+
+
+function Dotils.Datetime.Now {
+    [OutputType('System.DateTime')]
+    [Alias(
+        'Dt.Now',
+        'DateTime.Now'
+    )]
+    param(
+        [Alias('Utc')]
+        [switch]$AsUtc
+    )
+
+    $now = if( $AsUtc ) {
+        [Datetime]::Now.ToUniversalTime()
+    } else {
+        [Datetime]::Now
+    }
+    return $now
+}
+function Dotils.DatetimeOffset.Now {
+    [Alias(
+        'Dto.Now',
+        'DateTimeOffset.Now'
+    )]
+    [OutputType('System.DatetimeOffset')]
+    param(
+        [Alias('Utc')]
+        [switch]$AsUtc
+    )
+
+    $now = if( $AsUtc ) {
+        [DatetimeOffset]::Now.ToUniversalTime()
+    } else {
+        [DatetimeOffset]::Now
+    }
+    return $now
+}
+
+function Dotils.Datetime.NamedFormatStr {
+    [Alias('Date.NamedFormatStr')]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [ArgumentCompletions(
+            'Github.Dto.Utc'
+        )]
+        [Alias('Name')]
+        [string]$DateTemplateName
+    )
+    write-warning 'Generate arg completer using standard names from a set completer'
+    <#
+    .EXAMPLE
+        Pwsh> Dotils.Datetime.NamedFormatStr Github.Dto.Utc
+
+            yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
+    .NOTES
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+    .LINK
+        https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#timezones
+    #>
+    # todo: generate naems from func
+
+    $named = @{
+        'Github.Dto.Utc' = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+    }
+
+    if( $named.ContainsKey($DateTemplateName)) {
+        return $Named[ $DateTemplateName ]
+    }
+    throw "UnknownDateTemplateName: $DateTemplateName"
+}
+# function Dotils.Datetime.
+function Dotils.DatetimeOffset.Parse.FromGithub {
+    <#
+    .NOTES
+        see:
+            - https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+            - [git api datetimezone format](https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#timezones)
+    .EXAMPLE
+        Pwsh> Dto.Now -AsUtc
+            | % tostring "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+            | Dotils.DatetimeOffset.Parse.FromGithub
+            | % tostring 'u'
+
+        2023-11-11 23:08:59Z
+    .EXAMPLE
+        $GitDtoUtcFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+
+        Dto.Now -AsUtc
+            | % tostring $GitDtoUtcFormat
+            | Dotils.DatetimeOffset.Parse.FromGithub -Verbose
+
+
+    #>
+    [CmdletBinding()]
+    [OutputType('System.DateTimeOffset')]
+    param(
+        [ArgumentCompletions('2011-01-26T19:06:43Z')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [string[]]
+        $DateTimeOffsetString,
+
+        [string]$Culture = 'en-us'
+
+        # [Parameter(Mandatory, ValueFromPipeline)]
+        # [string[]]
+        # $DateTimeString
+    )
+    begin {
+        $Fstr = @{
+            Github_Dto_Utc =
+                "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+        }
+        $FstrDefault = $Fstr.Github_Dto_Utc
+        $Cult = Get-Culture $Culture
+    }
+    process {
+
+    $DateTimeOffsetString
+        | %{
+            $curString = $_
+            'parsing: {0}, using Fstr: {1}' -f @(
+                $curString, $FStrDefault
+            ) | Write-Verbose
+
+            [DatetimeOffset]::ParseExact(
+                $curString, $FStrDefault, $Cult)
+        }
+    }
+    # $dto.ToUniversalTime().ToString( $dsample )
+    # [System.DateTimeOffset]::ParseExact( $gitSample, $dsample, (Get-Culture 'en-us' ))
+}
+function Dotils.Datetime.ShowExamples {
+    param(
+        [ArgumentCompletions(
+            'o', 's', 'O', 'S', 'o', 'r', 'R', 'u', 'U',
+            "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+        )]
+        [String[]]$FormatStrings
+    )
+    $dt = [datetime]::Now
+    $dto = [DateTimeOffset]::Now
+
+    if( [string]::IsNullOrWhiteSpace( $FormatStrings ) ) {
+        $maybeFormats =
+            'o', 's', 'O', 'S', 'o',
+            "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+    } else {
+        $maybeFormats = $FormatStrings
+    }
+    $maybeFormats =
+        $maybeFormats | Sort-Object -Unique -CaseSensitive
+
+    $maybeFormats
+        | Join-String -op 'Using FormatStrings: ' -sep ', ' -single
+        | Dotils.Write-DimText
+        | Infa
+        # | write-verbose -verbose
+
+    $maybeFormats | %{
+        $fStr = $_
+        $dt? =
+            try { $dt.ToString( $fStr ) }
+            catch { "`u{2400}" }
+
+        $dt_utc? =
+            try { $dt.ToUniversalTime().ToString( $fStr ) }
+            catch { "`u{2400}" }
+
+         $dto? =
+            try { $dto.ToString( $fStr ) }
+            catch { "`u{2400}" }
+
+        $dto_utc? =
+            try { $dto.ToUniversalTime().ToString( $fStr ) }
+            catch { "`u{2400}" }
+
+
+        # $dt? ?? "`u{2400}"
+        [pscustomobject]@{
+            PSTypeName = 'dotils.Datetime.Format.Example'
+            Kind   = 'DateTime'
+            Fstr   = $fStr
+            Dt = $dt?
+            Dt_utc = $dt_utc?
+        }
+
+        [pscustomobject]@{
+            PSTypeName = 'dotils.DatetimeOffset.Format.Example'
+            Kind   = 'DateTimeOffset'
+            Fstr   = $fStr
+            Dt = $dto?
+            Dt_utc = $dto_utc?
+        }
+    }
+}
+
+
 function Dotils.DB.toDataTable {
 <#
 .synopsis
@@ -11702,6 +11905,75 @@ function Dotils.PStyle.Color.Gray {
         }
         default { throw "ShouldNeverReachException: UnhandledMode $ColorMode" }
     }
+}
+
+function Dotils.Colorize.BasedOnDistincCount {
+    <#
+    .SYNOPSIS
+        super naive hack. show colors based on distinct order repeated values were used
+    .DESCRIPTION
+        default does grayscale from 0 to N items, gradient width is distinct count
+        should improve to work more like 'Ninmonkey.Console\Format-WrapJaykul'
+    .example
+            Gci
+            | Format-WrapJaykul -RgbColor 'red', 'blue', 'green' -Property {
+        $_.Name, $_.Length -join ' = ' }
+    .link
+        Ninmonkey.Console\Format-WrapJaykul
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        [Alias('StartColor')]
+        $GradientStart = 'gray90',
+
+        [Alias('EndColor')]
+        $GradientEnd = 'gray10'
+    )
+    begin {
+        $NextOffset = 0
+        [List[Object]]$Items = @()
+        $Mapping = [ordered]@{}
+    }
+    process {
+
+        foreach($CurObj in $InputObject) {
+            [string]$NextLower = $CurObj.ToString().ToLowerInvariant()
+            if( -not $Mapping.Contains(  $NextStr ) ) {
+                $Mapping[ $NextStr ] = $NextOffset
+                $NextOffset++
+            }
+
+            $items.Add( [pscustomobject]@{
+                Obj = $CurObj
+                ColorIndex = $NextOffset
+            } )
+            # $Items.Add( $CurObj )
+        }
+    }
+    end {
+
+        $TotalItems = [Math]::max( 3, $Items.Count  )
+        'GradientStart: {0}, GradientEnd: {1}, Items.Count: {2} [ TotalItems: {3} ]' -f @(
+            $GradientStart, $GradientEnd, $Items.Count, $TotalItems
+        ) | Write-verbose
+
+
+        $Gradient = Get-Gradient $GradientStart $GradientEnd -Width $TotalItems
+
+        $Items | %{
+            $Obj = $_
+
+            '{0} is {1}' -f @(
+                $CurObj.Obj
+                $Mapping[ $CurObj.ColorIndex ]
+            )
+            | New-text -bg $clist[ $CurObj.ColorIndex ]
+
+        }
+    }
 
 }
 function Dotils.PStyle.Color.Hex {
@@ -13560,11 +13832,157 @@ function Dotils.ColorTest.ShowNumberedVariations {
 
 }
 
+function Dotils.Write.NumberedList {
+    <#
+    .synopsis
+            context was cloning the NL linux command for piping to Fzf: <https://thevaluable.dev/practical-guide-fzf-example/>
+    .example
+        gci ..
+            | nl
+            | fzf --with-nth=-2.. --delimiter=\
+            # or variant
+            | fzf --nth=2 --delimiter=' '
+    .link
+        https://thevaluable.dev/practical-guide-fzf-example/
+    #>
+    [Alias('Dotils.NL', 'NL')]
+    param()
+    $LineNo = 0
+    $Input | %{
+        $LineNo++
+        Join-String -f "${LineNo}. {0}" -inp $_
+    }
+}
+
+function Dotils.Fzf.SelectByUID {
+    <#
+    .SYNOPSIS
+        automatically return the id of a column, without the user seeing numbers
+    .DESCRIPTION
+        this will
+
+
+        ## If HideIdFromUser == true, then
+
+            Pwsh> Get-process | Dotils.NL
+
+        when the user picks from:
+
+            [+] System.Diagnostics.Process (svchost)
+            [ ] System.Diagnostics.Process (svchost)
+            [+] System.Diagnostics.Process (svchost)
+            [ ] System.Diagnostics.Process (System)
+            [ ] System.Diagnostics.Process (SystemSettings)
+            [ ] System.Diagnostics.Process (taskhostw)
+
+        the returned value is:
+
+            332. System.Diagnostics.Process (svchost)
+            334. System.Diagnostics.Process (svchost)
+
+        ## if -not HideFromuser
+
+            [+] 332 System.Diagnostics.Process (svchost)
+            [ ] 333 System.Diagnostics.Process (svchost)
+            [+] 334 System.Diagnostics.Process (svchost)
+            [ ] 335 System.Diagnostics.Process (System)
+            [ ] 336 System.Diagnostics.Process (SystemSettings)
+            [ ] 337 System.Diagnostics.Process (taskhostw)
+
+        the returned value is still the same
+
+            332. System.Diagnostics.Process (svchost)
+            334. System.Diagnostics.Process (svchost)
+
+
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline)]
+        [object[]]$InputObject,
+        [switch]$AsObject,
+        [switch]$WhatIf,
+        [hashtable]$Options = @{}
+    )
+    begin {
+        $Config = nin.MergeHash -OtherHash $Options -BaseHash @{
+            HideIdFromUser = $true
+            ExitKey = 'q'
+            MultiSelect = $true
+            Nth = '2'
+            Delimiter = ' '
+        }
+
+        [List[Object]]$Items  = @()
+    }
+    process {
+        $Items.AddRange(@( $InputObject ))
+    }
+    end {
+
+        [List[Object]]$FzfArgs = @(
+            # '--nth=2'
+            '--nth={0}' | Join-string -f $Config.Nth
+            if($Config.HideIdFromUser) { '--with-nth=2' }
+            "--delimiter='{0}'" | Join-string -f $Config.Delimiter
+
+# [1]
+"--delimiter='{0}'" -f @( $Config.Delimiter )
+
+# [2]
+Join-string -Inp $Config.Delimiter -f "--delimiter='{0}'"
+
+# [3]
+$Config.Delimiter
+    | Join-String -f "--delimiter='{0}'"
+
+# [4]
+$Config.Delimiter | Join-String -f "--delimiter='{0}'"
+
+            # "--delimiter=' '" # is the default
+            '--ansi'
+            if( $Config.MultiSelect ) { '-m' }
+        )
+        $Selected = @( # @(
+            $Items
+                | Dotils.NL
+                | fzf @FzfArgs # )
+        )
+
+        if($WhatIf) {
+            $FzfArgs | Join-String -sep ' ' -op 'FzfArgs: '
+                | Dotils.Write-DimText | Infa
+            return
+        }
+
+        if( -not $AsObject ) { return $Selected }
+
+        $Selected | %{
+            $UID, $Rest =
+                $_ -split '\. ', 2
+
+            [pscustomobject]@{
+                Id = $UID
+                Value = $Rest
+            }
+        }
+    }
+}
 
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-11
+        'Dotils.Datetime.NamedFormatStr' # 'Dotils.Datetime.NamedFormatStr' = { 'Date.NamedFormatStr'  }
+        'Dotils.DatetimeOffset.Parse.FromGithub' # 'Dotils.DatetimeOffset.Parse.FromGithub' = { }
+        'Dotils.Datetime.ShowExamples' # 'Dotils.Datetime.ShowExamples' = {  }
+        'Dotils.Datetime.Now' # 'Dotils.Datetime.Now' = { 'Dt.Now', 'DateTime.Now' }
+        'Dotils.DatetimeOffset.Now' # 'Dotils.DatetimeOffset.Now' = { 'Dto.Now', 'DatetimeOffset.Now' }
+        # 2023-11-09
+        'Dotils.Fzf.SelectByUID' # 'Dotils.Fzf.SelectByUID' = { }
+        'Dotils.Colorize.BasedOnDistincCount' # 'Dotils.Colorize.BasedOnDistincCount' = { }
+        'Dotils.Write.NumberedList' #  'Dotils.Write.NumberedList'  = { 'Dotils.NL', 'NL' }
         # 2023-11-08
         'Dotils.ColorTest.ShowNumberedVariations'
         # 2023-11-06
@@ -13860,8 +14278,19 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-11-11
+        'Dt.Now' # 'Dotils.Datetime.Now' = { 'Dt.Now', 'DateTime.Now' }
+        'DateTime.Now' # 'Dotils.Datetime.Now' = { 'Dt.Now', 'DateTime.Now' }
+
+        'Dto.Now' # 'Dotils.DatetimeOffset.Now' = { 'Dto.Now', 'DatetimeOffset.Now' }
+        'DatetimeOffset.Now' # 'Dotils.DatetimeOffset.Now' = { 'Dto.Now', 'DatetimeOffset.Now' }
+        'Date.NamedFormatStr' # 'Dotils.Datetime.NamedFormatStr' = { 'Date.NamedFormatStr'  }
+
+
         # 2023-11-06
         'Render.ModuleName' # 'Dotils.Format-ModuleName' = { 'Render.ModuleName' }
+        'Dotils.NL' #  'Dotils.Write.NumberedList'  = { 'Dotils.NL', 'NL' }
+        'NL' #  'Dotils.Write.NumberedList'  = { 'Dotils.NL', 'NL' }
 
         # 2023-11-05
         'ShowEscapes' # 'Dotils.Show-Escapes' = { 'ShowEscapes', 'Show-Escapes' }
