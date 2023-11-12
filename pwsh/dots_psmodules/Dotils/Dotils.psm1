@@ -14681,3 +14681,31 @@ if($SkipFinalValidateCommands) {
     # was: $stats | ?{ $_.IsAFunc -and $_.IsAnAlias }
 }
 
+
+'Dotsource additional completers: NamedDates'
+    | Dotils.Write-DimText
+    # | Infa
+    | Write-Verbose -Verbose
+
+# These completer classes work from tbis profile I forge global scope
+# it seems like
+$TryPath = Join-Path $PSScriptRoot 'Completions.NamedDateFormatString.psm1'
+$TryPath | Get-Item -ea 'continue' | Join-String -op 'TryPath => ' | Write-Verbose -Verbose
+
+if($False) {
+    # Sometimes need to force remove it, depending on types
+    impo $dotsrc -PassThru -Verbose
+        |  Remove-Module -Verbose -ea 'silentlyContinue'
+}
+if($true) {
+    Remove-Module 'Completions.NamedDateFormatString' -ea 'silentlyContinue'
+}
+
+Import-Module $TryPath -PassThru -verbose -force -Scope 'Global' | Render.ModuleName
+
+
+# // this does not import
+# $DotSrc = gi 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Template-CompleterType-AsCompletionsType.ps1' -ea 'continue'
+# . $DotSrc
+
+
