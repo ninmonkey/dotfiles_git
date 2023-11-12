@@ -54,7 +54,8 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             Fstr = $Fstr
             RenderExample = $RendExample
         }
-        <#.example
+        <#
+        .example
 
         > try.Named.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
         GitHub.DateTimeOffset  ShortDate (Default)    LongDate (Default)
@@ -179,8 +180,13 @@ function Try.Named.Fstr {
     $DateFormat
 }
 
-'Wip: Currently it doesn''t filter any completiosn for Completions.NamedDateFormatString.psm1'
-| Write-warning
+@(
+    'Wip: Currently it doesn''t filter any completiosn for Completions.NamedDateFormatString.psm1'
+    "    Source: $PSCommandPath"
+    'Todo: Finish descriptions and links: https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings'
+    "    Source: $PSCommandPath"
+) -join "`n"
+    | Write-Warning
 
 Export-ModuleMember -Function @( 'Try.Named.Fstr'  ) -Verbose
 
