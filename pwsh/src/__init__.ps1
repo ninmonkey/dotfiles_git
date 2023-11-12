@@ -69,6 +69,9 @@ Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
             $_.Name ; $_.Version; ) } -op "Import: `n" -sep ",`n" -single
     | Write-Verbose
 
+    # | Join-String -f "• {0}" -op "Set/Add: Alias = [ " -os " ]" -sep ' '
+    # | write-host -fore 'darkgray'
+
 Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
     | Render.ModuleName
 # Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
