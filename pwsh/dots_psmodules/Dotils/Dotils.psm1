@@ -9177,6 +9177,17 @@ function Dotils.DatetimeOffset.Parse.FromGithub {
     # [System.DateTimeOffset]::ParseExact( $gitSample, $dsample, (Get-Culture 'en-us' ))
 }
 function Dotils.Datetime.ShowExamples {
+    <#
+    .EXAMPLE
+        Dotils.Datetime.ShowExamples -FormatStrings ( Try.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ )
+
+        # verbose: Using FormatStrings: 'yyyy-MM-ddTHH:mm:ssZ'
+
+        Kind           Fstr                 Dt                   Dt_utc
+        ----           ----                 --                   ------
+        DateTime       yyyy-MM-ddTHH:mm:ssZ 2023-11-11T18:31:10Z 2023-11-12T00:31:10Z
+        DateTimeOffset yyyy-MM-ddTHH:mm:ssZ 2023-11-11T18:31:10Z 2023-11-12T00:31:10Z
+    #>
     param(
         [ArgumentCompletions(
             'o', 's', 'O', 'S', 'o', 'r', 'R', 'u', 'U',
