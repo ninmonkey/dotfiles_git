@@ -325,6 +325,8 @@ function Operator.Compare.ByProperty {
     <#
     .SYNOPSIS
         template for a compare, enumerate properties, using implicit equalities for a quick test
+    .notes
+        for each property, call [ComparisonResult] which also contains [OperandSummary] for each side
     #>
     param(
         # first object, nicely allow empty strings
@@ -347,8 +349,10 @@ function Operator.Compare.ByProperty {
         [string[]]$Property
     )
 
+    $Property | Join-String -sep ', ' -op 'ToCompareProps: ' | write-verbose -verb
 
-    $propName = 'Ticks'
+
+    $propName = 'Ticks' # , 'Year'
     $Shared =
             Operator.Compare.SingleComparison -Left $LeftObj -Right $RightObj -Property $PropName
     $info = [ordered]@{
