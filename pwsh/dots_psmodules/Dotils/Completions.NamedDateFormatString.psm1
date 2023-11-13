@@ -195,6 +195,7 @@ class NamedDateTemplate {
 class DateNamedFormatCompleter : IArgumentCompleter {
 
     hidden [hashtable]$Options = @{}
+    [bool]$ExcludeDateTimeFormatInfoPatterns = $false
     # DateNamedFormatCompleter([int] $from, [int] $to, [int] $step) {
     DateNamedFormatCompleter( ) {
         $This.Options = @{
@@ -204,13 +205,19 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         $this.Options
             | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
     }
-    DateNamedFormatCompleter( $options ) {
+    # DateNamedFormatCompleter( $options ) {
+    DateNamedFormatCompleter( $ExcludeDateTimeFormatInfoPatterns = $false ) {
+        $this.ExcludeDateTimeFormatInfoPatterns = $ExcludeDateTimeFormatInfoPatterns
+        $This.Options.ExcludeDateTimeFormatInfoPatterns = $ExcludeDateTimeFormatInfoPatterns
+
         $this.Options
             | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
 
-        $this.Options = $Options ?? @{}
-        $Options
-            | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
+        $PSCommandPath | Join-String -op 'not finished: Exclude property is not implemented yet,  ' | write-warning
+
+        # $this.Options = $Options ?? @{}
+        # $Options
+            # | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
         # if ($from -gt $to) {
         #     throw [ArgumentOutOfRangeException]::new("from")
         # }
@@ -305,20 +312,23 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         }
         $resultList.Add( $tlate.AsCompletionResult() )
 
-        $DtFmtInfo.GetAllDateTimePatterns()
-        foreach($fstr in $DtFmtInfo.GetAllDateTimePatterns()) {
-            $tlate = [NamedDateTemplate]@{
-                CompletionName = $Fstr
-                Delim = ' ⁞ '
-                Fstr = $fstr
-                ShortName = ''
-                BasicName = ''
-                Description = @(
-                    'From: DtFmtInfo.GetAllDateTimePatterns()'
-                ) -join "`n"
+        # $DtFmtInfo.GetAllDateTimePatterns()
+        if( -not $This.ExcludeDateTimeFormatInfoPatterns ) {
+            foreach($fstr in $DtFmtInfo.GetAllDateTimePatterns()) {
+                $tlate = [NamedDateTemplate]@{
+                    CompletionName = $Fstr
+                    Delim = ' ⁞ '
+                    Fstr = $fstr
+                    ShortName = ''
+                    BasicName = ''
+                    Description = @(
+                        'From: DtFmtInfo.GetAllDateTimePatterns()'
+                    ) -join "`n"
+                }
+                $resultList.Add( $tlate.AsCompletionResult() )
             }
-            $resultList.Add( $tlate.AsCompletionResult() )
         }
+
 
 
 
@@ -469,8 +479,13 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
         .SYNOPSIS
             Sugar to format dates that are piped using the same format string
 
+        .EXAMPLE
             Get-Date | Datetime.Format -FormatString 'o'
             get-date | Datetime.Format -FormatString "MMMM d"
+        .EXAMPLE
+            Get-Date | Datetime.Format -FormatString ( Datetime.Named -DateFormat M/d/yyyy)
+            DateTime.Now | Datetime.Format -FormatString ( Datetime.Named -DateFormat M/d/yyyy)
+
         #>
         [CmdletBinding()]
         param(
@@ -562,7 +577,7 @@ function Datetime.NamedFormatStr {
             ParameterSetName = 'UsingShortList'
         )]
             [DateNamedFormatCompletionsAttribute()]
-            # [DateNamedFormatCompletionsAttribute( @{ a = 'b' } )]
+            # [DateNamedFormatCompletionsAttribute( ExcludeDateTimeFormatInfoPatterns = $true )]
             # bad syntax: [DateNamedFormatCompletionsAttribute( @{ ExcludeDateTimeFormatInfoPatterns = $True } )]
             [Alias('WithoutAuto')]
             [string]$ShortFormats
