@@ -22,6 +22,7 @@ class NamedDateTemplate {
     [string]$Fstr = 'D'
     [string]$RenderExample = "`u{2400}"
     [string]$Culture = 'en-US'
+    [string]$CompletionName = 'GitHub.DateTimeOffset' # not always rendered
 
     [string] ToString() {
         return $this.Format('Default')
@@ -157,55 +158,25 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         $DtNow = [datetime]::Now
         $DtoNow = [DateTimeOffset]::Now
 
-        # [string]$renderTooltip = @(
-        #     @(
-        #         $Props.ShortName
-        #         $Props.RenderExample
-        #     ) -join $Props.Delim
-        #     $Props.Fstr
-        #     $Props.BasicName
-        #     $Props.Description
-
-        #     # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample"
-        #     # "`nText: $rendExample"
-        #     # "`nFstr: $fStr "
-        # ) | Join-String -sep "`n"
-
-            # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample"
-            # "`nText: $rendExample"
-            # "`nFstr: $fStr "
-        <#
-        Try.Named.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
-            GitHub.DateTimeOffset  ShortDate (Default)    LongDate (Default)
-            Github DateTimeOffset UTC Format (Default) ⁞ 2023-11-11T18:54:09Z
-            Text: 2023-11-11T18:54:09Z
-            Fstr: yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
-        #>
-
         $fStr = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
         $tlate = [NamedDateTemplate]@{
             Delim = ' ⁞ '
+            Fstr = $Fstr
             ShortName = 'Git Dto'
             BasicName = 'Github DateTimeZone'
             Description = @(
                 'Github DateTimeOffset UTC'
             ) -join "`n"
-            Fstr = $Fstr
-            # Fstr = 'D'
-            # RenderExample =
-            #     [datetime]::Now.ToString('D')
-                # $RendExample
+            CompletionName = 'GitHub.DateTimeOffset'
         }
 
         $resultList.Add(
             [CompletionResult]::new(
-                # <# completionText: #> 'GitHub.DateTimeOffset',
-                <# completionText: #> $fStr,
+                <# completionText: #> $tlate.fStr,
+                <# listItemText: #> $tlate.CompletionName,
                 <# listItemText: #> 'GitHub.DateTimeOffset',
                 <# resultType: #> [CompletionResultType]::ParameterValue,
-                # <# toolTip: #> "Short ┎┏┎ ▸·⇢⁞ ┐⇽▂ $RendExample")
-                # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample | $fStr "
-                <# toolTip: #> $tlate) )
+                <# toolTip: #> $tlate.Format('Default') ) )
 
         # standard built ins
         $rendExample = ($DtNow).ToString('d')
