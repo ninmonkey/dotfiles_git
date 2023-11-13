@@ -412,10 +412,13 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
     DateNamedFormatCompletionsAttribute() {
         $this.Options = @{}
     }
-    DateNamedFormatCompletionsAttribute( $ExcludeDateTimeFormatInfoPatterns = $false ) {
+    # DateNamedFormatCompletionsAttribute( $ExcludeDateTimeFormatInfoPatterns = $false ) {
+    DateNamedFormatCompletionsAttribute( $Options ) {
         # $this.Options = $Options ?? @{}
-        $this.Options = @{}
-        $this.Options.ExcludeDateTimeFormatInfoPatterns = $ExcludeDateTimeFormatInfoPatterns
+        $this.Options = $Options ?? @{
+            ExcludeDateTimeFormatInfoPatterns = $false
+        }
+        # $this.Options.ExcludeDateTimeFormatInfoPatterns = $ExcludeDateTimeFormatInfoPatterns
     }
 
     [IArgumentCompleter] Create() {
@@ -425,6 +428,8 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
         '🚀DateNamedFormatCompletionsAttribute..Create()'
             | WriteJsonLog -PassThru
             # | .Log -Passthru
+        $This.Options
+            | WriteJsonLog -PassThru
 
         if( $This.Options.ExcludeDateTimeFormatInfoPatterns ) {
             return [DateNamedFormatCompleter]::new( @{
@@ -443,15 +448,25 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
             Sugar to format dates that are piped using the same format string
 
             Get-Date | Datetime.Format -FormatString 'o'
+            get-date | Datetime.Format -FormatString "MMMM d"
         #>
         [CmdletBinding()]
         param(
-            [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
-            [object[]]$InputObject,
+            # which format string to use?
+            [Parameter(
+                Mandatory, Position = 0,
+                ValueFromRemainingArguments
+            )]
+                [DateNamedFormatCompletionsAttribute()]
+                [Alias('Named')]
+                [string]$FormatString,
 
-            [DateNamedFormatCompletionsAttribute()]
-            [Alias('Named')]
-            [string]$FormatString,
+            # dates/times/whatever
+            [Parameter(
+                Mandatory, ValueFromPipeline
+            )]
+                [object[]]$InputObject,
+
 
             [string]$Culture = 'en-us'
 
@@ -518,15 +533,15 @@ function Datetime.NamedFormatStr {
             [DateNamedFormatCompletionsAttribute()]
             [Alias('Name')]
             [string] $DateFormat
-        # ,
+        ,
 
-        # [Parameter(
-        #     Mandatory, Position = 0, ValueFromRemainingArguments,
-        #     ParameterSetName = 'UsingShortList'
-        # )]
-        #     # [DateNamedFormatCompletionsAttribute( ExcludeDateTimeFormatInfoPatterns )]
-        #     [Alias('WithoutAuto')]
-        #     [string]$ShortFormats
+        [Parameter(
+            Mandatory, Position = 0, ValueFromRemainingArguments,
+            ParameterSetName = 'UsingShortList'
+        )]
+            [DateNamedFormatCompletionsAttribute( ExcludeDateTimeFormatInfoPatterns = $True )]
+            [Alias('WithoutAuto')]
+            [string]$ShortFormats
         ,
 
         [hashtable]$Options
