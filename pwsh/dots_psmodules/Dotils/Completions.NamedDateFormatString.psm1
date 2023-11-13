@@ -194,7 +194,7 @@ class NamedDateTemplate {
 
 class DateNamedFormatCompleter : IArgumentCompleter {
 
-    [hashtable]$Options = @{}
+    hidden [hashtable]$Options = @{}
     # DateNamedFormatCompleter([int] $from, [int] $to, [int] $step) {
     DateNamedFormatCompleter( ) {
         $This.Options = @{
@@ -203,7 +203,6 @@ class DateNamedFormatCompleter : IArgumentCompleter {
 
         $this.Options
             | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
-        }
     }
     DateNamedFormatCompleter( $options ) {
         $this.Options
@@ -220,8 +219,17 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         # $this.Step = $step -lt 1 ? 1 : $step
 
     }
+    <#
+    .example
 
+    > try.Named.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
+    GitHub.DateTimeOffset  ShortDate (Default)    LongDate (Default)
 
+        Git Dto ⁞ 2023-11-11T18:58:42Z
+        yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
+        Github DateTimeZone
+        Github DateTimeOffset UTC
+    #>
 
     [IEnumerable[CompletionResult]] CompleteArgument(
         [string] $CommandName,
@@ -229,17 +237,6 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         [string] $wordToComplete,
         [CommandAst] $commandAst,
         [IDictionary] $fakeBoundParameters) {
-        <#
-        .example
-
-        > try.Named.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
-        GitHub.DateTimeOffset  ShortDate (Default)    LongDate (Default)
-
-            Git Dto ⁞ 2023-11-11T18:58:42Z
-            yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
-            Github DateTimeZone
-            Github DateTimeOffset UTC
-        #>
 
         [List[CompletionResult]]$resultList = @()
         $DtNow = [datetime]::Now
