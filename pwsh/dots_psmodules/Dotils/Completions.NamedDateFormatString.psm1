@@ -148,10 +148,66 @@ $Colors.Fg3 = $Colors.FgYellow = $Colors.DimYellow
 
 function __renderTooltip {
     param(
-        [string]$ShortName,
-        [string]$LongName,
-        [string]$ExampleFormat
+        [Alias('Props', 'Kwargs')]
+        [hashtable]$Options
+        # [string]$ShortName,
+        # [string]$LongName,
+        # [string]$ExampleFormat
     )
+
+
+    [string]$render = @(
+        $Options.ShortName
+        $Options.Delim
+        $Options.RenderExample
+        "`n"
+        $Options.Fstr ?? 'fstr'
+        $Options.LongName
+        "`n"
+        $Options.Description
+        "`n"
+        $Options.BasicName
+
+    ) | Join-String -sep ''
+    return $render
+
+
+    # return $render
+    # $ShortName
+
+    #   [string]$renderTooltip = @(
+
+
+    #     # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample"
+    #     # "`nText: $rendExample"
+    #     # "`nFstr: $fStr "
+    # ) | Join-String -sep "`n"
+
+}
+
+function try.renderTip {
+         $Props = @{
+            Delim = ' ⁞ '
+            ShortName = 'Git Dto'
+            BasicName = 'Github DateTimeZone'
+            Description = @(
+                'Github DateTimeOffset UTC'
+            ) -join "`n"
+            Fstr = $Fstr
+            RenderExample =
+                [datetime]::Now.ToString('d')
+                # $RendExample
+        }
+        $__renderTooltipSplat = @{
+            Options = $Props
+            # ShortName = $Props.ShortName
+            # LongName = $Props.BasicName
+            # ExampleFormat = $Props.Description
+        }
+
+
+
+        __renderTooltip @__renderTooltipSplat
 }
 
 class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumentCompleterFactory {
@@ -204,10 +260,13 @@ function Try.Named.Fstr {
 ) -join "`n"
     | Write-Warning
 
-Export-ModuleMember -Function @( 'Try.Named.Fstr'  ) -Verbose
+Export-ModuleMember -Function @(
+    'Try.Named.Fstr'
+    'Try.renderTip'
+ ) -Verbose
 
 
-
+try.renderTip
 
 
 # return
