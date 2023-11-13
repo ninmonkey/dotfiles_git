@@ -23,9 +23,18 @@ class NamedDateTemplate {
     [string]$RenderExample = "`u{2400}"
     [string]$Culture = 'en-US'
     [string]$CompletionName = 'GitHub.DateTimeOffset' # not always rendered
+    [CompletionResultType]$ResultType = [CompletionResultType]::ParameterValue
 
     [string] ToString() {
         return $this.Format('Default')
+    }
+    [CompletionResult] AsCompletionResult () {
+        return [CompletionResult]::new(
+            <# completionText: #> $this.fStr,
+            <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
+            <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
+            <# toolTip: #> $this.Format()
+        )
     }
 
     [string] Format() {
@@ -159,71 +168,39 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         $DtNow = [datetime]::Now
         $DtoNow = [DateTimeOffset]::Now
 
-        $fStr = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
         $tlate = [NamedDateTemplate]@{
+            CompletionName = 'GitHub.DateTimeOffset'
             Delim = ' ⁞ '
-            Fstr = $Fstr
+            Fstr = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
             ShortName = 'Git Dto'
             BasicName = 'Github DateTimeZone'
             Description = @(
                 'Github DateTimeOffset UTC'
             ) -join "`n"
-            CompletionName = 'GitHub.DateTimeOffset'
         }
-
-        # try {
-        $resultList.Add(
-            [CompletionResult]::new(
-                <# completionText: #> $tlate.fStr,
-                <# listItemText: #> $tlate.CompletionName, # ex: 'GitHub.DateTimeOffset'
-                <# resultType: #> [CompletionResultType]::ParameterValue,
-                <# toolTip: #> $tlate.Format() ) )
-                # or:$tlate.Format('Default') ) )
-        # } catch {
-        #     $_ | out-host
-        # }
-        # $resultList.Add(
-        #     [CompletionResult]::new(
-        #         <# completionText: #> 'tocomplete',
-        #         <# listItemText: #> $tlate.CompletionName,
-        #         <# listItemText: #> 'GitHub.DateTimeOffset',
-        #         <# resultType: #> [CompletionResultType]::ParameterValue,
-        #         <# toolTip: #> 'rend' ) )
-        # } catch {
-        #     $_ | Out-Host
-        # }
-
-        # standard built ins
-        $rendExample = ($DtNow).ToString('d')
-         [string]$renderTooltip = @(
-            "Long ⁞ $rendExample"
-            "`nLine2 | Example "
-        ) | Join-String -sep "`n"
-
-        $resultList.Add(
-            [CompletionResult]::new(
-                <# completionText: #> 'd',
-                <# listItemText: #> 'ShortDate (Default)',
-                <# resultType: #> [CompletionResultType]::ParameterValue,
-                # <# toolTip: #> "Short ┎┏┎ ▸·⇢⁞ ┐⇽▂ $RendExample")
-                <# toolTip: #> "Short ⁞ $rendExample") )
-
-        # $rendExample = ($DtNow).ToString('D')
-        $rendExample = ($DtNow).ToString('D')
-
-        [string]$renderTooltip = @(
-            "Long ⁞ $rendExample"
-            "`nLine2 | Example "
-        ) | Join-String -sep "`n"
-
-        $resultList.Add(
-            [CompletionResult]::new(
-                <# completionText: #> 'D',
-                <# listItemText: #> 'LongDate (Default)',
-                <# resultType: #> [CompletionResultType]::ParameterValue,
-                # <# toolTip: #> "Short ┎┏┎ ▸·⇢⁞ ┐⇽▂ $RendExample")
-                <# toolTip: #> $renderTooltip)
-        )
+        $resultList.Add( $tlate.AsCompletionResult() )
+        $tlate = [NamedDateTemplate]@{
+            CompletionName = 'd'
+            Delim = ' ⁞ '
+            Fstr = "d"
+            ShortName = 'short'
+            BasicName = 'basic'
+            Description = @(
+                'Long'
+            ) -join "`n"
+        }
+        $resultList.Add( $tlate.AsCompletionResult() )
+        $tlate = [NamedDateTemplate]@{
+            CompletionName = 'GitHub.DateTimeOffset'
+            Delim = ' ⁞ '
+            Fstr = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+            ShortName = 'Git Dto'
+            BasicName = 'Github DateTimeZone'
+            Description = @(
+                'Github DateTimeOffset UTC'
+            ) -join "`n"
+        }
+        $resultList.Add( $tlate.AsCompletionResult() )
 
             # New-TypeWriterCompletionResult -Text 'LongDate' -listItemText 'LongDate2' -resultType Text -toolTip 'LongDate (default)'
             # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
@@ -376,21 +353,7 @@ function __renderTooltip {
             throw "Unknown Template: $Template"
         }
     }
-
     return $render
-
-
-    # return $render
-    # $ShortName
-
-    #   [string]$renderTooltip = @(
-
-
-    #     # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample"
-    #     # "`nText: $rendExample"
-    #     # "`nFstr: $fStr "
-    # ) | Join-String -sep "`n"
-
 }
 if($false -and 'enable debug' ) {
     write-warning 'debug example output enabled '
@@ -417,26 +380,6 @@ if($false -and 'enable debug' ) {
     $t.ToString() | Out-Host
 
     $t.ToString() | Out-Host
-
-    # try.renderTip
-}
-
-function try.renderTip {
-        $Fstr = 'd'
-        $Props = @{
-            Delim = ' ⁞ '
-            ShortName = 'Git Dto'
-            BasicName = 'Github DateTimeZone'
-            Description = @(
-                'Github DateTimeOffset UTC'
-            ) -join "`n"
-            Fstr = $Fstr
-            RenderExample =
-                [datetime]::Now.ToString($Fstr)
-                # $RendExample
-        }
-        $__renderTooltipSplat = @{ Options = $Props }
-        __renderTooltip @__renderTooltipSplat
 }
 
 class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumentCompleterFactory {
@@ -495,7 +438,6 @@ function Try.Named.Fstr {
 
 Export-ModuleMember -Function @(
     'Try.Named.Fstr'
-    # 'Try.renderTip'
  ) -Verbose
 
 
