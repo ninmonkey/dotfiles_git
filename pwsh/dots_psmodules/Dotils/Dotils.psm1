@@ -11167,6 +11167,19 @@ function Dotils.Select-TemporalFirstObject {
     }
 }
 
+function Dotils.Linq.CountLines {
+    <#
+    .SYNOPSIS
+        count number of lines in file, faster than naive
+    #>
+    Param(
+        [Alias('PSPath', 'FullName', 'Name')]
+        [Parameter(Mandatory)]
+        [string]$Path
+    )
+    [Linq.Enumerable]::Count([IO.File]::ReadLines($Path))
+}
+
 function Dotils.Write-StatusEveryN {
     <#
     .synopsis
@@ -13988,8 +14001,11 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-13
+        'Dotils.Linq.CountLines'
         # 2023-11-11
         # 'Dotils.Datetime.NamedFormatStr' # 'Dotils.Datetime.NamedFormatStr' = { 'Date.NamedFormatStr'  } # moved to: <H:/data/2023/dotfiles.2023/pwsh/dots_psmodules/Dotils/Completions.NamedDateFormatString.psm1>
+
 
         'Dotils.DatetimeOffset.Parse.FromGithub' # 'Dotils.DatetimeOffset.Parse.FromGithub' = { }
         'Dotils.Datetime.ShowExamples' # 'Dotils.Datetime.ShowExamples' = {  }
