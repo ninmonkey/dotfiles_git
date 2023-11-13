@@ -73,17 +73,29 @@ class NamedDateTemplate {
                     "`n"
                     .Fg $Colors.DimGray
                     # .Fg $Colors.DarkWhite
+
+                    if( -not [string]::IsNullOrWhiteSpace( $This.LongName )) {
                         $this.LongName
+                        "`n"
+                    }
+                    if( -not [string]::IsNullOrWhiteSpace( $This.BasicName )) {
+                        $this.BasicName
+                        "`n"
+                    }
+                    if( -not [string]::IsNullOrWhiteSpace( $This.Description )) {
+                        $this.Description
+                        "`n"
+                    }
 
                     # .Fg $Colors.Fg
                     # .Color.Reset
 
-                        "`n"
-                        $this.Description
+/
+                        # $this.Description
                     # .Fg $Colors.DimBlue
                         "`n"
                     # .Fg $Colors.DimGreen
-                        $this.BasicName
+                        # $this.BasicName
                     .Color.Reset
                 ) | Join-String -sep ''
 
@@ -179,28 +191,21 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             ) -join "`n"
         }
         $resultList.Add( $tlate.AsCompletionResult() )
+
         $tlate = [NamedDateTemplate]@{
-            CompletionName = 'd'
+            CompletionName = 'ShortDate'
             Delim = ' ⁞ '
             Fstr = "d"
-            ShortName = 'short'
-            BasicName = 'basic'
+            ShortName = 'ShortDate'
+            # BasicName = 'ShortDate'
             Description = @(
-                'Long'
+                # 'Short date (Standard)'
             ) -join "`n"
         }
         $resultList.Add( $tlate.AsCompletionResult() )
-        $tlate = [NamedDateTemplate]@{
-            CompletionName = 'GitHub.DateTimeOffset'
-            Delim = ' ⁞ '
-            Fstr = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
-            ShortName = 'Git Dto'
-            BasicName = 'Github DateTimeZone'
-            Description = @(
-                'Github DateTimeOffset UTC'
-            ) -join "`n"
-        }
-        $resultList.Add( $tlate.AsCompletionResult() )
+
+
+
 
             # New-TypeWriterCompletionResult -Text 'LongDate' -listItemText 'LongDate2' -resultType Text -toolTip 'LongDate (default)'
             # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
@@ -263,98 +268,7 @@ function __writeColorBackground {
     )
     $PSStyle.Background.FromRgb( $Color )
 }
-function __renderTooltip {
-    <#
-    .EXAMPLE
-    # sample output:
 
-        Git Dto ⁞ 11/13/2023
-        d
-        Github DateTimeOffset UTC
-        Github DateTimeZone
-
-    #>
-    param(
-        [Alias('Props', 'Kwargs')]
-        [hashtable]$Options,
-
-        [ArgumentCompletions('Default')]
-        [string]$Template = 'Default'
-        # [string]$ShortName,
-        # [string]$LongName,
-        # [string]$ExampleFormat
-    )
-    [string]$Render = ''
-
-    switch($Template) {
-        'Default' {
-            $render = @(
-                .Fg $Colors.Fg2
-                    $Options.ShortName
-                .Color.Reset
-                    $Options.Delim
-
-                .Fg $Colors.Fg3
-                    $Options.RenderExample
-                .Color.Reset
-                    "`n"
-                .Fg $Colors.DimBlue
-                    $Options.Fstr
-                .Fg $Colors.DimGray
-                # .Fg $Colors.DarkWhite
-                    $Options.LongName
-
-                # .Fg $Colors.Fg
-                # .Color.Reset
-
-                    "`n"
-                    $Options.BasicName
-                # .Fg $Colors.DimBlue
-                    "`n"
-                    $Options.Description
-                # .Fg $Colors.DimGreen
-                .Color.Reset
-
-            ) | Join-String -sep ''
-
-        }
-        'Iter1' {
-            $render = @(
-                .Fg $Colors.Fg2
-                    $Options.ShortName
-                .Color.Reset
-                    $Options.Delim
-
-                .Fg $Colors.Fg3
-                    $Options.RenderExample
-                .Color.Reset
-                    "`n"
-                .Fg $Colors.DimBlue
-                    "`n"
-                    $Options.Fstr
-                .Fg $Colors.DimGray
-                    $Options.LongName
-
-                # .Fg $Colors.Fg
-                # .Color.Reset
-
-                    "`n"
-                    $Options.Description
-                # .Fg $Colors.DimBlue
-                    "`n"
-                # .Fg $Colors.DimGreen
-                    $Options.BasicName
-                .Color.Reset
-
-            ) | Join-String -sep ''
-
-        }
-        default {
-            throw "Unknown Template: $Template"
-        }
-    }
-    return $render
-}
 if($false -and 'enable debug' ) {
     write-warning 'debug example output enabled '
     $t =
