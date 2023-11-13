@@ -2,7 +2,9 @@ using namespace System.Collections
 using namespace System.Collections.Generic
 using namespace System.Management.Automation
 using namespace System.Management.Automation.Language
+using namespace Globalization
 # using namespace System.Collections
+
 
 
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#class-based-argument-completers
@@ -10,19 +12,19 @@ using namespace System.Management.Automation.Language
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#dynamic-validateset-values-using-classes
 class NamedDateTemplate {
     <#
-        .SYNOPSIS
+    .SYNOPSIS
         nicely render date info for a tooltip
+    .LINK
+        System.Globalization.DateTimeFormatInfo
     #>
     [string]$Delim = ' ⁞ '
-    [string]$ShortName = 'Git Dto'
-    [string]$BasicName = 'Github DateTimeZone'
-    [string]$Description = @(
-        'Github DateTimeOffset UTC'
-    ) -join "`n"
-    [string]$Fstr = 'D'
+    [string]$ShortName = '' # Ex: 'Git Dto'
+    [string]$BasicName = '' # Ex: 'Github DateTimeZone'
+    [string]$Description = '' # Ex: 'Github DateTimeOffset UTC'
+    [string]$Fstr = '' # Ex: 'D'
     [string]$RenderExample = "`u{2400}"
-    [string]$Culture = 'en-US'
-    [string]$CompletionName = 'GitHub.DateTimeOffset' # not always rendered
+    [string]$Culture = 'en-US' # 'de-de'
+    [string]$CompletionName = '' # Ex: 'GitHub.DateTimeOffset' # not always rendered
     [CompletionResultType]$ResultType = [CompletionResultType]::ParameterValue
 
     [string] ToString() {
@@ -90,7 +92,7 @@ class NamedDateTemplate {
                     # .Fg $Colors.Fg
                     # .Color.Reset
 
-/
+
                         # $this.Description
                     # .Fg $Colors.DimBlue
                         "`n"
@@ -191,15 +193,19 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             ) -join "`n"
         }
         $resultList.Add( $tlate.AsCompletionResult() )
+        # try {
+        # } catch {
+        #     $_ | out-HOst
+        # }
 
         $tlate = [NamedDateTemplate]@{
-            CompletionName = 'ShortDate'
+            CompletionName = 'd'
             Delim = ' ⁞ '
             Fstr = "d"
             ShortName = 'ShortDate'
-            # BasicName = 'ShortDate'
+            BasicName = ''
             Description = @(
-                # 'Short date (Standard)'
+                'Short date (Standard)'
             ) -join "`n"
         }
         $resultList.Add( $tlate.AsCompletionResult() )
