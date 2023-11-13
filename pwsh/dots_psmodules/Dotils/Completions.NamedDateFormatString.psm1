@@ -27,7 +27,7 @@ class NamedDateTemplate {
         return $this.Format('Default')
     }
 
-    [string] Format( ) {
+    [string] Format() {
         <#
         .SYNOPSIS
         nicely render date info for a tooltip
@@ -341,11 +341,11 @@ function __renderTooltip {
                 # .Color.Reset
 
                     "`n"
-                    $Options.Description
+                    $Options.BasicName
                 # .Fg $Colors.DimBlue
                     "`n"
+                    $Options.Description
                 # .Fg $Colors.DimGreen
-                    $Options.BasicName
                 .Color.Reset
 
             ) | Join-String -sep ''
@@ -412,8 +412,9 @@ $t =
             'Github DateTimeOffset UTC'
         ) -join "`n"
         Fstr = 'D'
-        RenderExample =
-            [datetime]::Now.ToString('D')
+        # Fstr = 'D'
+        # RenderExample =
+        #     [datetime]::Now.ToString('D')
             # $RendExample
     }
 hr -fg magenta | write-warning
@@ -421,6 +422,10 @@ $t | Json -depth 1 #| out-host
 $t | ft
 hr
 $t.Format('Default') | Out-Host
+
+$t.ToString() | Out-Host
+
+$t.ToString() | Out-Host
 
 function try.renderTip {
         $Fstr = 'd'
