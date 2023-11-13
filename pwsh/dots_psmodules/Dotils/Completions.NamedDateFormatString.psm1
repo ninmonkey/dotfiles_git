@@ -14,9 +14,6 @@ if( -not (Test-Path $moduleConfig.hardPath) ) {
     New-Item -ItemType File -Path $moduleConfig.hardPath -Force
 }
 $ModuleConfig.hardPath | Join-String -f 'Using Log: {0}' | write-host -BackgroundColor 'darkred'
-# if (-not (Test-Path)) {
-#     Touch -Path $hardPath
-# }
 
 function WriteJsonLog {
     param(
@@ -73,9 +70,11 @@ class NamedDateTemplate {
     [string]$CompletionName = '' # Ex: 'GitHub.DateTimeOffset' # not always rendered
     [CompletionResultType]$ResultType = [CompletionResultType]::ParameterValue
 
-    # hidden [hashtable]$Options = @{
-    #     AutoQuoteIfQuote = $true
-    # }
+    hidden [hashtable]$Options = @{
+        # AutoQuoteIfQuote = $true
+        AutoQuoteIfQuote = $true
+        AlwaysSingleQuote = $false
+    }
 
     [string] ToString() {
         return $this.Format('Default')
@@ -85,8 +84,9 @@ class NamedDateTemplate {
 
         $this.Format()
         $FinalCompletion = $this.Fstr
-        $AutoQuoteIfQuote = $true
-        $AlwaysSingleQuote = $false
+
+        $AutoQuoteIfQuote =  $This.Options.AutoQuoteIfQuote ?? $true
+        $AlwaysSingleQuote = $this.Options.AlwaysSIngleQuote ?? $false
 
         if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
             $FinalCompletion =
@@ -97,6 +97,13 @@ class NamedDateTemplate {
                 $This.FStr -replace "'", "''"
                     | Join-String -SingleQuote
         }
+
+        @{
+             Completion = $FinalCompletion
+             Original = $this.Fstr
+             Options = $this.Options
+        }
+
         return [CompletionResult]::new(
             <# completionText: #> $FinalCompletion,
             <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
@@ -160,7 +167,6 @@ class NamedDateTemplate {
                         "`n"
                     .Fg $Colors.DimGray
                     # .Fg $Colors.DarkWhite
-
                     if( -not [string]::IsNullOrWhiteSpace( $This.LongName )) {
                         $this.LongName
                         "`n"
@@ -173,16 +179,6 @@ class NamedDateTemplate {
                         $this.Description
                         "`n"
                     }
-
-                    # .Fg $Colors.Fg
-                    # .Color.Reset
-
-
-                        # $this.Description
-                    # .Fg $Colors.DimBlue
-                        "`n"
-                    # .Fg $Colors.DimGreen
-                        # $this.BasicName
                     .Color.Reset
                 ) | Join-String -sep ''
 
@@ -199,21 +195,30 @@ class NamedDateTemplate {
 class DateNamedFormatCompleter : IArgumentCompleter {
 
     [hashtable]$Options = @{}
-
     # DateNamedFormatCompleter([int] $from, [int] $to, [int] $step) {
-
     DateNamedFormatCompleter( ) {
+        $This.Options = @{
+            ExcludeDateTimeFormatInfoPatterns = $true
+        }
+
+        $this.Options
+            | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
+        }
     }
     DateNamedFormatCompleter( $options ) {
+        $this.Options
+            | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
+
         $this.Options = $Options ?? @{}
+        $Options
+            | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
         # if ($from -gt $to) {
         #     throw [ArgumentOutOfRangeException]::new("from")
         # }
         # $this.From = $from
         # $this.To = $to
         # $this.Step = $step -lt 1 ? 1 : $step
-        $Options
-            | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
+
     }
 
 
@@ -434,6 +439,9 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
         $this.Options = $Options ?? @{
             ExcludeDateTimeFormatInfoPatterns = $false
         }
+
+        $Options
+            | WriteJsonLog -Text  '🚀DateNamedFormatCompletionsAttribute::new'
         # $this.Options.ExcludeDateTimeFormatInfoPatterns = $ExcludeDateTimeFormatInfoPatterns
     }
 
@@ -551,14 +559,16 @@ function Datetime.NamedFormatStr {
             [string] $DateFormat
         ,
 
-        # [Parameter(
-        #     Mandatory, Position = 0, ValueFromRemainingArguments,
-        #     ParameterSetName = 'UsingShortList'
-        # )]
-        #     [DateNamedFormatCompletionsAttribute( @{ ExcludeDateTimeFormatInfoPatterns = $True } )]
-        #     [Alias('WithoutAuto')]
-        #     [string]$ShortFormats
-        # ,
+        [Parameter(
+            Mandatory, Position = 0, ValueFromRemainingArguments,
+            ParameterSetName = 'UsingShortList'
+        )]
+            [DateNamedFormatCompletionsAttribute()]
+            # [DateNamedFormatCompletionsAttribute( @{ a = 'b' } )]
+            # bad syntax: [DateNamedFormatCompletionsAttribute( @{ ExcludeDateTimeFormatInfoPatterns = $True } )]
+            [Alias('WithoutAuto')]
+            [string]$ShortFormats
+        ,
 
         [hashtable]$Options
     )
@@ -571,7 +581,11 @@ function Datetime.NamedFormatStr {
         default { throw "Unknown ParameterSetName: $PSCmdlet.ParameterSetName" }
     }
 
-    $DateFormat
+    if($PSCmdlet.ParameterSetName -eq 'UsingShortList') {
+        return $ShortFormats
+    } else {
+        return $DateFormat
+    }
     # write-warning 'next wip: completions may '
 }
 
