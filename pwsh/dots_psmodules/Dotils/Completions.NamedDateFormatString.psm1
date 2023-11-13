@@ -59,6 +59,8 @@ class NamedDateTemplate {
                         "`n"
                     .Fg $Colors.DimBlue
                         $this.Fstr
+
+                    "`n"
                     .Fg $Colors.DimGray
                     # .Fg $Colors.DarkWhite
                         $this.LongName
@@ -193,6 +195,20 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             Fstr: yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
         #>
 
+        $tlate = [NamedDateTemplate]@{
+            Delim = ' ⁞ '
+            ShortName = 'Git Dto'
+            BasicName = 'Github DateTimeZone'
+            Description = @(
+                'Github DateTimeOffset UTC'
+            ) -join "`n"
+            Fstr = $Fstr
+            # Fstr = 'D'
+            # RenderExample =
+            #     [datetime]::Now.ToString('D')
+                # $RendExample
+        }
+
         $resultList.Add(
             [CompletionResult]::new(
                 # <# completionText: #> 'GitHub.DateTimeOffset',
@@ -201,7 +217,7 @@ class DateNamedFormatCompleter : IArgumentCompleter {
                 <# resultType: #> [CompletionResultType]::ParameterValue,
                 # <# toolTip: #> "Short ┎┏┎ ▸·⇢⁞ ┐⇽▂ $RendExample")
                 # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample | $fStr "
-                <# toolTip: #> $renderTooltip) )
+                <# toolTip: #> $tlate) )
 
         # standard built ins
         $rendExample = ($DtNow).ToString('d')
