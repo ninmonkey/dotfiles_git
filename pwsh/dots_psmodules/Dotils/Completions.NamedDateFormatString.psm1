@@ -8,11 +8,6 @@ using namespace System.Management.Automation.Language
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#class-based-argument-completers
 
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#dynamic-validateset-values-using-classes
-
-
-
-
-
 class DateNamedFormatCompleter : IArgumentCompleter {
 
     [hashtable]$Options
@@ -136,6 +131,27 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
         return $resultList
     }
+}
+
+$Colors = @{
+    BlueGray = '#5f7a8b'
+    DimGray = '#819696'
+    DimBlue = '#405e7c'
+    Fg = '#d4d4d4'
+    DimYellow = '#dbce80'
+    DimGreen = '#3a705f'
+    DarkWhite = '#595949'
+}
+$Colors.Fg = $Colors.Fg
+$Colors.Fg2 = $Colors.FgBlue = $Colors.BlueGray
+$Colors.Fg3 = $Colors.FgYellow = $Colors.DimYellow
+
+function __renderTooltip {
+    param(
+        [string]$ShortName,
+        [string]$LongName,
+        [string]$ExampleFormat
+    )
 }
 
 class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumentCompleterFactory {
