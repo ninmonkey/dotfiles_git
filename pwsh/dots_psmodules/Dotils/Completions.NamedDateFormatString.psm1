@@ -170,20 +170,26 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             CompletionName = 'GitHub.DateTimeOffset'
         }
 
+        # try {
+        $resultList.Add(
+            [CompletionResult]::new(
+                <# completionText: #> $tlate.fStr,
+                <# listItemText: #> $tlate.CompletionName, # ex: 'GitHub.DateTimeOffset'
+                <# resultType: #> [CompletionResultType]::ParameterValue,
+                <# toolTip: #> $tlate.Format('Default') ) )
+        # } catch {
+        #     $_ | out-host
+        # }
         # $resultList.Add(
         #     [CompletionResult]::new(
-        #         <# completionText: #> $tlate.fStr,
+        #         <# completionText: #> 'tocomplete',
         #         <# listItemText: #> $tlate.CompletionName,
         #         <# listItemText: #> 'GitHub.DateTimeOffset',
         #         <# resultType: #> [CompletionResultType]::ParameterValue,
-        #         <# toolTip: #> $tlate.Format('Default') ) )
-        $resultList.Add(
-            [CompletionResult]::new(
-                <# completionText: #> 'tocomplete',
-                <# listItemText: #> $tlate.CompletionName,
-                <# listItemText: #> 'GitHub.DateTimeOffset',
-                <# resultType: #> [CompletionResultType]::ParameterValue,
-                <# toolTip: #> 'rend' ) )
+        #         <# toolTip: #> 'rend' ) )
+        # } catch {
+        #     $_ | Out-Host
+        # }
 
         # standard built ins
         $rendExample = ($DtNow).ToString('d')
