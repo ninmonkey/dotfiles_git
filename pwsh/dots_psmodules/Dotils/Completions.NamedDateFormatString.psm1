@@ -62,16 +62,38 @@ class NamedDateTemplate {
     [string]$CompletionName = '' # Ex: 'GitHub.DateTimeOffset' # not always rendered
     [CompletionResultType]$ResultType = [CompletionResultType]::ParameterValue
 
+    # hidden [hashtable]$Options = @{
+    #     AutoQuoteIfQuote = $true
+    # }
+
     [string] ToString() {
         return $this.Format('Default')
     }
     [CompletionResult] AsCompletionResult () {
-        return [CompletionResult]::new(
+        # ensure calculated values
+
+        $this.Format()
+        $AutoQuoteIfQuote = $true
+
+        if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
+            $quoted  =
+                $This.Fstr | Join-String -DoubleQuote
+            $ce = [CompletionResult]::new(
+                <# completionText: #> $quoted,
+                <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
+                <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
+                <# toolTip: #> $this.Format()
+            )
+            return $ce
+        }
+
+        $ce = [CompletionResult]::new(
             <# completionText: #> $this.fStr,
             <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
             <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
             <# toolTip: #> $this.Format()
         )
+        return $ce
     }
 
     [string] Format() {
@@ -415,15 +437,17 @@ function Datetime.NamedFormatStr {
         )]
             [DateNamedFormatCompletionsAttribute()]
             [Alias('Name')]
-            [string] $DateFormat,
+            [string] $DateFormat
+        # ,
 
-        [Parameter(
-            Mandatory, Position = 0, ValueFromRemainingArguments,
-            ParameterSetName = 'UsingShortList'
-        )]
-            # [DateNamedFormatCompletionsAttribute( ExcludeDateTimeFormatInfoPatterns )]
-            [Alias('WithoutAuto')]
-            [string]$ShortFormats,
+        # [Parameter(
+        #     Mandatory, Position = 0, ValueFromRemainingArguments,
+        #     ParameterSetName = 'UsingShortList'
+        # )]
+        #     # [DateNamedFormatCompletionsAttribute( ExcludeDateTimeFormatInfoPatterns )]
+        #     [Alias('WithoutAuto')]
+        #     [string]$ShortFormats
+        ,
 
         [hashtable]$Options
     )
