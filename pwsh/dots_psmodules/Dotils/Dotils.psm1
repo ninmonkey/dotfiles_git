@@ -9080,41 +9080,42 @@ function Dotils.DatetimeOffset.Now {
     return $now
 }
 
-function Dotils.Datetime.NamedFormatStr {
-    [Alias('Date.NamedFormatStr')]
-    param(
-        [Parameter(Mandatory, Position=0)]
-        [ArgumentCompletions(
-            'Github.Dto.Utc'
-        )]
-        [Alias('Name')]
-        [string]$DateTemplateName
-    )
-    write-warning 'Generate arg completer using standard names from a set completer'
-    <#
-    .EXAMPLE
-        Pwsh> Dotils.Datetime.NamedFormatStr Github.Dto.Utc
+# function Dotils.Datetime.NamedFormatStr {
+#     [Alias('Date.NamedFormatStr')]
+# throw: replace by: 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Completions.NamedDateFormatString.psm1'
+#     param(
+#         [Parameter(Mandatory, Position=0)]
+#         [ArgumentCompletions(
+#             'Github.Dto.Utc'
+#         )]
+#         [Alias('Name')]
+#         [string]$DateTemplateName
+#     )
+#     write-warning 'Generate arg completer using standard names from a set completer'
+#     <#
+#     .EXAMPLE
+#         Pwsh> Dotils.Datetime.NamedFormatStr Github.Dto.Utc
 
-            yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
-    .NOTES
-    .LINK
-        https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
-    .LINK
-        https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
-    .LINK
-        https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#timezones
-    #>
-    # todo: generate naems from func
+#             yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
+#     .NOTES
+#     .LINK
+#         https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+#     .LINK
+#         https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+#     .LINK
+#         https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#timezones
+#     #>
+#     # todo: generate naems from func
 
-    $named = @{
-        'Github.Dto.Utc' = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
-    }
+#     $named = @{
+#         'Github.Dto.Utc' = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+#     }
 
-    if( $named.ContainsKey($DateTemplateName)) {
-        return $Named[ $DateTemplateName ]
-    }
-    throw "UnknownDateTemplateName: $DateTemplateName"
-}
+#     if( $named.ContainsKey($DateTemplateName)) {
+#         return $Named[ $DateTemplateName ]
+#     }
+#     throw "UnknownDateTemplateName: $DateTemplateName"
+# }
 # function Dotils.Datetime.
 function Dotils.DatetimeOffset.Parse.FromGithub {
     <#
@@ -13988,7 +13989,8 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         # 2023-11-11
-        'Dotils.Datetime.NamedFormatStr' # 'Dotils.Datetime.NamedFormatStr' = { 'Date.NamedFormatStr'  }
+        # 'Dotils.Datetime.NamedFormatStr' # 'Dotils.Datetime.NamedFormatStr' = { 'Date.NamedFormatStr'  } # moved to: <H:/data/2023/dotfiles.2023/pwsh/dots_psmodules/Dotils/Completions.NamedDateFormatString.psm1>
+
         'Dotils.DatetimeOffset.Parse.FromGithub' # 'Dotils.DatetimeOffset.Parse.FromGithub' = { }
         'Dotils.Datetime.ShowExamples' # 'Dotils.Datetime.ShowExamples' = {  }
         'Dotils.Datetime.Now' # 'Dotils.Datetime.Now' = { 'Dt.Now', 'DateTime.Now' }
@@ -14298,7 +14300,7 @@ $exportModuleMemberSplat = @{
 
         'Dto.Now' # 'Dotils.DatetimeOffset.Now' = { 'Dto.Now', 'DatetimeOffset.Now' }
         'DatetimeOffset.Now' # 'Dotils.DatetimeOffset.Now' = { 'Dto.Now', 'DatetimeOffset.Now' }
-        'Date.NamedFormatStr' # 'Dotils.Datetime.NamedFormatStr' = { 'Date.NamedFormatStr'  }
+        # 'Date.NamedFormatStr' # 'Dotils.Datetime.NamedFormatStr' = { 'Date.NamedFormatStr'  } # moved to: <H:/data/2023/dotfiles.2023/pwsh/dots_psmodules/Dotils/Completions.NamedDateFormatString.psm1>
 
 
         # 2023-11-06

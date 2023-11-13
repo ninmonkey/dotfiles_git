@@ -152,6 +152,10 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         [List[CompletionResult]]$resultList = @()
         $DtNow = [datetime]::Now
         $DtoNow = [DateTimeOffset]::Now
+        $Config = @{
+            IncludeAllDateTimePatterns = $true
+
+        }
 
         [Globalization.DateTimeFormatInfo]$DtFmtInfo = (Get-Culture).DateTimeFormat
 
@@ -193,12 +197,28 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             Delim = ' ⁞ '
             Fstr = $DtFmtInfo.ShortDatePattern
             ShortName = 'ShortDatePattern'
-            BasicName = 'x'
+            BasicName = ''
             Description = @(
                 'Culture.DateTimeFormatInfo.ShortDatePattern'
             ) -join "`n"
         }
         $resultList.Add( $tlate.AsCompletionResult() )
+
+        $DtFmtInfo.GetAllDateTimePatterns()
+        foreach($fstr in $DtFmtInfo.GetAllDateTimePatterns()) {
+            $tlate = [NamedDateTemplate]@{
+                CompletionName = $Fstr
+                Delim = ' ⁞ '
+                Fstr = $fstr
+                ShortName = ''
+                BasicName = ''
+                Description = @(
+                    'From: DtFmtInfo.GetAllDateTimePatterns()'
+                ) -join "`n"
+            }
+            $resultList.Add( $tlate.AsCompletionResult() )
+        }
+
 
 
 
@@ -306,38 +326,83 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
     # [int] $Step
 
     # DateNamedFormatCompletionsAttribute( $options[int] $from, [int] $to, [int] $step) {
-    DateNamedFormatCompletionsAttribute(  ) {
+    DateNamedFormatCompletionsAttribute() {
         $this.Options = @{}
     }
-    DateNamedFormatCompletionsAttribute( $options ) {
-        $this.Options = $Options ?? @{}
+    DateNamedFormatCompletionsAttribute( $ExcludeDateTimeFormatInfoPatterns = $false ) {
+        # $this.Options = $Options ?? @{}
+        $this.Options = @{}
+        $this.Options.ExcludeDateTimeFormatInfoPatterns = $ExcludeDateTimeFormatInfoPatterns
     }
 
     [IArgumentCompleter] Create() {
         # return [DateNamedFormatCompleter]::new($this.From, $this.To, $this.Step)
         # return [DateNamedFormatCompleter]::new( @{} )
-        return [DateNamedFormatCompleter]::new()
+        if( $This.Options.ExcludeDateTimeFormatInfoPatterns ) {
+            return [DateNamedFormatCompleter]::new( @{
+                ExcludeDateTimeFormatInfoPatterns = $This.Options.ExcludeDateTimeFormatInfoPatterns
+            } )
+        } else {
+            return [DateNamedFormatCompleter]::new()
+        }
     }
 }
 
 # function Try.Named.DateString {
-function Try.Named.Fstr {
+function Datetime.NamedFormatStr {
     <#
     .SYNOPSIS
         Generates datetime strings based on human readable format
     .EXAMPLE
+        Get-Date -Format (Try.Named.Fstr h:mm tt)
+    .EXAMPLE
         Try.Named.Fstr 'Git.Dto'
     .EXAMPLE
         Dotils.Datetime.ShowExamples -FormatStrings ( Try.Named.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ )
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+    .LINK
+        https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#timezones
     #>
+    [Alias(
+        'Try.Named.Fstr',
+        'Datetime.Named'
+    )]
+    [CmdletBinding(
+        DefaultParameterSetName = 'UsingFullList'
+    )]
     param(
-        [Parameter(Mandatory, Position = 0)]
-        # [ValidateSet([DateNamedFormatCompletionsAttribute])]
-        [DateNamedFormatCompletionsAttribute()]
-        [Alias('Name')]
-        [string] $DateFormat
+        [Parameter(
+            Mandatory, Position = 0, ValueFromRemainingArguments,
+            ParameterSetName = 'UsingFullList'
+        )]
+            [DateNamedFormatCompletionsAttribute()]
+            [Alias('Name')]
+            [string] $DateFormat,
+
+        [Parameter(
+            Mandatory, Position = 0, ValueFromRemainingArguments,
+            ParameterSetName = 'UsingShortList'
+        )]
+            # [DateNamedFormatCompletionsAttribute( ExcludeDateTimeFormatInfoPatterns )]
+            [Alias('WithoutAuto')]
+            [string]$ShortFormats,
+
+        [hashtable]$Options
     )
+
+    $PSCmdlet.ParameterSetName | Join-String -f 'ParameterSetName: {0}' | Write-Verbose
+
+    switch($PSCmdlet.ParameterSetName) {
+        'UsingFullList' {}
+        'UsingShortList' {}
+        default { throw "Unknown ParameterSetName: $PSCmdlet.ParameterSetName" }
+    }
+
     $DateFormat
+    # write-warning 'next wip: completions may '
 }
 
 @(
@@ -349,8 +414,14 @@ function Try.Named.Fstr {
     | Write-Warning
 
 Export-ModuleMember -Function @(
+    'Datetime.NamedFormatStr'
+ ) -alias @(
     'Try.Named.Fstr'
- ) -Verbose
+    'Datetime.Named'
+    # 'Try.Named.Fstr'
+    # 'Datetime.Named'
+    # 'Datetime.NamedFormatStr'
+ )  -Verbose
 
 
 
