@@ -87,16 +87,22 @@ class NamedDateTemplate {
 
         $AutoQuoteIfQuote =  $This.Options.AutoQuoteIfQuote # ?? $true
         $AlwaysSingleQuote = $this.Options.AlwaysSIngleQuote # ?? $false
+        $FinalCompletion = Join-String -in $This.FStr -DoubleQuote
 
-        if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
-            $FinalCompletion =
-                $This.Fstr | Join-String -DoubleQuote
+        # if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
+        #     $FinalCompletion =
+        #         $This.Fstr | Join-String -DoubleQuote
 
-        } elseif ( $AlwaysSingleQuote ) {
-            $FinalCompletion =
-                $This.FStr -replace "'", "''"
-                    | Join-String -SingleQuote
-        }
+        # } elseif ( $AlwaysSingleQuote ) {
+        #     $FinalCompletion =
+        #         $This.FStr -replace "'", "''"
+        #             | Join-String -SingleQuote
+        # }
+
+        # if([string]::IsNullOrEmpty( $This.CompletionName)) {
+        #     'type requires non-null value'
+        #     $This.CompletionName = 'AutoName'
+        # }
 
         # @{
         #      Completion = $FinalCompletion
@@ -425,6 +431,29 @@ if($false -and 'enable debug' ) {
 
     $t.ToString() | Out-Host
 }
+if($false -and 'enable debug' ) {
+    write-warning 'debug example output enabled '
+
+    $someFStr =
+        "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
+
+    $t =
+        [NamedDateTemplate]@{
+            Delim = ' ⁞ '
+            ShortName = 'Git Dto'
+            BasicName = 'Github DateTimeZone'
+            Description = @(
+                'Github DateTimeOffset UTC'
+            ) -join "`n"
+            Fstr = 'D'
+        }
+
+    @( ( $t )?.AsCompletionResult() )
+        | WriteJsonLog -Text '[CompletionResult] top level test 🧪'
+
+
+}
+
 
 class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumentCompleterFactory {
     <#
@@ -548,6 +577,8 @@ function Datetime.NamedFormatStr {
         Try.Named.Fstr 'Git.Dto'
     .EXAMPLE
         Dotils.Datetime.ShowExamples -FormatStrings ( Try.Named.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ )
+    .EXAMPLE
+        Dotils\Dotils.CompareCompletions -Prompt 'Get-Date | Datetime.Format -FormatString ' -Verbose -ColumnOrSubstring 'Get-Date | Datetime.Format -FormatString '
     .LINK
         https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
     .LINK
