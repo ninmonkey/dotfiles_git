@@ -141,23 +141,6 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         [string] $wordToComplete,
         [CommandAst] $commandAst,
         [IDictionary] $fakeBoundParameters) {
-
-        [List[CompletionResult]]$resultList = @()
-        $DtNow = [datetime]::Now
-
-        $fStr = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
-        $rendExample = ($DtNow).ToString($Fstr)
-
-        $Props = @{
-            Delim = ' ⁞ '
-            ShortName = 'Git Dto'
-            BasicName = 'Github DateTimeZone'
-            Description = @(
-                'Github DateTimeOffset UTC'
-            ) -join "`n"
-            Fstr = $Fstr
-            RenderExample = $RendExample
-        }
         <#
         .example
 
@@ -170,19 +153,23 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             Github DateTimeOffset UTC
         #>
 
-        [string]$renderTooltip = @(
-            @(
-                $Props.ShortName
-                $Props.RenderExample
-            ) -join $Props.Delim
-            $Props.Fstr
-            $Props.BasicName
-            $Props.Description
+        [List[CompletionResult]]$resultList = @()
+        $DtNow = [datetime]::Now
+        $DtoNow = [DateTimeOffset]::Now
 
-            # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample"
-            # "`nText: $rendExample"
-            # "`nFstr: $fStr "
-        ) | Join-String -sep "`n"
+        # [string]$renderTooltip = @(
+        #     @(
+        #         $Props.ShortName
+        #         $Props.RenderExample
+        #     ) -join $Props.Delim
+        #     $Props.Fstr
+        #     $Props.BasicName
+        #     $Props.Description
+
+        #     # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample"
+        #     # "`nText: $rendExample"
+        #     # "`nFstr: $fStr "
+        # ) | Join-String -sep "`n"
 
             # "Github DateTimeOffset UTC Format (Default) ⁞ $rendExample"
             # "`nText: $rendExample"
@@ -195,6 +182,7 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             Fstr: yyyy'-'MM'-'dd'T'HH':'mm':'ssZ
         #>
 
+        $fStr = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"
         $tlate = [NamedDateTemplate]@{
             Delim = ' ⁞ '
             ShortName = 'Git Dto'
