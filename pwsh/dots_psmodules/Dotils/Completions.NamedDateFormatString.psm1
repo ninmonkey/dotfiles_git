@@ -71,8 +71,8 @@ class NamedDateTemplate {
                         "`n"
                     .Fg $Colors.DimBlue
                         $this.Fstr
-
-                    "`n"
+                        "`n"
+                        "`n"
                     .Fg $Colors.DimGray
                     # .Fg $Colors.DarkWhite
 
@@ -99,35 +99,6 @@ class NamedDateTemplate {
                     # .Fg $Colors.DimGreen
                         # $this.BasicName
                     .Color.Reset
-                ) | Join-String -sep ''
-
-            }
-            'Iter1' {
-                $render = @(
-                    .Fg $Colors.Fg2
-                        $this.ShortName
-                    .Color.Reset
-                        $this.Delim
-
-                    .Fg $Colors.Fg3
-                        $this.RenderExample
-                    .Color.Reset
-                        "`n"
-                    .Fg $Colors.DimBlue
-                        "`n"
-                        $this.Fstr
-                    .Fg $Colors.DimGray
-                        $this.LongName
-                    # .Fg $Colors.Fg
-                    # .Color.Reset
-                        "`n"
-                        $this.Description
-                    # .Fg $Colors.DimBlue
-                        "`n"
-                    # .Fg $Colors.DimGreen
-                        $this.BasicName
-                    .Color.Reset
-
                 ) | Join-String -sep ''
 
             }
@@ -182,6 +153,9 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         $DtNow = [datetime]::Now
         $DtoNow = [DateTimeOffset]::Now
 
+        [Globalization.DateTimeFormatInfo]$DtFmtInfo = (Get-Culture).DateTimeFormat
+
+
         $tlate = [NamedDateTemplate]@{
             CompletionName = 'GitHub.DateTimeOffset'
             Delim = ' ⁞ '
@@ -209,6 +183,24 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             ) -join "`n"
         }
         $resultList.Add( $tlate.AsCompletionResult() )
+
+
+
+
+        $curFStr = $DtFmtInfo.ShortDatePattern
+        $tlate = [NamedDateTemplate]@{
+            CompletionName = 'ShortDate'
+            Delim = ' ⁞ '
+            Fstr = $DtFmtInfo.ShortDatePattern
+            ShortName = 'ShortDatePattern'
+            BasicName = 'x'
+            Description = @(
+                'Culture.DateTimeFormatInfo.ShortDatePattern'
+            ) -join "`n"
+        }
+        $resultList.Add( $tlate.AsCompletionResult() )
+
+
 
 
 
