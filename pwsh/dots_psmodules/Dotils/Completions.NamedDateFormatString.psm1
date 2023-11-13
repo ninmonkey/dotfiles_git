@@ -85,8 +85,8 @@ class NamedDateTemplate {
         $this.Format()
         $FinalCompletion = $this.Fstr
 
-        $AutoQuoteIfQuote =  $This.Options.AutoQuoteIfQuote ?? $true
-        $AlwaysSingleQuote = $this.Options.AlwaysSIngleQuote ?? $false
+        $AutoQuoteIfQuote =  $This.Options.AutoQuoteIfQuote # ?? $true
+        $AlwaysSingleQuote = $this.Options.AlwaysSIngleQuote # ?? $false
 
         if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
             $FinalCompletion =
@@ -98,11 +98,11 @@ class NamedDateTemplate {
                     | Join-String -SingleQuote
         }
 
-        @{
-             Completion = $FinalCompletion
-             Original = $this.Fstr
-             Options = $this.Options
-        }
+        # @{
+        #      Completion = $FinalCompletion
+        #      Original = $this.Fstr
+        #      Options = $this.Options
+        # } | WriteJsonLog -Text 'Building => completion result'
 
         return [CompletionResult]::new(
             <# completionText: #> $FinalCompletion,
@@ -251,10 +251,10 @@ class DateNamedFormatCompleter : IArgumentCompleter {
 
         [Globalization.DateTimeFormatInfo]$DtFmtInfo = (Get-Culture).DateTimeFormat
 
-        if($script:moduleConfig.SuperVerbose) {
-            'DateNamedFormatCompleter::CompleteArgument'
-                | WriteJsonLog
-        }
+        # if($script:moduleConfig.SuperVerbose) {
+        #         '.'
+        #         | WriteJsonLog -t 'DateNamedFormatCompleter::CompleteArgument'
+        # }
 
 
         $tlate = [NamedDateTemplate]@{
@@ -333,6 +333,7 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
         return $resultList
     }
+
 }
 
 $Colors = @{
