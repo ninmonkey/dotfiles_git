@@ -256,9 +256,9 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         [List[CompletionResult]]$resultList = @()
         $DtNow = [datetime]::Now
         $DtoNow = [DateTimeOffset]::Now
+        [bool]$NeverFilterResults = $false
         $Config = @{
             IncludeAllDateTimePatterns = $true
-
         }
 
         [Globalization.DateTimeFormatInfo]$DtFmtInfo = (Get-Culture).DateTimeFormat
@@ -346,7 +346,14 @@ class DateNamedFormatCompleter : IArgumentCompleter {
 
             # New-TypeWriterCompletionResult -Text 'LongDate' -listItemText 'LongDate2' -resultType Text -toolTip 'LongDate (default)'
             # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
-        return $resultList
+            #
+        'next: filter results: {0}' -f $NeverFilterResults
+            | write-warning
+
+        if($NeverFilterResults) {
+            return $resultList
+        }
+        return $ResultList
     }
 
 }
