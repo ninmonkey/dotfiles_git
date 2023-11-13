@@ -5,8 +5,9 @@ using namespace System.Management.Automation.Language
 using namespace Globalization
 # using namespace System.Collections
 
-$moduleConfig = @{
+$script:moduleConfig = @{
     hardPath = Join-Path 'g:\temp' -ChildPath '2023_11_13' 'ArgumentCompleter.log'
+    SuperVerbose = $true
 }
 # New-Item -ItemType File -Path (Join-Path 'g:\temp' -ChildPath '2023_11_13' 'ArgumentCompleter.log') -Force
 if( -not (Test-Path $moduleConfig.hardPath) ) {
@@ -236,6 +237,11 @@ class DateNamedFormatCompleter : IArgumentCompleter {
 
         [Globalization.DateTimeFormatInfo]$DtFmtInfo = (Get-Culture).DateTimeFormat
 
+        if($script:moduleConfig.SuperVerbose) {
+            'DateNamedFormatCompleter::CompleteArgument'
+                | WriteJsonLog
+        }
+
 
         $tlate = [NamedDateTemplate]@{
             CompletionName = 'GitHub.DateTimeOffset'
@@ -416,7 +422,9 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
         # return [DateNamedFormatCompleter]::new($this.From, $this.To, $this.Step)
         # return [DateNamedFormatCompleter]::new( @{} )
 
-        '🚀DateNamedFormatCompletionsAttribute..Create()' | .Log -Passthru
+        '🚀DateNamedFormatCompletionsAttribute..Create()'
+            | WriteJsonLog -PassThru
+            # | .Log -Passthru
 
         if( $This.Options.ExcludeDateTimeFormatInfoPatterns ) {
             return [DateNamedFormatCompleter]::new( @{
