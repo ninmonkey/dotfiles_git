@@ -116,6 +116,7 @@ class NamedDateTemplate {
     }
 }
 
+
 class DateNamedFormatCompleter : IArgumentCompleter {
 
     [hashtable]$Options
@@ -176,7 +177,8 @@ class DateNamedFormatCompleter : IArgumentCompleter {
                 <# completionText: #> $tlate.fStr,
                 <# listItemText: #> $tlate.CompletionName, # ex: 'GitHub.DateTimeOffset'
                 <# resultType: #> [CompletionResultType]::ParameterValue,
-                <# toolTip: #> $tlate.Format('Default') ) )
+                <# toolTip: #> $tlate.Format() ) )
+                # or:$tlate.Format('Default') ) )
         # } catch {
         #     $_ | out-host
         # }
@@ -468,6 +470,10 @@ function Try.Named.Fstr {
     <#
     .SYNOPSIS
         Generates datetime strings based on human readable format
+    .EXAMPLE
+        Try.Named.Fstr 'Git.Dto'
+    .EXAMPLE
+        Dotils.Datetime.ShowExamples -FormatStrings ( Try.Named.Fstr yyyy'-'MM'-'dd'T'HH':'mm':'ssZ )
     #>
     param(
         [Parameter(Mandatory, Position = 0)]
