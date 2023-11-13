@@ -8,6 +8,17 @@ using namespace System.Management.Automation.Language
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#class-based-argument-completers
 
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#dynamic-validateset-values-using-classes
+class NamedDateTemplate {
+    [string]$Delim = ' ⁞ '
+    [string]$ShortName = 'Git Dto'
+    [string]$BasicName = 'Github DateTimeZone'
+    [string]$Description = @(
+        'Github DateTimeOffset UTC'
+    ) -join "`n"
+    [string]$Fstr
+    [string]$RenderExample
+}
+
 class DateNamedFormatCompleter : IArgumentCompleter {
 
     [hashtable]$Options
@@ -25,6 +36,8 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         # $this.To = $to
         # $this.Step = $step -lt 1 ? 1 : $step
     }
+
+
 
     [IEnumerable[CompletionResult]] CompleteArgument(
         [string] $CommandName,
@@ -127,6 +140,7 @@ class DateNamedFormatCompleter : IArgumentCompleter {
                 # <# toolTip: #> "Short ┎┏┎ ▸·⇢⁞ ┐⇽▂ $RendExample")
                 <# toolTip: #> $renderTooltip)
         )
+
             # New-TypeWriterCompletionResult -Text 'LongDate' -listItemText 'LongDate2' -resultType Text -toolTip 'LongDate (default)'
             # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
         return $resultList
@@ -297,7 +311,7 @@ function __renderTooltip {
 
 function try.renderTip {
         $Fstr = 'd'
-         $Props = @{
+        $Props = @{
             Delim = ' ⁞ '
             ShortName = 'Git Dto'
             BasicName = 'Github DateTimeZone'
@@ -309,12 +323,7 @@ function try.renderTip {
                 [datetime]::Now.ToString($Fstr)
                 # $RendExample
         }
-        $__renderTooltipSplat = @{
-            Options = $Props
-            # ShortName = $Props.ShortName
-            # LongName = $Props.BasicName
-            # ExampleFormat = $Props.Description
-        }
+        $__renderTooltipSplat = @{ Options = $Props }
         __renderTooltip @__renderTooltipSplat
 }
 
