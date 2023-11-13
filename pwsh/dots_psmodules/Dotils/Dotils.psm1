@@ -14700,7 +14700,7 @@ if($False) {
         |  Remove-Module -Verbose -ea 'silentlyContinue'
 }
 if($true) {
-    Remove-Module 'Completions.NamedDateFormatString' -ea 'silentlyContinue'
+    Remove-Module 'Completions.NamedDateFormatString' -ea 'ignore' #  'silentlyContinue'
 }
 
 Import-Module $TryPath -PassThru -verbose -force -Scope 'Global' | Render.ModuleName

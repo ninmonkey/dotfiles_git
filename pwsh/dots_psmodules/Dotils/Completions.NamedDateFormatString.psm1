@@ -24,6 +24,9 @@ function WriteJsonLog {
         [Parameter(Mandatory, ValueFromPipeline)]
         [object[]]$InputObject,
 
+        [Alias('Line', 'Message')]
+        [string]$Text,
+
         [switch]$PassThru
     )
     begin {
@@ -38,9 +41,13 @@ function WriteJsonLog {
         $Data =
             $items | ConvertTo-Json -Depth 2
 
+        # $logLine =
+            # Join-String -inp @( $Data )  -op 'JSON:{ ' -os ' }:JSON'
+            #     | Join-String -op "[$Now] " -sep ' '
         $logLine =
-            Join-String -inp @( $Data )  -op 'JSON:{ ' -os ' }:JSON'
-                | Join-String -op "[$Now] "
+            $Data
+                | Join-String -op 'JSON:{ ' -os ' }:JSON'
+                | Join-String -op "[$Now] " -sep ' '
 
         Add-Content -Path $moduleConfig.hardPath -Value $logLine -PassThru:$PassThru
     }
@@ -191,7 +198,7 @@ class NamedDateTemplate {
 
 class DateNamedFormatCompleter : IArgumentCompleter {
 
-    [hashtable]$Options
+    [hashtable]$Options = @{}
 
     # DateNamedFormatCompleter([int] $from, [int] $to, [int] $step) {
 
@@ -205,6 +212,8 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         # $this.From = $from
         # $this.To = $to
         # $this.Step = $step -lt 1 ? 1 : $step
+        $Options
+            | WriteJsonLog -Text '🚀 [DateNamedFormatCompleter]::ctor'
     }
 
 
@@ -254,6 +263,13 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             ) -join "`n"
         }
         $resultList.Add( $tlate.AsCompletionResult() )
+
+        if($script:moduleConfig.SuperVerbose) {
+            $tlate
+                | WriteJsonLog -Text 'DateNamedFormatCompleter::CompleteArgument'
+            $this.Options | WriteJsonLog -Text 'DateNamedFormatCompleter::Options =: '
+        }
+
         # try {
         # } catch {
         #     $_ | out-HOst
@@ -535,14 +551,14 @@ function Datetime.NamedFormatStr {
             [string] $DateFormat
         ,
 
-        [Parameter(
-            Mandatory, Position = 0, ValueFromRemainingArguments,
-            ParameterSetName = 'UsingShortList'
-        )]
-            [DateNamedFormatCompletionsAttribute( ExcludeDateTimeFormatInfoPatterns = $True )]
-            [Alias('WithoutAuto')]
-            [string]$ShortFormats
-        ,
+        # [Parameter(
+        #     Mandatory, Position = 0, ValueFromRemainingArguments,
+        #     ParameterSetName = 'UsingShortList'
+        # )]
+        #     [DateNamedFormatCompletionsAttribute( @{ ExcludeDateTimeFormatInfoPatterns = $True } )]
+        #     [Alias('WithoutAuto')]
+        #     [string]$ShortFormats
+        # ,
 
         [hashtable]$Options
     )

@@ -17,3 +17,10 @@ $x = 10
 [Globalization.DateTimeFormatInfo]$DtFmtInfo = (get-culture).DateTimeFormat
 hr
 $DtFmtInfo | fime *pattern* -MemberType Property | % Name | join.ul
+
+@'
+try
+
+    Get-Date | Datetime.Format -FormatString "MMMM d"
+    Get-Date | Datetime.Format -FormatString ( Datetime.NamedFormatStr ...
+'@
