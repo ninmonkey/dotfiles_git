@@ -89,6 +89,13 @@ class NamedDateTemplate {
         $AlwaysSingleQuote = $this.Options.AlwaysSIngleQuote # ?? $false
         $FinalCompletion = Join-String -in $This.FStr -DoubleQuote
 
+                return [CompletionResult]::new(
+            <# completionText: #> $FinalCompletion,
+            <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
+            <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
+            <# toolTip: #> $this.Format()
+        )
+
         # if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
         #     $FinalCompletion =
         #         $This.Fstr | Join-String -DoubleQuote
@@ -110,12 +117,7 @@ class NamedDateTemplate {
         #      Options = $this.Options
         # } | WriteJsonLog -Text 'Building => completion result'
 
-        return [CompletionResult]::new(
-            <# completionText: #> $FinalCompletion,
-            <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
-            <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
-            <# toolTip: #> $this.Format()
-        )
+
         # [CompletionResult]
         #     $quoted  =
         #         $This.Fstr | Join-String -DoubleQuote
@@ -560,9 +562,23 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
 
                 'Formatting: Fstr: {0}, Culture: {1}, Input: {2}' -f @(
                     $FormatString, $CultInfo, $CurObj
-                ) | write-verbose -Verbose
+                ) | write-verbose
+                # this can sometimes throw
+                [string]$RenderObj = ''
+                try {
+                    $RenderObj = $CurObj.ToString( $FormatString, $CultInfo )
+                } catch {
+                    'Error.💥 :: Datetime.Format. [ Fstr: {0}, Cult: {1}' -f @(
+                        $FormatString ?? ''
+                        $CultInfo ?? ''
+                    )
+                    | write-warning
 
-                return $CurObj.ToString( $FormatString, $CultInfo )
+                    $_ | Write-Host -ForegroundColor 'blue'
+                    $RenderObj = "`u{2400}"
+                }
+
+                return $renderObj
             }
 
         }
@@ -655,10 +671,11 @@ Export-ModuleMember -Function @(
  )  -Verbose
 
 
+# Get-command -m Dotils.*
+# Get-Module Dotils
+#     | logjson
 
-
-
-# return
+# # return
 
 
 

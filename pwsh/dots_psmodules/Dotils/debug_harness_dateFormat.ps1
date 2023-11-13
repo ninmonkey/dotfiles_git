@@ -18,6 +18,8 @@ $x = 10
 hr
 $DtFmtInfo | fime *pattern* -MemberType Property | % Name | join.ul
 
+
+
 @'
 try
 
