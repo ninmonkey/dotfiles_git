@@ -5,7 +5,42 @@ using namespace System.Management.Automation.Language
 using namespace Globalization
 # using namespace System.Collections
 
+$moduleConfig = @{
+    hardPath = Join-Path 'g:\temp' -ChildPath '2023_11_13' 'ArgumentCompleter.log'
+}
+# if (-not (Test-Path)) {
+#     Touch -Path $hardPath
+# }
 
+function WriteJsonLog {
+    param(
+        [ALias('.Log')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        [switch]$PassThru
+    )
+    begin {
+        [List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange(@(
+            $InputObject ))
+    }
+    end {
+        $Now = [Datetime]::Now
+        $Data =
+            @(
+                $Input
+            ) | ConvertTo-Json -Depth 2
+
+        $logLine =
+            Join-String -inp @( $Data )  -op 'JSON:{ ' -os ' }:JSON'
+                | Join-String -op "[$Now] "
+
+        Add-Content -Path $moduleConfig.hardPath -Value $logLine -PassThru:$PassThru
+    }
+}
 
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#class-based-argument-completers
 
@@ -415,7 +450,9 @@ function Datetime.NamedFormatStr {
 
 Export-ModuleMember -Function @(
     'Datetime.NamedFormatStr'
+    'WriteJsonLog'
  ) -alias @(
+    '.Log'
     'Try.Named.Fstr'
     'Datetime.Named'
     # 'Try.Named.Fstr'
