@@ -8,6 +8,11 @@ using namespace Globalization
 $moduleConfig = @{
     hardPath = Join-Path 'g:\temp' -ChildPath '2023_11_13' 'ArgumentCompleter.log'
 }
+# New-Item -ItemType File -Path (Join-Path 'g:\temp' -ChildPath '2023_11_13' 'ArgumentCompleter.log') -Force
+if( -not (Test-Path $moduleConfig.hardPath) ) {
+    New-Item -ItemType File -Path $moduleConfig.hardPath -Force
+}
+$ModuleConfig.hardPath | Join-String -f 'Using Log: {0}' | write-host -BackgroundColor 'darkred'
 # if (-not (Test-Path)) {
 #     Touch -Path $hardPath
 # }
@@ -30,9 +35,7 @@ function WriteJsonLog {
     end {
         $Now = [Datetime]::Now
         $Data =
-            @(
-                $Input
-            ) | ConvertTo-Json -Depth 2
+            $items | ConvertTo-Json -Depth 2
 
         $logLine =
             Join-String -inp @( $Data )  -op 'JSON:{ ' -os ' }:JSON'
@@ -73,27 +76,44 @@ class NamedDateTemplate {
         # ensure calculated values
 
         $this.Format()
+        $FinalCompletion = $this.Fstr
         $AutoQuoteIfQuote = $true
+        $AlwaysSingleQuote = $false
 
         if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
-            $quoted  =
+            $FinalCompletion =
                 $This.Fstr | Join-String -DoubleQuote
-            $ce = [CompletionResult]::new(
-                <# completionText: #> $quoted,
-                <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
-                <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
-                <# toolTip: #> $this.Format()
-            )
-            return $ce
-        }
 
-        $ce = [CompletionResult]::new(
-            <# completionText: #> $this.fStr,
+        } elseif ( $AlwaysSingleQuote ) {
+            $FinalCompletion =
+                $This.FStr -replace "'", "''"
+                    | Join-String -SingleQuote
+        }
+        return [CompletionResult]::new(
+            <# completionText: #> $FinalCompletion,
             <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
             <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
             <# toolTip: #> $this.Format()
         )
-        return $ce
+        # [CompletionResult]
+        #     $quoted  =
+        #         $This.Fstr | Join-String -DoubleQuote
+        #     $ce = [CompletionResult]::new(
+        #         <# completionText: #> $quoted,
+        #         <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
+        #         <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
+        #         <# toolTip: #> $this.Format()
+        #     )
+        #     return $ce
+        # }
+
+        # $ce = [CompletionResult]::new(
+        #     <# completionText: #> $this.fStr,
+        #     <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
+        #     <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
+        #     <# toolTip: #> $this.Format()
+        # )
+        # return $ce
     }
 
     [string] Format() {
@@ -395,6 +415,9 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
     [IArgumentCompleter] Create() {
         # return [DateNamedFormatCompleter]::new($this.From, $this.To, $this.Step)
         # return [DateNamedFormatCompleter]::new( @{} )
+
+        '🚀DateNamedFormatCompletionsAttribute..Create()' | .Log -Passthru
+
         if( $This.Options.ExcludeDateTimeFormatInfoPatterns ) {
             return [DateNamedFormatCompleter]::new( @{
                 ExcludeDateTimeFormatInfoPatterns = $This.Options.ExcludeDateTimeFormatInfoPatterns
@@ -406,6 +429,55 @@ class DateNamedFormatCompletionsAttribute : ArgumentCompleterAttribute, IArgumen
 }
 
 # function Try.Named.DateString {
+    function Datetime.Format {
+        <#
+        .SYNOPSIS
+            Sugar to format dates that are piped using the same format string
+
+            Get-Date | Datetime.Format -FormatString 'o'
+        #>
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
+            [object[]]$InputObject,
+
+            [DateNamedFormatCompletionsAttribute()]
+            [Alias('Named')]
+            [string]$FormatString,
+
+            [string]$Culture = 'en-us'
+
+        )
+        begin {
+            $CultInfo = Get-Culture $Culture
+        }
+        process {
+            $InputObject | %{
+                $ExpectedTypes = @(
+                    'datetime'
+                    'datetimeoffset'
+                    'timespan'
+                )
+                $CurObj = $_
+
+                [bool]$ExpectedType? =
+                    $CurObj -is 'Datetime' -or $CurObj -is 'DatetimeOffset' -or $CurObj -is 'timespan'
+
+
+
+                if( -not $ExpectedType? ) {
+                    throw ( $CurObj.GetType() | Join-String  -F "UnexpectedType, was not a [datetime|datetimeoffset|timespan]: {0}" )
+                }
+
+                'Formatting: Fstr: {0}, Culture: {1}, Input: {2}' -f @(
+                    $FormatString, $CultInfo, $CurObj
+                ) | write-verbose -Verbose
+
+                return $CurObj.ToString( $FormatString, $CultInfo )
+            }
+
+        }
+    }
 function Datetime.NamedFormatStr {
     <#
     .SYNOPSIS
@@ -474,6 +546,7 @@ function Datetime.NamedFormatStr {
 
 Export-ModuleMember -Function @(
     'Datetime.NamedFormatStr'
+    'Datetime.Format'
     'WriteJsonLog'
  ) -alias @(
     '.Log'
