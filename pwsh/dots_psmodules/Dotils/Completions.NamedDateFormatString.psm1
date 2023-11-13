@@ -9,6 +9,10 @@ using namespace System.Management.Automation.Language
 
 # // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Functions_Argument_Completion?view=powershell-7.4&WT.mc_id=ps-gethelp#dynamic-validateset-values-using-classes
 class NamedDateTemplate {
+    <#
+        .SYNOPSIS
+        nicely render date info for a tooltip
+    #>
     [string]$Delim = ' ⁞ '
     [string]$ShortName = 'Git Dto'
     [string]$BasicName = 'Github DateTimeZone'
@@ -23,6 +27,13 @@ class NamedDateTemplate {
         return $this.Format('Default')
     }
 
+    [string] Format( ) {
+        <#
+        .SYNOPSIS
+        nicely render date info for a tooltip
+        #>
+        return $this.Format('Default')
+    }
     [string] Format( $Template = 'Default' ) {
         $Colors = $Script:Colors
 
@@ -408,6 +419,8 @@ $t =
 hr -fg magenta | write-warning
 $t | Json -depth 1 #| out-host
 $t | ft
+hr
+$t.Format('Default') | Out-Host
 
 function try.renderTip {
         $Fstr = 'd'
