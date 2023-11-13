@@ -145,30 +145,140 @@ $Colors = @{
 $Colors.Fg = $Colors.Fg
 $Colors.Fg2 = $Colors.FgBlue = $Colors.BlueGray
 $Colors.Fg3 = $Colors.FgYellow = $Colors.DimYellow
-
+function Color.Reset {
+    [Alias('.Color.Reset')]
+    param()
+    $PSStyle.Reset
+}
+function __writeColorForeground {
+    <#
+    .SYNOPSIS
+        sugar to write ansi colors
+    .EXAMPLE
+        .Fg '#fe9911'
+    .LINK
+        __writeColorForeground
+    .LINK
+        __writeColorBackground
+    #>
+    [Alias('.Fg')]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Color
+    )
+    $PSStyle.Foreground.FromRgb( $Color )
+}
+function __writeColorBackground {
+    <#
+    .SYNOPSIS
+        sugar to write ansi colors
+    .EXAMPLE
+        .Fg '#fe9911'
+    .LINK
+        __writeColorForeground
+    .LINK
+        __writeColorBackground
+    #>
+    [Alias('.Bg')]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Color
+    )
+    $PSStyle.Background.FromRgb( $Color )
+}
 function __renderTooltip {
+    <#
+    .EXAMPLE
+    # sample output:
+
+        Git Dto ⁞ 11/13/2023
+        d
+        Github DateTimeOffset UTC
+        Github DateTimeZone
+
+    #>
     param(
         [Alias('Props', 'Kwargs')]
-        [hashtable]$Options
+        [hashtable]$Options,
+
+        [ArgumentCompletions('Default')]
+        [string]$Template = 'Default'
         # [string]$ShortName,
         # [string]$LongName,
         # [string]$ExampleFormat
     )
+    [string]$Render = ''
 
+    switch($Template) {
+        'Default' {
+            $render = @(
+                .Fg $Colors.Fg2
+                    $Options.ShortName
+                .Color.Reset
+                    $Options.Delim
 
-    [string]$render = @(
-        $Options.ShortName
-        $Options.Delim
-        $Options.RenderExample
-        "`n"
-        $Options.Fstr ?? 'fstr'
-        $Options.LongName
-        "`n"
-        $Options.Description
-        "`n"
-        $Options.BasicName
+                .Fg $Colors.Fg3
+                    $Options.RenderExample
+                .Color.Reset
+                    "`n"
+                .Fg $Colors.DimBlue
+                    $Options.Fstr
+                .Fg $Colors.DimGray
+                # .Fg $Colors.DarkWhite
+                    $Options.LongName
 
-    ) | Join-String -sep ''
+                # .Fg $Colors.Fg
+                # .Color.Reset
+
+                    "`n"
+                    $Options.Description
+                # .Fg $Colors.DimBlue
+                    "`n"
+                # .Fg $Colors.DimGreen
+                    $Options.BasicName
+                .Color.Reset
+
+            ) | Join-String -sep ''
+
+        }
+        'Iter1' {
+            $render = @(
+                .Fg $Colors.Fg2
+                    $Options.ShortName
+                .Color.Reset
+                    $Options.Delim
+
+                .Fg $Colors.Fg3
+                    $Options.RenderExample
+                .Color.Reset
+                    "`n"
+                .Fg $Colors.DimBlue
+                    "`n"
+                    $Options.Fstr
+                .Fg $Colors.DimGray
+                    $Options.LongName
+
+                # .Fg $Colors.Fg
+                # .Color.Reset
+
+                    "`n"
+                    $Options.Description
+                # .Fg $Colors.DimBlue
+                    "`n"
+                # .Fg $Colors.DimGreen
+                    $Options.BasicName
+                .Color.Reset
+
+            ) | Join-String -sep ''
+
+        }
+        default {
+            throw "Unknown Template: $Template"
+        }
+    }
+
     return $render
 
 
@@ -186,6 +296,7 @@ function __renderTooltip {
 }
 
 function try.renderTip {
+        $Fstr = 'd'
          $Props = @{
             Delim = ' ⁞ '
             ShortName = 'Git Dto'
@@ -195,7 +306,7 @@ function try.renderTip {
             ) -join "`n"
             Fstr = $Fstr
             RenderExample =
-                [datetime]::Now.ToString('d')
+                [datetime]::Now.ToString($Fstr)
                 # $RendExample
         }
         $__renderTooltipSplat = @{
@@ -204,9 +315,6 @@ function try.renderTip {
             # LongName = $Props.BasicName
             # ExampleFormat = $Props.Description
         }
-
-
-
         __renderTooltip @__renderTooltipSplat
 }
 
