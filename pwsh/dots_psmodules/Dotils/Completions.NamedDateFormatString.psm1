@@ -15,8 +15,91 @@ class NamedDateTemplate {
     [string]$Description = @(
         'Github DateTimeOffset UTC'
     ) -join "`n"
-    [string]$Fstr
-    [string]$RenderExample
+    [string]$Fstr = 'D'
+    [string]$RenderExample = "`u{2400}"
+    [string]$Culture = 'en-US'
+
+    [string] ToString() {
+        return $this.Format('Default')
+    }
+
+    [string] Format( $Template = 'Default' ) {
+        $Colors = $Script:Colors
+
+        [string]$Render = ''
+        $Cult = Get-Culture $This.Culture
+        $this.RenderExample =
+            try {
+                [datetime]::Now.ToString( $this.FStr, $Cult )
+            } catch {
+                "`u{2400}"
+            }
+        switch($Template) {
+            'Default' {
+                $render = @(
+                    .Fg $Colors.Fg2
+                        $this.ShortName
+                    .Color.Reset
+                        $this.Delim
+
+                    .Fg $Colors.Fg3
+                        $this.RenderExample
+                    .Color.Reset
+                        "`n"
+                    .Fg $Colors.DimBlue
+                        $this.Fstr
+                    .Fg $Colors.DimGray
+                    # .Fg $Colors.DarkWhite
+                        $this.LongName
+
+                    # .Fg $Colors.Fg
+                    # .Color.Reset
+
+                        "`n"
+                        $this.Description
+                    # .Fg $Colors.DimBlue
+                        "`n"
+                    # .Fg $Colors.DimGreen
+                        $this.BasicName
+                    .Color.Reset
+                ) | Join-String -sep ''
+
+            }
+            'Iter1' {
+                $render = @(
+                    .Fg $Colors.Fg2
+                        $this.ShortName
+                    .Color.Reset
+                        $this.Delim
+
+                    .Fg $Colors.Fg3
+                        $this.RenderExample
+                    .Color.Reset
+                        "`n"
+                    .Fg $Colors.DimBlue
+                        "`n"
+                        $this.Fstr
+                    .Fg $Colors.DimGray
+                        $this.LongName
+                    # .Fg $Colors.Fg
+                    # .Color.Reset
+                        "`n"
+                        $this.Description
+                    # .Fg $Colors.DimBlue
+                        "`n"
+                    # .Fg $Colors.DimGreen
+                        $this.BasicName
+                    .Color.Reset
+
+                ) | Join-String -sep ''
+
+            }
+            default {
+                throw "Unknown Template: $Template"
+            }
+        }
+        return $render
+    }
 }
 
 class DateNamedFormatCompleter : IArgumentCompleter {
@@ -308,6 +391,23 @@ function __renderTooltip {
     # ) | Join-String -sep "`n"
 
 }
+
+$t =
+    [NamedDateTemplate]@{
+        Delim = ' ⁞ '
+        ShortName = 'Git Dto'
+        BasicName = 'Github DateTimeZone'
+        Description = @(
+            'Github DateTimeOffset UTC'
+        ) -join "`n"
+        Fstr = 'D'
+        RenderExample =
+            [datetime]::Now.ToString('D')
+            # $RendExample
+    }
+hr -fg magenta | write-warning
+$t | Json -depth 1 #| out-host
+$t | ft
 
 function try.renderTip {
         $Fstr = 'd'
