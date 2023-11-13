@@ -347,12 +347,14 @@ class DateNamedFormatCompleter : IArgumentCompleter {
             # New-TypeWriterCompletionResult -Text 'LongDate' -listItemText 'LongDate2' -resultType Text -toolTip 'LongDate (default)'
             # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
             #
-        'next: filter results: {0}' -f $NeverFilterResults
-            | write-warning
+        'next: filter results?: =  {0}' -f $NeverFilterResults
+            | out-host
+
 
         if($NeverFilterResults) {
             return $resultList
-        }
+         }
+
         return $ResultList
     }
 
