@@ -402,30 +402,34 @@ function __renderTooltip {
     # ) | Join-String -sep "`n"
 
 }
+if($false -and 'enable debug' ) {
+    write-warning 'debug example output enabled '
+    $t =
+        [NamedDateTemplate]@{
+            Delim = ' ⁞ '
+            ShortName = 'Git Dto'
+            BasicName = 'Github DateTimeZone'
+            Description = @(
+                'Github DateTimeOffset UTC'
+            ) -join "`n"
+            Fstr = 'D'
+            # Fstr = 'D'
+            # RenderExample =
+            #     [datetime]::Now.ToString('D')
+                # $RendExample
+        }
+    hr -fg magenta | write-warning
+    $t | Json -depth 1 #| out-host
+    $t | ft
+    hr
+    $t.Format('Default') | Out-Host
 
-$t =
-    [NamedDateTemplate]@{
-        Delim = ' ⁞ '
-        ShortName = 'Git Dto'
-        BasicName = 'Github DateTimeZone'
-        Description = @(
-            'Github DateTimeOffset UTC'
-        ) -join "`n"
-        Fstr = 'D'
-        # Fstr = 'D'
-        # RenderExample =
-        #     [datetime]::Now.ToString('D')
-            # $RendExample
-    }
-hr -fg magenta | write-warning
-$t | Json -depth 1 #| out-host
-$t | ft
-hr
-$t.Format('Default') | Out-Host
+    $t.ToString() | Out-Host
 
-$t.ToString() | Out-Host
+    $t.ToString() | Out-Host
 
-$t.ToString() | Out-Host
+    # try.renderTip
+}
 
 function try.renderTip {
         $Fstr = 'd'
@@ -497,11 +501,11 @@ function Try.Named.Fstr {
 
 Export-ModuleMember -Function @(
     'Try.Named.Fstr'
-    'Try.renderTip'
+    # 'Try.renderTip'
  ) -Verbose
 
 
-try.renderTip
+
 
 
 # return
