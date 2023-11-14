@@ -72,24 +72,42 @@ class NamedDateTemplate {
 
     hidden [hashtable]$Options = @{
         # AutoQuoteIfQuote = $true
-        AutoQuoteIfQuote = $true
-        AlwaysSingleQuote = $false
+        # AutoQuoteIfQuote = $true
+        # AlwaysSingleQuote = $false
+        AlwaysAutoQuote = $true
     }
 
     [string] ToString() {
         return $this.Format('Default')
     }
-    [CompletionResult] AsCompletionResult () {
-        # ensure calculated values
 
-        $this.Format()
+    [CompletionResult] AsCompletionResult () {
+        # config not finalized, I may end up always quoting using 'AlwaysAutoQuote'
+        # $AutoQuoteIfQuote =  $This.Options.AutoQuoteIfQuote # ?? $true
+        # $AlwaysSingleQuote = $this.Options.AlwaysSIngleQuote # ?? $false
+        $AlwaysAutoQuote = $this.Options.AlwaysAutoQuote
+
+        $this.Format() # ensure calculated values
         $FinalCompletion = $this.Fstr
 
-        $AutoQuoteIfQuote =  $This.Options.AutoQuoteIfQuote # ?? $true
-        $AlwaysSingleQuote = $this.Options.AlwaysSIngleQuote # ?? $false
-        $FinalCompletion = Join-String -in $This.FStr -DoubleQuote
+        if($AlwaysAutoQuote) {
+            $FinalCompletion = Join-String -in $This.FStr -DoubleQuote
+        }
 
-                return [CompletionResult]::new(
+        if( [string]::IsNullOrEmpty( $this.CompletionName) ) {
+            [ordered]@{
+                CompletionName = $this.CompletionName ?? "`u{2400}"
+                FStr = $this.Fstr ?? "`u{2400}"
+                Self_ToString =
+                    $This.ToString()
+                Self_AsJson =
+                    $This | ConvertTo-Json -Depth 3
+            }
+            | WriteJsonLog -Text '🔴 [CompletionResult]::AsCompletionResult ▸ ListItem cannot be null!'
+
+        }
+
+        return [CompletionResult]::new(
             <# completionText: #> $FinalCompletion,
             <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
             <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
@@ -149,6 +167,10 @@ class NamedDateTemplate {
     [string] Format( $Template = 'Default' ) {
         $Colors = $Script:Colors
 
+        if( [String]::IsNullOrEmpty( $this.Fstr) ) {
+            $This.Fstr = $This.ShortName
+        }
+
         [string]$Render = ''
         $Cult = Get-Culture $This.Culture
         $this.RenderExample =
@@ -204,6 +226,7 @@ class DateNamedFormatCompleter : IArgumentCompleter {
 
     hidden [hashtable]$Options = @{}
     [bool]$ExcludeDateTimeFormatInfoPatterns = $false
+    [bool]$IncludeFromDateTimeFormatInfo = $true
     # DateNamedFormatCompleter([int] $from, [int] $to, [int] $step) {
     DateNamedFormatCompleter( ) {
         $This.Options = @{
@@ -259,6 +282,7 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         [bool]$NeverFilterResults = $false
         $Config = @{
             IncludeAllDateTimePatterns = $true
+            IncludeFromDateTimeFormatInfo = $true
         }
 
         [Globalization.DateTimeFormatInfo]$DtFmtInfo = (Get-Culture).DateTimeFormat
@@ -292,35 +316,41 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         #     $_ | out-HOst
         # }
 
-        $tlate = [NamedDateTemplate]@{
-            CompletionName = 'd'
-            Delim = ' ⁞ '
-            Fstr = "d"
-            ShortName = 'ShortDate'
-            BasicName = ''
-            Description = @(
-                'Short date (Standard)'
-            ) -join "`n"
+        # $tlate = [NamedDateTemplate]@{
+        #     CompletionName = 'd'
+        #     Delim = ' ⁞ '
+        #     Fstr = "d"
+        #     ShortName = 'ShortDate'
+        #     BasicName = ''
+        #     Description = @(
+        #         'Short date (Standard)'
+        #     ) -join "`n"
+        # }
+        # $resultList.Add( $tlate.AsCompletionResult() )
+
+
+        if( $This.IncludeFromDateTimeFormatInfo) {
+            $DtFmtInfo | Find-Member -MemberType Property *Pattern* | % Name | %{
+                $curMemberName = $_
+                $PatternName = $curMemberName -replace 'Pattern$', ''
+                $curFStr = $DtFmtInfo.$PatternName
+                $tlate = [NamedDateTemplate]@{
+                    CompletionName = $PatternName
+                    Delim = ' ⁞ '
+                    Fstr = $curFStr
+                    ShortName = $patternName
+                    BasicName = ''
+                    Description = @(
+                        'Culture.DateTimeFormatInfo.{0}' -f $curMemberName
+                    ) -join "`n"
+                }
+                $resultList.Add( $tlate.AsCompletionResult() )
+
+                $tlate | WriteJsonLog -Text 'DateNamedFormatCompleter::CompleteArgument 🐒'
+            }
         }
-        $resultList.Add( $tlate.AsCompletionResult() )
 
-
-
-
-        $curFStr = $DtFmtInfo.ShortDatePattern
-        $tlate = [NamedDateTemplate]@{
-            CompletionName = 'ShortDate'
-            Delim = ' ⁞ '
-            Fstr = $DtFmtInfo.ShortDatePattern
-            ShortName = 'ShortDatePattern'
-            BasicName = ''
-            Description = @(
-                'Culture.DateTimeFormatInfo.ShortDatePattern'
-            ) -join "`n"
-        }
-        $resultList.Add( $tlate.AsCompletionResult() )
-
-        # $DtFmtInfo.GetAllDateTimePatterns()
+          # $DtFmtInfo.GetAllDateTimePatterns()
         if( -not $This.ExcludeDateTimeFormatInfoPatterns ) {
             foreach($fstr in $DtFmtInfo.GetAllDateTimePatterns()) {
                 $tlate = [NamedDateTemplate]@{
@@ -344,11 +374,13 @@ class DateNamedFormatCompleter : IArgumentCompleter {
 
 
 
-            # New-TypeWriterCompletionResult -Text 'LongDate' -listItemText 'LongDate2' -resultType Text -toolTip 'LongDate (default)'
-            # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
-            #
-        'next: filter results?: =  {0}' -f $NeverFilterResults
-            | out-host
+
+
+        #     # New-TypeWriterCompletionResult -Text 'LongDate' -listItemText 'LongDate2' -resultType Text -toolTip 'LongDate (default)'
+        #     # New-TypeWriterCompletionResult -Text 'ShortDate' -listItemText 'ShortDate2' -resultType Text -toolTip 'ShortDate (default)'
+        #     #
+        # 'next: filter results?: =  {0}' -f $NeverFilterResults
+        #     | out-host
 
 
         if($NeverFilterResults) {
