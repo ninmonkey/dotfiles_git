@@ -26,7 +26,7 @@ custom attributes, more detailed info
 # fix pipeworks creating errors when piping to write-host, like:
     # 'stuff' | write-host -bg 'gray30' -fg 'gray60'
 @(
-    if(get-module pipeworks) {
+    if(get-module pipeworks -ea 'ignore') {
         set-alias 'Write-Host' -Value 'Pansies\Write-Host' -PassThru
     }
 
@@ -2005,7 +2005,8 @@ function prof.Io2 {
 
 
 
-if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+
+# if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
 
 

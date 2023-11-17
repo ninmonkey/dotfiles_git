@@ -5,7 +5,7 @@ using namespace System.Management.Automation.Language
 
 $script:CountersListForAddLabel ??= @{}
 
-# include forks: ? 'H:\data\2023\pwsh\my🍴\ugit.🍴\Use-Git.ps1'
+
 
 
 $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
@@ -46,6 +46,19 @@ write-warning 'finish Dotils.Get-CachedExpression '
 #     }
 # }
 # write-warning 'collect b dg .resolve.Timespan'
+function Dotils.Clipboard.CopyFileListFromExplorer {
+    <#
+    .SYNOPSIS
+        in explorer, select files, hit ctrl+c then run this command
+    #>
+    Add-Type -AssemblyName System.Windows.Forms
+    $Found =  [System.Windows.Forms.Clipboard]::GetFileDropList() | Get-Item
+
+    if($Found.Count -eq 0) {
+        write-warning 'No files found, did you select files then ctrl+c first?'
+    }
+    return $found
+}
 function Dotils.To.Type.FromPSTypenames {
     <#
     .SYNOPSIS
@@ -14082,6 +14095,8 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-17
+        'Dotils.Clipboard.CopyFileListFromExplorer' # 'Dotils.Clipboard.CopyFileListFromExplorer' = { }
         # 2023-11-16
         'Dotils.Format.NumberedList' # 'Dotils.Format.NumberedList' = { 'Fmt.NL' }
         # 2023-11-13
@@ -14816,6 +14831,9 @@ Write-verbose 'pre-removing annoying modules, to decrease the size of Get-Comman
 Remove-Module 'JumpCloud*'
 Remove-Module 'Az.*'
 
+# include forks: ? 'H:\data\2023\pwsh\my🍴\ugit.🍴\Use-Git.ps1'
+import-module -PassThru -Force 'H:\data\2023\pwsh\my🍴\ugit.🍴\Use-Git.ps1'
+    | Render.ModuleName
 
 # // this does not import
 # $DotSrc = gi 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Template-CompleterType-AsCompletionsType.ps1' -ea 'continue'
