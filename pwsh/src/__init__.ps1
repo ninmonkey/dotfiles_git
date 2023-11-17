@@ -59,12 +59,8 @@ $OutputEncoding =
 
 Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
 
-# impo -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
-#     | ft
 
-@(  #Import-Module -wa 0  'ugit' -PassThru
-    Import-Module -wa 0 'Dotils' -Force -PassThru
-    ) | Join-String -p {
+@(  Import-Module -wa 0 'Dotils' -Force -PassThru ) | Join-String -p {
         '{0} = {1}' -f @(
             $_.Name ; $_.Version; ) } -op "Import: `n" -sep ",`n" -single
     | Write-Verbose
@@ -72,8 +68,11 @@ Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -Function ForwardWord
     # | Join-String -f "• {0}" -op "Set/Add: Alias = [ " -os " ]" -sep ' '
     # | write-host -fore 'darkgray'
 
-Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
-    | Render.ModuleName
+if( $false -and 'import forked modules' ) {
+
+    Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
+        | Render.ModuleName
+}
 # Import-Module -Force -Verbose -PassThru 'H:\data\2023\pwsh\my🍴\ugit.🍴\ugit.psd1'
 #     | Join-String -f "`n`t{0}" { $_.Name, $_.Path } -op 'impo "my🍴" ... [ = ' -sep '' -os "`n]"
 #     | Write-host -back 'darkred'
@@ -1984,7 +1983,7 @@ function fAll {
     }
 }
 
-write-host -back 'darkred' 'fix ugit'
+
 
 function prof.Io2 {
     <#
