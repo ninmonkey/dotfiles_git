@@ -74,7 +74,9 @@ function Dotils.Select.Error {
         $ErrorIndex,
 
         # Testing weird characters in autocomplete for quirks
-        [Alias('Kind','Type', 'Category', 'Condition', 'WhereIs', 'WhereMatch')]
+        [Alias(
+            'Kind','Type', 'Category', 'Condition',
+            'WhereIs', 'WhereMatch' )]
         [Parameter(ParameterSetName='ByKind', Mandatory )]
         [ArgumentCompletions(
             'ParserError',
@@ -84,8 +86,7 @@ function Dotils.Select.Error {
             'Re:MissingParameterList',
             'Re≔Missing〜␠Parameter〜List'
         )]
-        [string[]]
-        $ByKind,
+        [string[]]$ByKind
     )
     $Re = [ordered]@{
         Syntax = [ordered]@{}
@@ -94,8 +95,12 @@ function Dotils.Select.Error {
 
     @{
         Mode = $PSCmdlet.ParameterSetName
+        BoundParams = $PSBoundParameters
         Index = 2
     }
+        | Json -depth 2 -Compress:$false
+        | Join-String -sep "`n" | write-verbose
+
     if($PSBoundParameters.ContainsKey('ByKind')) {
         '-ByKind is hardcoded, wip' | write-host -back 'darkblue'
     }
@@ -104,15 +109,48 @@ function Dotils.Select.Error {
     function __test.ShouldKeepError {
         [CmdletBinding()]
         param(
+            [Alias('InputObject', 'Error', 'Err', 'Obj', 'Object')]
             [Parameter(Mandatory, ValueFromPipeline)]
-            $InputObject
+            $InputError
         )
         Join-String -in $MyInvocation.MyCommand -f 'enter => {0}'
             | Write-verbose
 
-        # always false
+        $ie = $InputError
+
+        # always false, test case
         $false
 
+
+        if($false -and 'quick notes for others'){
+            # $ie.Exception.GetType() -eq @(
+            #     'ParentContainsErrorRecordException'
+            #     'SystemException'
+            # )
+        }
+
+        foreach($curKind in $ByKind) {
+            Join-String -in $CurKind -op '__test.ShouldKeepError :: iteration => curKind: '
+                | write-verbose
+
+            $curWanted = @(
+                'MissingEndParenthesisInFunctionParameterList',
+                'Re≔Missing␠Parameter␠List',
+                'Re:MissingParameterList',
+                'Re≔Missing〜␠Parameter〜List'
+            )
+            if($curKind -in @($CurWanted)) {
+
+                [bool]$test =
+                    $ie.Exception.Message -match $Re.Syntax.MissingParamList
+
+                if($Test) {
+                    $true; break ; }
+                else {
+                    $false; continue ; }
+
+            }
+        }
     }
 
     switch ($PSCmdlet.ParameterSetName) {
@@ -122,10 +160,12 @@ function Dotils.Select.Error {
             break
         }
         'ByKind' {
-            return
+            # return
             $found = @(
                 $global:error | ?{
-                    $tests = @( __test.ShouldKeepError -InputObject $_ -Verbose )
+                    $tests = @(
+                        __test.ShouldKeepError -InputObject $_ -Verbose
+                    )
                     if( ($tests -eq $true).count -gt 0 ) {
                         return $true
                     }
@@ -141,14 +181,13 @@ function Dotils.Select.Error {
             #     $_.Exception.Message -match $Re.Syntax.MissingParamList
             # }
         }
-
         default {
-            throw (Join-String -in $PSCmdlet.ParameterSetName -op
-             "Unhandled ParameterSet: ")
+            throw (Join-String -in $PSCmdlet.ParameterSetName -op "Unhandled ParameterSet: ")
         }
 
-        if(( $null -eq $found) -and $global:error.count -gt 0) {
-                'No Errors were found, however {0} errors exist' -f @( $Error.count
+        if( ( $null -eq $found) -and $global:error.count -gt 0 ) {
+                'No Errors were found, however {0} errors exist' -f @(
+                    $Global:error.count
                 ) | write-warning
         }
     }
