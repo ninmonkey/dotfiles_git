@@ -57,14 +57,35 @@ Dotils.Git.AddRecent
 - [ ] add error category completions
 - [ ] add exception-name-completions
 - [ ] hotkey that runs exception-name-completion, then inserts into text instead of just completing parameter for a function to find it
-'@ | write-warning
+
+# new completer idea
+
+    # normaly it stops property at depth=1,
+    $serr | Join-String -Property InvocationInfo
+
+    # but allow it for named types:
+    $serr | Join-String -Property InvocationInfo.ScriptName
+
+
+'@ | write-host -bg '#2e3440' -fg '#acaeb5'
 function Dotils.Goto.Error {
     param(
         [Parameter(
             ParameterSetName='ByIndex', ValueFromPipeline, Position = 0 )]
         $InputError
     )
+    $ie = $InputError
 
+    $fullPath =
+        $ie.InvocationInfo | Join-String -Property {
+            '{0}:{1}' -f @( $_.ScriptName, $_.ScriptLineNumber  ) }
+
+    'see also: Dotils.Goto.Kind => then errorKind'
+        | write-host -bg 'orange' -fg 'gray80'
+
+    Join-String -in $Fullpath -f "found error:`n    <{0}>`n"
+        | Dotils.Write-DimText
+        | Infa
 }
 function Dotils.Select.Error {
     [CmdletBinding()]
@@ -88,6 +109,7 @@ function Dotils.Select.Error {
         )]
         [string[]]$ByKind
     )
+    write-warning 'heavy wip: Dotils.Select.Error'
     $Re = [ordered]@{
         Syntax = [ordered]@{}
     }
@@ -202,19 +224,33 @@ function Dotils.Select.Error {
         default {
             throw (Join-String -in $PSCmdlet.ParameterSetName -op "Unhandled ParameterSet: ")
         }
-
-        if( ( $null -eq $found) -and $global:error.count -gt 0 ) {
-                'No Errors were found, however {0} errors exist' -f @(
-                    $Global:error.count
-                ) | write-warning
-        }
     }
-    # $global:error
 
-
+    if( ($null -eq $found) -and $global:error.count -gt 0 ) {
+            'No Errors were found, however {0} errors exist' -f @(
+                $Global:error.count ?? 0
+            ) | write-warning
+    }
+    return $found
 }
 
 function Dotils.DropNamespace {
+    <#
+    .SYNOPSIS
+        (gi .).GetType().FullName | Dotils.DropNamespace
+            DirectoryInfo
+
+        (gi .).GetType() | Dotils.DropNamespace
+            DirectoryInfo
+
+        (gi .).GetType().FullName | Dotils.DropNamespace
+        (gi .).GetType() | Dotils.DropNamespace
+        (gi .) | Dotils.DropNamespace
+            DirectoryInfo
+            DirectoryInfo
+            DirectoryInfo
+    #>
+    [CmdletBinding()]
     param(
         [Parameter(ValueFromPipeline, Position=0)]
         $InputObject,
@@ -222,10 +258,34 @@ function Dotils.DropNamespace {
         [Alias('cl')]
         [switch]$Clip
     )
+    # case where string is the type name
+    if($InputObject -is 'string') {
+        if($InputObject -as 'type' -ne $Null) {
+            $Found = ($InputObject -as 'type').Name
+            if($Clip) {
+                return $Found |  Set-Clipboard -PassThru
+            } else {
+                return $found
+            }
+        }
+        # $type? = $InputObject -as 'type'
+    }
+
+    # if( -not ($o -is 'type')) { $o.GetType().Name }
+    if( -not ($InputObject -is 'type')) {
+        $found = ($InputObject)?.GetType().Name
+        if($Clip) {
+            return $Found |  Set-Clipboard -PassThru
+        } else {
+            return $found
+        }
+
+    }
 
     $found = @( $InputObject )?.Name ??
         @( $InputObject)?.GetType().Name ??
             'unknown'
+    $found | Write-debug
     if($Clip) {
         return $Found | Set-Clipboard -PassThru
     }
@@ -235,12 +295,22 @@ function Dotils.EC.GetNativeCommand {
     param(
         [CommandTypes]$CommandTypes = 'Application'
     )
+    $ExecutionContext.InvokeCommand.GetCommand
 }
 function Dotils.Fd.Recent {
     param(
-        '15minutes', '5minutes', '30seconds', '4hours'
+        [Parameter()]
+        [Alias('Recent', 'Last', 'Since')]
+        [ArgumentCompletions(
+            '15minutes', '5minutes', '30seconds', '4hours'
+        )]
+        [string]$TimeCondition
     )
-    [List[Object]]$FdArgs = @()
+
+    [List[Object]]$FdArgs = @(
+        '--changed-within'
+        $TimeCondition
+    )
 }
 function Dotils.Git.AddRecent {
     param(
@@ -254,7 +324,9 @@ function Dotils.Git.AddRecent {
         $Time
     )
     fd --changed-within 15minutes
-    | ?{ Test-Path $_ }
+    | ?{
+        # because early-exit-hotkey causes a non-filepath string to emit
+        Test-Path $_ }
     | fzf -m  --expect=q
 #| git add
 }
@@ -8932,6 +9004,7 @@ function Dotils.Get-NativeCommand {
         Returns only Applications, or executables, excluding all commands and aliases
     #>
     # [Alias('')]
+    # to rewrite
     param(
         [Alias('Path', 'LiteralPath')]
         # future: customAttributes: Find-MyNativeCommand
