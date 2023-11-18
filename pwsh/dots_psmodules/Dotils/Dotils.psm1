@@ -291,11 +291,112 @@ function Dotils.DropNamespace {
     }
     return $Found
 }
-function Dotils.EC.GetNativeCommand {
+function Dotils.EC.GetCommandName {
+    <#
+    .SYNOPSIS
+    .EXAMPLE
+        Pwsh 7.4.0> [1]
+            🐒> Dotils.Ec.GetCommandName pwsh
+
+            C:\Program Files\PowerShell\7\pwsh.exe
+            C:\Program Files\PowerShell\7\pwsh.exe
+
+            🐒> Dotils.Ec.GetCommandName pwsh* -Pattern
+            pwshNoProfile
+            C:\Program Files\PowerShell\7\pwsh.exe
+            C:\Program Files\PowerShell\7-preview\preview\pwsh-preview.cmd
+            C:\Program Files\PowerShell\7\pwsh.exe
+    #>
     param(
-        [CommandTypes]$CommandTypes = 'Application'
+        [ArgumentCompletions(
+            'python*',
+            'npm',
+            'git',
+            'ls',
+            'bat',
+            'fzf',
+            'pwsh',
+            'powershell',
+            'gh'
+        )]
+        [Parameter(Mandatory)]
+        [Alias('Name')]
+        [string]$CommandName,
+
+        [Alias('Pattern', 'UsingPattern')]
+        [switch]$IsPattern,
+
+        [Alias('NameOnly')]
+        [switch]$ShortName
     )
-    $ExecutionContext.InvokeCommand.GetCommand
+
+    $ExecutionContext.InvokeCommand.
+        GetCommandName( $CommandName, $IsPattern, (-not $ShortName) )
+}
+function Dotils.EC.GetCommand {
+    param(
+        # [Alias('Pattern')]
+        [string]$Name,
+        # enum automatically joins as a list
+        [CommandTypes]$CommandTypes = 'Application',
+
+        [Alias('All')]
+        [switch]$ListAll
+    )
+    if( -not $ListAll ) {
+        if( [string]::IsNullOrEmpty( $Name ) ) {
+            $query = $ExecutionContext.InvokeCommand.GetCommand($CommandTypes)
+        }
+        $query = $ExecutionContext.InvokeCommand.GetCommand($Name, $CommandTypes)
+    }
+
+}
+function Dotils.EC.GetNativeCommand {
+    <#
+    .NOTES
+        IEnumerable<CommandInfo> GetCommands(
+            str: name, CommandTypes, isPattern
+        [CommandInfo] GetCommand(
+            str: Name, CommandTypes
+        [CommandInfo] GetCommand(
+            str: Name, CommandTypes, object[]: args
+
+    #>
+    param(
+        # [Alias('Pattern')]
+        # enum automatically joins as a list
+        [string]$Name,
+
+        [Alias('AsPattern', 'Pattern')]
+        [switch]$IsPattern,
+
+        [Alias('All')]
+        [switch]$ListAll
+    )
+    # throw 'nyi pass'
+    [CommandTypes]$CommandTypes = 'Application'
+
+    if( -not $ListAll ) {
+        if( [string]::IsNullOrEmpty( $Name ) ) {
+            $query =
+                $ExecutionContext.
+                    InvokeCommand.
+                    GetCommand($CommandTypes)
+        } else {
+            $query =
+                $ExecutionContext.
+                    InvokeCommand.
+                    GetCommand($Name, $CommandTypes)
+        }
+    } else {
+        $query = $ExecutionContext.
+            InvokeCommand.
+            GetCommands( $Name, $CommandTypes, (-not $IsPattern ) )
+
+    }
+    return $query | CountOf
+
+
 }
 function Dotils.Fd.Recent {
     param(
@@ -14384,6 +14485,8 @@ $exportModuleMemberSplat = @{
         # 2023-11-18
         'Dotils.Goto.Error' # 'Dotils.Goto.Error' = { }
         'Dotils.DropNamespace' # 'Dotils.DropNamespace' =  { }
+        'Dotils.EC.GetCommandName' # 'Dotils.EC.GetCommandName' =  { }
+        'Dotils.EC.GetCommand' # 'Dotils.EC.GetNativeCommand' =  { }
         'Dotils.EC.GetNativeCommand' # 'Dotils.EC.GetNativeCommand' =  { }
         'Dotils.Fd.Recent' # 'Dotils.Fd.Recent' =  { }
         'Dotils.Git.AddRecent' # 'Dotils.Git.AddRecent' =  { }
