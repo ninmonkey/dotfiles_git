@@ -45,6 +45,162 @@ write-warning 'finish Dotils.Get-CachedExpression '
 #         return $Type?
 #     }
 # }
+
+@'
+wip
+Dotils.DropNamespace
+Dotils.Goto.Error
+Dotils.EC.GetNativeCommand
+Dotils.Fd.Recent
+Dotils.Git.AddRecent
+
+- [ ] add error category completions
+- [ ] add exception-name-completions
+- [ ] hotkey that runs exception-name-completion, then inserts into text instead of just completing parameter for a function to find it
+'@ | write-warning
+function Dotils.Goto.Error {
+    param(
+        [Parameter(
+            ParameterSetName='ByIndex', ValueFromPipeline, Position = 0 )]
+        $InputError
+    )
+
+}
+function Dotils.Select.Error {
+    [CmdletBinding()]
+    param(
+        [Alias('Id','Number', 'Offset')]
+        [Parameter(ParameterSetName='ByIndex', Mandatory )]
+        $ErrorIndex,
+
+        # Testing weird characters in autocomplete for quirks
+        [Alias('Kind','Type', 'Category', 'Condition', 'WhereIs', 'WhereMatch')]
+        [Parameter(ParameterSetName='ByKind', Mandatory )]
+        [ArgumentCompletions(
+            'ParserError',
+
+            'MissingEndParenthesisInFunctionParameterList',
+            'Re≔Missing␠Parameter␠List',
+            'Re:MissingParameterList',
+            'Re≔Missing〜␠Parameter〜List'
+        )]
+        [string[]]
+        $ByKind,
+    )
+    $Re = [ordered]@{
+        Syntax = [ordered]@{}
+    }
+    $Re.Syntax.MissingParamList = 'missing.*(parameter.*list)'
+
+    @{
+        Mode = $PSCmdlet.ParameterSetName
+        Index = 2
+    }
+    if($PSBoundParameters.ContainsKey('ByKind')) {
+        '-ByKind is hardcoded, wip' | write-host -back 'darkblue'
+    }
+
+
+    function __test.ShouldKeepError {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory, ValueFromPipeline)]
+            $InputObject
+        )
+        Join-String -in $MyInvocation.MyCommand -f 'enter => {0}'
+            | Write-verbose
+
+        # always false
+        $false
+
+    }
+
+    switch ($PSCmdlet.ParameterSetName) {
+        'ByIndex' {
+            # $global:error[ $ErrorIndex ]
+            $found = @( $global:error)[ $ErrorIndex ]
+            break
+        }
+        'ByKind' {
+            return
+            $found = @(
+                $global:error | ?{
+                    $tests = @( __test.ShouldKeepError -InputObject $_ -Verbose )
+                    if( ($tests -eq $true).count -gt 0 ) {
+                        return $true
+                    }
+                    return $false
+                }
+            )
+            break
+            # return $found
+            # if( @( $ByKind ) -contains 'ParserError' ) {
+
+            # }
+            # $global:Error.GetEnumerator() | ?{
+            #     $_.Exception.Message -match $Re.Syntax.MissingParamList
+            # }
+        }
+
+        default {
+            throw (Join-String -in $PSCmdlet.ParameterSetName -op
+             "Unhandled ParameterSet: ")
+        }
+
+        if(( $null -eq $found) -and $global:error.count -gt 0) {
+                'No Errors were found, however {0} errors exist' -f @( $Error.count
+                ) | write-warning
+        }
+    }
+    # $global:error
+
+
+}
+
+function Dotils.DropNamespace {
+    param(
+        [Parameter(ValueFromPipeline, Position=0)]
+        $InputObject,
+
+        [Alias('cl')]
+        [switch]$Clip
+    )
+
+    $found = @( $InputObject )?.Name ??
+        @( $InputObject)?.GetType().Name ??
+            'unknown'
+    if($Clip) {
+        return $Found | Set-Clipboard -PassThru
+    }
+    return $Found
+}
+function Dotils.EC.GetNativeCommand {
+    param(
+        [CommandTypes]$CommandTypes = 'Application'
+    )
+}
+function Dotils.Fd.Recent {
+    param(
+        '15minutes', '5minutes', '30seconds', '4hours'
+    )
+    [List[Object]]$FdArgs = @()
+}
+function Dotils.Git.AddRecent {
+    param(
+        [ArgumentCompletions(
+            '15minutes', '5minutes', '30seconds', '4hours'
+        )]
+        [string]$TimeCondition
+    )
+    [List[Object]]$FdArgs = @(
+        '--changed-within'
+        $Time
+    )
+    fd --changed-within 15minutes
+    | ?{ Test-Path $_ }
+    | fzf -m  --expect=q
+#| git add
+}
 # write-warning 'collect b dg .resolve.Timespan'
 function Dotils.Clipboard.CopyFileListFromExplorer {
     <#
@@ -14095,6 +14251,12 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-18
+        'Dotils.Goto.Error' # 'Dotils.Goto.Error' = { }
+        'Dotils.DropNamespace' # 'Dotils.DropNamespace' =  { }
+        'Dotils.EC.GetNativeCommand' # 'Dotils.EC.GetNativeCommand' =  { }
+        'Dotils.Fd.Recent' # 'Dotils.Fd.Recent' =  { }
+        'Dotils.Git.AddRecent' # 'Dotils.Git.AddRecent' =  { }
         # 2023-11-17
         'Dotils.Clipboard.CopyFileListFromExplorer' # 'Dotils.Clipboard.CopyFileListFromExplorer' = { }
         # 2023-11-16
