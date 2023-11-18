@@ -118,8 +118,26 @@ function Dotils.Select.Error {
 
         $ie = $InputError
 
+        $meta = [ordered]@{}
+        $Category? = ($ie)?.CategoryInfo
+        $Reason? = ($ie.CategoryInfo)?.Reason
+
+        $meta.Category = $Category?
+        $meta.Reason = $Reason?
+
+        $meta | Json -depth 2
+            | Join-String -sep "`n" -op 'meta := '
+            | Write-Debug
+
         # always false, test case
         $false
+
+        if( ($ie.CategoryInfo)?.ToString() -match 'ParserError' ) {
+            return $true
+        }
+        if( ($ie.CategoryInfo)?.Category -eq 'ParserError' ) {
+            return $true
+        }
 
 
         if($false -and 'quick notes for others'){
@@ -164,7 +182,7 @@ function Dotils.Select.Error {
             $found = @(
                 $global:error | ?{
                     $tests = @(
-                        __test.ShouldKeepError -InputObject $_ -Verbose
+                        __test.ShouldKeepError -InputObject $_ -Verbose -Debug
                     )
                     if( ($tests -eq $true).count -gt 0 ) {
                         return $true
