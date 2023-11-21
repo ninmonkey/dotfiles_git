@@ -93,6 +93,10 @@ class NamedDateTemplate {
         if($AlwaysAutoQuote) {
             $FinalCompletion = Join-String -in $This.FStr -DoubleQuote
         }
+        if( $null -eq $This.CompletionName -or $this.CompletionName.length -eq 0) {
+            throw "ListItemText can never be null! Came from completionName"
+
+        }
 
         if( [string]::IsNullOrEmpty( $this.CompletionName) ) {
             [ordered]@{
@@ -106,13 +110,20 @@ class NamedDateTemplate {
             | WriteJsonLog -Text '🔴 [CompletionResult]::AsCompletionResult ▸ ListItem cannot be null!'
 
         }
+        try {
+            $ce = [CompletionResult]::new(
+                <# completionText: #> $FinalCompletion,
+                <# listItemText: #> (( $this)?.CompletionName ?? "`u{2400}"), # ex: 'GitHub.DateTimeOffset'
+                <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
+                <# toolTip: #> $this.Format()
+            )
+            return $ce
+        } catch {
+            write-warning "Bad completion result: $_"
+        }
 
-        return [CompletionResult]::new(
-            <# completionText: #> $FinalCompletion,
-            <# listItemText: #> $this.CompletionName, # ex: 'GitHub.DateTimeOffset'
-            <# resultType: #> ($this.ResultType ?? [CompletionResultType]::ParameterValue),
-            <# toolTip: #> $this.Format()
-        )
+        return $null
+
 
         # if($AutoQuoteIfQuote -and $This.Fstr -match "'") {
         #     $FinalCompletion =
