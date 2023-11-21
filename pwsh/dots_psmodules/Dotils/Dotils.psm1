@@ -367,14 +367,26 @@ function Dotils.EC.GetNativeCommand {
         # enum automatically joins as a list
         [string]$Name,
 
+        [CommandTypes]$CommandTypes = 'Application',
+
         [Alias('AsPattern', 'Pattern')]
         [switch]$IsPattern,
 
         [Alias('All')]
         [switch]$ListAll
+        # ,[switch]$First
     )
-    # throw 'nyi pass'
-    [CommandTypes]$CommandTypes = 'Application'
+    if( [string]::IsNullOrEmpty($Name)) {
+        # if blank or null name, wildcard is the only option that applies
+        return $ExecutionContext.
+            InvokeCommand.
+            GetCommands('', $CommandTypes, $true )
+    }
+    throw 'nyi pass cat reboot'
+
+    if( $IsPattern ) {
+        # $found = $ExecutionContext.InvokeCommand.GetCommands
+    }
 
     if( -not $ListAll ) {
         if( [string]::IsNullOrEmpty( $Name ) ) {
@@ -11849,7 +11861,8 @@ function Dotils.Get-Item.FromClipboard {
     .SYNOPSIS
         sugar for resolving path as an object from the paste
     .EXAMPLE
-        # normal usage
+        # normal usage. Goto flag saves you one step:
+        Pwsh> Gcl.Gi -GotoFolder
         Pwsh> Gcl.Gi | Goto
 
         # or
@@ -11868,7 +11881,10 @@ function Dotils.Get-Item.FromClipboard {
     #>
     [Alias('Gcl.GetItem', 'Gcl.Gi')]
     [OutputType('System.IO.FileSystemInfo')]
-    param()
+    param(
+        [Alias('AutoPushD', 'Pushd')]
+        [switch]$GotoFolder
+    )
     $global:gi  = Get-Clipboard | Get-Item -ea 'stop'
 
     # write console, but also return GI as well
@@ -11877,6 +11893,13 @@ function Dotils.Get-Item.FromClipboard {
         | Join-String -op 'gi =: '
         | wInfo
 
+    if($GotoFolder -and (Test-Path $global:gi)) {
+        $global:gi  | Goto
+    } else {
+        'path is not valid: {0}' -f @( $Global:gi ?? "`u{2400}" )
+            | write-error
+        return
+    }
     return $global:gi
 }
 function Dotils.Accumulate.Hashtables {
@@ -15220,15 +15243,23 @@ if($true) {
 
 Import-Module $TryPath -PassThru -verbose -force -Scope 'Global' | Render.ModuleName
 # Import-Module (join-path $PSScriptRoot 'Dotils.New-UsingStatement.psm1') -PassThru | Render.ModuleName
+Import-Module ('H:\data\2023\pwsh\notebooks\Pwsh\Objects\Picky\Picky.psm1') -PassThru | Render.ModuleName
 Import-Module (join-path $PSScriptRoot 'Dotils.New-UsingStatement.psm1') -PassThru | Render.ModuleName
 
 Write-verbose 'pre-removing annoying modules, to decrease the size of Get-Command''s output'
 Remove-Module 'JumpCloud*'
 Remove-Module 'Az.*'
 
-# include forks: ? 'H:\data\2023\pwsh\my🍴\ugit.🍴\Use-Git.ps1'
-import-module -PassThru -Force 'H:\data\2023\pwsh\my🍴\ugit.🍴\Use-Git.ps1'
-    | Render.ModuleName
+# # include forks: ? 'H:\data\2023\pwsh\my🍴\ugit.🍴\Use-Git.ps1'
+# if($false -and 'useRegularFork') {
+#     import-module -PassThru -Force 'H:\data\2023\pwsh\my🍴\ugit.🍴\Use-Git.ps1'
+#         | Render.ModuleName
+# } else {
+#     'use non-fork so to the beta branch'
+#     # import-module -PassThru -Force 'H:\data\2023\pwsh\my🍴\ugit.🍴.beta\ugit.psm1'
+#     #     | Render.ModuleName
+    # import-module -PassThru -Force 'H:\data\2023\pwsh\my🍴\ugit.🍴.beta\ugit.psm1' | fl
+# }
 
 # // this does not import
 # $DotSrc = gi 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Template-CompleterType-AsCompletionsType.ps1' -ea 'continue'
