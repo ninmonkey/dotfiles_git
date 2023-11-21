@@ -12,3 +12,4 @@ everythingSearch/debug.log
 *.dll
 vscode/config-minimalism-ish/.input/*
 nin.Bookmark.txt
+vscode/profiles/desktop-main/inner.app.profiles/*

@@ -1,0 +1,68 @@
+{
+    /*
+    // new as of: 2023-09-22
+    */
+     "selected text: predent": {
+
+        "prefix": [
+            "predent.nin"
+            // "nin.Predent"
+        ],
+        "description": "🐒predent selected text 4 spaces",
+        "body": [
+            "\n",
+            "    $TM_SELECTED_TEXT",
+            "\n",
+        ]
+    },
+    /* below predates 2023.06
+    delim
+
+        ➙🠚▸·⇢⁞ ┐⇽▂↦[]≠∈⇒
+
+
+
+    */
+
+    "regex: escape quotes": {
+        // "scope": "disabled",
+        "prefix": "escape quotes",
+        "description": "escape double quotes ┐ 2023-06-08 🐫",
+        "body": [
+            "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
+        ]
+    },
+    "🐒regex: Fix Backslash escaped filepaths": {
+        // this could be editor command1
+        // safety, should probably require '['"]' on both ends of matches
+        // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        // "scope": "disabled", //json,jsonc",
+        // "scope": "disabled",
+        "prefix": "fix Backslash filepaths 📌",
+        "description": "Transforms \\\\ ⇒ / ┐ 2023-06-08 🐫",
+        "body": [
+            "${TM_SELECTED_TEXT/(\\\\{2})/\\//gi}", // out: /
+        ]
+    },
+    "🐒regex: Fix Backslash escaped filepaths": {
+        // this could be editor command1
+        // safety, should probably require '['"]' on both ends of matches
+        // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        // "scope": "disabled", //json,jsonc",
+        "prefix": "fix Backslash filepaths 📌",
+        "description": "Transforms \\\\ ⇒ /  ┐ A ┐ 2023-06-08 🐫",
+        "body": [
+            "${TM_SELECTED_TEXT/(\\\\{2})/\\//gi}", // out: /
+        ]
+    },
+    "🐒regex: Escape Double Quotes": {
+        // "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        // "scope": "disabled", //json,jsonc",
+        // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        "prefix": "re: Escape Double Quotes: escape quotes",
+        "description": "Transforms \" ⇒ \\\"  ┐ B ┐ 2023-06-08 🐫",
+        "body": [
+            "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
+        ]
+    },
+}

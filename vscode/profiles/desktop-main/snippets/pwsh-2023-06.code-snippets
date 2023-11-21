@@ -1,0 +1,239 @@
+{
+    // new snippets started 2023-06-21
+    /*
+    extension: <file:///C:\Users\cppmo_000\.vscode\extensions\ms-vscode.powershell-2023.9.2\snippets\PowerShell.json>
+        other snippets:
+
+snippets TOC index:
+
+    - [Readme TOC](file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\Readme.snippets.docs.md>)
+
+    ##  powershell:
+        - self: <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\pwsh-2023-06.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\pwsh%20⇢%20TypeWriter%20⇢%20NewFile%20Template.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\powershell.json>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\Pester5UnitTest.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\pester.code-snippets>
+        - <file:///>
+
+    ## other primary ones
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\powerquery.json>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\markdown.json>
+        - <file:///>
+
+    ## the rest
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\sql.json>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\global-2023-06.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\javascript_and_typescript.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\everything.code-snippets>
+        - <file:///>
+
+    ## minimal to none:
+
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\json_and_jsonc.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\csharp.json>
+        - <file:///>
+
+    ## oldest
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\last.powershell.json>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\templates.json.code-snippets>
+
+    ## others
+    */
+    // new snippets started 2023-01-24
+    "parameters ▸ log": {
+        /* first tab: highlight optionals,
+        2nd tab: end
+        */
+        "description": "Logs [PSCmdletBinding] Parameters 🐒 2023-06",
+        "scope": "powershell",
+        "prefix": "log params",
+        "body": [
+            "\\$PSCmdlet.MyInvocation.BoundParameters",
+            "    | ConvertTo-Json -Depth 0 -Compress",
+            "    | Join-String -op '${1:Func}: '",
+            "    ${2:| write-verbose -verbose}$0",
+        ]
+    },
+
+    "new PSCO": {
+        "description": "generate a Pwsh: PSCO 🐒 ⁞ 2023-08",
+        "scope": "powershell, jsonc",
+        "prefix": [
+            "psco","metahash"
+        ],
+        "body":
+            [
+        "\\$meta = [ordered]@{",
+        "   PSTypeName = 'dotils.${0:TypeName}'",
+        "   ${2:Foo = ${TM_SELECTED_TEXT}}",
+        "   ${0}",
+        "}",
+        "[pscustomobject]\\$meta",
+            ]
+    },"new PSCO": {
+        "description": "generate a Pwsh: PSCO 🐒 ⁞ 2023-08",
+        "scope": "powershell, jsonc",
+        "prefix": [
+            "dot psco dotils",
+            // "dotils psco"
+        ],
+        "body":
+            [
+        "\\$meta = [ordered]@{",
+        "   PSTypeName = 'dotils.{0}' -f \\$MyInvocation.MyCommand.Name",
+        "   ${2:Foo = ${TM_SELECTED_TEXT}}",
+        "   ${0}",
+        "}",
+        "[pscustomobject]\\$meta",
+            ]
+    },
+
+    "new one": {
+        "description": "basic pipeline function 🐒 ⁞ 2023-08",
+        "scope": "powershell, jsonc",
+        "prefix": [
+            "nin func pipeline",
+            "pipe func"
+        ],
+        "body":
+            [
+                "",
+                "function ${0:DooStuff} {",
+                "    <#",
+                "    .SYNOPSIS",
+                "        ${0:does stuff}",
+                "    .EXAMPLE",
+                "        Ps> ${0:DooStuff}",
+                "    #>",
+                "    # [Alias('Foo')]",
+                "    [CmdletBinding()]",
+                "    param(        ",
+                "        # stuff",
+                "        [Parameter(Position=0)]",
+                "",
+                "        # stuff",
+                "        [Parameter(Mandatory, ValueFromPipeline)]",
+                "        [object[]]\\$InputObject",
+                "    )",
+                "    begin {",
+                "        [Collections.Generic.List[Object]]\\$Items = @()",
+                "    }",
+                "    process {",
+                "        \\$Items.AddRange(@(\\$InputObject))",
+                "    }",
+                "    end {",
+                "        \\$Items",
+                "    }",
+                "}",
+
+        ]
+    },
+
+    // "parameters ▸ mandatory": {
+    //     /* first tab: highlight optionals,
+    //     2nd tab: end
+    //     */
+    //     "description": "parameter attribute template: mandatory",
+    //     "scope": "powershell",
+    //     "prefix": "param mandatory",
+    //     "body": [
+    //         "[Parameter(${1:Mandatory})]$0",
+    //     ],
+    // },
+    // "function ▸ CmdletBinding": {
+    //     /*
+    //     */
+    //     "description": "[CmdletBinding()] attribute",
+    //     "scope": "powershell",
+    //     "prefix": "CmdletBindng Binding",
+    //     "body": [
+    //         "[CmdletBinding(${1:Mandatory})]$0",
+    //     ],
+    // },
+    // "function ▸ full template": {
+    //     /*
+    //     */
+    //     "description": "Function full template",
+    //     "scope": "powershell",
+    //     "prefix": "function full",
+    //     "body": [
+    //         "function ${1:FuncName} {",
+    //         "    <#",
+    //         "    .SYNOPSIS",
+    //         "        .",
+    //         "    .EXAMPLE",
+    //         "        .",
+    //         "    #>",
+    //         "    [CmdletBinding()]",
+    //         "    param(",
+    //         "        $2",
+    //         "    )",
+    //         "    begin {}",
+    //         "    process { $0 }",
+    //         "    end {}",
+    //         "}",
+    //     ],
+    // },
+    // "debug⁞insert silly trace": {
+    //     /*
+	// 	quick examples
+	// 		- <https://macromates.com/manual/en/snippets>
+	// 			- choice boxes + cheat sheet vars and <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_choice>
+	// 			- variables: <https://macromates.com/manual/en/environment_variables>
+	// 			- regex special syntax <https://macromates.com/manual/en/regular_expressions#conditional-insertions>
+	// 		- blog on addon <https://www.freecodecamp.org/news/definitive-guide-to-snippets-visual-studio-code/>
+	// 		- addon: <https://marketplace.visualstudio.com/items?itemName=robole.snippets-ranger>
+	// 	*/
+    //     "scope": "powershell,ps1",
+    //     "prefix": "debug.tracePath",
+    //     "body": [
+    //         // super close but ${identifier} syntax is being interpreted as tabstops
+    //         // "\"⊢🐸 ↪ enter Pid: '$$pid' `\"$$PSCommandPath`\"\" | write-warning; [Collections.Generic.List[Object]]$$global:__ninPathInvokeTrace ??= @(); $$global:__ninPathInvokeTrace.Add($$PSCommandPath);",
+    //         "\"⊢🐸 ↪ enter Pid: '$$pid' `\"\\$$PSCommandPath`\"\" | write-warning; [Collections.Generic.List[Object]]$$global:__ninPathInvokeTrace ??= @(); $$global:__ninPathInvokeTrace.Add($$PSCommandPath);  <# 2023.02 #>",
+    //         "",
+    //         "${TM_SELECTED_TEXT}",
+    //         "",
+    //         "\"⊢🐸 ↩ exit  Pid: '$$pid' `\"$$PSCommandPath`\"\" | write-warning; [Collections.Generic.List[Object]]$$global:__ninPathInvokeTrace ??= @(); $$global:__ninPathInvokeTrace.Add($$PSCommandPath);  <# 2023.02 #>"
+    //     ],
+    //     "description": "silly log to console"
+    // },
+    // // "Pwsh⁞Generics.List⁞multiLine": {
+    // //     /*
+    // // 	*/
+    // //     "description": "generics.list.multiLine",
+    // //     "scope": "powershell,ps1,md,markdown",
+    // //     "prefix": "list.generic.multiLine",
+    // //     "body": [
+    // //         "[Collections.Generic.List[Object]]\\$${1:Items} = @(",
+    // //         "",
+    // //         "    ${2:${TM_SELECTED_TEXT}}",
+    // //         "",
+    // //         ")",
+    // //         // "sdf[fdsf", "fdsf]",
+    // //         // "${TM_SELECTED_TEXT}",
+    // //     ],
+    // // },
+    // // "Pwsh⁞Generics.List⁞singleLine": {
+    // //     /*
+    // //         [Collections.Generic.List[Object]]$Items = @( <selection> )
+    // // 	*/
+    // //     "description": "generics.list.singleLine",
+    // //     "scope": "powershell,ps1,md,markdown",
+    // //     "prefix": "list.generic.singleLine",
+    // //     "body": [
+    // //         "[Collections.Generic.List[Object]]\\$${1:Items} = @( ${2:${TM_SELECTED_TEXT}} 3 )",
+    // //         // "sdf[fdsf", "fdsf]",
+    // //         // "${TM_SELECTED_TEXT}",
+    // //     ],
+    // // },
+    // // "unicode⁞separator": {
+    // //     // "scope": "powershell,ps1",
+    // //     "prefix": "unicode.delim.separators",
+    // //     "body": [
+    // //         "▸·⇢⁞ ┐⇽▂⁞🐛💻▸⇢📄📁⁞ ┐⇽▂🏠🖧"
+    // //     ],
+    // //     // "description": "silly log to console"
+    // // },
+}

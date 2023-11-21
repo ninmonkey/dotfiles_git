@@ -1,0 +1,755 @@
+{
+    /*
+
+    Snippets: Powershell
+        [ code ]
+
+    Description:
+
+    todo:
+        - [ ] autocollect -> dotfiles_github
+
+    Refs:
+        snippet pattern examples:
+            <https://gist.github.com/ninmonkey/4fe8062d5ad1b2ad17e6f91a96984851>
+
+            transforming input: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples>
+            new: snippet variables: <https://code.visualstudio.com/updates/v1_53#_new-snippet-variables>
+            docs: <https://code.visualstudio.com/docs/editor/userdefinedsnippets>
+        dotfiles:
+            $Env:userprofile\Documents\2020\MyModules_Github\VSCode-ConfigSnippets\snippet\powershell.json
+
+
+        from: <https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/master/.vscode/snippets.code-snippets>
+
+        extension dir:
+            $Env:UserProfile\.vscode\extensions\ms-vscode.powershell[-preview]-<version>\snippets\PowerShell.json
+        see:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets#_choice
+
+    see also:
+        https://github.com/PowerShell/vscode-powershell/blob/master/docs/community_snippets.md
+
+    */
+    /*
+    Markdown Snippets (nin) 2023-02-14
+    */
+    /*
+    "Generics ⇢ List<T> ⇢ 🐒": {
+        "prefix": "list [List<T>] 🐒",
+        "description": "nin ⁞ Generics List",
+        */
+    "Pwsh⁞Param⁞CustomAttribute:ValidateNotUsed: ⇢ 🐒": {
+        /* 2023-08-31
+		*/
+        "description": "Parameter NYI Validation",
+        // "scope": "powershell,ps1,md,markdown",
+        "prefix": "param validate nyi",
+        "body": [
+            "[ValidateScript({throw 'nyi'})]",
+            // "sdf[fdsf", "fdsf]",
+            // "${TM_SELECTED_TEXT}",
+        ],
+    },
+    "Pwsh⁞Generics.List⁞multiLine ⇢ List<T> ⇢ 🐒": {
+        /*
+		*/
+        "description": "[List<T>] 🐒 multiLine 🐪 1234",
+        // "scope": "powershell,ps1,md,markdown",
+        "prefix": "li multi list.generic.multiLine",
+        "prefix": "list [List<T>] 🐒 multiLine",
+        "body": [
+            "[Collections.Generic.List[Object]]\\$${1:Items} = @(",
+            "",
+            "    ${2:${TM_SELECTED_TEXT}}",
+            "",
+            ")",
+            // "sdf[fdsf", "fdsf]",
+            // "${TM_SELECTED_TEXT}",
+        ],
+    },
+    "Pwsh⁞Generics.List⁞singleLine ⇢ List<T> ⇢ 🐒": {
+        /*
+            [Collections.Generic.List[Object]]$Items = @( <selection> )
+
+		*/
+        "description": "[List<T>] 🐒 1234",
+        // "scope": "powershell,ps1,md,markdown",
+        "prefix": "list.generic.singleLine",
+        "prefix": "list singleLine [List<T>] 🐒 🐪 ",
+        "body": [
+            "[Collections.Generic.List[Object]]\\$${1:Items} = @( ${2:${TM_SELECTED_TEXT}} )",
+            // "sdf[fdsf", "fdsf]",
+            // "${TM_SELECTED_TEXT}",
+        ],
+    },
+    "unicode⁞separator": {
+        // "scope": "powershell,ps1",
+        "prefix": "unicode.delim.separators",
+        "body": [
+            "▸·⇢⁞ ┐⇽▂⁞🐛💻▸⇢📄📁⁞ ┐⇽▂🏠🖧"
+        ],
+        // "description": "silly log to console"
+    },
+    /*
+    Markdown Snippets (nin) 2022-07-08
+    */
+    "Markdown Perfect Pwsh Prompt": {
+        "prefix": "perfect",
+        "description": "Prefix Perfect inline text with Pwsh prompt, no monkey to prevent half chars",
+        "body": [
+            "Pwsh>  ${TM_SELECTED_TEXT/\n/\n       /g}",
+        ],
+    },
+    /*
+    Markdown Snippets (nin) 2022-07-08
+    */
+    "Markdown Pwsh Prompt": {
+        "prefix": "mdPrompt🐒",
+        "description": "Prefix inline text with Pwsh prompt",
+        "body": [
+            "Pwsh🐒> ${TM_SELECTED_TEXT/\n/\n        /g}",
+        ],
+    },
+    /*
+    Add one like
+        $_.psobject.properties | %{ $_.Name, $_.value -join ' = ' }
+
+    */
+    "Snippet ⇢ PSObject Properties": {
+        /*
+
+        input:
+
+            $x
+
+        output:
+
+            $x.psobject.properties | ForEach-Object {
+               $_.TypeNameOfValue, $_.Name, $_.value -join ' = '
+            }
+
+        */
+        "prefix": "listProps : PSObject.properties : 🐒",
+        "body": [
+            // $_.TypeNameOfValue, $_.Name, $_.value -join ' = '
+            "${TM_SELECTED_TEXT}.psobject.properties | ForEach-Object {",
+            // "   $$_.${2:$$_.$$_.Name, $$_.value -join ' = '}",
+            "   ${2:$$_.TypeNameOfValue, $$_.Name, $$_.value -join ' = '}",
+            "}"
+        ],
+        "description": "inline definition to enumrate over '$_.PSObject.Properties' "
+    },
+    // "🐒regex: ($␀)?.NullConditional": {
+    //     "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+    //     "prefix": "?.NullConditional : selection",
+    //     "description": "($␀) Transforms \" ⇒ \\\"",
+    //     "body": [
+    //         "(${1:$TM_SELECTED_TEXT})?{0}"
+    //     ]
+    // },
+    "Func ⇢ User $Options @{..} ⇢ 🐒": {
+        "prefix": "Function ⇢ Options 🐒",
+        "description": "nin func with $Config defaults plus user -Options @{..} 🐒",
+        "body": [
+            "function Verb-Noun {",
+            "    <#",
+            "        .synopsis",
+            "            .",
+            "        .notes",
+            "            .",
+            "        .example   ",
+            "            PS> Verb-Noun -Options @{ Title='Other' }",
+            "        #>",
+            "    # [outputtype( [string[]] )]",
+            "    # [Alias('x')]",
+            "    [cmdletbinding()]",
+            "    param(",
+            "        # docs",
+            "        # [Alias('y')]",
+            "        [parameter(Mandatory, Position = 0, ValueFromPipeline)]",
+            "        [object]\\$InputObject, ",
+            "    ",
+            "        # extra options",
+            "        [Parameter()][hashtable]\\$Options",
+            "    )",
+            "    begin {",
+            "        [hashtable]\\$ColorType = Join-Hashtable \\$ColorType (\\$Options.ColorType ?? @{})       ",
+            "        [hashtable]\\$Config = @{",
+            "            AlignKeyValuePairs = \\$true",
+            "            Title              = 'Default'",
+            "            DisplayTypeName    = \\$true",
+            "        }",
+            "        \\$Config = Join-Hashtable \\$Config (\\$Options ?? @{})        ",
+            "    }",
+            "    process {}",
+            "    end {}",
+            "}"
+        ]
+    },
+    "Requires Version 🐒 7": {
+        "prefix": "req7 requires-version | nin 🐒",
+        "body": "#Requires -Version ${1:7}\n$0",
+        "description": "Requires 🐒 a minimum version of PowerShell in order to execute the containing script file."
+    },
+    "herestring variables": {
+        "prefix": "hereStr : Variable 🐒",
+        "body": [
+            "@\"",
+            "${1:$TM_SELECTED_TEXT}",
+            "\"@",
+            "${0}"
+        ],
+        "description": "Interpolated Here-string. Intended  to be hotkey only, when there's a selection to wrap "
+    },
+    "Expression -> null conditional": {
+        /*
+            input
+                $x[0]
+                $x[
+
+            goal:
+                ($x)?[0]
+
+        */
+        "description": "converts '($x)?[0]' to '($x)?[0]' using the 'null conditional operator'. see <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7#null-conditional-operators--and-> ",
+        "prefix": "? conditional ?[ null conditional",
+        "body": [
+            "(${1:$TM_SELECTED_TEXT})?${0:[0]}",
+        ],
+    },
+    "Exception ⇢ Basic Catch 🐒": {
+        "prefix": "Try Catch Exception ⇢ Basic 🐒",
+        "description": "minimal catch | Supports selected text.",
+        "body": [
+            // "",
+            "try {",
+            "    ${1:${TM_SELECTED_TEXT}}",
+            "    ${0}",
+            "}",
+            "catch {",
+            "    \\$PSCmdlet.WriteError(\\$_)",
+            "}",
+            // "",
+        ]
+    },
+    "herestring literal": {
+        "prefix": "hereStr : Literal 🐒 Literal Herestring",
+        "body": [
+            "@'",
+            "${1:$TM_SELECTED_TEXT}",
+            "'@",
+            "${0}"
+        ],
+        "description": "Literals Here-String. Intended  to be hotkey only, when there's a selection to wrap"
+    },
+    "[from_insiders]Completer ⇢ PS6 ⇢ IArgumentCompleter Class🐒": {
+        "prefix": "[from_insiders]completer-nin-IArgumentCompleter",
+        "description": "PS6+ IArgumentCompleter class",
+        "body": [
+            "# requires PS6+ (verify): <https://gist.github.com/ninmonkey/dd90aa7a1641b6643cfd904557115909>",
+            "# snippet WIP",
+            "class ${1:ArgumentCompleter} : System.Management.Automation.IArgumentCompleter {",
+            "\t[System.Collections.Generic.IEnumerable[System.Management.Automation.CompletionResult]] CompleteArgument(",
+            "\t\t[string] \\$CommandName,",
+            "\t\t[string] \\$ParameterName,",
+            "\t\t[string] \\$WordToComplete,",
+            "\t\t[System.Management.Automation.Language.CommandAst] \\$CommandAst,",
+            "\t\t[System.Collections.IDictionary] \\$FakeBoundParameters",
+            "\t) {",
+            "\t\t\\$CompletionResults = [System.Collections.Generic.List[System.Management.Automation.CompletionResult]]::new()",
+            "\t\t",
+            "\t\t${0:$TM_SELECTED_TEXT}",
+            "\t\t",
+            "\t\treturn \\$CompletionResults",
+            "\t}",
+            "}"
+        ],
+    },
+    "[from_insiders]Parameter ⇢ Completion ⇢ Suggest": {
+        "description": "[from_insiders]🐒⁞ PS6 ArgumentCompletions() suggest without validation [Parameter()]",
+        "prefix": "completer-nin-suggest🐒",
+        "body": [
+            "[Parameter(Mandatory, Position = 0)]",
+            "[ArgumentCompletions(",
+            "    '${1:one}'",
+            "[string]\\$${2:InputName},",
+            "${0}",
+        ],
+    },
+    "[from_insiders]Parameter 2⇢ Basic": {
+        "description": "[from_insiders]nin 2⁞ A basic [Parameter()]",
+        "prefix": "Parameter 🐒 default",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position = 0})]",
+            "[${3:object}]$${4:ParameterName}${0}",
+        ],
+    },
+    "$PSCommandlet ⇢ ThrowTerminatingError": {
+        /*
+            This doesn't have a fancy template choice
+            this gives you a cleaner experience than the choice-box
+            */
+        "prefix": "ThrowTerminatingError() : 🐒",
+        "body": [
+            "\\$PSCmdlet.ThrowTerminatingError(",
+            "    [ErrorRecord]::new(",
+            "        [InvalidOperationException]::new('${1:My message}', \\$_.Exception),",
+            "        '${2:MyId}',",
+            "        '${3:MyCategory}',",
+            "        \\$${4:myTarget}))${0}",
+        ],
+        "description": "a quick Parameter()"
+    },
+    "Parameter ⇢ Basic": {
+        /*
+            This doesn't have a fancy template choice
+            this gives you a cleaner experience than the choice-box
+            */
+        "prefix": "param nin",
+        "body": [
+            "# ${3} ",
+            "[Parameter(${1:Mandatory, Position = 0})]",
+            "${2:[string]$$Name},"
+            // "[${3:object}]$${4:ParameterName}$0",
+        ],
+        "description": "a quick Parameter()"
+    },
+    "Parameter 2⇢ Basic": {
+        "description": "nin 2⁞ A basic [Parameter()]",
+        "prefix": "Parameter 🐒 default",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position = 0})]",
+            "[${3:object}]$${4:ParameterName}${0}",
+        ],
+    },
+    "[fromInsiders] Parameter 3⇢ Basic": {
+        "description": "[fromInsiders]  MinimalParma: nin 2⁞ A basic [Parameter()]",
+        "prefix": "zparam", // paramznparam nin | Parameter 🐒",
+        "body": [
+            //     "# y",
+            // "[Parameter()]$x,"
+            //     ""
+            "# ${4:Docstring}",
+            "[Parameter(${1:Mandatory, Position = 0})]",
+            "[${2:object}]\\$${3:ParameterName}${0:,}",
+        ],
+    },
+    "Dev.Nin ⇢ Template": {
+        /*
+        */
+        "prefix": "Dev.nin🧪 Func Template 🐒",
+        "description": "a quick dev.nin template",
+        "body": [
+            "#Requires -Version 7",
+            "",
+            "if ( \\$experimentToExport ) {",
+            "    \\$experimentToExport.function += @(",
+            "        ${1:# ''}",
+            "    )",
+            "    \\$experimentToExport.alias += @(",
+            "        ${2:# ''}",
+            "    )",
+            "}",
+            "",
+            "${0:$TM_SELECTED_TEXT}",
+            "",
+            "if (! \\$experimentToExport) {",
+            "    # ...",
+            "}",
+        ],
+    },
+    "Parameter ⇢ Simple (extra tabstop choices)": {
+        // a little more complicated
+        // "prefix": "Parameter nin : 🐒 ChoiceBox",
+        "prefix": "Parameter ⇢ Simple (extra tabstop choices) 🐒",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(${2:Mandatory, Position = 0})]",
+            "[${3:object}]$${4:ParameterName}$0",
+        ],
+        // "body": [
+        //     "# ${1:Docstring}",
+        //     "[Parameter(${2:Mandatory, Position = 0})]",
+        //     "[${3:object}]$${4:ParameterName}$0",
+        // ],
+        "description": "nin ⁞ A basic [Parameter()]"
+    },
+    // "Function 2⇢ Cmdlet": {
+    //     "prefix": "ToAsk: Function⇢ [CmdletBinding] 🐒",
+    //     "description": "nin 2⁞ CmdletBinding with initial params",
+    //     "body": [
+    //         "[CmdletBinding(",
+    //         "",
+    //         ")]",
+    //         "param (",
+    //         "    # ${3:docstring}",
+    //         "    [Parameter(Mandatory, Position = 0,",
+    //         "wip -- do the always CmdletWriteError",
+    //         "in the try catch",
+    //         "in the try here",
+    //         // Best practice is to use doc strings, not the attribute
+    //         // "        ",
+    //         "    [${1:TypeName}]$${2:ParameterName}$0",
+    //         ")"
+    //     ]
+    // },
+    // "CmdletBinding()": {
+    //     "prefix": "WIP -- [CmdletBinding()]",
+    //     "description": "nin ⁞ CmdletBinding with initial params",
+    // "Func ⇢ User $Options @{..} ⇢ 🐒": {
+    // "prefix": "Function ⇢ Options 🐒",
+    // "description": "nin func with $Config defaults plus user -Options @{..} 🐒",
+    // nin ⁞ The important
+    "basic ⇢ [Hashtable] ⇢ 🐒": {
+        "prefix": "dict.hash [hashtable] 🐒",
+        "description": "nin ⁞ hashtable",
+        "body": [
+            "[hashtable]\\$${1:meta} = @{",
+            "   ${2:key} = ${3:value}",
+            "}",
+        ],
+    },
+    "Func ⇢ Pipeline 🐒": {
+        "prefix": "advancedPipe",
+        "description": "Complicated Defaults for a new Cmdlet function🐒",
+        "body": [
+            "using namespace System.Collections.Generic",
+            "",
+            "function ${1:FooBar} {",
+            "    <#",
+            "    .SYNOPSIS",
+            "        ${2:Stuff}",
+            "    .NOTES",
+            "        .",
+            "    .Description",
+            "        .",
+            "    .EXAMPLE",
+            "        Pwsh🐒> Gci",
+            "    #>",
+            "    # [Alias('foo')]",
+            "    [OutputType('PSObject')]",
+            "    [CmdletBinding()]",
+            "    param(",
+            "        # Main inputs",
+            "        # [Alias('Text')]",
+            "        [Parameter(Mandatory, ValueFromPipeline)]",
+            "        [object[]]$$InputObject,",
+            "",
+            "        # Expose additional settings, ie: it's **kwargs",
+            "        [Parameter()][hashtable]$$Options = @{}",
+            "    )",
+            "    begin {",
+            "        $$Config = Ninmonkey.Console\\Join-Hashtable -OtherHash $$Options -BaseHash @{",
+            "            SomeSetting = 'blank'",
+            "        }",
+            "        [list[object]]$$items = [list[object]]::new()",
+            "    }",
+            "    process {",
+            "        foreach ($$Obj in $$InputObject) {",
+            "            $$items.Add( $$Obj ) # or: $$propList.AddRange",
+            "        }",
+            "    }",
+            "    end {",
+            "        $$items",
+            "    }",
+            "}",
+        ],
+    },
+    "Older Func ⇢ Pipeline 🐒": {
+        "prefix": "Function ⇢ Pipeline 🐒",
+        "description": "old/minimal/Defaults for a  new function🐒",
+        "body": [
+            "function ${1:Get-Foo} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2:Stuff}",
+            "    .description",
+            "       .",
+            // "        ${3:Desc}",
+            "    .example",
+            "          .",
+            "    .outputs",
+            "          [string | None]",
+            "    ",
+            "    #>",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
+            "    param(",
+            "       [Parameter(Mandatory, Position = 0)]",
+            "       [string]\\$Name",
+            // "        ${4}",
+            "    )",
+            "    ",
+            "    begin {}",
+            "    process {",
+            "       ${0:${TM_SELECTED_TEXT}}", // to use selected text, see: "Function ⇢ Tiny"
+            // "    # todo: always wrap CmdletExceptionWrapper: From Sci",
+            "    }",
+            "    end {}",
+            "}"
+        ]
+    },
+    "Function ⇢ Pipeline ⇢ Collect All🐒": {
+        "prefix": "pipefunc",
+        "description": "Collects objects from the pipeline 🐒",
+        "body": [
+            "function ${1:Get-Foo} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2:Stuff}",
+            "    .description",
+            "       .",
+            "    .example",
+            "          .",
+            "    .outputs",
+            "          [object | None]",
+            "    ",
+            "    #>",
+            "    [CmdletBinding()]",
+            "    param(",
+            "        [Parameter(Mandatory, ValueFromPipeline)]",
+            "        [object[]]\\$InputObject",
+            // "        ${4}",
+            "    )",
+            "    ",
+            "    begin {",
+            "        [list[object]]\\$items = @()",
+            "    }",
+            "    process {",
+            "        \\$items.AddRange( \\$InputObject )",
+            "    }",
+            "    end {",
+            "        \\$items",
+            "    }",
+            "}"
+        ]
+    },
+    // "old_Func ⇢ Pipeline ⇢ Collect All🐒": {
+    //     "prefix": "Function ⇢ Collect All Pipeline 🐒",
+    //     "description": "Collects all objects from the pipeline 🐒",
+    //     "body": [
+    //         "function ${1:Get-Foo} {",
+    //         "    <#",
+    //         "    .synopsis",
+    //         "        ${2:Stuff}",
+    //         "    .description",
+    //         "       .",
+    //         "    .example",
+    //         "          .",
+    //         "    .outputs",
+    //         "          [object | None]",
+    //         "    ",
+    //         "    #>",
+    //         "    [CmdletBinding(PositionalBinding = \\$false)]",
+    //         "    param(",
+    //         "        [Parameter(Mandatory, Position = 0)]",
+    //         "        [string]\\$Name",
+    //         // "        ${4}",
+    //         "    )",
+    //         "    ",
+    //         "    begin {",
+    //         "        \\$NameList = [list[string]]::new()",
+    //         "    }",
+    //         "    process {",
+    //         "        \\$Name | ForEach-Object {",
+    //         "            \\$NameList.Add( \\$_ )",
+    //         "        }",
+    //         "    }",
+    //         // "       ${0:${TM_SELECTED_TEXT}}", // to use selected text, see: "Function ⇢ Tiny"
+    //         // "    # todo: always wrap CmdletExceptionWrapper: From Sci",
+    //         "    end {",
+    //         "        \\$NameList",
+    //         "    }",
+    //         "}"
+    //     ]
+    // },
+    "Func ⇢ Basic 🐒": {
+        "prefix": "Function ⇢ Basic 🐒",
+        "description": "Minimal defaults | Supports selected text.",
+        "body": [
+            "function ${1:Get-Foo} {",
+            "    <#",
+            "    .synopsis",
+            "        ${2:Stuff}",
+            "    .description",
+            "        .",
+            "    ",
+            "    #>",
+            "    [CmdletBinding(PositionalBinding = \\$false)]",
+            "    param(",
+            "        ${0}",
+            "    )",
+            "    ${4:${TM_SELECTED_TEXT}}", // works.. not sure whether I want to use selection
+            "}"
+        ]
+    },
+    // "Label🐈": {
+    //     "prefix": "prefix🐶",
+    //     "description": "description🦆",
+    //     "body": [
+    //         "body🦇"
+    //     ]
+    // },
+    "CalculatedProperty": {
+        "prefix": "Calculated-Property ⇢ SingleLine 🐒",
+        "body": [
+            "@{name='${1:PropertyName}';expression={  \\$_.${2:${TM_SELECTED_TEXT:\\$_.PropertyValue }} }}$0"
+        ],
+        "description": "nin ⁞ a CalculatedProperty on a Single Line",
+    },
+    "CalculatedProperty: Multiline": {
+        "prefix": "Calculated-Property ⇢ MultiLine 🐒",
+        "description": "nin ⁞ a CalculatedProperty using multiple lines",
+        "body": [
+            "@{",
+            "    Name = '${1:PropertyName}'",
+            "    Expression = {",
+            "        \\$_.${2:${TM_SELECTED_TEXT:PropertyValue}}",
+            "   }",
+            "}$0",
+        ],
+    },
+    "IfShouldProcess": {
+        "prefix": "IfShouldProcess : <Selection> 🐒",
+        "description": "nin ⁞ Creates ShouldProcess block from your Selection",
+        "body": [
+            "if (\\$PSCmdlet.ShouldProcess(\"${1:Target}\", \"${2:Operation}\")) {",
+            "    ${0:$TM_SELECTED_TEXT}",
+            "}"
+        ],
+    },
+    "Parameter ⇢ Switch": {
+        "prefix": "Param ⇢ [Switch] 🐒",
+        "description": "nin ⁞ adds a [switch] parameter",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter()][switch]\\$${0}"
+        ]
+    },
+    // "Function ⇢ Basic": {
+    //     "prefix": "Function ⇢ Basic",
+    //     "description": "nin ⁞ A basic function",
+    //     "body": [
+    //         "function ${1:Name} {",
+    //         "    <#",
+    //         "    .synopsis",
+    //         "        ${2}",
+    //         "    .description",
+    //         "        .",
+    //         "    .example",
+    //         "        PS>",
+    //         "    .notes",
+    //         "        .",
+    //         "    #>",
+    //         "    param (",
+    //         "        ${0}",
+    //         "    )",
+    //         "    begin {}",
+    //         "    process {}",
+    //         "    end {}",
+    //         "}",
+    //     ],
+    // },
+    /*
+    "Parameter: Completer ⇢ ValidateSet": {
+        "prefix": "Param ⇢ Completer | [ValidateSet] 🐒",
+        // "prefix": "Completer ⇢ ValidateSet",
+        "description": "nin ⁞ Autocompleter parameter from a static list using ValidateSet()",
+        "body": [
+            "# ${1:Docstring}",
+            "[Parameter(",
+            "    ${2:Mandatory}, ${3:Position = 0},",
+            "    [ValidateSet(${4})]",
+            "    [string[]]$${5:ParameterName})",
+            "$0",
+        ],
+    },
+    */
+    "Parameter: Completer 2 ⇢ ValidateSet": {
+        "prefix": "Param 2⇢ Completer | [ValidateSet] 🐒",
+        // "prefix": "Completer ⇢ ValidateSet",
+        "description": "nin 2⁞ Autocompleter parameter from a static list using ValidateSet()",
+        "body": [
+            "# ${1:Docstring}",
+            "[ValidateSet(${2:'a', 'b'})]",
+            "[Parameter(${3:Mandatory, Position = 0})]",
+            "[string[]]$${4:ParameterName}",
+            "${0}"
+        ],
+    },
+    "Switch ⇢ ParameterSetNameSwitch": {
+        "prefix": "Switch ⇢ $PSCmdlet.ParameterSetName { .. } : 🐒",
+        "description": "nin ⁞ Template for a switch with ParameterSetNames",
+        "body": [
+            "switch (\\$PSCmdlet.ParameterSetName) {",
+            "    ${1:'x'} {",
+            "        ${2}",
+            "        break",
+            "    }",
+            "    ${0}",
+            "    default {",
+            "        throw \"Unhandled ParameterSet: $(\\$PSCmdlet.ParameterSetName)\"",
+            "    }",
+            "}",
+        ],
+    },
+    "Web ⇢ Invoke-RestMethod": {
+        "prefix": "Web ⇢ Invoke-RestMethod 🐒",
+        "description": "nin ⁞ Invoke-RestMethod | template saves response data",
+        "body": [
+            "\\$splat_irm = @{",
+            "    Uri                     = '${1:$TM_SELECTED_TEXT}'",
+            "    Body                    = @{",
+            "        ${2}",
+            "    }",
+            "    # Form = @{}",
+            "    Method                  = 'Get'",
+            "    SessionVariable         = 'sess_var'",
+            "    StatusCodeVariable      = 'status_var'",
+            "    ResponseHeadersVariable = 'response_var'",
+            "    # ContentType = ''",
+            "    # TimeoutSec = 0",
+            "    # Token = 'foo'",
+            "    # Authentication = 'OAuth'",
+            "    Headers                 = @{}",
+            "}",
+            "",
+            "\\$Response ??= Invoke-RestMethod @splat_irm${0}",
+        ],
+    },
+    "Help ⇢ Comment Based": {
+        //was not getting priority, since snippet ext:  "ninParameter [Parameter] : Basic",
+        "prefix": "DocString Help Docstring 🐒",
+        "description": "nin ⁞ The important docstring attributes. Selected Text Populates Synopsis",
+        "body": [
+            "<#",
+            ".synopsis",
+            "    ${1:${TM_SELECTED_TEXT:Short Description}}",
+            ".description",
+            "    Long description",
+            ".example",
+            "    PS> .",
+            ".inputs",
+            "    Summary of Pipeline Inputs",
+            ".outputs",
+            "    None",
+            ".notes",
+            "    General notes",
+            ".link",
+            "    command",
+            "#>",
+            "${0}",
+        ],
+    },
+    "TypeWriter ⇢ New File ⇢ as [TypeWriter].Completer 🙊": {
+        "isFileTemplate": true,
+        "prefix": "tw.NewFile . TypeWriter : Completer",
+        // "scope": "powershell",
+        "description": "TypeWriter ⇢ New File ⇢ as [TypeWriter].Completer 🙊\n ; tw.NewFile . TypeWriter : Completer",
+        "body": [
+            "new file blah"
+        ],
+    },
+}

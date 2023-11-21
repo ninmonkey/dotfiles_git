@@ -1,0 +1,229 @@
+{
+    /*
+    ## newer-ish, since: 2023-09-22
+
+    - scopes are either set to 'ruby' or 'disabled' for testing, without messing with real languages
+    */
+    /*
+
+    ## info that predates 2023-06-01 starts here:
+        description:
+            Examples of different input types
+            this isn't an actual snippet file to use
+            it's an example template
+
+    New: Snippet variables
+
+        https://code.visualstudio.com/updates/v1_53#_new-snippet-variables
+
+        docs:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets
+        regex transform:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples
+        extension snippets tutorial:
+            https://code.visualstudio.com/api/language-extensions/snippet-guide
+        vscode variables:
+            https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables
+
+    additional examples:
+        https://rkeithhill.wordpress.com/2016/02/17/creating-a-powershell-command-that-process-paths-using-visual-studio-code/
+
+    todo:
+
+        selected text falls back to a default
+            ${0:${TM_SELECTED_TEXT:fully-qualified-name}}
+    */
+
+
+    "newVars: part1": {
+        "scope": "ruby",
+        "description": "simple statement variables | newVars part1",
+        "prefix": "newVars1",
+        "body": [
+            "let someId = ",
+            "   \"${RELATIVE_FILEPATH}/unique-${UUID}\"",
+            "in someId${0}"
+        ]
+    },
+    "newVars: part2": {
+        "scope": "ruby",
+        "description": "simple statement variables | newVars part2. always newlines after tab. shared variable name",
+        "prefix": "newVars2",
+        "body": [
+            "let ${1:someId} = ",
+            "   \"${RELATIVE_FILEPATH}/unique-${UUID}\"",
+            "in ${1:someId},${0}",
+        ]
+    },
+    "newVars: part3": {
+        "scope": "ruby",
+        "description": "simple statement variables | newVars part3. tab through optional trailing",
+        "prefix": "newVars3",
+        "body": [
+            "let ${1:someId} = ",
+            "   \"${RELATIVE_FILEPATH}/unique-${UUID}\"",
+            // "in ${1:someId}${2|a,b|}",
+            "in ${1:someId}${2|\\,,_|};", // easier to visualize
+            "${0}",
+        ]
+    },
+
+    /*
+        section that predates 2023-06-01 starts here:
+    */
+
+    // sample snippet using UUID and RELATIVE_FILEPATH
+
+    "PowerQuery.Add Calculated Columns": {
+        // "Add Custom Column": {
+        "scope": "ruby",
+        "prefix": "Add Column",
+        "description": "Table ⁞ Add a custom column. If text is selected that becomes the inner each expression.",
+        "body": [
+            "${4:StepName} = Table.AddColumn(",
+            "   ${2:TableName},",
+            "    \"${3:ColumnName}\",",
+            "    each ${0:$TM_SELECTED_TEXT}",
+            "    ${1|type text,Int64.Type,type any|}",
+            // "    ${4|type any|type record|type table| type list|}",
+            "),",
+        ],
+        // "    ${4:type any|type record|type table| type list}",
+    },
+    // },
+    "multiple tab groups including repeated values": {
+        "scope": "ruby",
+        "prefix": "Function",
+        "description": "Function ⁞ add a new function. Note that 4 is used twice on purpose.",
+        "body": [
+            "/* about:",
+            "*/",
+            "${1:Name} = (${2}) as ${3}  =>",
+            "    let",
+            "        ${4}  = ${0}",
+            "",
+            "    in",
+            "        ${4},",
+        ],
+    },
+    "Choice: Select One": {
+        "scope": "ruby",
+        "prefix": "choice",
+        "description": "select from UI Popup menu",
+        "body": [
+            "${1|one,two, three|}"
+        ]
+    },
+
+        /* these are no longer working, todo */
+    "regex: escape quotes": {
+        "scope": "ruby",
+        "prefix": "escape quotes",
+        "description": "escape double quotes",
+        "body": [
+            "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
+        ]
+    },
+    "regex: strip extension": {
+        "prefix": "regex: strip the final .text",
+        "description": "regex strip",
+        "body": [
+            "${TM_SELECTED_TEXT/(.*)\\..+?$/$1/}"
+        ]
+    },
+    "regex: quote all lines, up to selection": {
+        "prefix": "regex: quote all lines, up to selection",
+        "description": "regex: quote all lines, to selection. at this point it's better to use an extension",
+        "body": [
+            "${TM_SELECTED_TEXT/^(.*)$/\"$1\"/gim}"
+        ]
+    },
+
+
+    "Dynamic: Datetime": {
+        "scope": "ruby",
+        // "scope": "",
+        "prefix": "example_dynamic",
+        "description": "insert datetimes",
+        "body": [
+            "\\$CURRENT_YEAR = '$CURRENT_YEAR'", // The current year
+            "\\$CURRENT_YEAR_SHORT = '$CURRENT_YEAR_SHORT'", // The current year's last two digits
+            "\\$CURRENT_MONTH = '$CURRENT_MONTH'", // The month as two digits (example '02')
+            "\\$CURRENT_MONTH_NAME = '$CURRENT_MONTH_NAME'", // The full name of the month (example 'July')
+            "\\$CURRENT_MONTH_NAME_SHORT = '$CURRENT_MONTH_NAME_SHORT'", // The short name of the month (example 'Jul')d
+            "\\$CURRENT_DATE = '$CURRENT_DATE'", // The day of the month
+            "\\$CURRENT_DAY_NAME = '$CURRENT_DAY_NAME'", // The name of day (example 'Monday')
+            "\\$CURRENT_DAY_NAME_SHORT = '$CURRENT_DAY_NAME_SHORT'", // The short name of the day (example 'Mon')
+            "\\$CURRENT_HOUR = '$CURRENT_HOUR'", // The current hour in 24-hour clock format
+            "\\$CURRENT_MINUTE = '$CURRENT_MINUTE'", // The current minute
+            "\\$CURRENT_SECOND = '$CURRENT_SECOND'", // The current second
+            "\\$CURRENT_SECONDS_UNIX = '$CURRENT_SECONDS_UNIX'", // The number of seconds since the Unix epoch
+        ]
+    },
+
+    "Date-Iso": {
+        "scope": "ruby",
+        "prefix": "date",
+        "description": "insert current [Date] (without time) in iso format",
+        "body": [
+            "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE"
+        ]
+    },
+    "TabStop: order": {
+        "scope": "disabled",
+        "prefix": "tab",
+        "description": "tabs jump to the next number, 0 is the final location",
+        "body": [
+            "{",
+            "    'First': '$1'",
+            "}",
+            "$0"
+        ]
+    },
+    "Variable: With defaults": {
+        "scope": "ruby",
+        "prefix": "variable",
+        "description": "variables fallback to an empty string, if default values are not set",
+        "body": [
+            "'${IDoNotExist:Stuff}' so end up as text, tab-stopped",
+            // "$novar"
+        ]
+    },
+    "selected Text: quote": {
+        "scope": "disabled",
+        "prefix": "select",
+        "description": "use currently selected text",
+        "body": [
+            ";\nSelected text was: [",
+            "\t> $TM_SELECTED_TEXT",
+            "]\n",
+        ]
+    },
+    "Dynamic: Filename": {
+        "scope": "json",
+        "prefix": "Filename",
+        "description": "get current filename and transform it",
+        "body": [
+            "\n\n<-- start:",
+            "\nFullName:",
+            "\t${TM_FILEPATH}",
+            "Directory: FullName:",
+            "\t${TM_FILEPATH/(.*)\\..+$/$1/}",
+            "\nFilename:\n\t$TM_FILENAME",
+            "\nBaseName:\n\t$TM_FILENAME_BASE",
+            "\nEnd -->\n",
+        ]
+    },
+    "ex: conditional return statement": {
+        "scope": "disabled",
+        "prefix": "ex: conditional return statement",
+        "description": "Description",
+        "body": [
+            "test format of the popup",
+            "(${1:void})${2:methodName}",
+            "{${1/void$|(.+)/${1:+\n\treturn nil;}/}",
+            "}"
+        ]
+    },
+
+}

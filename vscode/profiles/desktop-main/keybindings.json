@@ -1,0 +1,878 @@
+// Place your key bindings in this file to override the defaults
+[
+    /*
+        Rules are evaluated bottom to top, choosing the first binding that matches the 'when' expression. (ie: )
+
+
+    ## Top level cheatsheet pages, ie: best root links only
+
+        - Contexts and operators: https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+            - list of contexts
+            - list of operators
+            - custom 'in' conditions
+
+        - defaults + rich commands: https://code.visualstudio.com/docs/getstarted/keybindings#_rich-languages-editing
+
+        - ctrl+shift+p : inspec0t contexts at runtime
+        - 'Developer: Toggle Keyboard Shortcuts Troubleshooting'
+    ## Docs:
+        - your own addon: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
+
+
+        - schema of keybindings.json: https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-rules
+
+        - built-ins: https://code.visualstudio.com/api/references/commands
+        - when filtering: https://code.visualstudio.com/api/references/when-clause-contexts
+        - virtual key codes: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
+        - build-in contexts
+            https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+
+        - dev tool: https://code.visualstudio.com/docs/getstarted/keybindings#_troubleshooting-keybindings
+        - inspect enumerates all valid keys, to get contexts dynamically at runtime
+            ctrl+shift+P
+            https://code.visualstudio.com/api/references/when-clause-contexts#inspect-context-keys-utility
+
+        - more contexts and quote
+            https://code.visualstudio.com/api/references/when-clause-contexts#activefocused-view-or-panel-when-clause-context
+            https://code.visualstudio.com/api/references/when-clause-contexts#available-contexts
+            > The list here isn't exhaustive and you can find other when clause contexts by searching and filtering in the Keyboard Shortcuts editor (Preferences: Open Keyboard Shortcuts) or reviewing the Default Keybindings JSON file (Preferences: Open Default Keyboard Shortcuts (JSON)).
+
+        - new: don't quit if no editors are open <https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened>
+
+    ## Refactoring Keybind actions
+        - custom binding to refactor https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions
+
+            ex:
+
+                {
+                    "key": "ctrl+shift+r ctrl+e",
+                    "command": "editor.action.codeAction",
+                    "args": {
+                        "kind": "refactor.extract.function"
+                        "apply": "first" // [ ifSingle | first | never]
+                    }
+                }
+
+            > When a Code Action keybinding is configured with "preferred": true, only preferred Quick Fixes and refactorings are shown. A preferred Quick Fix addresses the underlying error, while a preferred refactoring is the most common refactoring choice. For example, while multiple refactor.extract.constant refactorings may exist, each extracting to a different scope in the file, the preferred refactor.extract.constant refactoring is the one that extracts to a local variable.
+
+            > This keybinding uses "preferred": true to create a refactoring that always tries to extract the selected source code to a constant in the local scope:
+
+                {
+                    "key": "shift+ctrl+e",
+                    "command": "editor.action.codeAction",
+                    "args": {
+                        "kind": "refactor.extract.constant",
+                        "preferred": true,
+                        "apply": "ifsingle"
+                    }
+                }
+
+    - rich commands https://code.visualstudio.com/docs/getstarted/keybindings#_rich-languages-editing
+
+
+    ## Operators
+
+        'in' operator: https://code.visualstudio.com/api/references/when-clause-contexts#in-conditional-operator
+            Why?
+            >  if you wanted to add a context menu command to folders that contain a certain type of file (or something that can't be statically known), you can now use the in operator to achieve it.
+            ex:
+                "command": "ext.doSpecial",
+                "when": "explorerResourceIsFolder && resourceFilename in ext.supportedFolders"
+
+        regex match operator:
+            https://code.visualstudio.com/docs/getstarted/keybindings#_conditional-operators
+            standard ops, and
+Cat
+        ex:
+            "when": "resourceFilename =~ /docker/"
+
+    | operator | symbol | Example                                 |
+    | -------- | ------ | --------------------------------------- |
+    | Matches  | =~     | "resourceScheme =~ /^untitled$|^file$/" |
+
+Cat
+    ## Examples:
+        - <https://github.com/SeeminglyScience/dotfiles/blob/a7a9bcf3624efe5be4988922ba2e35e8ff2fcfd8/VSCode/keybindings.json>
+
+    ## New Commands
+        - [October 2020 | version 1.51](https://code.visualstudio.com/updates/v1_51#_new-commands)
+        - <https://code.visualstudio.com/updates/v1_57#_removed-cmdw-ctrlw-keybinding-to-close-window-when-no-editor-is-opened>
+
+
+    */
+    // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
+    {
+        // opens a new term in the editor area, but in a side
+        "key": "ctrl+numpad5",
+        "command": "workbench.view.extensions",
+        "when": "editorTextFocus",
+        // "args": "",
+    },
+    {
+        "key": "ctrl+numpad6",
+        "command": "workbench.action.toggleMaximizedPanel",
+        "when": ""
+    },
+    {
+        // "key": "ctrl+cmd+=",
+        // "key": "ctrl+numpad1", # moved to palette
+        // "command": "wwm.aligncode",
+        // "when": "editorTextFocus && !editorReadonly"
+        // "args": ""
+    },
+    // {
+    // // "key": "ctrl+cmd+=",
+    // // "key": "ctrl+numpad2",
+    // "when": "false",
+    // "command": "workbench.action.quickOpen",
+    // "command": "workbench.action.quickOpenrecent",
+    // "command": "workbench.action.quickPickManyToggle",
+    // "command": "workbench.action.quickPickManyToggle",
+    // "command": "workbench.action.quickSwitchWindow",
+    // "command": "workbench.action.toggleZenMode",
+    // // "args": ""
+    /*
+
+    [section]: Debugging
+
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+alt+enter",
+        "command": "notebook.cell.execute",
+        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-notebook.cell.execute",
+        "when": "config.jupyter.enableKeyboardShortcuts && editorTextFocus && inputFocus && notebookEditorFocused && notebookViewType == 'jupyter-notebook'"
+    },
+    {
+        "key": "ctrl+alt+enter",
+        "command": "jupyter.runcurrentcell",
+        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-jupyter.runcurrentcell",
+        "when": "editorTextFocus && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
+    },
+    {
+        "key": "alt+enter",
+        "command": "notebook.cell.executeAndSelectBelow",
+        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
+    },
+    {
+        "key": "shift+enter",
+        "command": "-notebook.cell.executeAndSelectBelow",
+        "when": "notebookCellListFocused && notebookCellExecutionState == 'failed' || notebookCellExecutionState == 'idle' || notebookCellExecutionState == 'succeeded' && notebookKernelCount > 0"
+    },
+    {
+        /* manually opt in to languages  */
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        // "when": "editorTextFocus && editorLangId == 'markdown' || editorLangId == 'powerquery' || editorLangId == 'swift'"
+        "when": "editorTextFocus"
+    },
+    {
+        //jump to breakpoints (only in the text editor)
+        "key": "ctrl+alt+numpad2",
+        "command": "editor.debug.action.goToNextBreakpoint",
+        "when": "editorTextFocus"
+    },
+    // new: command: <https://code.visualstudio.com/updates/v1_59#_create-terminal-in-editor-area-to-the-side>
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.createTerminalEditorSided",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+numpad1",
+        "command": "editor.debug.action.goToPreviousBreakpoint",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+alt+j",
+        "command": "code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-code-runner.runByLanguage"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-markdown.extension.editing.toggleBold",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == 'markdown'"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "editor.action.joinLines"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-md-shortcut.toggleBold",
+        "when": "editorTextFocus && markdownShortcuts:enabled"
+    },
+    /*
+
+    Powershell: Pester
+    */
+    /*
+
+    h1: Toggle Ctrl+V keybinds on and off,
+        from ctrl+v to ctrl+shift+v
+
+        for debugging
+    {
+        "key": "ctrl+numpad1",
+        "command": "PowerShell.DebugPesterTestsFromFile",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "PowerShell.RunPesterTestsFromFile",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "editor.action.clipboardPasteAction"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-editor.action.clipboardPasteAction"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "filesExplorer.paste",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-filesExplorer.paste",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.sendSequence",
+        "when": "terminalFocus && !accessibilityModeEnabled && terminalShellType == 'pwsh'"
+    },
+    */
+    // { //broke?
+    //     "key": "ctrl+numpad3",
+    //     "command": "PowerShell.RunPesterTests",
+    //     "when": "editorTextFocus && editorLangId == 'powershell'"
+    // },
+    /*
+    examples
+
+    [ex] Quick fix uses a regex
+    {
+        "key": "shift+alt+.",
+        "command": "editor.action.autoFix",
+        "when": "editorTextFocus && !editorReadonly && supportedCodeAction =~ /(\\s|^)quickfix\\b/"
+    },
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>)
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>:<otherwise>)
+
+
+        (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
+    */
+    /*
+    [section]: Debugging
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "-workbench.action.terminal.openNativeConsole",
+        "when": "!terminalFocus"
+    },
+    /*
+
+    ### Sect: Start of optional 2022/01
+
+       tags: optional
+       carries over from 2021
+
+
+    */
+    /* this bind/hotkey is what breaks multiline pasting */
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "workbench.action.problems.focus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorLangId == 'json' || editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-bookmarks.jumpToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "bookmarks.toggleLabeled",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "-bookmarks.toggle",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "-bookmarks.jumpToNext",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+alt+l",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorTextFocus"
+    },
+    // {
+    //     "key": "ctrl+alt+l",
+    //     "command": "bookmarks.list"
+    // },
+    /*
+
+    ### Sect: Optional diff bookmark config from above
+
+           tags: 2021
+
+    */
+    /* this bind/hotkey is what breaks multiline pasting */
+    /*
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "workbench.action.problems.focus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorLangId == 'json' || editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-bookmarks.jumpToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "-bookmarks.jumpToNext",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+numpad5",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "bookmarks.list"
+    },
+    {
+        "key": "shift+alt+j",
+        "command": "-bookmarks.expandSelectionToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+l",
+        "command": "-bookmarks.expandSelectionToNext",
+        "when": "editorTextFocus"
+    },
+    */
+    /*
+
+    ### Sect: Everything above is 2021-12 or older
+
+    */
+    /*
+
+    ### Sect: Regex keybing
+
+           tags: regex
+
+
+    [ex] Quick fix uses a regex
+    {
+        "key": "shift+alt+.",
+        "command": "editor.action.autoFix",
+        "when": "editorTextFocus && !editorReadonly && supportedCodeAction =~ /(\\s|^)quickfix\\b/"
+    },
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>)
+
+    [ex] conditional replacement
+        (?<pattern>:<insertion>:<otherwise>)
+
+
+        (?«n»:«insertion»:«otherwise») to have «otherwise» inserted when capture «n» was not matched.
+    */
+    /*
+    [section]: Debugging
+    */
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+v", // fixes a lot of paste problems for pwsh at least
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.terminal.killEditor",
+        // "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
+        "when": "terminalEditorFocus && terminalFocus && terminalProcessSupported && resourceScheme == 'vscode-terminal'"
+    },
+    {
+        "key": "ctrl+shift+k ctrl+shift+b",
+        "command": "editor.action.selectToBracket"
+    },
+    // {
+    //     "key": "ctrl+alt+l",
+    //     "command": "bookmarks.list"
+    // },
+    /*
+
+    ### Sect: Start of optional 2022/01
+       tags: optional
+
+       carries over from 2021
+
+    */
+    /*
+    added new from the data dir configs
+    */
+    {
+        /*
+            this fixes errors when pasting into an editor window
+            letting PSReadLine handle the pasting correctly [2023-01-14]
+        */
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+numpad3",
+        "command": "workbench.action.output.toggleOutput"
+    },
+    {
+        "key": "ctrl+numpad2",
+        "command": "workbench.action.problems.focus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "editor.action.insertSnippet",
+        "when": "editorLangId == 'json' || editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-editor.action.insertSnippet",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "-bookmarks.jumpToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "-bookmarks.jumpToNext",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+numpad5",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "bookmarks.list"
+    },
+    {
+        "key": "shift+alt+j",
+        "command": "-bookmarks.expandSelectionToPrevious",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+l",
+        "command": "-bookmarks.expandSelectionToNext",
+        "when": "editorTextFocus"
+    },
+    /*
+
+    ### Sect: Start of 2022/01
+
+        - contains Correct 'ctr+w' fix
+
+    */
+    // test: don't close terminal consoles
+    {
+        "key": "ctrl+w",
+        "command": "-workbench.action.closeWindow",
+        // "when": "terminalFocus || terminalEditorFocus"
+    },
+    /*
+    ctrl+w may fires these:
+        workbench.action.closeWindow            // Close Window
+        workbench.action.closeGroup             // null
+        workbench.action.closeActiveEditor      //View: Close Editor
+        workbench.action.terminal.killEditor    //Terminal: Kill the Active Terminal in Editor Area
+
+    related examples:
+        // Keybindings that are complementary
+        { "key": "f5",              "command": "workbench.action.debug.continue", "when": "inDebugMode" },
+        { "key": "f5",              "command": "workbench.action.debug.start",    "when": "!inDebugMode" },
+    */
+    /* initial wide net test */
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeWindow", // Close Window
+    // },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeGroup", // null
+    // },
+    // {
+    //     "key": "ctrl+w",
+    //     "command": "-workbench.action.closeActiveEditor", //View: Close Editor
+    // },
+    {
+        "key": "ctrl+numpad8",
+        "command": "PowerShell.ShowHelp"
+    },
+    {
+        "key": "ctrl+k ctrl+r",
+        "command": "-workbench.action.keybindingsReference"
+    },
+    {
+        "key": "ctrl+numpad1",
+        "command": "workbench.action.showCommands",
+        "command": "workbench.action.toggleAuxiliaryBar",
+        "args": {
+            "MatchOnDetail": false,
+            "title": "monkey",
+            "placeHolder": "monkey",
+        }
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "PowerShell.ShowAdditionalCommands",
+        // "when": "editorLangId == 'powershell'"
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+alt+u",
+        "command": "cursorRedo",
+        "when": "textInputFocus"
+    },
+    /*
+    2022-08-05
+        updated editor suite
+    */
+    {
+        /*
+        new from: https://code.visualstudio.com/updates/v1_70#_tree-find-control */
+        "key": "cmd+f", // "ctrl+f" on Windows/Linux
+        "command": "-list.find",
+        "when": "listFocus && listSupportsFind"
+    },
+    {
+        "key": "shift+alt+k",
+        "command": "-bookmarks.shrinkSelection",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+.",
+        "command": "editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+.",
+        "command": "-editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+    },
+    /*
+    section: new patch keybinds
+        ref: <he below replaces Ctrl+R with runRecentCommand, with Ctrl+Alt+R available to fallback to the shell's regular behavior:>
+
+    */
+    {
+        "key": "ctrl+shift+r",
+        // "key": "ctrl+r",
+        "command": "workbench.action.terminal.runRecentCommand",
+        "when": "terminalFocus"
+    },
+    // Allow ctrl+r again to go to the next command in the quick pick
+    {
+        // "key": "ctrl+shift+r", // this mutates the previous
+        "key": "ctrl+r", // this mutates the previous
+        "command": "workbench.action.quickOpenNavigateNextInViewPicker",
+        "when": "inQuickOpen && inTerminalRunCommandPicker"
+    },
+    // Fallback to the shell's native ctrl+r
+    // {
+    //     "key": "ctrl+alt+r",
+    //     "command": "workbench.action.terminal.sendSequence",
+    //     "args": {
+    //         "text": "\u0012" /*^R*/
+    //     },
+    //     "when": "terminalFocus"
+    // },
+    // Have ctrl+c close the quick pick
+    {
+        "key": "ctrl+c",
+        "command": "workbench.action.closeQuickOpen",
+        "when": "inQuickOpen && inTerminalRunCommandPicker"
+    },
+    /*
+
+    section: ...
+        PSEditor test
+
+
+    new:
+        - <https://code.visualstudio.com/updates/v1_71#_new-code-action-control>
+            - <https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings>
+
+
+    example new code actions:
+            {
+                "key": "ctrl+shift+r ctrl+e",
+                "command": "editor.action.codeAction",
+                "args": {
+                    "kind": "refactor.extract.function" } }
+
+    */
+    /*
+
+    section: ...
+
+    */
+    /*
+
+    ### Sect: from SeeminglySci's profile
+        tags: SeeminlySci, Powershell, PSEditorServices
+
+    */
+    {
+        "key": "alt+shift+n",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "AddResolvedNamespace"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "alt+shift+m",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ExpandMemberExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    // {
+    //     "key": "ctrl+shift+,",
+    //     "command": "PowerShell.InvokeRegisteredEditorCommand",
+    //     "args": {
+    //         "commandName": "Invoke-DocumentRefactor"
+    //     },
+    //     "when": "editorLangId == 'powershell'"
+    // },
+    // {
+    //     "key": "ctrl+shift+s",
+    //     "command": "PowerShell.InvokeRegisteredEditorCommand",
+    //     "args": {
+    //         "commandName": "ConvertTo-SplatExpression"
+    //     },
+    //     "when": "editorLangId == 'powershell'"
+    // },
+    {
+        // # old: "key": "ctrl+.",
+        "key": "ctrl+shift+m",
+        "when": "editorLangId == 'powershell'",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "Invoke-DocumentRefactor"
+        },
+    },
+    { // #default
+        "key": "ctrl+t",
+        "command": "workbench.action.showAllSymbols",
+        "args": {} // what args can I pass to change default filter and sort
+    },
+    {
+        "key": "ctrl+shift+down",
+        "command": "PowerShell.Debug.Start"
+    },
+    /* broken config fighting autocomplete
+    {
+        "key": "ctrl+down ctrl+down",
+        "command": "editor.action.triggerSuggest",
+        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-editor.action.triggerSuggest",
+        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    },
+    {
+        "key": "ctrl+down ctrl+up",
+        "command": "toggleSuggestionDetails",
+        "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
+    },
+    {
+        "key": "ctrl+space",
+        "command": "-toggleSuggestionDetails",
+        "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
+    }
+    */
+
+        /*
+  start of new section [924] of binds from: 2023-05-06
+  */
+        {
+            "key": "f5",
+            "command": "workbench.action.debug.start",
+            "when": "debuggersAvailable && debugState == 'inactive'"
+        },
+        {
+            "key": "", // from: Pwsh
+            "command": "PowerShell.DebugPesterTestsFromFile"
+        },
+        {
+            "key": "", // from: Pwsh
+            "command": "PowerShell.RunPesterTestsFromFile"
+        },
+        {
+            "key": "", // from: pspester.pester-test
+            "command": "pester.stopPowerShell"
+        },
+        {
+            "key": "", // from: pspester.pester-test
+            "command": "pester.toggleAutoRunOnSave"
+        },
+        /*
+  start of new section [924] of binds from: 2023-05-06
+  */
+/*
+
+        2023-07-26
+        latest, manually added keys after date
+
+
+*/
+      {
+        "key": "ctrl+w",
+        "command": "-workbench.action.terminal.killEditor", //Terminal: Kill the Active Terminal in Editor Area
+    },
+    {
+        "key": "ctrl+k ctrl+r",
+        "command": "-workbench.action.keybindingsReference"
+    },
+    {
+        "key": "ctrl+numpad4",
+        "command": "baincd.mini-command-palettes.cmds.main-palette"
+    },
+    {
+        "key": "ctrl+numpad7",
+        "command": "baincd.mini-command-palettes.cmds.secondary-palette"
+    },
+    {
+        // "key": "ctrl+numpad9",
+        "command": "baincd.mini-command-palettes.cmds.example-template-palette"
+    },
+    // {
+    //     // https://powershell.github.io/PowerShellEditorServices/guide/extensions.html
+    //     // debug only
+    //     // "command": "PowerShell.ShowAdditionalCommands", "args": ""
+    // }
+
+
+    {
+        "key": "shift+f5", // run pester tests, default menu command
+        "command": "PowerShell.DebugPesterTestsFromFile",
+        "when": "editorTextFocus && editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+shift+\\",
+        "command": "editor.emmet.action.matchTag",
+        "when": "editorTextFocus && editorLangId == 'html'"
+    },
+
+        // PSES\Refactor
+    { "key": "ctrl+r",
+      "command": "PowerShell.InvokeRegisteredEditorCommand",
+      "args": { "commandName": "Invoke-DocumentRefactor" },
+      "when": "editorLangId == 'powershell'" },
+    {   // splat expression
+        "key": "ctrl+shift+s",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "ConvertTo-SplatExpression"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+]
