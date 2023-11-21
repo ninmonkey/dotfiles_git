@@ -1107,6 +1107,7 @@
         //     "strings": true
         // },
         // "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": false,
         "editor.formatOnSave": true,
         "editor.suggest.showSnippets": false,
         // "editor.fontSize": 13,
@@ -1126,30 +1127,14 @@
         // "editor.formatOnType":
     },
     // "json.maxItemsComputed": 10000,
-    "[json][jsonc][markdown]": {
-        "editor.fontSize": 13,
-        // "editor.defaultFormatter": "vscode.json-language-features",
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": false,
-        "editor.semanticHighlighting.enabled": true,
-    },
-    "[markdown-math][markdown_latex_combined]": {},
-    "[json]": {
-        "editor.suggest.showSnippets": false,
-        // "editor.quickSuggestions": {
-        //     "strings": true
-        // },
-        // "editor.defaultFormatter": "esbenp.prettier-vscode",
-        // "editor.defaultFormatter": "vscode.json-language-features",
-        // "editor.$ve": true,
-        "editor.formatOnPaste": false,
-        // "editor.formatOnType": true,
-        "editor.formatOnPaste": false,
-        "editor.semanticHighlighting.enabled": true,
-        // "editor.maxTokenizationLineLength": 20000
-        "editor.detectIndentation": false,
-        "editor.tabSize": 4,
-    },
+    // "[json][jsonc][markdown]": {
+    //     "editor.fontSize": 13,
+    //     // "editor.defaultFormatter": "vscode.json-language-features",
+    //     "editor.formatOnSave": true,
+    //     "editor.formatOnPaste": false,
+    //     "editor.semanticHighlighting.enabled": true,
+    // },
+    // "[markdown-math][markdown_latex_combined]": {},
     "[asl-yaml]": {
         "editor.fontSize": 14
     },
@@ -4836,17 +4821,34 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.fontSize": 12,
         "editor.defaultFormatter": "PowerQuery.vscode-powerquery",
     },
-    "[json][jsonc][markdown]": {
+    // "[json][jsonc][markdown]": {
+    "[json]": {
         "editor.fontSize": 16,
         "editor.fontSize": 18,
         "editor.fontFamily": "'cascadia code', monospace",
         "editor.fontLigatures": true,
+        "editor.fontWeight": "400",
+        "editor.fontWeight": "400",
         "editor.fontWeight": "normal",
-        "editor.fontWeight": "400",
-        "editor.fontWeight": "400",
         "editor.fontFamily": "Cascaydia NF Mono",
-        // "editor.fontFamily": "'calibri', 'cascadia code', monospace",
+        "editor.suggest.showSnippets": false,
+        // "editor.quickSuggestions": {
+        //     "strings": true
+        // },
+        // "editor.defaultFormatter": "esbenp.prettier-vscode",
+        // "editor.defaultFormatter": "vscode.json-language-features",
+        // "editor.$ve": true,
+        "editor.formatOnPaste": false,
+        // "editor.formatOnType": true,
+        "editor.formatOnPaste": false,
+        "editor.semanticHighlighting.enabled": true,
+        // "editor.maxTokenizationLineLength": 20000
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+        "editor.formatOnSave": false,
     },
+    // "editor.fontFamily": "'calibri', 'cascadia code', monospace",
+    // },
     /*
 
     minimizing visual noise section
@@ -4945,7 +4947,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
         "editor.semanticHighlighting.enabled": false,
         "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
-        // part 2            
+        // part 2
         "editor.formatOnSave": false,
         "editor.suggest.showSnippets": false,
         // "editor.suggest.snippetsPreventQ12uickSuggestions": false,
@@ -5486,10 +5488,9 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.2.3-win32-x64\\.nuget\\Microsoft.PowerQuery.SdkTools.2.114.4\\tools",
     // When set to false, the SDK does not try to automatically detect connector workspaces and prompt to create a settings file.
     "powerquery.sdk.features.autoDetection": true,
-    "[html][js][jsx][python][markdown]": {
-        // it specifically said cautious using other than html
-        "emmet.useInlineCompletions": true, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
-    },
+    // "[html][js][jsx][python][markdown]": {
+    // it specifically said cautious using other than html
+    "emmet.useInlineCompletions": true, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
     // "interact"
     "emmet.useInlineCompletions": false, //: https://code.visualstudio.com/updates/v1_69#_emmet-inline-completions-setting
     /*
@@ -5982,16 +5983,12 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     //     "editor.formatOnSave": false,
     //     "editor.suggest.showSnippets": false,
     // },
-    "[json]": {
-        "editor.formatOnSave": false,
-    },
-    "[jsonc]": {
-        "editor.formatOnSave": false,
-        // "editor.quickSuggestions": {
-        //     "strings": true
-        // },
-        // "editor.suggest.insertMode": "replace"
-    },
+    // "[jsonc]": {
+    //     // "editor.quickSuggestions": {
+    //     //     "strings": true
+    //     // },
+    //     // "editor.suggest.insertMode": "replace"
+    // },
     "debug.showBreakpointsInOverviewRuler": true,
     "debug.showInStatusBar": "always",
     "files.autoSave": "afterDelay",
