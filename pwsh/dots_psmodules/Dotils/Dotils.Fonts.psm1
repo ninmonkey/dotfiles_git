@@ -87,6 +87,94 @@ function Dotils.Fonts.Get-CompanyNames {
     #  gci (Join-Path $Env:SystemRoot "Fonts")
 }
 
+
+function Dotils.Fonts.List.Method3 {
+    <#
+    .NOTES
+        enumerate from: [Windows.Media.Fonts]::SystemFontFamilies
+    .EXAMPLE
+        Dotils.Fonts.List.Method3 SystemFontFamilies
+        Dotils.Fonts.List.Method3 SystemTypefaces
+    .EXAMPLE
+        [Windows.Media.Fonts]::$Kind | % FontFamily| % Source | group
+    .link
+        https://learn.microsoft.com/en-us/dotnet/api/system.windows.media.fontfamily?view=windowsdesktop-8.0
+    .link
+        https://learn.microsoft.com/en-us/dotnet/api/system.windows.media.fonts?view=windowsdesktop-8.0
+    #>
+    [OutputType('System.Windows.Media.FontFamily[]', 'System.String')]
+    param(
+        [ValidateSet(
+            # 'TypeFace','Families',
+            'SystemTypefaces',
+            'SystemFontFamilies'
+        )]
+        [string]$Kind = 'SystemFontFamilies',
+        [switch]$NoSort,
+        [switch]$PSCO
+    )
+    #
+
+    Add-Type -AssemblyName PresentationCore | Out-Null
+    $found = if($NoSort) {
+        [Windows.Media.Fonts]::$Kind
+        # [Windows.Media.Fonts]::SystemFontFamilies
+            # | % Source
+    } else {
+        [Windows.Media.Fonts]::$Kind
+        # [Windows.Media.Fonts]::SystemFontFamilies
+            # | % Source
+            | Sort-Object Source
+    }
+
+    if( -not $PSCO ) {
+        return $Found
+    }
+
+    $Found | %{
+        $meta = [ordered]@{
+            Source =
+                ($_)?.Source
+            BaseUri =
+                ($_)?.BaseUri
+            FamilyMaps =
+                ($_)?.FamilyMaps ?? $null
+            FamilyNames =
+                ($_)?.FamilyNames ?? $null
+            # FamilyTypeFaces =
+            #     ($_)?.FamilyTypeFaces ?? $null
+        }
+        return [pscustomobject]$meta
+    }
+
+
+
+
+
+
+}
+function Dotils.Fonts.List.Method2 {
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [ValidateSet(
+            'PSCO', 'String'
+        )]
+        [string]$OutputFormat
+    )
+    $regFontInfo = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts'
+    $props = $regFontInfo.PSObject.Properties
+
+    switch($OutputFormat) {
+        'String' {
+            $props.Name
+
+        }
+        default {
+            return $RegFontInfo
+        }
+    }
+
+}
 function Dotils.Fonts.Render-GlyphFaceNames {
     <#
     .EXAMPLE
