@@ -15281,6 +15281,9 @@ if($SkipFinalValidateCommands) {
 $TryPath = Join-Path $PSScriptRoot 'Completions.NamedDateFormatString.psm1'
 $TryPath | Get-Item -ea 'continue' | Join-String -op 'TryPath => ' | Write-Verbose -Verbose
 
+# $TryPath = Join-Path $PSScriptRoot 'Dotils.Fonts.psm1'
+# $TryPath | Get-Item -ea 'continue' | Join-String -op 'TryPath => ' | Write-Verbose -Verbose
+
 if($False) {
     # Sometimes need to force remove it, depending on types
     impo $dotsrc -PassThru -Verbose
@@ -15292,8 +15295,15 @@ if($true) {
 
 Import-Module $TryPath -PassThru -verbose -force -Scope 'Global' | Render.ModuleName
 # Import-Module (join-path $PSScriptRoot 'Dotils.New-UsingStatement.psm1') -PassThru | Render.ModuleName
-Import-Module ('H:\data\2023\pwsh\notebooks\Pwsh\Objects\Picky\Picky.psm1') -PassThru | Render.ModuleName
-Import-Module (join-path $PSScriptRoot 'Dotils.New-UsingStatement.psm1') -PassThru | Render.ModuleName
+$AlwaysForce = @{
+    Force = $true
+}
+if($AlwaysForce.Force) {
+    write-warning 'all sub module dotils are set to -Force '
+}
+Import-Module $alwaysForce ('H:\data\2023\pwsh\notebooks\Pwsh\Objects\Picky\Picky.psm1') -PassThru | Render.ModuleName
+Import-Module $alwaysForce (join-path $PSScriptRoot 'Dotils.New-UsingStatement.psm1') -PassThru | Render.ModuleName
+Import-Module $alwaysForce (join-path $PSScriptRoot 'Dotils.Fonts.psm1') -PassThru | Render.ModuleName
 
 Write-verbose 'pre-removing annoying modules, to decrease the size of Get-Command''s output'
 Remove-Module 'JumpCloud*'
