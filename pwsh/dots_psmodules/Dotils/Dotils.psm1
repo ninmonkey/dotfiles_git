@@ -11856,6 +11856,8 @@ function Dotils.DebugUtil.Format.AliasSummaryLiteral {
             "'$aName' # $finalSuffix"
         }) | Sort-Object -unique
 }
+
+
 function Dotils.Get-Item.FromClipboard {
     <#
     .SYNOPSIS
@@ -11893,8 +11895,10 @@ function Dotils.Get-Item.FromClipboard {
         | Join-String -op 'gi =: '
         | wInfo
 
-    if($GotoFolder -and (Test-Path $global:gi)) {
-        $global:gi  | Goto
+    if(Test-Path $global:gi) {
+        if($GotoFolder) {
+            $global:gi  | Ninmonkey.Console\Set-NinLocation
+        }
     } else {
         'path is not valid: {0}' -f @( $Global:gi ?? "`u{2400}" )
             | write-error
@@ -14386,6 +14390,7 @@ function Dotils.Write.NumberedList {
     }
 }
 
+
 function Dotils.Fzf.SelectByUID {
     <#
     .SYNOPSIS
@@ -14501,10 +14506,53 @@ $Config.Delimiter | Join-String -f "--delimiter='{0}'"
     }
 }
 
+function Dotils.SaveLink {
+    param(
+        [string[]]$LinksInput,
+        [switch]$Force
+    )
+    # https://github.com/SeeminglyScience/dotfiles/blob/main/Documents/PowerShell/profile.format.ps1xml
+    $DestPath = gi (Join-Path 'H:/data/2023/dump.buffer.offline' 'linksBufferDump.md')
+
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    if( -not [string]::IsNullOrEmpty( $LinksInput )) {
+        [object[]]$Links = @( $LinksInput )
+    }
+    if( [string]::IsNullOrEmpty( $Links )) {
+        [object[]]$Links = @( Get-Clipboard )
+    }
+
+    if( [string]::IsNullOrEmpty( $Links )) {
+        throw 'error: was null or empty links?'
+    }
+    Join-String -f 'writing: "{0}"' -inp $DestPath
+        | Dotils.Write-DimText
+        | Infa
+
+    $Links
+        | ?{ -not ($_ -as [System.Uri]) }
+        | Join-String -sep ', '  -op 'Dotils.SaveLink :: PotentialNonUris: = [ ' -os ' ] '
+        | write-warning
+
+    $Links
+        | ?{ $_ -as [System.Uri] }
+        | Join-String -f "`n - {0}" -prop { $_ }
+        | Add-Content -Path $DestPath -PassThru
+}
+# function Dotils.RenameError {
+#     <#
+
+#     #>
+#     throw 'nyi: see justingrote demo that modifies the error string preserving the rest'
+
+# }
+
 $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-22
+        'Dotils.*'
         # 2023-11-18
         'Dotils.Goto.Error' # 'Dotils.Goto.Error' = { }
         'Dotils.DropNamespace' # 'Dotils.DropNamespace' =  { }
@@ -14826,6 +14874,7 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        'Dotils.*'
         # 2023-11-16
         'Fmt.NL' # 'Dotils.Format.NumberedList' = { 'Fmt.NL' }
 
@@ -15264,5 +15313,3 @@ Remove-Module 'Az.*'
 # // this does not import
 # $DotSrc = gi 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Template-CompleterType-AsCompletionsType.ps1' -ea 'continue'
 # . $DotSrc
-
-
