@@ -9747,6 +9747,79 @@ function Dotils.Datetime.ShowExamples {
 }
 
 
+function Dotils.BasicFormat.Predent {
+    <#
+    .synopsis
+        minimalism predenting text, emits as array of strings
+    .EXAMPLE
+        # indent code to paste
+        Get-Clipboard | f.Predent 4 | Set-Clipboard -PassThru
+    .EXAMPLE
+        0..3 | %{  $_ ;'a'..'c' | f.Predent 2 } | f.Predent 2
+        # same as
+        0..3 | %{
+            $_
+            'a'..'b'
+            | f.Predent 2
+        }   | f.Predent 2
+
+        # Out
+
+            0
+                a
+                b
+            1
+                a
+                b
+            2
+                a
+                b
+            3
+                a
+                b
+    #>
+    [Alias(
+        'f.Predent'
+    )]
+    [CmdletBinding()]
+    [outputType('System.String[]')]
+    param(
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+        [ArgumentCompletions('2', '3', '4')]
+        [Parameter(Mandatory, Position=0)]
+        [uint]$Depth = 2,
+
+        [Parameter(Position=1)]
+        [ArgumentCompletions('2', '3', '4', '6', '8')]
+        [uint]$CharsPerDepth = 2,
+
+        [Parameter()]
+        [ArgumentCompletions(
+            "' '",
+            "'  '",
+            "'␠'",
+            '"`t"',
+            '> '
+        )]
+        [string]$Text = ' '
+    )
+    begin {
+        [string]$prefix = $Text * ( $Depth * $CharsPerDepth ) -join ''
+    }
+    process {
+        $InputObject | %{
+            $_ | Join-String -f "${prefix}{0}"
+        }
+
+    }
+}
+
+
 function Dotils.DB.toDataTable {
 <#
 .synopsis
@@ -14551,6 +14624,8 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-26
+        'Dotils.BasicFormat.Predent' # 'Dotils.BasicFormat.Predent' = { 'f.Predent' }
         # 2023-11-22
         'Dotils.*'
         # 2023-11-18
@@ -14874,8 +14949,11 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
-        'Dotils.*'
+        # 2023-11-26
+        'f.Predent' # 'Dotils.BasicFormat.Predent' = { 'f.Predent' }
+
         # 2023-11-16
+        'Dotils.*'
         'Fmt.NL' # 'Dotils.Format.NumberedList' = { 'Fmt.NL' }
 
         # 2023-11-11
