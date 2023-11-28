@@ -12106,6 +12106,62 @@ function Dotils.Accumulate.Hashtables {
 }
 
 
+function Dotils.Toast.InvokeAlarm {
+    <#
+    .NOTES
+        # See types:
+        > find-type '*toast*' -Base enum
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [Alias('OutputMode')]
+        [ValidateSet(
+            'Repeat.Loud',
+            'Repeat.Silent'
+        )]
+        [string]$TemplateName = 'Repeat.Silent',
+
+        [Parameter(Position=1)]
+        [Alias('Cooldown', 'Secs', 'Delay', 'WaitSeconds', 'SleepSecs')]
+        [ArgumentCompletions(
+            30, 60, 90,
+            "(60 * 7.5)",
+            "(60 * 15)",
+            "(60 * 3.5)"
+        )]
+        [int]$SleepInSeconds = (60 * 10),
+
+        # grab names, even if it's static-inline names without the type defintion
+        [Parameter(Position=2)]
+        [ArgumentCompletions(
+            'Alarm', 'Alarm10', 'Alarm2', 'Alarm3', 'Alarm4', 'Alarm5', 'Alarm6', 'Alarm7', 'Alarm8', 'Alarm9', 'Call', 'Call10', 'Call2', 'Call3', 'Call4', 'Call5', 'Call6', 'Call7', 'Call8', 'Call9', 'Default', 'IM', 'Mail', 'Reminder', 'SMS'
+        )]
+        [string]$AlarmSound = 'Alarm'
+    )
+    $PSBoundParameters | Json -Compress
+        | Join-String -op 'Toast.InvokeAlarm := '
+        | write-verbose -Verbose
+
+
+    while($true) {
+        switch($TemplateName) {
+            'Repeat.Loud' {
+                New-BurntToastNotification -Text 'work' -Sound $AlarmSound
+                get-date | Dotils.Write-DimText | Infa
+                sleep -Seconds $SleepInSeconds
+            }
+            'Repeat.Silent' {
+                New-BurntToastNotification -Text 'work' -Silent
+                get-date | Dotils.Write-DimText | Infa
+                sleep -Seconds $SleepInSeconds
+            }
+            default {
+                throw "UnhandledParamset: $TemplateName"
+            }
+        }
+    }
+}
 
 function Dotils.DebugUtil.Format.UpdateTypedataLiteral {
     <#
@@ -12353,7 +12409,7 @@ w
             # is this redundant?
             if(-not $ShouldKeep -and $AllowCompatibleType) {
                 write-debug "    -is compares failed, trying -as..."
-                foreach($name in $TypeNames) {
+                foreach($name in $TypeNames) {12143
                     write-debug "    Test-IsOfType: comparing CurObj is $Name"
                     if($curObj -as $Name -ne $null) {
                         $shouldKeep? = $true
@@ -14624,6 +14680,8 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-11-28
+        'Dotils.Toast.InvokeAlarm' # 'Dotils.Toast.InvokeAlarm' = {  }
         # 2023-11-26
         'Dotils.BasicFormat.Predent' # 'Dotils.BasicFormat.Predent' = { 'f.Predent' }
         # 2023-11-22
@@ -15383,6 +15441,7 @@ if($AlwaysForce.Force) {
 Import-Module @alwaysForce ('H:\data\2023\pwsh\notebooks\Pwsh\Objects\Picky\Picky.psm1') | Render.ModuleName
 Import-Module @alwaysForce (join-path $PSScriptRoot 'Dotils.New-UsingStatement.psm1') | Render.ModuleName
 Import-Module @alwaysForce (join-path $PSScriptRoot 'Dotils.Fonts.psm1') | Render.ModuleName
+impo @AlwaysForce 'nin.Ast' # 'H:\data\2023\pwsh\PsModules\nin.Ast\nin.Ast\nin.Ast.psm1'
 
 Write-verbose 'pre-removing annoying modules, to decrease the size of Get-Command''s output'
 Remove-Module 'JumpCloud*'
