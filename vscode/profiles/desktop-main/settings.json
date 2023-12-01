@@ -848,8 +848,22 @@
     "editor.copyWithSyntaxHighlighting": true,
     "editor.codeLens": true,
     "editor.find.seedSearchStringFromSelection": true,
+    // "editor.fontLigatures": true,
+    // "editor.fontLigatures": true,
     "editor.find.cursorMoveOnType": true,
-    "editor.fontLigatures": true,
+    "editor.fontFamily": "'Monaspace Neon', monospace", // <https://github.blog/2022-12-02-introducing-mona-sans-and-hubot-sans/>
+    // <https://github.com/mona-sans>
+    "editor.fontLigatures": "'calt', 'liga', 'dlig', 'ss01', 'ss02'", // ligature docs: <https://github.com/githubnext/monaspace#coding-ligatures>
+    "editor.fontLigatures": "'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08'", // , 'ss09', 'ss10'", // ligature docs: <https://github.com/githubnext/monaspace#coding-ligatures> remove 'calt' to remove 'texture-healing' ' https://github.com/githubnext/monaspace/blob/main/docs/Texture%20Healing.md'
+    /*
+        Monaspace is available as a variable-axis font and a static build. You can install them both side-by-side; their family names are distinct. For example:
+
+        Monaspace _____: the static family
+        Monaspace _____ Var or VF: the variable family
+
+    The variable fonts have one file per family (Neon, Argon, etc.). Modern and convenient!
+    */
+    // => !== !/=
     "editor.folding": true,
     "editor.foldingHighlight": true, //collapsed folded blocks highlight the single line
     "editor.foldingStrategy": "auto",
@@ -1274,6 +1288,7 @@
         "editor.formatOnPaste": false,
         "editor.inlayHints.enabled": "onUnlessPressed",
         "editor.inlayHints.enabled": "offUnlessPressed",
+        "editor.defaultFormatter": "vscode.typescript-language-features",
         // "editor.defaultFormatter": "esbenp.prettier-vscode",
         // "editor.defaultFormatter": "esbenp.prettier-vscode", // quick hack works for now but need color
     },
@@ -3456,8 +3471,8 @@
     "editor.fontFamily": "'fira code', monospace",
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
     "editor.fontFamily": "'cascadia code pl', 'cascadia code', monospace",
-    "editor.fontFamily": "'fira code', monospace",
     "editor.fontFamily": "consolas, monospace",
+    "editor.fontFamily": "'fira code', monospace",
     "editor.fontFamily": "'CaskaydiaCove NF',  'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
     "editor.fontWeight": "bold",
     "editor.fontWeight": "normal", // # is default default
@@ -4812,8 +4827,8 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.suggest.preview": true,
         "editor.rename.enablePreview": true,
         "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
-        "editor.fontWeight": "bold",
-        "editor.fontWeight": "normal", // # is default default
+        // "editor.fontWeight": "bold",
+        // "editor.fontWeight": "normal", // # is default default
         "editor.fontSize": 15,
         "editor.fontSize": 18,
         "editor.fontSize": 16,
@@ -4827,10 +4842,14 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.fontSize": 18,
         "editor.fontFamily": "'cascadia code', monospace",
         "editor.fontLigatures": true,
-        "editor.fontWeight": "400",
-        "editor.fontWeight": "400",
-        "editor.fontWeight": "normal",
-        "editor.fontFamily": "Cascaydia NF Mono",
+        // "editor.fontWeight": "400",
+        // "editor.fontWeight": "400",
+        // "editor.fontWeight": "normal",
+        // "editor.fontFamily": "Cascaydia NF Mono",
+        "editor.fontFamily": "'Monaspace Neon', monospace",
+        "editor.codeLensFontFamily": "Cascaydia NF Mono",
+        "editor.codeLensFontFamily": "'Cascaydia NF Mono'",
+        "editor.inlayHints.fontFamily": "'Cascaydia code'",
         "editor.suggest.showSnippets": false,
         // "editor.quickSuggestions": {
         //     "strings": true
@@ -4872,9 +4891,10 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     "[powershell]": {
         "editor.suggest.showInlineDetails": true,
         "editor.suggest.preview": true,
-        "editor.suggest.showSnippets": false,
         "editor.suggest.showSnippets": true,
+        "editor.suggest.showSnippets": false,
         "editor.snippetSuggestions": "bottom",
+        "editor.snippetSuggestions": "none",
         "editor.suggest.filterGraceful": true,
         "editor.suggest.insertMode": "insert",
         "editor.lineNumbers": "interval", // hide numbers, show only every 10th
@@ -4930,22 +4950,21 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         // "editor.suggest.snippetsPreventQuickSuggestions": true
         "editor.suggest.preview": false,
         "editor.suggest.preview": true,
-        // "editor.fontFamily": "'cascadia code pl', monospace",
-        // "editor.fontFamily": "'calibri', 'cascadia code', monospace",
         // "editor.fontFamily": "'cascadia code', monospace",
-        // "editor.fontFamily": "Cascaydia NF Mono",
-        // "editor.fontFamily": "'calibri', 'cascadia code', monospace",
-        // "editor.fontFamily": "Cascaydia NF Mono",
+        "editor.fontFamily": "Cascaydia NF Mono",
+        "editor.fontFamily": "'calibri', 'cascadia code', monospace",
+        "editor.fontFamily": "'cascadia code', monospace",
+        "editor.fontFamily": "'cascadia code pl', monospace",
+        "editor.fontFamily": "'Monaspace Neon', monospace",
         "editor.formatOnSave": false,
         "editor.snippets.codeActions.enabled": true,
         "editor.snippetSuggestions": "none",
         "editor.fontSize": 13,
         "editor.fontSize": 15,
-        "editor.fontFamily": "'cascadia code pl semilight', monospace", // when large text, this font is nicer (
+        // "editor.fontFamily": "'cascadia code pl semilight', monospace", // when large text, this font is nicer (
         "debug.saveBeforeStart": "allEditorsInActiveGroup",
         "editor.suggest.showSnippets": false,
         "debug.saveBeforeStart": "nonUntitledEditorsInActiveGroup",
-        "editor.semanticHighlighting.enabled": false,
         "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
         // part 2
         "editor.formatOnSave": false,
@@ -4954,7 +4973,6 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         // "editor.fontSize": 15,
         "editor.suggest.showWords": false,
         "breadcrumbs.showInterfaces": true,
-        "editor.semanticHighlighting.enabled": false,
         "editor.suggest.showIssues": true,
         "editor.suggest.showColors": true,
         "editor.suggest.showFunctions": true,
@@ -4967,7 +4985,6 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         // "editor.wordSeparators": "\"", // the current default value of extension
         // break on $ and -
-        "editor.formatOnSave": true,
         "editor.snippetSuggestions": "bottom",
         "editor.snippetSuggestions": "top",
         "files.encoding": "utf8bom",
@@ -4979,7 +4996,6 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.formatOnType": true, // not implemented yet?
         "files.trimTrailingWhitespace": true,
         "editor.semanticHighlighting.enabled": false,
-        "editor.semanticHighlighting.enabled": true,
         "editor.suggest.filterGraceful": true,
         "editor.suggest.insertMode": "insert",
         "editor.suggest.showFolders": true,
@@ -5042,7 +5058,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         // "editor.cursorSurroundingLines": 0,
         "editor.suggest.preview": true,
         "editor.suggest.showInlineDetails": true,
-        "editor.suggest.showSnippets": true,
+        // "editor.suggest.showSnippets": true,
         "editor.wordBasedSuggestions": true,
         "editor.suggest.showCustomcolors": true,
         "editor.suggest.localityBonus": true, // seems worse if you enable it.
@@ -5070,7 +5086,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
           */
         // "diffEditor.ignoreTrimWhitespace": true,
         "editor.trimAutoWhitespace": true,
-        "editor.renderFinalNewline": false,
+        "editor.renderFinalNewline": "off",
         "files.insertFinalNewline": true,
         "files.trimFinalNewlines": true,
         // final
@@ -5083,7 +5099,20 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "breadcrumbs.showVariables": false,
         // suggest
         // suggest
-        "editor.fontSize": 22,
+        // "editor.fontFamily": "'CaskaydiaCove NF',  'cascadia code",
+        "editor.fontSize": 14,
+        "editor.fontSize": 15,
+        // "editor.fontWeight": "",
+        "editor.fontWeight": "normal",
+        "editor.fontFamily": "'cascadia code', Consolas, 'Courier New', monospace",
+        "editor.fontFamily": "'Monaspace Neon', monospace",
+        "editor.fontFamily": "'cascadia code pl', monospace",
+        // "editor.fontWeight": "bold"
+        // "editor.fontWeight": "800",
+        // "editor.fontFamily": "'CaskaydiaCove NF', monospace",
+        // "editor.fontFamily": "'Monaspace Neon', monospace",
+        // "editor.fontLigatures": true,
+        // "editor.fontLigatures": "'calt', 'liga', 'dlig', 'ss01', 'ss02'", // ligature docs: <https://github.com/githubnext/monaspace#coding-ligatures>
     },
     // "[jsonc][json]": {
     //     // "editor.suggestFontSize": 18,
@@ -5578,8 +5607,8 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "powershell.codeFormatting.ignoreOneLineBlock": true,
     "powershell.codeFormatting.preset": "Stroustrup",
     "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "aws.samcli.enableCodeLenses": true,
-    "aws.samcli.lambdaTimeout": 9000,
     "snippets.viewer.combineLanguageSnippets": false,
     "aws.resources.enabledResources": [],
     "codesnap.showWindowControls": false,
@@ -6154,7 +6183,6 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "powershell.codeFormatting.autoCorrectAliases": true,
     "workbench.editor.wrapTabs": false,
     "workbench.editor.tabSizing": "shrink",
-    "workbench.statusBar.visible": false,
     // new JS test 2023-08-27
     "debug.inlineValues": "off",
     "javascript.referencesCodeLens.enabled": true,
@@ -6278,7 +6306,10 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "window.menuBarVisibility": "toggle",
     "window.titleBarStyle": "custom",
     "zenMode.showTabs": "single",
-    "workbench.activityBar.location": "top" // <https://code.visualstudio.com/updates/v1_84#_customize-activity-bar-position>
+    "workbench.activityBar.location": "top",
+    "aws.samcli.lambdaTimeout": 9000,
+    "workbench.statusBar.visible": false,
+    "window.zoomLevel": 1 // <https://code.visualstudio.com/updates/v1_84#_customize-activity-bar-position>
     /* new command:
     nice. <ctrl+K,ctrl+m>
     <https://code.visualstudio.com/updates/v1_84#_maximize-editor-group>
