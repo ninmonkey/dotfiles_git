@@ -7789,7 +7789,7 @@ function Dotils.Join.CmdPrefix {
 function Dotils.LogObject {
     # short minimal log
     [OutputType('String')]
-    [Alias('㏒')]
+    [Alias('Dotils.㏒')]
     [CmdletBinding()]
     param(
         [Alias('NoCompress')][switch]$Expand,
@@ -9817,6 +9817,141 @@ function Dotils.BasicFormat.Predent {
         }
 
     }
+}
+
+function Dotils.Network.Find-PortOwner {
+    <#
+    .synopsis
+        Lookup process who is using a specific port
+    .LINK
+        Dotils.Network.Find-PortOwner
+    .LINK
+        Dotils.Network.Find-ReversePortLookup
+    #>
+    [Alias(
+        'Dotils.Net.Find-PortOwner'
+    )]
+    param(
+        [ArgumentCompletions(
+            7071, 7077, 9099, 909, 80, 8080
+        )]
+        [int]$Port
+    )
+
+    $query = Get-NetTCPConnection | ? LocalPort -Match $Port
+    if( $Query.count -le 0 ) {
+        'no process found matching port {0}' -f $Port | write-error
+        return
+    }
+    Get-Process -pid $query.OwningProcess
+}
+
+function Dotils.Network.Find-ReversePortLookup {
+    <#
+    .synopsis
+        Lookup process who is using a specific port
+    .EXAMPLE
+        Dotils.Net.ReversePortLookup pwsh|Ft
+    .EXAMPLE
+        Dotils.Net.ReversePortLookup
+    .LINK
+        Dotils.Network.Find-PortOwner
+    .LINK
+        Dotils.Network.Find-ReversePortLookup
+    #>
+    [Alias(
+        'Dotils.Net.ReversePortLookup'
+    )]
+    param(
+        [ArgumentCompletions(
+            'pwsh', 'func'
+        )]
+        # blank proccess name returns everything
+        [string]$ProcessName,
+
+        # passthru returns everything
+        [switch]$PassThru
+    )
+
+    $myIp = (
+        ipconfig
+            | ?{ $_ -match 'Ipv4 Address' }
+            | Select-Object -First 1) -split ' ', -2
+            | select-Object -Last 1
+    $myGatewayIp = (
+        ipconfig
+            | ?{ $_ -match 'Default Gateway' }
+            | Select-Object -First 1) -split ' ', -2
+            | select-Object -Last 1
+
+    function Abbr-Address {
+        param(
+            [Parameter(Mandatory)]
+            [Alias('IP')]
+            $Address
+            # [Parameter()]
+            # [Alias('MyIP')]
+            # $MyAddress =
+         )
+
+        $Address -replace [Regex]::escape( $myIP ),
+                '🐒me' -replace [regex]::escape( '127.0.0.1'),
+                '🏠' -replace 'localhost',
+                '🏠' -replace [regex]::Escape( $MyGatewayIP ),
+                '🚪'
+
+    }
+
+    Get-NetTCPConnection | %{
+        $netInfo = $_
+        $curPs = (ps -PID $_.OwningProcess)
+        $isMatch = $CurPs.Name -match 'pwsh'
+        [pscustomobject]@{
+            PSTypeName = 'glau.ReversePortLookupResult'
+            Name = '{0} [ {1} ]' -f @(
+                $CurPs.Name
+                $CurPs.Id
+            ) | Join-String -sep ''
+
+            IpLocalAbbr =
+                Abbr-Address $netInfo.LocalAddress
+            IpRemoteAbbr =
+                Abbr-Address $netInfo.RemoteAddress
+
+            ShortLocal= @(
+                '{1}▸{0}' -f  @(
+                    $netInfo.LocalPort, $netInfo.LocalAddress )
+            ) | Join-String -sep ''
+            ShortRemote = @(
+                '{1}▸{0}' -f  @(
+                    $netInfo.RemotePort, $netInfo.RemoteAddress )
+            ) | Join-String -sep ''
+
+            Summary = @(
+                $curPs.Name
+                Join-String -in $curPs.Id -op ' [ ' -os ' ] '
+                'Local: {1}▸{0}' -f  @(
+                    $netInfo.LocalPort, $netInfo.LocalAddress)
+                "`n"
+                'Remote: {1}▸{0}' -f  @(
+                # 'Remote: [ P {0} • Addr {1} • ]' -f  @(
+                    $netInfo.RemotePort, $netInfo.RemoteAddress)
+                "`n"
+                $netInfo.ToString()
+            ) | Join-String -sep ''
+            ProcessObject      = $curPs
+            NetInfoObject = $netInfo
+            IsMatch       =
+                $PassThru -or
+                    ($CurPs.Name -match $ProcessName) -or
+                    ([string]::IsNullOrWhiteSpace($ProcessName))
+        }
+    } |  %{
+        if( $PassThru ) { return $_ }
+        if( [string]::IsNullOrWhiteSpace( $ProcessName ) ) { return $_ }
+        if($_.IsMatch) { return $_ } else { return }
+    } | Sort-Object Name
+
 }
 
 
