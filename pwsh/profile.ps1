@@ -1,6 +1,7 @@
 $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
+remove-module PSUtil*, PSFrakework* # keeps loading the string error on me
 Import-Module 'Pansies'
 'trace.👩‍🚀.parse: [1] $Profile.MainEntryPoint : /pwsh/profile.ps1'
     | write-verbose -verb
@@ -249,6 +250,7 @@ function Where-FilterByClamp {
     # [CmdletBinding()]
     # $Input | ? { }
 }
+
 
 # always prefer dev version
 # remove-module pipescript
@@ -1022,4 +1024,3 @@ nin.PSModulePath.Clean -Write
 # if ($global:__nin_enableTraceVerbosity) { 'bypass 🔻, early exit: Finish refactor: "{0}"' -f @( $PSCommandPath ) }
 # if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: Debug, prof: CurrentUserCurrentHost (psit debug only)" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 i>
 # return
-

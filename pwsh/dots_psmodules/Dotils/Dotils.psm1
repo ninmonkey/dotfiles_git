@@ -8475,6 +8475,100 @@ function Dotils.Select-NotBlankKeys {
 
 }
 
+write-warning 'left off => Dotils.Template.ProxyCommand'
+function Dotils.Template.ProxyCommand {
+    [CmdletBinding()]
+    param(
+        # Expected kind [CommandMetaData]
+        [Parameter(Mandatory)]
+        $InputObject,
+
+        [Parameter(Mandatory)]
+        [Alias('Kind', 'Type', 'Name', 'Block', 'Template')]
+        [ValidateSet(
+            'Create',
+            'Create.WithComment',
+            'Create.WithDynamicParam',
+            'EndBlock',
+            'BeginBlock',
+            'ParamBlock',
+            'GetCmdletBindingAttribute',
+            'GetParamBlock',
+            'GetBegin',
+            'GetProcess',
+            'GetDynamicParam',
+            'GetEnd',
+            'GetClean',
+            'GetHelpComments'
+        )]
+        [string]$ProxyKind
+    )
+    switch($ProxyKind) {
+            'Create'   {
+                # [ProxyCommand]::Create
+
+                break
+            }
+            'Create.WithComment'   {
+                break
+
+            }
+            'Create.WithDynamicParam'   {
+                break
+
+            }
+            'EndBlock'   {
+                break
+
+            }
+            'BeginBlock'   {
+                break
+
+            }
+            'ParamBlock'   {
+                break
+
+            }
+            'GetCmdletBindingAttribute'   {
+                break
+
+            }
+            'GetParamBlock'   {
+                break
+
+            }
+            'GetBegin'   {
+                break
+
+            }
+            'GetProcess'   {
+                break
+
+            }
+            'GetDynamicParam'   {
+                break
+
+            }
+            'GetEnd'   {
+                break
+
+            }
+            'GetClean'   {
+                break
+
+            }
+            'GetHelpComments'   {
+                break
+
+            }
+        default {
+            write-warning "UnexpectedProxyKind: $ProxyKind"
+            return
+        }
+    }
+    # [System.Management.Automation.ProxyCommand]::GetParamBlock((gcm Get-Item)) and then trim from there
+}
+
 
 function Dotils.Invoke-TipOfTheDay  {
     <#
@@ -9819,6 +9913,35 @@ function Dotils.BasicFormat.Predent {
     }
 }
 
+function Dotils.SkipOne.Filter {
+    <#
+    .SYNOPSIS
+        sugar for skipping one. $Obj | Select -skip 1
+    #>
+    [alias('Skip1')]
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline, Mandatory)]
+        [object[]]$InputObject
+
+        # [Alias('Reverse', 'Last1')]
+        # [switch]$FromEnd
+    )
+    begin {
+        $isFirst = $true
+    }
+    process {
+        if( $FromEnd) {
+            throw 'NYI: skipped reverse case for simplicity'
+        }
+        if($IsFirst) {
+            $IsFirst = $false
+            return
+        }
+        $InputObject
+    }
+}
+
 function Dotils.Network.Find-PortOwner {
     <#
     .synopsis
@@ -9827,24 +9950,40 @@ function Dotils.Network.Find-PortOwner {
         Dotils.Network.Find-PortOwner
     .LINK
         Dotils.Network.Find-ReversePortLookup
+    .EXAMPLE
+        Pwsh> Dotils.Net.Find-PortOwner -Port @(7070..7073 + 9099 + 3000..3003 + 8080 )
+    .EXAMPLE
+        Pwsh> Dotils.Net.Find-PortOwner -Port 3000
+
+            NPM(K)    PM(M)      WS(M)     CPU(s)      Id  SI ProcessName
+            ------    -----      -----     ------      --  -- -----------
+            126   807.87     755.43     137.05   12880   1 Code
     #>
     [Alias(
         'Dotils.Net.Find-PortOwner'
     )]
     param(
         [ArgumentCompletions(
+            "@(7070..7073 + 9099 + 3000..3003 + 8080 )",
             7071, 7077, 9099, 909, 80, 8080
         )]
-        [int]$Port
+        [int[]]$Port
     )
 
-    $query = Get-NetTCPConnection | ? LocalPort -Match $Port
-    if( $Query.count -le 0 ) {
-        'no process found matching port {0}' -f $Port | write-error
-        return
-    }
-    Get-Process -pid $query.OwningProcess
+    $found = @(
+        foreach($curPort in $Port) {
+            $query = Get-NetTCPConnection | ? LocalPort -Match $curPort
+            if( $Query.count -le 0 ) {
+                'no process found matching port {0}' -f $curPort | write-error
+                continue
+            }
+            Get-Process -pid $query.OwningProcess
+        }
+    )
+    $found.count | Join-String 'Found {0} records: ' | write-host -fore 'darkgreen'
+    return $found
 }
+
 
 function Dotils.Network.Find-ReversePortLookup {
     <#
@@ -9954,7 +10093,70 @@ function Dotils.Network.Find-ReversePortLookup {
 
 }
 
+function Bdg.Go {
+    <#
+    .SYNOPSIS
+        find *and* Goto code-workspacesa related to bdg, filter by time
+    .example
+        bdg.go 2months -BasePaths H:\data\client_bdg, H:\temp_clone\aws-lambda-pwsh\aws-lambda-powershell-runtime
+    #>
+    param(
+        [ArgumentCompletions(
+            '10weeks', '4weeks', '5days', '2hours', '90minutes', '15minutes', '90seconds'
+        )]
+        [string]$ChangedWithin = '2weeks',
 
+        [ArgumentCompletions(
+          'H:\data\client_bdg',
+          'H:\data\client_bdg\2023.11-bdg-s3-aws-lambda-app',
+          'H:\temp_clone\aws-lambda-pwsh\aws-lambda-powershell-runtime'
+        )]
+        [string[]]$BasePaths
+
+    )
+
+    if( -not $BasePaths ) {
+        $BasePaths = @(
+            # 'H:\data\client_bdg',
+            'H:\data\client_bdg\2023.11-bdg-s3-aws-lambda-app'
+            'H:\temp_clone\aws-lambda-pwsh\aws-lambda-powershell-runtime'
+        )
+    }
+
+    [List[Object]]$binArgs = @(
+        '-e'
+        'yml'
+        if($ChangedWithin) { '--changed-within'; $ChangedWithin }
+        foreach($P in $BasePaths) {
+            '--search-path'
+            (Get-item -ea 'stop' $P)
+        }
+        # '--search-path'
+        # (gi 'H:\temp_clone\aws-lambda-pwsh\aws-lambda-powershell-runtime')
+        # '--search-path'
+        # (gi 'H:\data\client_bdg')
+        #'--strip-cwd-prefix'
+        #'--color'
+        #'always'
+    )
+    & fd @binArgs
+        | fzf
+        | goto
+
+    $binArgs | Join-String -op "`ninvoke fzf => " | write-host -bg 'gray60' -fg 'gray30'
+}
+function Dotils.Git.Select {
+    [Alias('Dotils.GitSel', '.GitSel')]
+    param()
+    Import-Module 'ugit'
+
+
+    $global:GitSel = (git status .).Unstaged | % file | % fullname | fzf -m
+    $GitSel
+
+    # ($global:GitSel = (git status .).Unstaged | % file | % fullname | fzf -m)
+    $gitSel.count | Join-string '$gitSel = selected {0} files' | write-host -fore blue -bg 'gray20'
+}
 function Dotils.DB.toDataTable {
 <#
 .synopsis
@@ -14815,6 +15017,12 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-12-06
+        'Dotils.Git.Select'
+        'Dotils.Template.ProxyCommand'
+
+        # 2023-12-06
+        'Bdg.Go'
         # 2023-11-28
         'Dotils.Toast.InvokeAlarm' # 'Dotils.Toast.InvokeAlarm' = {  }
         # 2023-11-26
@@ -15139,9 +15347,14 @@ $exportModuleMemberSplat = @{
         'Dotils.Grid' # => { 'Nancy.OutGrid', 'Grid' }
         'Dotils.PSDefaultParams.ToggleAllVerboseCommands' # => { }
         'Dotils.LogObject' # 'Dotils.LogObject' => { '㏒' }
+        'Dotils.*'
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-12-06
+        'GitSel'
+        '.Git*'
+        'Dotils.*'
         # 2023-11-26
         'f.Predent' # 'Dotils.BasicFormat.Predent' = { 'f.Predent' }
 
