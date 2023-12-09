@@ -4,7 +4,7 @@ using namespace System.Management.Automation
 using namespace System.Management.Automation.Language
 
 $script:CountersListForAddLabel ??= @{}
-
+$script:Bdg_LastSelect = @()
 
 
 
@@ -10092,7 +10092,14 @@ function Dotils.Network.Find-ReversePortLookup {
     } | Sort-Object Name
 
 }
-
+function Fd.Go {
+   param()
+   @(
+      '..'
+       '../..'
+       fd
+   ) | fzf | goto -AlwaysLsAfter
+}
 function Bdg.Go {
     <#
     .SYNOPSIS
@@ -10106,12 +10113,25 @@ function Bdg.Go {
         )]
         [string]$ChangedWithin = '2weeks',
 
+        [Alias('FileType', 'Extension', 'Kind')]
+        [ArgumentCompletions(
+            'yml', 'code-workspace', 'json', 'ps1', 'psm1', 'psd1', 'xml', 'md', 'yaml', 'config',
+            'rpm', 'vhd', 'vhdx', 'json', 'log'
+        )]
+        [Parameter()]
+        [string[]]$ItemKind = @('yml', 'code-workspace'),
+
         [ArgumentCompletions(
           'H:\data\client_bdg',
           'H:\data\client_bdg\2023.11-bdg-s3-aws-lambda-app',
+          'G:\temp\2023-12-06.dock-test',
           'H:\temp_clone\aws-lambda-pwsh\aws-lambda-powershell-runtime'
         )]
-        [string[]]$BasePaths
+        [string[]]$BasePaths,
+
+        # fzf -m ?
+        [Alias('M')][switch]$Multi,
+        [switch]$PassThru
 
     )
 
@@ -10120,12 +10140,15 @@ function Bdg.Go {
             # 'H:\data\client_bdg',
             'H:\data\client_bdg\2023.11-bdg-s3-aws-lambda-app'
             'H:\temp_clone\aws-lambda-pwsh\aws-lambda-powershell-runtime'
+            'G:\temp\2023-12-06.dock-test'
         )
     }
 
     [List[Object]]$binArgs = @(
-        '-e'
-        'yml'
+        foreach($I in $ItemKind) {
+            '-e'
+            $ItemKind
+         }
         if($ChangedWithin) { '--changed-within'; $ChangedWithin }
         foreach($P in $BasePaths) {
             '--search-path'
@@ -10139,11 +10162,25 @@ function Bdg.Go {
         #'--color'
         #'always'
     )
-    & fd @binArgs
-        | fzf
-        | goto
+    [List[Object]]$FzfArgs = @(
+        if($Multi) { '-m' }
+    )
+    if( $PassThru ) {
+        $script:Bdg_LastSelect = @(
+            & fd @binArgs
+            | fzf @fzfArgs
+        )
+    } else {
+        $script:Bdg_LastSelect = @(
+            & fd @binArgs
+            | fzf @fzfArgs
+        )
+        $script:Bdg_LastSelect
+            | goto
 
-    $binArgs | Join-String -op "`ninvoke fzf => " | write-host -bg 'gray60' -fg 'gray30'
+    }
+
+    $binArgs | Join-String -op "`ran fzf => " | write-host -bg 'gray60' -fg 'gray30'
 }
 function Dotils.Git.Select {
     [Alias('Dotils.GitSel', '.GitSel')]
@@ -10195,6 +10232,84 @@ function Dotils.DB.toDataTable {
 
     end {
         ,$dataTable
+    }
+}
+
+function Dotils.Unicode.CategoryOf {
+    <#
+    .synopsis
+        Sugar that isn't needed. the main purpose was to tune different parametersets with nice default bindings
+    .EXAMPLE
+        # see: <tests/Dotils.Unicode.Category.test.ps1>
+    #>
+    [CmdletBinding()]
+    [Alias('Dotils.Uni.Category')]
+    param(
+        [Alias('FromInt')]
+        [Parameter(Mandatory, ParameterSetName='FromInt')]
+        [int]$CodePoint,
+
+        [Alias('FromChar')]
+        [Parameter(Mandatory, ParameterSetName='FromChar')]
+        [char]$Char,
+
+        # if specified,non empty str
+        [Alias('FromString')]
+        [Parameter(Mandatory, ParameterSetName='FromString', Position=0)]
+        [ValidateNotNullOrEmpty()]
+        [string]$InputText,
+
+        [Alias('Position')]
+        [Parameter(ParameterSetName='FromString', Position = 1)]
+        [int]$Index,
+
+        [Parameter(ParameterSetName='FromRune')]
+        [Text.Rune]$Rune
+    )
+    switch($PScmdlet.ParameterSetName) {
+        'FromInt' {
+            return [Globalization.CharUnicodeInfo]::GetUnicodeCategory( [int]$Codepoint )
+            # $Char = [char]::ConvertFromUtf32( $CodePoint )
+        }
+        'FromChar' {
+            return [Globalization.CharUnicodeInfo]::GetUnicodeCategory( [char]$Char )
+        }
+        'FromRune' {
+            return [Text.Rune]::GetUnicodeCategory( $Rune ) # or
+            return [Globalization.CharUnicodeInfo]::GetUnicodeCategory( $Rune.Value )
+        }
+        'FromString' {
+            $StrLen = $InputText.Length
+            if($StrLen -eq 0) {
+                write-error 'InvalidArgumentValueException: Requires any text'
+                return
+            }
+            if($StrLen -eq 1) {
+                return [Globalization.CharUnicodeInfo]::GetUnicodeCategory( $InputText, 0 )
+            }
+            # future: benchmark whether enumerate is expensive
+            # StrLen is > 1 but it's still one codepoint
+            [bool]$IsSingleCodepoint = $InputText.EnumerateRunes().Value.Count -eq 1
+            if($IsSingleCodepoint) {
+                [Text.Rune]$Rune = @( $InputText.EnumerateRunes() )[0]
+                return [Text.Rune]::GetUnicodecategory(  $Rune )
+            }
+
+            # only expected remaining case is a valid index
+            if($InputText.Length -gt 1) {
+                if( -not $PSBoundParameters.ContainsKey('Index')) {
+                    write-error 'String longer than 1 StrLen but index not specified'
+                    return
+                }
+                return [Globalization.CharUnicodeInfo]::GetUnicodeCategory( $InputText, $Index )
+            }
+
+            throw "ShouldNeverReachException"
+        }
+        default {
+            throw "InvalidArgumentException"
+        }
+
     }
 }
 
@@ -15017,10 +15132,11 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-12-07
+        'Fd.Go'
         # 2023-12-06
         'Dotils.Git.Select'
         'Dotils.Template.ProxyCommand'
-
         # 2023-12-06
         'Bdg.Go'
         # 2023-11-28
@@ -15676,6 +15792,10 @@ $exportModuleMemberSplat = @{
         'Dotils.Debug.Get-Variable'
         'PipeUntil.Match' # Dotils.Stdout.CollectUntil.Match
     ) | Sort-Object -Unique
+    Variable = @(
+        'Bdg_LastSelect'
+        'Bdg_*'
+    )
 }
 Export-ModuleMember @exportModuleMemberSplat
 

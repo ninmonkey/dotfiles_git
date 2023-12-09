@@ -316,6 +316,37 @@ class DateNamedFormatCompleter : IArgumentCompleter {
         }
         $resultList.Add( $tlate.AsCompletionResult() )
 
+        $tlate = [NamedDateTemplate]@{
+            CompletionName = 'Azure.Func.Log'
+            Delim = ' ⁞ '
+            Fstr = "yyyy-MM-ddTHH:mm:ss.fffZ"
+            ShortName = 'Azure.Func.Log'
+            BasicName = 'Azure.Function Logs'
+            Description = @(
+                'Azure Func. Logs
+            '
+            ) -join "`n"
+        }
+        $resultList.Add( $tlate.AsCompletionResult() )
+        $tlate = [NamedDateTemplate]@{
+            CompletionName = 'Azure.Date1'
+            Delim = ' ⁞ '
+            Fstr = "yyyy-MM-dd"
+            ShortName = 'Azure.Date1'
+            BasicName = 'Azure Storage 1'
+            Description = @(
+                'AzureStorage Datetime format.
+
+            their iso-8601 syntax, differs from dotnet fstr
+                YYYY-MM-DD
+                YYYY-MM-DDThh:mm:ss<TZDSuffix>
+                YYYY-MM-DDThh:mm<TZDSuffix>
+
+                https://learn.microsoft.com/en-us/rest/api/storageservices/formatting-datetime-values#accepted-iso-8601-utc-formats'
+            ) -join "`n"
+        }
+        $resultList.Add( $tlate.AsCompletionResult() )
+
         if($script:moduleConfig.SuperVerbose) {
             $tlate
                 | WriteJsonLog -Text 'DateNamedFormatCompleter::CompleteArgument'
