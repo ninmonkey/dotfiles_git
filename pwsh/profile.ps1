@@ -379,9 +379,14 @@ $PROFILE | Add-Member -force -ea ignore -PassThru -NotePropertyMembers @{
             Settings_Json =
                 Join-Path $Env:AppData 'Code/User/settings.json' # ex: C:\Users\cppmo_000\AppData\Roaming\Code\User\settings.json
             Keybindings_Json =
-                Join-Path $Env:AppData 'Code/User/keybindings.json'
+                gi (Join-Path $Env:AppData 'Code/User/keybindings.json')
             Tasks_Json =
-                Join-Path $Env:AppData 'Code/User/tasks.json'
+                gi (Join-Path $Env:AppData 'Code/User/tasks.json')
+            Snippets_Root =
+                gi (Join-Path $Env:AppData 'Code/User/snippets' )
+            Snippets_All =
+                gci -recurse (gi (Join-Path $Env:AppData 'Code/User/snippets' ))
+                    | Sort-Object Fullname
         }
         DotfilesRepo = [ordered]@{
             Settings_Json =
@@ -390,10 +395,19 @@ $PROFILE | Add-Member -force -ea ignore -PassThru -NotePropertyMembers @{
                 Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/keybindings.json'
             Keybindings_Tasks =
                 Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/tasks.json'
+            Snippets_Root =
+                Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/snippets'
+            Snippets_all =
+                gci -recurse (gi (Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/snippets'))
+                | Sort-Object Fullname
+
         }
     }
 }
 
+function VsCode.Dotfiles.CopyToRepo {
+    'Copy (some) files to the dotfiles'
+}
 $VerbosePreference = 'continue'
 
 [Collections.Generic.List[Object]]$__all_PSModulePaths = $ENV:PSmodulePath -split ';'
