@@ -393,7 +393,7 @@ $PROFILE | Add-Member -force -ea ignore -PassThru -NotePropertyMembers @{
                 Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/settings.json'
             Keybindings_Json =
                 Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/keybindings.json'
-            Keybindings_Tasks =
+            Tasks_Json =
                 Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/tasks.json'
             Snippets_Root =
                 Join-Path $__dotfilesRepoRoot 'vscode/profiles/desktop-main/snippets'
@@ -437,16 +437,30 @@ function VsCode.Dotfiles.CopyToRepo {
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
 
+        ## [3]
+        $SourcePath = $PROFILE.VSCode.Local.Tasks_Json
+        $DestPath   = $PROFILE.VSCode.DotfilesRepo.Tasks_Json
+
+        @( 'from: {0}' -f ( $SourcePath )
+            'to:   {0}' -f ( $DestPath ) )
+            | Join-String -sep "`n" | Dotils.Write-DimText | Infa
+
+        Get-Item -ea 'stop' $SourcePath
+            | Copy-Item -Destination $DestPath -PassThru
+
     ) | CountOf
+
+    'snippets: nyi' | write-warning
 
     # pushd $DestPath.Directory
     # pwd
-    $DestPath  | goto -AlwaysLsAfter
+    $PROFILE.VSCode.DotfilesRepo.Settings_Json | Goto -AlwaysLsAfter
+
     # git log -n 2
     # git log -n 3 --oneline --color=always | Join.UL
     git log -n 3 --oneline | new-text -fg '#b5bcd1' | Join-String -sep ' '
     # 'staged, commit message?'
-    fd --changed-within 15minutes -tf
+    # fd --changed-within 15minutes -tf
 }
 $VerbosePreference = 'continue'
 
