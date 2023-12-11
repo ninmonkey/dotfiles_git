@@ -406,7 +406,26 @@ $PROFILE | Add-Member -force -ea ignore -PassThru -NotePropertyMembers @{
 }
 
 function VsCode.Dotfiles.CopyToRepo {
-    'Copy (some) files to the dotfiles'
+    <#
+    .SYNOPSIS
+        Copy (some) files to the dotfiles repo
+
+    #>
+    param()
+
+    $SourcePath = $profile.VSCode.Local.Settings_Json
+    $DestPath = $PROFILE.VSCode.DotfilesRepo.Settings_Json
+    @( 'from: {0}' -f ( $SourcePath )
+       'to:   {0}' -f ( $DestPath ) )
+       | Join-String -sep "`n" | Dotils.Write-DimText
+
+
+    gi -ea 'stop' $SourcePath | Copy-Item -Destination $DestPath -WhatIf -PassThru
+
+    pushd $DestPath.Directory
+    git log -n 2
+    'staged, commit message?'
+    fd --changed-within 15minutes -tf
 }
 $VerbosePreference = 'continue'
 
