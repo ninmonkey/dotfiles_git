@@ -7,6 +7,8 @@
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
 
+$StringModule_DontInjectJoinString = $true
+$global:StringModule_DontInjectJoinString = $true # context: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055>
 
 write-warning 'to extract: H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
 'early exit: {0}' -f $PSCommandPath | write-warning
@@ -1924,6 +1926,7 @@ function glam.Bps.🐍.All {
         )
     )
 }
+
 
 function DeleteOldModule.MoveToNormalPath {
     <#
