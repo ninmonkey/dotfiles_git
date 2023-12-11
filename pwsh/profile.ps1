@@ -421,7 +421,7 @@ function VsCode.Dotfiles.CopyToRepo {
 
         @( 'from: {0}' -f ( $SourcePath )
             'to:   {0}' -f ( $DestPath ) )
-            | Join-String -sep "`n" | Dotils.Write-DimText
+            | Join-String -sep "`n" | Dotils.Write-DimText | Info
 
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
@@ -432,7 +432,7 @@ function VsCode.Dotfiles.CopyToRepo {
 
         @( 'from: {0}' -f ( $SourcePath )
             'to:   {0}' -f ( $DestPath ) )
-            | Join-String -sep "`n" | Dotils.Write-DimText
+            | Join-String -sep "`n" | Dotils.Write-DimText | Info
 
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
@@ -445,7 +445,7 @@ function VsCode.Dotfiles.CopyToRepo {
     # git log -n 2
     # git log -n 3 --oneline --color=always | Join.UL
     git log -n 3 --oneline | new-text -fg '#b5bcd1' | Join-String -sep ' '
-    'staged, commit message?'
+    # 'staged, commit message?'
     fd --changed-within 15minutes -tf
 }
 $VerbosePreference = 'continue'
