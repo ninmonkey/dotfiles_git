@@ -6,12 +6,29 @@
         https://code.visualstudio.com/docs/supporting/troubleshoot-terminal-launch#_troubleshooting-steps
 
 
-    future:
+    snippet schema
+        https://github.com/microsoft/vscode/blob/e5e9a6556e8dd4f5c60074b0a9466be4b490ac29/src/vs/workbench/contrib/snippets/browser/snippets.contribution.ts#L101C9-L101C9
+        future:
 
     SAM    "terminal.integrated.profiles.windows":
         invoke sam with specific config file
             https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/serverless-apps-troubleshooting.html#troubleshooting-samconfig-toml
     */
+    "json.schemas": [
+        // custom json schemas : https://code.visualstudio.com/docs/languages/json#_use-rich-formatting-in-hovers
+        {
+            "url": "vscode://schemas/global-snippets",
+            "fileMatch": [
+                "code-snippets"
+            ],
+        },
+        {
+            "url": "vscode://schemas/settings/user",
+            "fileMatch": [
+                "*/dotfiles.2023/vscode/profiles/desktop-main/settings.json"
+            ],
+        }
+    ],
     "launch": {
         "inputs": [
             {
@@ -20,7 +37,6 @@
                 // "default": "${workspaceFolder}/main.ps1",
                 "default": "${file}",
                 "description": "repeat running specific file",
-
             },
         ],
         "configurations": [
@@ -1681,6 +1697,7 @@
     "search.collapseResults": "alwaysExpand",
     // Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `files.exclude` setting. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options).
     "search.exclude": {
+        "**/*.ps1": true,
         "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
         "**/*.log": true,
         "**/*.lnk": true,
@@ -2477,9 +2494,6 @@
     "editor.formatOnSave": true,
     /*
 
-
-
-
       details
 
           https://code.visualstudio.com/docs/editor/variables-reference
@@ -2567,12 +2581,12 @@
                 "-NoLogo"
             ],
         },
-        "Scoop Pwsh7.3": {
-            "path": "C:/Users/cppmo_000/scoop/apps/pwsh/current/pwsh.exe",
-            "args": [
-                "-NoLogo"
-            ],
-        }
+        // "Scoop Pwsh7.3": {
+        //     "path": "C:/Users/cppmo_000/scoop/apps/pwsh/current/pwsh.exe",
+        //     "args": [
+        //         "-NoLogo"
+        //     ],
+        // }
     },
     //   "sortJSON.contextMenu": {
     //       "sortJSON": true,
@@ -5731,7 +5745,6 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     },
     // *** start => file watchers ( 2023-05-05 )
     "files.exclude": {
-        "**/*.exe": true,
         "**/*.lnk": true,
         "**/.git": true,
         "**/*.aws-sam": true, // makes type invisible
@@ -6308,9 +6321,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "window.titleBarStyle": "custom",
     "zenMode.showTabs": "single",
     "workbench.activityBar.location": "top",
-    "aws.samcli.lambdaTimeout": 9000,
-    "workbench.statusBar.visible": false,
-    "window.zoomLevel": 1 // <https://code.visualstudio.com/updates/v1_84#_customize-activity-bar-position>
+    "workbench.statusBar.visible": false, // <https://code.visualstudio.com/updates/v1_84#_customize-activity-bar-position>
     /* new command:
     nice. <ctrl+K,ctrl+m>
     <https://code.visualstudio.com/updates/v1_84#_maximize-editor-group>
@@ -6322,4 +6333,16 @@ new: nearest quick fix command change
 new: Copilot inline:
     <https://code.visualstudio.com/updates/v1_84#_chat-agents>'
  */
+    "editor.inlineSuggest.enabled": true,
+    "github.copilot.enable": { /* copilot-github */
+        // related: <https://docs.github.com/en/copilot/github-copilot-in-the-cli/about-github-copilot-in-the-cli>
+        "*": true,
+        "yaml": true,
+        "plaintext": true,
+        "markdown": true,
+        "javascript": true,
+        "python": true
+    },
+    "window.zoomLevel": 1,
+    "workbench.sideBar.location": "right"
 }
