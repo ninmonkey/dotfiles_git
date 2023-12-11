@@ -413,20 +413,38 @@ function VsCode.Dotfiles.CopyToRepo {
     #>
     param()
 
-    $SourcePath = $PROFILE.VSCode.Local.Settings_Json
-    $DestPath   = $PROFILE.VSCode.DotfilesRepo.Settings_Json
+    @(  # I think you need to use passthru to see the write-progress
+        # Can I chain it to also use CountOf ?
+        ## [1]
+        $SourcePath = $PROFILE.VSCode.Local.Settings_Json
+        $DestPath   = $PROFILE.VSCode.DotfilesRepo.Settings_Json
 
-    @( 'from: {0}' -f ( $SourcePath )
-       'to:   {0}' -f ( $DestPath ) )
-       | Join-String -sep "`n" | Dotils.Write-DimText
+        @( 'from: {0}' -f ( $SourcePath )
+            'to:   {0}' -f ( $DestPath ) )
+            | Join-String -sep "`n" | Dotils.Write-DimText
 
+        Get-Item -ea 'stop' $SourcePath
+            | Copy-Item -Destination $DestPath -PassThru
 
-    gi -ea 'stop' $SourcePath | Copy-Item -Destination $DestPath -WhatIf -PassThru
+        ## [2]
+        $SourcePath = $PROFILE.VSCode.Local.Keybindings_Json
+        $DestPath   = $PROFILE.VSCode.DotfilesRepo.Keybindings_Json
+
+        @( 'from: {0}' -f ( $SourcePath )
+            'to:   {0}' -f ( $DestPath ) )
+            | Join-String -sep "`n" | Dotils.Write-DimText
+
+        Get-Item -ea 'stop' $SourcePath
+            | Copy-Item -Destination $DestPath -PassThru
+
+    ) | CountOf
 
     # pushd $DestPath.Directory
     pwd
-    $DestPath  | goto
-    git log -n 2
+    $DestPath  | goto -AlwaysLsAfter
+    # git log -n 2
+    # git log -n 3 --oneline --color=always | Join.UL
+    git log -n 3 --oneline | new-text -fg '#b5bcd1' | Join-String -sep ' '
     'staged, commit message?'
     fd --changed-within 15minutes -tf
 }
