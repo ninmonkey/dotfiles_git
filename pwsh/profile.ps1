@@ -421,7 +421,7 @@ function VsCode.Dotfiles.CopyToRepo {
 
         @( 'from: {0}' -f ( $SourcePath )
             'to:   {0}' -f ( $DestPath ) )
-            | Join-String -sep "`n" | Dotils.Write-DimText | Info
+            | Join-String -sep "`n" | Dotils.Write-DimText | Infa
 
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
@@ -432,7 +432,7 @@ function VsCode.Dotfiles.CopyToRepo {
 
         @( 'from: {0}' -f ( $SourcePath )
             'to:   {0}' -f ( $DestPath ) )
-            | Join-String -sep "`n" | Dotils.Write-DimText | Info
+            | Join-String -sep "`n" | Dotils.Write-DimText | Infa
 
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
@@ -440,7 +440,7 @@ function VsCode.Dotfiles.CopyToRepo {
     ) | CountOf
 
     # pushd $DestPath.Directory
-    pwd
+    # pwd
     $DestPath  | goto -AlwaysLsAfter
     # git log -n 2
     # git log -n 3 --oneline --color=always | Join.UL
