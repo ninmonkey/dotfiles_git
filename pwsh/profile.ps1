@@ -413,8 +413,9 @@ function VsCode.Dotfiles.CopyToRepo {
     #>
     param()
 
-    $SourcePath = $profile.VSCode.Local.Settings_Json
-    $DestPath = $PROFILE.VSCode.DotfilesRepo.Settings_Json
+    $SourcePath = $PROFILE.VSCode.Local.Settings_Json
+    $DestPath   = $PROFILE.VSCode.DotfilesRepo.Settings_Json
+
     @( 'from: {0}' -f ( $SourcePath )
        'to:   {0}' -f ( $DestPath ) )
        | Join-String -sep "`n" | Dotils.Write-DimText
@@ -422,7 +423,9 @@ function VsCode.Dotfiles.CopyToRepo {
 
     gi -ea 'stop' $SourcePath | Copy-Item -Destination $DestPath -WhatIf -PassThru
 
-    pushd $DestPath.Directory
+    # pushd $DestPath.Directory
+    pwd
+    $DestPath  | goto
     git log -n 2
     'staged, commit message?'
     fd --changed-within 15minutes -tf
