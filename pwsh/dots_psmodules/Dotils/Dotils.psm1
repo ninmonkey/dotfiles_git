@@ -87,6 +87,16 @@ function Dotils.Goto.Error {
         | Dotils.Write-DimText
         | Infa
 }
+
+function Dotils.Format.Show.Space {
+    <#
+    .synopsis
+        a 1 liner to quickly render spaces, visible to the user. only spaces. doesn't touch other whitespace
+    #>
+    process {
+    $_ -replace '[ ]', "${fg:gray30}`u{2420}${fg:clear}"
+} }
+
 function Dotils.Select.Error {
     [CmdletBinding()]
     param(
@@ -8475,20 +8485,29 @@ function Dotils.Select-NotBlankKeys {
 
 }
 
-write-warning 'left off => Dotils.Template.ProxyCommand'
 function Dotils.Template.ProxyCommand {
+    <#
+    .synopsis
+        Quicky call [ProxyCommand] with specific blocks
+    .EXAMPLE
+        Dot.ProxyCmd ( gcm Start-process ) Create
+        Dot.ProxyCmd ( gcm Get-ChildItem ) GetDynamicParam
+            | bat -l ps1 # colorize
+    #>
+    [Alias('Dot.ProxyCmd')]
     [CmdletBinding()]
     param(
         # Expected kind [CommandMetaData]
         [Parameter(Mandatory)]
-        $InputObject,
+        [ArgumentCompletions('(gcm join-string)')]
+        [object]$InputObject,
 
         [Parameter(Mandatory)]
         [Alias('Kind', 'Type', 'Name', 'Block', 'Template')]
         [ValidateSet(
             'Create',
-            'Create.WithComment',
-            'Create.WithDynamicParam',
+            # 'Create.WithComment',
+            # 'Create.WithDynamicParam',
             'EndBlock',
             'BeginBlock',
             'ParamBlock',
@@ -8496,70 +8515,54 @@ function Dotils.Template.ProxyCommand {
             'GetParamBlock',
             'GetBegin',
             'GetProcess',
-            'GetDynamicParam',
+            'GetDynamicParam', 'DynamicParam',
             'GetEnd',
-            'GetClean',
+            'GetClean', 'CleanBlock',
             'GetHelpComments'
         )]
         [string]$ProxyKind
     )
+    $Config = @{
+        GenerateDynamicParameters = $true
+    }
     switch($ProxyKind) {
             'Create'   {
                 # [ProxyCommand]::Create
-
+                [ProxyCommand]::Create(
+                    $InputObject, 'HelpString', $Config.GenerateDynamicParameters )
                 break
             }
-            'Create.WithComment'   {
+            { $_ -in @('BeginBlock', 'GetBegin') } {
+                [ProxyCommand]::GetBegin( $InputObject )
                 break
-
             }
-            'Create.WithDynamicParam'   {
+             { $_ -in @('EndBlock', 'GetEnd') } {
+                [ProxyCommand]::GetEnd(  $InputObject )
                 break
-
             }
-            'EndBlock'   {
+            { $_ -in @('CleanBlock', 'GetClean') } {
+                [ProxyCommand]::GetClean( $InputObject )
                 break
-
-            }
-            'BeginBlock'   {
-                break
-
-            }
-            'ParamBlock'   {
-                break
-
             }
             'GetCmdletBindingAttribute'   {
+                [ProxyCommand]::GetCmdletBindingAttribute( $InputObject )
                 break
-
             }
-            'GetParamBlock'   {
+            { $_ -in @('GetParamBlock', 'ParamBlock' ) }   {
+                [ProxyCommand]::GetParamBlock( $InputObject )
                 break
-
-            }
-            'GetBegin'   {
-                break
-
             }
             'GetProcess'   {
+                [ProxyCommand]::GetProcess( $InputObject )
                 break
-
             }
-            'GetDynamicParam'   {
+            { $_ -in @('GetDynamicParam', 'DynamicParam' ) }   {
+                [ProxyCommand]::GetDynamicParam( $InputObject )
                 break
-
-            }
-            'GetEnd'   {
-                break
-
-            }
-            'GetClean'   {
-                break
-
             }
             'GetHelpComments'   {
+                [ProxyCommand]::GetHelpComments( $InputObject )
                 break
-
             }
         default {
             write-warning "UnexpectedProxyKind: $ProxyKind"
@@ -15467,6 +15470,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-12-13
+        'Dot.ProxyCmd'
+
         # 2023-12-06
         'GitSel'
         '.Git*'
