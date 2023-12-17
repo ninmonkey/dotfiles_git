@@ -15449,7 +15449,101 @@ function Dotils.FormatQuotes-WhenContainsSpaces {
         ) : $Text
 }
 
+function Dotils.QuickFmt.ShowTypes_AlignedColumns {
+    <#
+    .synopsis
+        show a list of names, with types on the left which are right-aligned to the important text
+    .example
+        > Dotils.QuickFmt.AlignedColumns $Ast.EndBlock.Statements
+        > Dotils.QuickFmt.AlignedColumns (gci . )
+    .example
+        > Dotils.QuickFmt.AlignedColumns (gci . )
 
+        DirectoryInfo .github
+        DirectoryInfo .vscode
+        DirectoryInfo CacheMeIfYouCan
+        DirectoryInfo Docs
+        DirectoryInfo examples
+        DirectoryInfo tests
+            FileInfo .gitattributes
+            FileInfo .gitignore
+            FileInfo 🦍CacheMeIfYouCan.code-workspa
+            FileInfo AstSketch.ps1
+            FileInfo build.psd1
+            FileInfo env.json
+
+    .example
+        > Dotils.QuickFmt.AlignedColumns ( $Ast.EndBlock.Statements )
+
+        AssignmentStatementAst [␀]
+            TypeDefinitionAst BuildItCommandNameCompleter
+        FunctionDefinitionAst BuildItCmd
+        FunctionDefinitionAst BuiltIt-TryImportInstalled
+                PipelineAst [␀]
+        FunctionDefinitionAst BuildIt-ModuleBuild
+        FunctionDefinitionAst BuildIt-TryModuleBuild
+        FunctionDefinitionAst BuildIt-TryImportModuleBuilder
+        FunctionDefinitionAst BuildIt-TryPublish
+        FunctionDefinitionAst BuildIt-TryInstallPublished
+    #>
+    [Alias(
+        'Dotils.QuickFmt.AlignedColumns',
+        'Dotils.QuickFmt.TinfoCols'
+    )]
+    param(
+        $InputObject,
+        [string]$Property = 'Name'
+    )
+    $max_left  = $InputObject | %{ $_.GetType().Name.Length } | measure -Maximum | % Maximum
+    $max_right = $InputObject | %{ $_.$Property.Length } | measure -Maximum | % Maximum
+
+    $InputObject | %{
+        $Left  = $_.GetType().name
+        $Right = $_.$Property
+        $Left = $Left.padLeft( $max_left, ' ' )
+        $Render = Label $Left $Right -sep ' ' -fore 'gray30'
+        return $Render
+    }
+}
+function Dotils.Ast.GetAstFromFile {
+    <#
+    .notes
+    related:
+        - https://gist.github.com/SeeminglyScience/4d0d63ab56b4f121b98652e831af7219
+        - <https://github.com/SeeminglyScience/dotfiles/blob/bc31aaaec30343be4788d47b2c08b40d6763268d/Documents/PowerShell/Utility.psm1#L6026-L6027>
+
+    see:
+        https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.parser.parseinput?view=powershellsdk-7.4.0#system-management-automation-language-parser-parseinput(system-string-system-string-system-management-automation-language-token()@-system-management-automation-language-parseerror()@)
+        https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.parser?view=powershellsdk-7.4.0
+    #>
+    [Alias('Dotils.AstFromFile')]
+    param(
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$FileName
+    )
+    if( -not (Test-Path $FileName)) {
+        throw "InvalidFilepath: '$FileName'"
+    }
+
+    $Tokens = $null
+    $AstErrors = $Null
+    $DocRoot = [Parser]::ParseFile(
+        <# fileName: #> $fileName,
+        <# tokens  : #> [ref] $tokens,
+        <# errors  : #> [ref] $AstErrors )
+
+    [pscustomobject]@{
+        Tokens =  $Tokens
+        Errors = $AstErrors
+        Fullname = $filename
+        Ast = $DocRoot
+    }
+
+    if( $AstErrors.count -gt 0 ) {
+        'warning, {0} Errors' -f @( $AstErrors.count )
+            | write-verbose -verbose
+    }
+}
 function Dotils.QuickParams {
     <#
     .synopsis
