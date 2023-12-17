@@ -15449,6 +15449,33 @@ function Dotils.FormatQuotes-WhenContainsSpaces {
         ) : $Text
 }
 
+
+function Dotils.QuickParams {
+    <#
+    .synopsis
+        Show ParameterInfo automatically and call Find-Member if it hasn't ran
+    .example
+        [Parser] | Dotils.QuickParams
+        [Parser] | Find-Member | Dotils.QuickParams # automatic, so they are equivalent
+
+    #>
+    param(
+        [Parameter(Mandatory, ValueFromPipeline )]
+        [object[]]$InputObject,
+        [switch]$PassThru
+    )
+    process {
+        $InputObject | %{
+            $curObj = $_
+            $cameFromFindMember = $curObj -is [Reflection.MethodInfo]
+            $CameFromMember ?
+                ( $CurObj | Get-Parameter) :
+                ( $CurObj | Find-Member | Get-Parameter )
+                # $_ | Find-Member | Get-Parameter | Ft -AutoSize
+        }
+    }
+}
+
 function Dotils.SaveLink {
     param(
         [string[]]$LinksInput,
