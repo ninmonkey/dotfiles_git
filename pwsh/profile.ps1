@@ -371,6 +371,7 @@ if($false) {
 }
 
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
+$PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.UsingNamespaces' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.__init__' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
 $__dotfilesRepoRoot = 'H:/data/2023/dotfiles.2023'
 $PROFILE | Add-Member -force -ea ignore -PassThru -NotePropertyMembers @{

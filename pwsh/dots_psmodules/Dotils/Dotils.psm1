@@ -1604,8 +1604,13 @@ function Dotils.Format.WildcardPattern {
 
         wildStr to csv
             *to*csv*
+    .link
+        Dotils.Format.WrapWildcards
+    .link
+        Dotils.Format.WildCardPattern
     #>
     [Alias(
+        'Dotils.Format.Build-WildcardPattern',
         'WildStr',
         'Join.Wild'
     )]
@@ -4128,6 +4133,109 @@ function Dotils.Format.FullName {
     }
 
 }
+function Dotils.Format.WrapWildcards {
+    <#
+    .synopsis
+        oops, already have a similar func, but different<Format.WildCardPattern>
+        wrap wildcards, but don't double-star because that isn't valid
+    .example
+        WrapWild 'cat bat'   => '*cat bat*'
+        WrapWild '*cat bat'  => '*cat bat*'
+        WrapWild 'cat*bat'   => '*cat*bat*'
+        WrapWild ''          => '*'
+        WrapWild $Null       => '*'
+    .example
+        'cat bat' , '*cat bat', 'cat*bat' , '', $Null| %{
+        [pscustomobject]@{
+            Str = $_
+            Rend = Dotils.Format.WrapWildcards -Text $_
+        }}
+    .link
+        Dotils.Format.WrapWildcards
+    .link
+        Dotils.Format.WildCardPattern
+    #>
+    param(
+        [string]$Text,
+
+        [Alias('LowerCase', 'ToLower')]
+        [switch]$ForceLowercase,
+        [object]$Culture
+    )
+    if( [string]::IsNullOrEmpty( $Text ) ) { return '*' }
+
+    $Text = # abusing ternary
+        -not $ForceLowerCase ?
+            $Text :
+                ( $Culture ?
+                    $Text.ToLower( $Culture ) :
+                    $Text.ToLowerInvariant() )
+
+    $FinalText = @(
+        $Text.StartsWith('*') ? '' : '*'
+        $Text
+        $Text.EndsWith('*') ? '' : '*' ) -join ''
+
+    return $FinalText
+}
+function Dotils.QuickFindType.SharedNames {
+    param(
+        [ArgumentCompletions(
+            'Microsoft.PowerShell*'
+        )]
+        [string]$NamespacePattern,
+        [string]$FullNamePattern,
+        [switch]$PassThru,
+
+        [Alias('CompareCI')]
+        [switch]$CompareInsensitive,
+        [switch]$AlwaysWrapStars
+    )
+    if($CompareInsensitive) {
+        $NamespacePattern  = $NamespacePattern.ToLowerInvariant()
+        $FullNamePattern  = $FullNamePattern.ToLowerInvariant()
+    }
+    if($AlwaysWrapStars){
+        if(-not $NamespacePattern.StartsWith('*')) { $prefix =  '*' }
+        if(-not $NamespacePattern.EndsWith('*')) { $suffix =  '*' }
+        $NamespacePattern = $Prefix, $namespacePattern, $Suffix -join ''
+        # return
+    }
+
+    $findTypeSplat = @{}
+    if( $NamespacePattern ) { $FindTypeSplat.Namespace = $NamespacePattern }
+    if( $FullNamePattern ) { $FindTypeSplat.Namespace = $FullNamePattern }
+
+    'query: -Name: {0} -Fullname {1}' -f @(
+
+    )
+
+    $query = Find-Type @findTypeSplat
+    # - | Group Namespace | % Name | sort
+}
+function Dotils.WriteFg {
+    #  Ansi color wrapper
+    param( [object]$Color )
+    if( [string]::IsNullOrEmpty( $Color ) ) { return }
+    $PSStyle.Foreground.FromRgb( $Color )
+}
+function Dotils.WriteBg {
+    #  Ansi color wrapper
+    param( [object]$Color )
+    if( [string]::IsNullOrEmpty( $Color ) ) { return }
+    $PSStyle.Background.FromRgb( $Color )
+}
+function Dotils.WriteColor {
+    #  Ansi color wrapper
+    param(
+        [object]$ColorFg,
+        [object]$ColorBg
+    )
+    if( [string]::IsNullOrEmpty( $ColorFg ) -and [string]::IsNullOrEmpty( $ColorBg ) ) { return }
+    @(  WriteFg $ColorFg
+        WriteBg $ColorBg ) -join ''
+}
+
 # class NinColor {
 #     static [NinColor] ConvertFrom_PStyle ( $FromObject ) {
 #         # $PSStyle classes
@@ -15285,6 +15393,29 @@ function Dotils.Props.FromObject {
     $query = $query | Sort-Object @sortObjectSplat
     if( $NameOnly ) { return $query.Name }
     return $query
+}
+
+function Dotils.FormatQuotes-WhenContainsSpaces {
+        param(
+            [switch]$DoubleQuote,
+
+            [Parameter(ValueFromRemainingArguments)]
+            [string]$Text
+        )
+        $hasSpaces = $Text -match ' '
+        $hasSingle = $Text -match "[']+"
+        $hasDouble = $Text -match '["]+'
+
+        $splat = @{}
+        if($DoubleQuote) {
+            $splat.DoubleQuote = $True
+        } else {
+            $splat.SingleQuote = $True
+        }
+
+        $hasSpaces ? (
+            Join-String -in $Text @splat
+        ) : $Text
 }
 
 function Dotils.SaveLink {

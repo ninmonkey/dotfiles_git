@@ -3,7 +3,38 @@ BeforeAll {
     hr  | write-host
 }
 
-Describe 'Format.WildCardPattern' {
+Describe '[1] Format.Format.WildCards' { # note this is a 2nd command
+    it '<InStr> Renders as <ExpectedRender>' -ForEach @(
+
+        @{
+            InStr = 'cat bat'
+            ExpectedRender = '*cat bat*'
+        }
+        @{
+            InStr = '*cat bat'
+            ExpectedRender = '*cat bat*'
+        }
+        @{
+            InStr = 'cat*bat'
+            ExpectedRender = '*cat*bat*'
+        }
+        @{
+            InStr = ''
+            ExpectedRender = '*'
+        }
+        @{
+            InStr = $Null
+            ExpectedRender = '*'
+        }
+
+    ) {
+
+        Dotils.Format.WrapWildcards -Text $InStr
+        | Should -BeExactly $ExpectedRender
+    }
+
+}
+Describe '[2] Format.WildCardPattern' { # note this is a 2nd command
     it 'Spaces Convert to Wildcards' -ForEach @() {
         Dotils.Format.WildcardPattern 'foo bar*' #-SpacesToWildcard
     }

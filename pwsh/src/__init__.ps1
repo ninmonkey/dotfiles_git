@@ -1,4 +1,16 @@
-﻿$StringModule_DontInjectJoinString = $true
+﻿using namespace System.Management.Automation.Language
+using namespace System.Management.Automation
+using namespace System.Collections.Generic
+using namespace System.Collections
+using namespace System.Timers
+using namespace System.Diagnostics
+using namespace Microsoft.PowerShell
+# using namespace System.Reflection
+# using namespace System.Threading
+
+$StringModule_DontInjectJoinString = $true
+# using namespace System.Collections
+
 $global:StringModule_DontInjectJoinString = $true # context: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055>
 
 # $PSDefaultParameterValues['wait-debugger:verbose'] = 'continue'
