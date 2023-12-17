@@ -1,14 +1,18 @@
-﻿# $PSDefaultParameterValues['wait-debugger:verbose'] = 'continue'
+﻿$StringModule_DontInjectJoinString = $true
+$global:StringModule_DontInjectJoinString = $true # context: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055>
+
+# $PSDefaultParameterValues['wait-debugger:verbose'] = 'continue'
 # $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
+# 2023-12-16 check if theres anything worth keeping in this file
 'trace.👩‍🚀.parse: [2] $Profile.''MainEntryPoint.__init__'' : /pwsh/profile.ps1'
     | write-verbose
     # | write-host -bg '7baa7a' -fg black
 
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
+$PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true
 $VerbosePreference = 'silentlyContinue'
 
-$StringModule_DontInjectJoinString = $true
-$global:StringModule_DontInjectJoinString = $true # context: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055>
+
 
 write-warning 'to extract: H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
 'early exit: {0}' -f $PSCommandPath | write-warning
@@ -215,7 +219,6 @@ function nin.Help.Command.OutMarkdown {
             )
         }
     }
-
 }
 function prof.Html.Table.FromHash {
     <#

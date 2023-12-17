@@ -2381,7 +2381,22 @@ function Dotils.Quick.History {
         }
     }
 }
-
+function Dotils.Quick.ShowFunctionsFromModule {
+    param( [string]$ModuleName )
+    $cmd_list = get-module $ModuleName
+    if(  $cmd_list.count -eq 0) {
+        'ModuleNotYetImported' | write-host -fg 'darkred'
+        return
+    }
+    $cmd_names = $cmd_list.ExportedCommands.Keys | Sort-Object
+    @(foreach($c in $cmd_names) {
+        try {
+            gcm $c -Syntax -ea 'stop'
+        } catch {
+            '{0} ( gcm failed )' -f $C
+        }
+    }).Where{ $_ } -replace '\r?\n', '' | Join.UL
+}
 function Dotils.Format.Write-DimText {
     <#
     .SYNOPSIS
@@ -8485,14 +8500,96 @@ function Dotils.Select-NotBlankKeys {
 
 }
 
+function Dotils.List.ContainsList {
+    <#
+    .synopsis
+        For two lists, compare whether one contains the other
+    .EXAMPLE
+       Dot.List.Contains -ListA @('a'..'f') -ListB @( 'c'..'z' )
+       Dot.List.Contains -ListA @('a'..'f') -ListB @( 'c'..'z' ) B.In.A
+
+    .EXAMPLE
+        Pwsh 7> 🐒
+       Dot.List.Contains -ListA @('a'..'f') -ListB @( 'c'..'z' ) A.In.B
+        | Join-String -sep ' '
+        c d e f
+
+        Pwsh 7> 🐒
+       Dot.List.Contains -ListA @('a'..'f') -ListB @( 'c'..'z' ) A.NotIn.B
+        | Join-String -sep ' '
+        a b
+
+        Pwsh 7> 🐒
+       Dot.List.Contains -ListA @('a'..'f') -ListB @( 'c'..'z' ) B.In.A
+        | Join-String -sep ' '
+        c d e f
+
+        Pwsh 7> 🐒
+       Dot.List.Contains -ListA @('a'..'f') -ListB @( 'c'..'z' ) B.NotIn.A
+        | Join-String -sep ' '
+        g h i j k l m n o p q r s t u v w x y z
+
+    #>
+    [Alias(
+        'Dot.List.Contains'
+    )]
+    param(
+        [Alias('A')]
+        [object[]]$ListA,
+        [Alias('B', 'Other')]
+        [object[]]$ListB,
+
+        [Parameter()]
+        [validateSet(
+            'A.In.B',
+            'A.NotIn.B',
+            'B.In.A',
+            'B.NotIn.A'
+            # 'A ∋ B',
+            # 'A ∌ B',
+            # 'B ∋ A',
+            # 'B ∌ A',
+        )]
+        [string]$Comparison = 'A.In.B'
+    )
+    switch($Comparison){
+        'A.In.B' {
+            $ListA | ?{
+                $_ -in @( $ListB )
+            }
+        }
+        'A.NotIn.B' {
+            $ListA | ?{
+                $_ -notin @( $ListB )
+            }
+        }
+        'B.In.A' {
+            $ListB | ?{
+                $_ -in @( $ListA )
+            }
+        }
+        'B.NotIn.A' {
+            $ListB | ?{
+                $_ -notin @( $ListA )
+            }
+        }
+    }
+    return
+}
+
+
 function Dotils.Template.ProxyCommand {
     <#
     .synopsis
         Quicky call [ProxyCommand] with specific blocks
     .EXAMPLE
         Dot.ProxyCmd ( gcm Start-process ) Create
+        Dot.ProxyCmd ( Get-Help 'Start-Process' ) GetHelp
+
         Dot.ProxyCmd ( gcm Get-ChildItem ) GetDynamicParam
             | bat -l ps1 # colorize
+    .LINK
+        https://devblogs.microsoft.com/scripting/proxy-functions-spice-up-your-powershell-core-cmdlets/
     #>
     [Alias('Dot.ProxyCmd')]
     [CmdletBinding()]
@@ -8518,7 +8615,7 @@ function Dotils.Template.ProxyCommand {
             'GetDynamicParam', 'DynamicParam',
             'GetEnd',
             'GetClean', 'CleanBlock',
-            'GetHelpComments'
+            'GetHelpComments', 'Get-Help', 'Help'
         )]
         [string]$ProxyKind
     )
@@ -8560,7 +8657,7 @@ function Dotils.Template.ProxyCommand {
                 [ProxyCommand]::GetDynamicParam( $InputObject )
                 break
             }
-            'GetHelpComments'   {
+            { $_ -in @('GetHelpComments', 'HelpComments', 'Help' ) }   {
                 [ProxyCommand]::GetHelpComments( $InputObject )
                 break
             }
@@ -14904,6 +15001,65 @@ function Dotils.Format-RenderBool {
     }
 }
 
+function Dotils.ColorTest.TryPairs {
+    <#
+    .SYNOPSIS
+        if no colors set, show a bunch of example combinations
+    #>
+
+    param(
+        [Parameter()]
+        $ColorA,
+        [Parameter()]
+        $ColorB,
+
+        [Parameter()]
+        [string]$string = 'hi world foo bar'
+    )
+
+
+    if(-not $ColorA -and -not $ColorB ) {
+        $C = @{
+            CodeBg = '#1f1f1f'
+            CodeBrownFg = '#c49168'
+            CodeYellowFg = '#d5b55d'
+            GraySomething1 = '#2e3440'
+            GraySomething2 = '#acaeb5'
+            DimYellow = '#dcdcaa'
+            DimOrange = '#ce8d70'
+            DimPurple = '#c586c0'
+        }
+        Dotils.ColorTest.TryPairs $C.CodeBg $C.CodeBrownFg
+        Dotils.ColorTest.TryPairs $C.CodeBg $C.CodeYellowFg
+        Dotils.ColorTest.TryPairs $C.CodeBg $C.CodeYellowFg
+        Dotils.ColorTest.TryPairs $C.GraySomething1 $C.GraySomething2
+        hr
+        Dotils.ColorTest.TryPairs 'gray70' 'gray40'
+        Dotils.ColorTest.TryPairs $C.CodeBrownFg 'gray40'
+        Dotils.ColorTest.TryPairs $C.CodeBrownFg 'gray70'
+        Dotils.ColorTest.TryPairs $C.CodeBg 'gray40'
+        Dotils.ColorTest.TryPairs $C.CodeBg 'gray70'
+        Dotils.ColorTest.TryPairs $C.DimPurple $C.DimOrange
+        Dotils.ColorTest.TryPairs $C.DimYellow $C.DimOrange
+        return
+    }
+
+    @(
+
+        "$ColorA, $ColorB => ",
+        $string
+    )
+        | Join-String -sep ' '
+        | Write-Host -fg $ColorA -bg $ColorB
+    @(
+
+        "$ColorB, $ColorA => ",
+        $string
+    )
+        | Join-String -sep ' '
+        | Write-Host -fg $ColorB -bg $ColorA
+}
+
 function Dotils.ColorTest.ShowNumberedVariations {
     <#
     .NOTES
@@ -15090,6 +15246,47 @@ $Config.Delimiter | Join-String -f "--delimiter='{0}'"
     }
 }
 
+function Dotils.Props.FromObject {
+
+    [CmdletBinding()] # DefaultParameterSetName='FromPSObject')]
+    [Alias(
+        'Dotils.PropsOf',
+        'Dot.PropOf'
+    )]
+    param(
+        $InputObject,
+
+        [Alias('Obj', 'AsObj', 'FromPSObject', 'Kind')]
+        # [Parameter(ParameterSetName = 'FromPSObject')]
+        [ValidateSet(
+            'Obj', 'FromPSObject', 'Object', 'PSCO', 'Props'
+        )]
+        [string]$SourceKind = 'FromPSObject',
+
+        # Final return names only, without other member info
+        [Alias('AsText', 'String')]
+        [switch]$NameOnly,
+        [switch]$Unique
+    )
+    throw 'nyi, copy from: <H:\data\2023\pwsh\sketches\2023-12-13▸MiniJsonify\Mini.Jsonify.Test.psm1>'
+    switch($SourceKind) {
+        'FindMember' {
+            throw 'nyi, copy from: <H:\data\2023\pwsh\sketches\2023-12-13▸MiniJsonify\Mini.Jsonify.Test.psm1>'
+
+        }
+        { $_ -in @( 'FromPSObject', 'PSCO', 'Object', 'Obj', 'Props' ) } {
+            $query = ( $InputObject )?.PSObject.Properties
+        }
+        default { throw "UhandledSet: $(  $PSCmdlet.ParameterSetName ) "}
+    }
+    $sortObjectSplat = @{ Property = 'Name' }
+    if($PSBoundParameters.ContainsKey('Unique')) { $sortObjectSplat.Unique = $Unique }
+
+    $query = $query | Sort-Object @sortObjectSplat
+    if( $NameOnly ) { return $query.Name }
+    return $query
+}
+
 function Dotils.SaveLink {
     param(
         [string[]]$LinksInput,
@@ -15130,6 +15327,8 @@ function Dotils.SaveLink {
 #     throw 'nyi: see justingrote demo that modifies the error string preserving the rest'
 
 # }
+
+
 
 $exportModuleMemberSplat = @{
     # future: auto generate and export
@@ -15472,6 +15671,9 @@ $exportModuleMemberSplat = @{
     Alias    = @(
         # 2023-12-13
         'Dot.ProxyCmd'
+        'Dot.List.Contains'
+        'Dot.Props'
+        'Dot.*'
 
         # 2023-12-06
         'GitSel'
