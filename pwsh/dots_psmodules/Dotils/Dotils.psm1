@@ -4179,38 +4179,69 @@ function Dotils.Format.WrapWildcards {
     return $FinalText
 }
 function Dotils.QuickFindType.SharedNames {
+    <#
+    .synopsis
+        Dotils.QuickFindType.SharedNames -PassThru -NamespacePattern 'text' -WithoutSmartCase -NamePattern 'text'
+            # returned 21 items
+    .example
+        Dotils.QuickFindType.SharedNames -NamespacePattern 'text' -WithoutSmartCase -NamePattern 'text'
+            query: Name: *text*, Fullname ␀, Namespace *text*
+                => found 21 items
+    .example
+        Dotils.QuickFindType.SharedNames -NamespacePattern 'text' -WithoutSmartCase -NamePattern 'text'
+    #>
     param(
         [ArgumentCompletions(
             'Microsoft.PowerShell*'
         )]
+        # wildcard patterns. default wraps them in stars for you
+        [Alias('Space', 'SpaceName')]
         [string]$NamespacePattern,
+        # wildcard patterns. default wraps them in stars for you
+        [Alias('FullName', 'Full')]
         [string]$FullNamePattern,
+        # wildcard patterns. default wraps them in stars for you
+        [Alias('Name')]
+        [string]$NamePattern,
+
+        # return before group by
         [switch]$PassThru,
 
-        [Alias('CompareCI')]
+        [Alias('WithoutSmartCase', 'CompareCI', 'ForceLowercase')]
         [switch]$CompareInsensitive,
-        [switch]$AlwaysWrapStars
+        [switch]$WithoutWrappingStars
     )
     if($CompareInsensitive) {
-        $NamespacePattern  = $NamespacePattern.ToLowerInvariant()
         $FullNamePattern  = $FullNamePattern.ToLowerInvariant()
+        $NamePattern      = $NamePattern.ToLowerInvariant()
+        $NamespacePattern = $NamespacePattern.ToLowerInvariant()
     }
-    if($AlwaysWrapStars){
-        if(-not $NamespacePattern.StartsWith('*')) { $prefix =  '*' }
-        if(-not $NamespacePattern.EndsWith('*')) { $suffix =  '*' }
-        $NamespacePattern = $Prefix, $namespacePattern, $Suffix -join ''
-        # return
+
+    if( -not $WithoutWrappingStars ) {
+        $FullNamePattern  = Dotils.Format.WrapWildcards $FullNamePattern -LowerCase:$CompareInsensitive
+        $NamePattern      = Dotils.Format.WrapWildcards $NamePattern -LowerCase:$CompareInsensitive
+        $NamespacePattern = Dotils.Format.WrapWildcards $NamespacePattern -LowerCase:$CompareInsensitive
     }
 
     $findTypeSplat = @{}
-    if( $NamespacePattern ) { $FindTypeSplat.Namespace = $NamespacePattern }
-    if( $FullNamePattern ) { $FindTypeSplat.Namespace = $FullNamePattern }
-
-    'query: -Name: {0} -Fullname {1}' -f @(
-
+    if( $PSBoundParameters.ContainsKey('NamePattern' ) ) {
+        $FindTypeSplat.Name = $NamePattern
+    }
+    if( $PSBoundParameters.ContainsKey('FullNamePattern' ) ) {
+        $FindTypeSplat.FullName = $FullNamePattern
+    }
+    if( $PSBoundParameters.ContainsKey('NamespacePattern' ) ) {
+        $FindTypeSplat.Namespace = $NamespacePattern
+    }
+    'query: Name: {0}, Fullname {1}, Namespace {2}' -f @(
+        $FindTypeSplat.Name      ?? "`u{2400}"
+        $FindTypeSplat.FullName  ?? "`u{2400}"
+        $FindTypeSplat.Namespace ?? "`u{2400}"
     )
 
     $query = Find-Type @findTypeSplat
+    $query.Count | Join-String -f '     => found {0} items'
+    if($PassThru) { return $Query }
     # - | Group Namespace | % Name | sort
 }
 function Dotils.WriteFg {
