@@ -2052,6 +2052,8 @@ function Dotils.Quick.Memory {
     .EXAMPLE
         Dotils.Quick.Memory -TemplateName All64 Pwsh
         Dotils.Quick.Memory Pwsh -PropertyName PeakWorkingSet64 -PassThru
+    .EXAMPLE
+        Dotils.Quick.Memory -ProcessName Pwsh, Code -TemplateName BasicMemory
     #>
     param(
         [ArgumentCompletions(
@@ -2129,6 +2131,7 @@ function Dotils.Quick.Memory {
         } catch {
             $_.ToString()
         }
+        "adding: $PropName => $newName := $HumanizedValue" | write-verbose
         $InputObject
             | Add-Member -PassThru -Force -NotePropertyMembers @{
                     $NewName  = $humanizedValue
