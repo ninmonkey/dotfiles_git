@@ -2045,6 +2045,93 @@ ext:xlsx ( dm:last2hours | path:ww:"G:\temp\xl\bdg_compares_2023-08\batch1" | pa
 return $Bookmarks
 
 }
+function Dotils.Quick.Memory {
+    param(
+        [ArgumentCompletions(
+            'Pwsh', 'Code', 'Firefox', 'Edge', 'Explorer', 'Chrome', 'WindowsTerminal*',
+            '*docker*', 'Docker', '*discord*', '*steam*', '*Everything*'
+        )]
+        [Alias('Name')]
+        $ProcessName,
+
+        [Parameter()]
+        [ArgumentCompletions(
+            'Set',
+            'Time',
+            'BasicMemory',
+            'AllMemory',
+            'All64'
+        )]
+        [string[]]$TemplateName,
+
+        [ArgumentCompletions(
+        'BasePriority', 'Container', 'EnableRaisingEvents', 'ExitCode', 'ExitTime', 'Handle', 'HandleCount', 'HasExited', 'Id', 'MachineName', 'MainModule', 'MainWindowHandle', 'MainWindowTitle', 'MaxWorkingSet', 'MinWorkingSet', 'Modules', 'NonpagedSystemMemorySize', 'NonpagedSystemMemorySize64', 'PagedMemorySize', 'PagedMemorySize64', 'PagedSystemMemorySize', 'PagedSystemMemorySize64', 'PeakPagedMemorySize', 'PeakPagedMemorySize64', 'PeakVirtualMemorySize', 'PeakVirtualMemorySize64', 'PeakWorkingSet', 'PeakWorkingSet64', 'PriorityBoostEnabled', 'PriorityClass', 'PrivateMemorySize', 'PrivateMemorySize64', 'PrivilegedProcessorTime', 'ProcessName', 'ProcessorAffinity', 'Responding', 'SafeHandle', 'SessionId', 'Site', 'StandardError', 'StandardInput', 'StandardOutput', 'StartInfo', 'StartTime', 'SynchronizingObject', 'Threads', 'TotalProcessorTime', 'UserProcessorTime', 'VirtualMemorySize', 'VirtualMemorySize64', 'WorkingSet', 'WorkingSet64'
+        )]
+        [string[]]$PropertyName,
+        [switch]$PassThru
+
+
+    )
+    [List[Object]]$PropList = @()
+    if( $PropertyName ) {  $PropList.AddRange( @( $PropertyName ) ) }
+    switch($TemplateName) {
+        'Set' {
+            $PropList.AddRange((
+                'MaxWorkingSet', 'MinWorkingSet', 'PeakWorkingSet', 'PeakWorkingSet64', 'WorkingSet', 'WorkingSet64'
+            ))
+        }
+        'Time' {
+            $PropList.AddRange((
+                'ExitTime', 'PrivilegedProcessorTime', 'StartTime', 'TotalProcessorTime', 'UserProcessorTime'
+            ))
+        }
+        'BasicMemory' {
+            $PropList.AddRange((
+                'PeakPagedMemorySize64', 'PeakWorkingSet64', 'WorkingSet64'
+            ))
+        }
+        'AllMemory' {
+            write-host -bg 'gray30' 'Use picky to picky to dynamically define these groups in short code'
+
+        }
+        'All64' {
+            $PropList.AddRange((
+                'NonpagedSystemMemorySize64', 'PagedMemorySize64', 'PagedSystemMemorySize64', 'PeakPagedMemorySize64', 'PeakVirtualMemorySize64', 'PeakWorkingSet64', 'PrivateMemorySize64', 'VirtualMemorySize64', 'WorkingSet64'
+            ))
+        }
+        default {}
+    }
+    $PropList = $PropList | Sort-Object -unique
+    $PropList |  Join-String -sep ', ' -op 'SelectedProps: ' | Dotils.Write-DimText | Infa
+
+    $query = ps $ProcessName
+        | Measure-Object -Sum -Average -Minimum -Maximum -Property $PropList
+        | %{
+
+            $maybeHuman = try {
+                '{0:n1} Gb (maybe, depends on unit)' -f ( $_.Sum / 1gb )
+            } catch {
+                $_.ToString()
+            }
+            $_ | Add-Member -PassThru -Force -NotePropertyMembers @{
+                Human = $MaybeHuman
+
+            }
+        }
+    if($PassThru) { return $query }
+
+    $query
+        | ft *Human*, Property, * -AutoSize
+    return
+    # ps $ProcessName
+    #     | Measure-Object -Property PeakPagedMemorySize64, PeakWorkingSet64, WorkingSet64 -Sum
+    #     | %{
+    #         $_ | Add-Member -PassThru -Force -NotePropertyMembers @{
+    #             SumHuman =  '{0:n1} Gb' -f ( $_.Sum / 1gb )
+    #         }
+    #     } | ft *Human*, Property, * -AutoSize
+
+}
 function Dotils.Quick.Pwd {
     # 2023-05-12 : touch
     <#
