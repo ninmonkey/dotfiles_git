@@ -2046,13 +2046,20 @@ return $Bookmarks
 
 }
 function Dotils.Quick.Memory {
+    <#
+    .synopsis
+        select and aggregate Get-Process quickly
+    .EXAMPLE
+        Dotils.Quick.Memory -TemplateName All64 Pwsh
+        Dotils.Quick.Memory Pwsh -PropertyName PeakWorkingSet64 -PassThru
+    #>
     param(
         [ArgumentCompletions(
             'Pwsh', 'Code', 'Firefox', 'Edge', 'Explorer', 'Chrome', 'WindowsTerminal*',
             '*docker*', 'Docker', '*discord*', '*steam*', '*Everything*'
         )]
         [Alias('Name')]
-        $ProcessName,
+        [string[]]$ProcessName,
 
         [Parameter()]
         [ArgumentCompletions(
@@ -2092,6 +2099,7 @@ function Dotils.Quick.Memory {
         }
         'AllMemory' {
             write-host -bg 'gray30' 'Use picky to picky to dynamically define these groups in short code'
+            'NonpagedSystemMemorySize64', 'PagedMemorySize64', 'PagedSystemMemorySize64', 'PeakPagedMemorySize64', 'PeakVirtualMemorySize64', 'PrivateMemorySize64', 'VirtualMemorySize64'
 
         }
         'All64' {
@@ -2104,18 +2112,53 @@ function Dotils.Quick.Memory {
     $PropList = $PropList | Sort-Object -unique
     $PropList |  Join-String -sep ', ' -op 'SelectedProps: ' | Dotils.Write-DimText | Infa
 
-    $query = ps $ProcessName
+    function HumanOneUnit {
+        param( $InputObject, [string]$PropName, [string]$NewName )
+        $HasProp = $InputObject.PSObject.PRoperties.Name.cont
+
+        if( -not $InputObject.psobject.properties.name.contains( $PropName ) ) {
+            'Missing Property {0} from object {1}' -f @(
+                $PropName
+                ($InputObject)?.GetType().Name ?? 'null'
+            ) | write-error
+        }
+
+        $Target = $InputObject.$PropName
+        $humanizedValue? = try {
+            '{0:n1} (Gb??)' -f ( $target / 1gb )
+        } catch {
+            $_.ToString()
+        }
+        $InputObject
+            | Add-Member -PassThru -Force -NotePropertyMembers @{
+                    $NewName  = $humanizedValue
+                }
+    }
+
+    $query =
+        foreach($curProcessName in $ProcessName) {
+            ps $ProcessName
         | Measure-Object -Sum -Average -Minimum -Maximum -Property $PropList
-        | %{
+            | %{
+                HumanOneUnit $_ -PropName 'Sum' 'Sum_Hu'
+                HumanOneUnit $_ -PropName 'Average' 'Avg_Hu'
+                HumanOneUnit $_ -PropName 'Maximum' 'Max_Hu'
+                HumanOneUnit $_ -PropName 'Minimum' 'Min_Hu'
 
-            $maybeHuman = try {
-                '{0:n1} Gb (maybe, depends on unit)' -f ( $_.Sum / 1gb )
-            } catch {
-                $_.ToString()
-            }
-            $_ | Add-Member -PassThru -Force -NotePropertyMembers @{
-                Human = $MaybeHuman
-
+                $_ | Add-Member -PassThru -Force -NotePropertyMembers @{
+                    Name  = $curProcessName
+                    # Human = $MaybeHuman
+                }
+                return
+                # $maybeHuman = try {
+                #     '{0:n1} (Gb?)' -f ( $_.Sum / 1gb )
+                # } catch {
+                #     $_.ToString()
+                # }
+                # $_ | Add-Member -PassThru -Force -NotePropertyMembers @{
+                #     Name  = $curProcessName
+                #     # Human = $MaybeHuman
+                # }
             }
         }
     if($PassThru) { return $query }
