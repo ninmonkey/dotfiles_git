@@ -258,6 +258,14 @@ class SavedColorPairs {
     hidden [string]
     $Description
 
+    [SavedColorPairs]
+        SwapColors() {
+            return [SavedColorPairs]@{
+                Fg = $this.BG
+                Bg = $this.Fg
+            }
+        }
+
     [string]
         ToString( ) {
             return $this.Ansi('')
@@ -270,6 +278,15 @@ class SavedColorPairs {
         }
 
     [string]
+        VerboseDisplayString( ) {
+            return '{0} {1} {2} {3}' -f @(
+                $This.Fg.X11ColorName
+                $This.Fg.ToPsMetadata()
+                $This.Bg.X11ColorName
+                $This.Bg.ToPsMetadata()
+            )
+        }
+    [string]
         Ansi () { return $this.Ansi('') }
     [string]
         Ansi( [string]$Text ) {
@@ -279,38 +296,209 @@ class SavedColorPairs {
                 $This.FG
                 $This.BG
                 $Text ?? ''
-                $script:PSStyle.Reset
+                # $script:PSStyle.Reset
             ) -join ''
         }
 }
 
-function Dotils.Color.SavedPairs {
+function Dotils.Color.SavedPairs.Display {
+    <#
+    .example
+        #
+        > @( $q[3] ; $q[3].SwapColors(); )
+            | Dotils.Color.SavedPairs.Display -OutputMode Bar -Delim "`n"
+    .example
+        > (Dotils.Color.SavedPairs.Get -Options @{ SwapPairs = $true; GenerateHighContrastComplements = $false ; GenerateComplements = $false })
+            | CountOf | Dotils.Color.SavedPairs.Display
+    .example
+        > (Dotils.Color.SavedPairs.Get) | Dotils.Color.SavedPairs.Display -OutputMode Table
+        > Dotils.Color.SavedPairs.Display -in (Dotils.Color.SavedPairs.Get) -OutputMode Table
+    #>
+    param(
+        [Parameter(Position=0)]
+        [ValidateSet('Table', 'VerboseName', 'Bar', 'Blank', '')]
+        [string]$OutputMode,
+        [switch]$BaseColorsOnly,
+
+        [ArgumentCompletions(
+            "(Dotils.Color.SavedPairs.Get)"
+        )]
+        [Parameter(ValueFromPipeline, ParameterSetName='fromPipe')]
+        [SavedColorPairs[]]$InputObject,
+
+        [string]$Delim = '    ',
+        [string]$RenderText = 'foo bar blank'
+    )
+    begin {
+        [List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange(@( $InputObject ))
+    }
+    end {
+        # if( -not [string]::IsNullOrEmpty( $Items )) {
+
+        #     $items = Dotils.Color.SavedPairs.Get -BaseColorsOnly:$BaseColorsOnly
+        # }
+        if($items.count -eq 0) { throw 'NoItems!'}
+        switch($OutputMode) {
+            'Table' {
+                $items | %{
+                    $RenderText
+                        | New-Text -fg $_.FG -bg $_.FG
+                    hr
+                }
+                break
+            }
+            { $_ -in @('', 'Bar', $Null) } {
+                $Items | %{
+                    $RenderText
+                        | New-Text -fg $_.FG -bg $_.BG
+                } | Join-String -sep $Delim
+                break
+            }
+            'Blank' {
+                $Items | %{
+                    $RenderText
+                        | New-Text -fg $_.FG -bg $_.FG
+                } | Join-String -sep $Delim
+                break
+            }
+            'VerboseName' {
+                $Items | %{
+                    $_.VerboseDisplayString()
+                        | New-Text -fg $_.FG -bg $_.BG
+                } | Join-String -sep $Delim
+                break
+            }
+            default { throw "UnhandledOutputMode: $OutputMode"}
+        }
+    }
+}
+function Dotils.Color.SavedPairs.Get {
     # return a list of saved
     [OutputType(
         [SavedColorPairs]
     )]
-    param()
-    [List[SavedColorPairs]]$saved = @(
-        [SavedColorPairs]@{ Fg = '#745074'; Bg = '#7aa1b9' }
-        [SavedColorPairs]@{ Fg = '#745074'; Bg = '#2e3440' }
+    param(
+        # Expects keys: GenComplements: bool, GenHighContrastComplements: bool
+        [ArgumentCompletions(
+            '@{ SwapPairs = $true; GenerateHighContrastComplements = $true ; GenerateComplements = $true }'
+#             '@{
+# GenerateHighContrastComplements = $true
+# GenerateComplements = $true }',
+
+#             '@{
+# GenerateHighContrastComplements = $true
+# GenerateComplements = $true
+# }'
+        )]
+        [hashtable]$Options,
+        [switch]$BaseColorsOnly
     )
-    [List[SavedColorPairs]]$finalAlignPairs = @()
+    $Config = nin.MergeHash -OtherHash $Options -BaseHash @{
+        GenerateComplements = $true
+        SwapPairs = $True
+        GenHighContrastComplements = $false
+    }
+
+    [List[SavedColorPairs]]$saved = @(
+        [SavedColorPairs]@{ Fg = '#745074' ; Bg = '#7aa1b9' }
+        [SavedColorPairs]@{ Fg = '#745074' ; Bg = '#2e3440' }
+        [SavedColorPairs]@{ Fg = '#1f1f1f' ; Bg = '#c49168' }
+        [SavedColorPairs]@{ Fg = '#c49168' ; Bg = '#1f1f1f' }
+        [SavedColorPairs]@{ Fg = '#1f1f1f' ; Bg = '#d5b55d' }
+        [SavedColorPairs]@{ Fg = '#d5b55d' ; Bg = '#1f1f1f' }
+        [SavedColorPairs]@{ Fg = '#1f1f1f' ; Bg = '#d5b55d' }
+        [SavedColorPairs]@{ Fg = '#d5b55d' ; Bg = '#1f1f1f' }
+        [SavedColorPairs]@{ Fg = '#2e3440' ; Bg = '#acaeb5' }
+        [SavedColorPairs]@{ Fg = '#acaeb5' ; Bg = '#2e3440' }
+        [SavedColorPairs]@{ Fg = 'gray70'  ; Bg = 'gray40'  }
+        [SavedColorPairs]@{ Fg = '#c49168' ; Bg = 'gray40'  }
+        [SavedColorPairs]@{ Fg = 'gray40'  ; Bg = '#c49168' }
+        [SavedColorPairs]@{ Fg = '#c49168' ; Bg = 'gray70'  }
+        [SavedColorPairs]@{ Fg = 'gray70'  ; Bg = '#c49168' }
+        [SavedColorPairs]@{ Fg = '#1f1f1f' ; Bg = 'gray40'  }
+        [SavedColorPairs]@{ Fg = 'gray40'  ; Bg = '#1f1f1f' }
+        [SavedColorPairs]@{ Fg = '#1f1f1f' ; Bg = 'gray70'  }
+        [SavedColorPairs]@{ Fg = 'gray70'  ; Bg = '#1f1f1f' }
+        [SavedColorPairs]@{ Fg = '#c586c0' ; Bg = '#ce8d70' }
+        [SavedColorPairs]@{ Fg = '#ce8d70' ; Bg = '#c586c0' }
+        [SavedColorPairs]@{ Fg = '#dcdcaa' ; Bg = '#ce8d70' }
+        [SavedColorPairs]@{ Fg = '#ce8d70' ; Bg = '#dcdcaa' }
+        [SavedColorPairs]@{ Fg = '#660e22' ; Bg = '#a90f2d' }
+        [SavedColorPairs]@{ Fg = '#fefe22' ; Bg = '#a9ffdd' }
+    )
+
+    if($BaseColorsOnly) {
+        return $saved
+    }
+    [List[object]]$finalAlignPairs = @()
 
     foreach($cur in $Saved) {
         $finalAlignPairs.Add( $cur )
+        if($Config.SwapPairs) {
+            $finalAlignPairs.AddRange( [SavedColorPairs[]]@(
+                $cur.SwapColors()
+            ))
+        }
+        if($Config.GenerateComplements) {
+            $fgComple = $cur.FG.GetComplement($false, $false)
+            $BgComple = $cur.BG.GetComplement($false, $false)
+            $finalAlignPairs.AddRange( [SavedColorPairs[]]@(
+                [SavedColorPairs]@{
+                    Fg = $FgComple
+                    Bg = $cur.Bg
+                }
+                [SavedColorPairs]@{
+                    Fg = $cur.Fg
+                    Bg = $BgComple
+                }
+                [SavedColorPairs]@{
+                    Fg = $FgComple
+                    Bg = $BgComple
+                }
+            ))
+        }
+        if($Config.GenerateHighContrastComplements) {
+            $fgCompleHigh = $cur.FG.GetComplement($true, $false)
+            $BgCompleHigh = $cur.BG.GetComplement($true, $false)
+            $finalAlignPairs.AddRange( [SavedColorPairs[]]@(
+                [SavedColorPairs]@{
+                    Fg = $FgCompleHigh
+                    Bg = $cur.Bg
+                }
+                [SavedColorPairs]@{
+                    Fg = $cur.Fg
+                    Bg = $BgCompleHigh
+                }
+                [SavedColorPairs]@{
+                    Fg = $FgCompleHigh
+                    Bg = $BgCompleHigh
+                }
+            ))
+        }
     }
-    # $sortedComplement = @{
+    return $finalAlignPairs
+        | Sort-Object -p { $_.Fg, $_.Bg -join '_' } -unique
 
-    # }
-    # $saved | %{
-
-    # }
-
-    # $c.GetComplement($false, $true)
-    return $finalAlignedPairs
 }
 
 
+function Dotils.Quick.ColorPairs {
+    <#
+    .link
+        Dotils.Color.SavedPairs.Display
+    .link
+        Dotils.Color.SavedPairs.Get
+    #>
+    param(
+        [string]$Delim = "`n",
+        [ArgumentCompletions('Table', 'VerboseName', 'Bar', 'Blank', '')]$OutputMode,
+        [string]$OutputMode = 'VerboseName'
+    )
+    Dotils.Color.SavedPairs.Display -OutputMode $OutputMode -Delim $Delim -in (Dotils.Color.SavedPairs.Get)
+}
 function Dotils.DropNamespace {
     <#
     .SYNOPSIS
