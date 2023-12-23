@@ -244,6 +244,73 @@ function Dotils.Select.Error {
     return $found
 }
 
+
+class SavedColorPairs {
+    [RgbColor]
+    $FG
+
+    [RgbColor]
+    $Bg
+
+    hidden [string]
+    $Name
+
+    hidden [string]
+    $Description
+
+    [string]
+        ToString( ) {
+            return $this.Ansi('')
+        }
+    [string]
+        DisplayString() { return $this.DisplayString('') }
+    [string]
+        DisplayString( [string]$Text ) {
+            return $this.Ansi( $Text ?? '' )
+        }
+
+    [string]
+        Ansi () { return $this.Ansi('') }
+    [string]
+        Ansi( [string]$Text ) {
+            return @(
+                # $This.Fg ? $script:PSStyle.Foreground.FromRgb( $this.Fg ) : ''
+                # $This.Bg ? $script:PSStyle.Background.FromRgb( $this.Bg ) : ''
+                $This.FG
+                $This.BG
+                $Text ?? ''
+                $script:PSStyle.Reset
+            ) -join ''
+        }
+}
+
+function Dotils.Color.SavedPairs {
+    # return a list of saved
+    [OutputType(
+        [SavedColorPairs]
+    )]
+    param()
+    [List[SavedColorPairs]]$saved = @(
+        [SavedColorPairs]@{ Fg = '#745074'; Bg = '#7aa1b9' }
+        [SavedColorPairs]@{ Fg = '#745074'; Bg = '#2e3440' }
+    )
+    [List[SavedColorPairs]]$finalAlignPairs = @()
+
+    foreach($cur in $Saved) {
+        $finalAlignPairs.Add( $cur )
+    }
+    # $sortedComplement = @{
+
+    # }
+    # $saved | %{
+
+    # }
+
+    # $c.GetComplement($false, $true)
+    return $finalAlignedPairs
+}
+
+
 function Dotils.DropNamespace {
     <#
     .SYNOPSIS
@@ -8849,6 +8916,94 @@ function Dotils.List.ContainsList {
     return
 }
 
+function Dotils.Proxy.GetError {
+    <#
+    .SYNOPSIS
+        always pipe from debug ,
+        optionally the oldest error
+    #>
+    [Alias('Dot.Err')]
+    [CmdletBinding(DefaultParameterSetName='Newest', HelpUri='https://go.microsoft.com/fwlink/?linkid=2241804')]
+
+    param(
+        [Parameter(ParameterSetName='Error', Position=0, ValueFromPipeline)]
+        [ValidateNotNullOrEmpty()]
+        [psobject]
+        ${InputObject},
+
+        [Parameter(ParameterSetName='Newest')]
+        [Alias('Last')]
+        [ValidateRange(1, 2147483647)]
+        [int]
+        ${Newest}),
+
+        [switch]$Oldest
+
+    begin
+    {
+        try {
+            $outBuffer = $null
+            if ($PSBoundParameters.TryGetValue('OutBuffer', [ref]$outBuffer))
+            {
+                $PSBoundParameters['OutBuffer'] = 1
+            }
+
+            label 'ExpectInput' $PSCmdlet.MyInvocation.ExpectingInput
+                write-warning 'nyi'
+            if( -not $Pscmdlet.MyInvocation.ExpectingInput ) {
+                write-warning 'nyi'
+            }
+
+            $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Microsoft.PowerShell.Utility\Get-Error', [System.Management.Automation.CommandTypes]::Cmdlet)
+            # $scriptCmd = { $global:Error | & $wrappedCmd @PSBoundParameters } # this breaks "query folding" I think, I think it doesn't pipe correctly
+            write-warning 'validate this will pipe correctly'
+            $scriptCmd = { & $wrappedCmd @PSBoundParameters } # this breaks "query folding" I think, I think it doesn't pipe correctly
+
+            $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
+            $steppablePipeline.Begin($PSCmdlet)
+        } catch {
+            throw
+        }
+    }
+
+    process
+    {
+        try {
+            $steppablePipeline.Process($_)
+        } catch {
+            throw
+        }
+    }
+
+    end
+    {
+        try {
+            $steppablePipeline.End()
+        } catch {
+            throw
+        }
+        label 'Dot.Err' 'Summary'
+        $global:error
+            | Select -first 5
+            | Join-string -Property CategoryInfo -sep "`n" -f "    {0}"
+        hr
+
+        $global:error
+            | Select -first 5
+            | Join-string -Property FullyQualifiedErrorId -sep "`n" -f "    {0}"
+    }
+
+    clean
+    {
+        if ($null -ne $steppablePipeline) {
+            $steppablePipeline.Clean()
+        }
+    }
+    <#
+    HelpString
+    #>
+
+}
 
 function Dotils.Template.ProxyCommand {
     <#
