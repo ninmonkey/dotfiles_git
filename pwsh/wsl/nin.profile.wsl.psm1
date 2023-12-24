@@ -13,6 +13,7 @@ $Colors = @{
     FgGreen = '#74886e'
     DimGray = '#434344'
     FgDimFav = '#6d7588'
+    DimRed = $PSStyle.Foreground.FromRgb( '#af6365'  )
 }
 
 $PROFILE
@@ -39,6 +40,10 @@ function nix.DefaultPrompt {
         "nix $($executionContext.SessionState.Path.CurrentLocation)"
         "`n"
         $Colors.fg2
+        ($error.count -eq 0) ? '' :
+            ($Error.Count | Join-String -op $Colors.DimRed)
+
+
         "$('>' * ($nestedPromptLevel + 1)) ";
         $PSStyle.Reset
 
@@ -72,7 +77,6 @@ function Module.OnInit {
     nix.DefaultPSReadLineKeyhandlers
 }
 
-Module.OnInit
 
 Export-ModuleMember -Func @(
     'nin.*'
@@ -89,3 +93,5 @@ Export-ModuleMember -Func @(
     'nix*'
     '*nin_*'
 )
+
+Module.OnInit
