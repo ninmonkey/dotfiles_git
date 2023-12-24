@@ -1,12 +1,6 @@
-# dsf((gc -raw /proc/cpuinfo) -split '\n{2}') | %{
-#     "`n### Group ## `n"
-#     $group = [ordered]@{}
-#     $_ -split '\n' | %{
-#         $k, $v = $_ -split ': ', 2
-#         $group[ $k ] = $v
-#     }
-#     [pscustomobject]$group
-# }
+using namespace System.Collections.Generic
+
+
 $Colors = @{
     Fg1 = $PSStyle.Foreground.FromRgb( 0xFF74886E )
     Fg2 = $PSStyle.Foreground.FromRgb( 0xFF618994  )
@@ -30,6 +24,8 @@ function nix.DefaultPrompt {
     .synopsis
         minimal basic prompt
     #>
+    [Alias('nin.DefaultPrompt')]
+    param()
     $Colors = @{
         Fg1 = $PSStyle.Foreground.FromRgb( 0xFF74886E )
         Fg2 = $PSStyle.Foreground.FromRgb( 0xFF618994 )
@@ -40,8 +36,8 @@ function nix.DefaultPrompt {
         "nix $($executionContext.SessionState.Path.CurrentLocation)"
         "`n"
         $Colors.fg2
-        ($error.count -eq 0) ? '' :
-            ($Error.Count | Join-String -op $Colors.DimRed)
+        ($global:error.count -gt 0) ?
+            ($global:Error.Count | Join-String -op $Colors.DimRed) : ''
 
 
         "$('>' * ($nestedPromptLevel + 1)) ";
@@ -77,6 +73,27 @@ function Module.OnInit {
     nix.DefaultPSReadLineKeyhandlers
 }
 
+function nix.Stats.GetCpuInfo {
+    $Path = Get-Item '/proc/cpuinfo'
+    ((Get-Content $Path -raw ) -split '\n{2}') | %{
+        "`n### Group ## `n" | Write-Host
+        $group = [ordered]@{}
+        $_ -split '\n' | %{
+            $_ | write-verbose -verbose
+            $k, $v = $_ -split ': ', 2
+            if( [string]::IsNullOrEmpty( $v )) {
+                # appears to be a problem on nix, was getting 'name' key errors
+                # at least for ordered
+                $v = "`u{2400}"
+            }
+            # if($k -eq 'name') { # not issue
+            #     $k = 'nameStr'
+            # }
+            $group[ $k ] = $v
+        }
+        [pscustomobject]$group
+    }
+}
 
 Export-ModuleMember -Func @(
     'nin.*'
