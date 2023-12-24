@@ -63,8 +63,11 @@ try commands:
 }
 function nix.DefaultPSReadLineKeyhandlers {
     'invoke => nix.DefaultPSReadLineKeyhandlers' | write-verbose -verb
-    Set-PSReadLineKeyHandler -Key Ctrl+Enter -Function AcceptLine
-    Set-PSReadLineKeyHandler -Key Enter -Function AddLine
+    Set-PSReadLineKeyHandler -Key Ctrl+Enter        -Function AcceptLine
+    Set-PSReadLineKeyHandler -Key Enter             -Function AddLine
+    Set-PSReadLineKeyHandler -Chord Ctrl+LeftArrow  -Function BackwardWord
+    Set-PSReadLineKeyHandler -Chord Ctrl+RightArrow -Function NextWord
+
 }
 function Module.OnInit {
     Module.Tips
