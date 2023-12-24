@@ -2,12 +2,12 @@ using namespace System.Collections.Generic
 
 
 $Colors = @{
-    Fg1 = $PSStyle.Foreground.FromRgb( 0xFF74886E )
-    Fg2 = $PSStyle.Foreground.FromRgb( 0xFF618994  )
-    FgGreen = '#74886e'
-    DimGray = '#434344'
-    FgDimFav = '#6d7588'
-    DimRed = $PSStyle.Foreground.FromRgb( '#af6365'  )
+    Fg1      = $PSStyle.Foreground.FromRgb( 0xFF74886E )
+    Fg2      = $PSStyle.Foreground.FromRgb( 0xFF618994 )
+    FgGreen  = $PSStyle.Foreground.FromRgb( '#74886e' )
+    DimGray  = $PSStyle.Foreground.FromRgb( '#434344' )
+    FgDimFav = $PSStyle.Foreground.FromRgb( '#6d7588' )
+    DimRed   = $PSStyle.Foreground.FromRgb( '#af6365' )
 }
 
 $PROFILE
@@ -74,21 +74,22 @@ function Module.OnInit {
 }
 
 function nix.Stats.GetCpuInfo {
+    # Read /proc/cpuinfo, return as objects
     $Path = Get-Item '/proc/cpuinfo'
-    ((Get-Content $Path -raw ) -split '\n{2}') | %{
-        "`n### Group ## `n" | Write-Host
-        $group = [ordered]@{}
+    ((Get-Content $Path -raw ) -split '\n{2}')
+    | ?{ -not [string]::IsNullOrWhiteSpace( $_ ) }
+    | %{
+        "Group" | write-Debug
+        $group = [ordered]@{
+            PSTypeName = 'nin.nix.Stats.CpuInfo'
+        }
         $_ -split '\n' | %{
-            $_ | write-verbose -verbose
+            $_ | write-Debug
             $k, $v = $_ -split ': ', 2
+            $k = $k -replace '\s+$', ''
             if( [string]::IsNullOrEmpty( $v )) {
-                # appears to be a problem on nix, was getting 'name' key errors
-                # at least for ordered
                 $v = "`u{2400}"
             }
-            # if($k -eq 'name') { # not issue
-            #     $k = 'nameStr'
-            # }
             $group[ $k ] = $v
         }
         [pscustomobject]$group

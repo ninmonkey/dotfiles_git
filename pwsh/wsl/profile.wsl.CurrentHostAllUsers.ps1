@@ -25,7 +25,8 @@ $sa = @{
     Set-Alias @sa 's' 'Select-Object'
     Set-Alias @sa 'Json' 'ConvertTo-Json'
     Set-Alias @sa 'Json.From' 'ConvertFrom-Json'
-)
+    Set-Alias @sa 'impo' 'Import-Module'
+) | Join-String -sep ', ' -p DisplayName
 
 
 function prompt_basic_nomodule {
