@@ -494,8 +494,7 @@ function Dotils.Quick.ColorPairs {
     #>
     param(
         [string]$Delim = "`n",
-        [ArgumentCompletions('Table', 'VerboseName', 'Bar', 'Blank', '')]$OutputMode,
-        [string]$OutputMode = 'VerboseName'
+        [ArgumentCompletions('Table', 'VerboseName', 'Bar', 'Blank', '')]$OutputMode = 'VerboseMode'
     )
     Dotils.Color.SavedPairs.Display -OutputMode $OutputMode -Delim $Delim -in (Dotils.Color.SavedPairs.Get)
 }
