@@ -13967,6 +13967,317 @@ function Dotils.Write-DictLine {
             | Join-String -sep $Separator -op $OutputPrefix -os $OutputSuffix
     }
 }
+
+function Dotils.Paths.FindNamedEnvVarPaths {
+    <#
+    .SYNOPSIS
+        reference to find some common env vars for system paths
+    .link
+        Dotils.Paths.FindNamedEnvVarPath
+    .link
+        Dotils.FindPackageDirs.InvokeEverythingSearch
+    .link
+        Dotils.Paths.FindAssembly.Tabular3
+    .link
+        Dotils.Paths.FindPackageDirs
+
+    .EXAMPLE
+    # output
+    > Find.NamedEnvVarPaths
+
+        EnvVar                  Current
+        ------                  -------
+        ALLUSERSPROFILE         C:\ProgramData
+        CommonProgramFiles      C:\Program Files\Common Files
+        CommonProgramFiles(x86) C:\Program Files (x86)\Common Files
+        CommonProgramW6432      C:\Program Files\Common Files
+        MSMPI_BENCHMARKS        C:\Program Files\Microsoft MPI\Benchmarks\
+        MSMPI_BIN               C:\Program Files\Microsoft MPI\Bin\
+        ProgramData             C:\ProgramData
+        ProgramFiles            C:\Program Files
+        ProgramFiles(x86)       C:\Program Files (x86)
+        ProgramW6432            C:\Program Files
+        VS120COMNTOOLS          C:\Program Files (x86)\Microsoft Visual Studio 12.
+        VS140COMNTOOLS          C:\Program Files (x86)\Microsoft Visual Studio 14.
+    #>
+
+
+    class NamedPath {
+        [string]$EnvVar
+        [bool]$Exists = $false
+        [object]$Current
+        [string]$CurrentRaw
+        [string]$Example
+    }
+    [List[Object]]$potentialPaths = @(
+        [NamedPath]@{
+            EnvVar ='ProgramW6432'
+            Example = 'C:\Program Files'
+        }
+
+        [NamedPath]@{
+            EnvVar ='ProgramFiles'
+            Example = 'C:\Program Files'
+        }
+
+        [NamedPath]@{
+            EnvVar ='ProgramFiles(x86)'
+            Example = 'C:\Program Files (x86)'
+        }
+
+        [NamedPath]@{
+            EnvVar ='CommonProgramFiles(x86)'
+            Example = 'C:\Program Files (x86)\Common Files'
+        }
+
+        [NamedPath]@{
+            EnvVar ='VS120COMNTOOLS'
+            Example = 'C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\'
+        }
+
+        [NamedPath]@{
+            EnvVar ='VS140COMNTOOLS'
+            Example = 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\'
+        }
+
+        [NamedPath]@{
+            EnvVar ='CommonProgramFiles'
+            Example = 'C:\Program Files\Common Files'
+        }
+
+        [NamedPath]@{
+            EnvVar ='CommonProgramW6432'
+            Example = 'C:\Program Files\Common Files'
+        }
+
+        [NamedPath]@{
+            EnvVar ='MSMPI_BENCHMARKS'
+            Example = 'C:\Program Files\Microsoft MPI\Benchmarks\'
+        }
+
+        [NamedPath]@{
+            EnvVar ='MSMPI_BIN'
+            Example = 'C:\Program Files\Microsoft MPI\Bin\'
+        }
+
+        [NamedPath]@{
+            EnvVar ='ProgramData'
+            Example = 'C:\ProgramData'
+        }
+
+        [NamedPath]@{
+            EnvVar = 'ALLUSERSPROFILE'
+            Example = 'C:\ProgramData'
+        }
+    )
+
+    $potentialPaths | %{
+        $_.CurrentRaw = [Environment]::GetEnvironmentVariable( $_.EnvVar, 'Process' )
+        $_.Current =
+            (Get-Content -ea 'ignore' ( Join-Path Env:\ $_.EnvVar)
+                | Get-Item -Force) ?? "`u{2400}"
+
+        $_.Exists = Test-Path -ea 'ignore' $_.Current
+
+    } | Sort-Object EnvVar
+
+    return $PotentialPaths
+}
+
+function Dotils.Paths.FindPackageDirs.InvokeEverythingSearch {
+    <#
+    .example
+        > Dotils.Paths.FindPackageDirs.InvokeEverythingSearch -AutoOpen
+    .example
+        > Dotils.Paths.FindPackageDirs.InvokeEverythingSearch
+
+            es:( folder:ww:GAC_MSIL ) | ( Microsoft.Data ext:dll )
+    .example
+        > Dotils.Paths.FindPackageDirs.InvokeEverythingSearch Multiple
+
+            es:folder:ww:GAC_MSIL
+            es:Microsoft.Data ext:dll
+    .link
+        Dotils.Paths.FindNamedEnvVarPath
+    .link
+        Dotils.FindPackageDirs.InvokeEverythingSearch
+    .link
+        Dotils.Paths.FindAssembly.Tabular3
+    .link
+        Dotils.Paths.FindPackageDirs
+    #>
+
+    param(
+        [ValidateSet('Single', 'Multiple')]
+        [string]$OutputMode = 'Single',
+
+        [switch]$AutoOpen,
+        [switch]$WithoutLimitRecent
+    )
+    $LimitRecent = -not $WithoutLimitRecent
+
+    'note: Skipped problematic disabled path:"C:\Program Files\Tabular Editor 3" because of the double layers of quote parsing' | write-verbose -verbose
+
+    [list[Object]]$Terms = @(
+        # 'path:"C:\Program Files\Tabular Editor 3"'
+        'file:"Microsoft.Mashup*"'
+        'wfn:"*Mashup*.dll"'
+        'wfn:"*OleDbProvider*.dll"'
+        'folder:ww:GAC_MSIL'
+        'Microsoft.Data ext:dll'
+        'wholefilename:Microsoft.Data.SqlClient.dll' # wfn
+    )
+    #| %{ $_ -replace '"', "'" }
+    # start-process -path $((Dotils.Paths.FindPackageDirs.InvokeEverythingSearch Single) -replace '"', '""')
+
+    $queryList = switch($OutputMode) {
+        'Multiple' {
+            $Terms | %{ $_ }
+
+        }
+        default {
+            $Terms | Join-string -sep ' | ' -p {
+                '( {0} )' -f @( $_ )
+            }
+        }
+    }
+
+    [string[]]$RenderQueries = @(
+        $queryList | %{
+            if( -not $LimitRecent ) {
+                'es:{0}' -f @( $_ )
+            } else {
+                'es:( {0} ) (dm:last1years)' -f @( $_ )
+            }
+        } | %{
+            # arg. can't get it to pass double quotes to ES
+            # I tried escaping doubles 3 different ways
+            # need to test if it's breaking before or after passing to ES
+            # its only a problem when output mode is Single and path has sapces
+            $EscapeDouble = $false
+            if(-not $EscapeDouble) {
+                return $_
+            }
+            $_ = $_ -replace '"', '""'
+            $_ = '"{0}"' -f $_
+            return $_
+
+        }
+    )
+    if($AutoOpen) {
+        $renderQueries | %{
+            # $rawStr = $_ -replace '"', '\"'
+            Start-Process -path $_
+            # Start-Process -path $rawStr
+        }
+    }
+    return $renderQueries
+}
+function Dotils.Paths.FindAssembly.Tabular3 {
+    <#
+    .SYNOPSIS
+        Find tabular3 related dll files
+    .EXAMPLE
+        Pwsh> Dotils.Paths.FindAssembly.Tabular3  -ShortList
+            # <returns same info as files>
+    .EXAMPLE
+        Pwsh> Dotils.Paths.FindAssembly.Tabular3  -ListNamespaces -ShortList
+
+            TOMWrapper
+            TabularEditor3
+            TabularEditor3.Licensing
+            TabularEditor3.Shared
+            TabularEditor3.Utils
+            Dax.Metadata
+            Dax.Model.Extractor
+            Dax.ViewVpaExport
+            Dax.Vpax
+            Microsoft.AnalysisServices.Tabular
+            Microsoft.AnalysisServices.Tabular.Json
+            Microsoft.Data.SqlClient
+            Microsoft.SqlServer.Server
+            System.Data.SqlClient
+            System.Diagnostics.EventLog.Messages
+            System.Diagnostics.PerformanceCounter
+            System.Text.Encoding.CodePages
+            System.Text.Encodings.Web
+            System.Text.Json
+    .link
+        Dotils.Paths.FindNamedEnvVarPath
+    .link
+        Dotils.FindPackageDirs.InvokeEverythingSearch
+    .link
+        Dotils.Paths.FindAssembly.Tabular3
+    .link
+        Dotils.Paths.FindPackageDirs
+    #>
+    param(
+        [string]$RootDirectory = 'C:\Program Files\Tabular Editor 3',
+        [switch]$ShortList,
+        [switch]$ListNamespaces
+    )
+    [List[Object]]$binArgs = @(
+        '-e', 'dll'
+        '--search-path'
+        (Get-item $RootDirectory)
+    )
+
+    [List[Object]]$query = @(
+        & fd @binArgs | Get-Item
+            | Sort-Object Name
+    )
+
+    if($ShortList) {
+        $query = $query | ?{
+            $_.name -match 'TOMWrapper|^Dax\.|^Cli|Tabular|Data\.SqlClient|Microsoft\.SqlServer|Diagnostics|^System\.Text|Encoding|CodePages|TabularEditor'
+        }
+    }
+    if($ListNamespaces){
+        $query.Name | %{
+            $_ -replace '\.dll$', ''
+        } | Sort-Object -unique
+        return
+    }
+
+    return $query
+}
+function Dotils.Paths.FindPackageDirs {
+    <#
+    .SYNOPSIS
+        find some assembly package directories
+    .link
+        Dotils.Paths.FindNamedEnvVarPath
+    .link
+        Dotils.FindPackageDirs.InvokeEverythingSearch
+    .link
+        Dotils.Paths.FindAssembly.Tabular3
+    .link
+        Dotils.Paths.FindPackageDirs
+    #>
+    $script:__cachePackageDirs ??= @{}
+
+$docStr = @'
+try command:
+    start 'es:folder:ww:GAC_MSIL'
+    start 'es:Microsoft.Data ext:dll'
+'@
+    if( $script:__cachePackageDirs.Keys.count -eq 0) {
+        $docStr | write-host -fg 'gray40'
+        'Searching lots of files....' | write-host -fg 'salmon'
+    }
+    [List[Object]]$script:__cachePackageDirs.Packages ??=
+        fd -td Packages --search-path ([Environment]::GetEnvironmentVariable( 'ProgramFiles(x86)'))
+
+    $script:__cachePackageDirs.GAC_MSIL = @(
+        Get-Item 'C:\Windows\Microsoft.NET\assembly\GAC_MSIL'
+        Get-Item 'C:\Windows\assembly\GAC_MSIL'
+    )
+
+
+    'cached to $script:__cachePackageDirs' | write-host -fg 'salmon'
+    return $script:__cachePackageDirs
+}
+
 function Dotils.Select-VariableByType {
     <#
     .SYNOPSIS
