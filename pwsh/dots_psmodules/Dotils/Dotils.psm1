@@ -14260,6 +14260,7 @@ $docStr = @'
 try command:
     start 'es:folder:ww:GAC_MSIL'
     start 'es:Microsoft.Data ext:dll'
+    start 'es:path:"E:\Program Files (x86)\Power BI Desktop\bin"'
 '@
     if( $script:__cachePackageDirs.Keys.count -eq 0) {
         $docStr | write-host -fg 'gray40'
@@ -14276,6 +14277,159 @@ try command:
 
     'cached to $script:__cachePackageDirs' | write-host -fg 'salmon'
     return $script:__cachePackageDirs
+}
+
+function Dotils.Fetch.RecurseProperty {
+    <#
+    .SYNOPSIS
+        find recursive properties
+    .DESCRIPTION
+        sugar for situations where you need to test a property by descending an unknown depth
+
+        $p.MainWindowHandle
+        $p.Parent.MainWindowHandle
+        $p.Parent.Parent.MainWindowHandle ....
+        $p.Parent.Parent.Parent.MainWindowHandle
+    .EXAMPLE
+        Fetch.RecurseProp -InputObject (ps -Id $PID) -DescendPropertyName Parent -AccessPropertyName Name
+        Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
+        Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
+    .EXAMPLE
+
+        Depth Property Value
+        ----- -------- -----
+            0 Parent   pwsh
+            1 Parent   Code
+            2 Parent   Code
+            3 Parent   explorer
+    .EXAMPLE
+        Fetch.RecurseProperty -InputObject (Get-Process -Id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowHandle
+
+        Depth Property   Value
+        ----- --------   -----
+            0 Parent         0
+            1 Parent         0
+            2 Parent   1707656
+            3 Parent   1574506
+    #>
+    [Alias('Fetch.RecurseProp')]
+    param(
+        $InputObject,
+
+        [ArgumentCompletions(
+            'Parent' )]
+        [string]$DescendPropertyName = 'Parent',
+
+
+        [ArgumentCompletions(
+            'MainWindowHandle' )]
+        [string[]]$AccessPropertyNames,
+
+        [int]$MaxDepth,
+
+        [ArgumentCompletions(
+          "'MemberName', 'Depth'",
+          "'Depth', 'MemberName'"
+        )]
+        [string[]]$OrderBy
+    )
+    $depth = 0
+    $target = $InputObject
+
+    [List[Object]]$FoundItems = @()
+    do {
+        foreach($curAccessName in $AccessPropertyNames) {
+
+            $foundItems.Add([pscustomobject]@{
+                Depth     = $Depth
+                DescendBy = $DescendPropertyName
+                MemberName= $curAccessName
+                Value     = $Target.$curAccessName
+            })
+        }
+
+        $Depth++
+        if( $PSBoundParameters.ContainsKey('MaxDepth') -and ( $Depth -gt $MaxDepth)){
+            write-verbose 'early exit on max depth'
+            break
+        }
+
+        $target = $Target.$DescendPropertyName
+    } until ( $null -eq $target )
+
+    if( $OrderBy ) {
+        $foundItems = $foundItems | Sort-Object -Prop $OrderBy
+    } else {
+        $foundItems = $foundItems | Sort-Object -Prop 'DescendBy', 'Depth', 'MemberName'
+    }
+    return $foundItems
+}
+function Dotils.Fetch.RecurseProperty.Basic {
+    <#
+    .SYNOPSIS
+        find recursive properties
+    .DESCRIPTION
+        sugar for situations where you need to test a property by descending an unknown depth
+
+        $p.MainWindowHandle
+        $p.Parent.MainWindowHandle
+        $p.Parent.Parent.MainWindowHandle ....
+        $p.Parent.Parent.Parent.MainWindowHandle
+    .EXAMPLE
+        Fetch.RecurseProp -InputObject (ps -Id $PID) -DescendPropertyName Parent -AccessPropertyName Name
+        Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
+        Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
+    .EXAMPLE
+
+        Depth Property Value
+        ----- -------- -----
+            0 Parent   pwsh
+            1 Parent   Code
+            2 Parent   Code
+            3 Parent   explorer
+    .EXAMPLE
+        Fetch.RecurseProperty -InputObject (Get-Process -Id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowHandle
+
+        Depth Property   Value
+        ----- --------   -----
+            0 Parent         0
+            1 Parent         0
+            2 Parent   1707656
+            3 Parent   1574506
+    #>
+    [Alias('Fetch.RecurseProp.Basic')]
+    param(
+        $InputObject,
+
+        [ArgumentCompletions(
+            'Parent' )]
+        [string]$DescendPropertyName = 'Parent',
+
+
+        [ArgumentCompletions(
+            'MainWindowHandle' )]
+        [string]$AccessPropertyName,
+
+        [int]$MaxDepth
+    )
+    $depth = 0
+    $target = $InputObject
+
+    do {
+        [pscustomobject]@{
+            Depth    = $Depth
+            Property = $DescendPropertyName
+            Value    = $Target.$AccessPropertyName
+        }
+
+        $Depth++
+        if( $PSBoundParameters.ContainsKey('MaxDepth') -and ( $Depth -gt $MaxDepth)){
+            write-verbose 'early exit on max depth'
+            break
+        }
+
+        $target = $Target.$DescendPropertyName
+    } until ( $null -eq $target )
 }
 
 function Dotils.Select-VariableByType {
@@ -16403,6 +16557,7 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        'Fetch*'
         # 2023-12-07
         'Fd.Go'
         # 2023-12-06
@@ -16738,6 +16893,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-12-27
+        'Fetch*'
         # 2023-12-13
         'Dot.ProxyCmd'
         'Dot.List.Contains'
