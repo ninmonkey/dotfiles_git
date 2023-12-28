@@ -1086,12 +1086,42 @@ function Dotils.Module.Test-ModuleHasChanged {
     )]
     param(
         [ArgumentCompletions('Bintils')]
-        [string]$ModuleName
-    )
+        [string]$ModuleName,
 
-    write-warning 'hardcoded single module, todo'
-    $script:___lastImport ??= @{}
+        # force a run
+        [switch]$Force
+    )
+    $script:___lastImport ??= @{
+        ByName = @{}
+    }
     $state = $script:___lastImport
+    class ModifedFileInfo {
+        [string]$ModuleName
+        [IO.FileInfo]$Path
+        [Datetime]$PrevLoadDt = 0
+    }
+
+    if($Force) {  $state.ByName.Remove($ModuleName) }
+    if( -not $State.ByName.ContainsKey($ModuleName)) {
+        # $state.ByName.$ModuleName = @{
+        #     Name = $ModuleName
+        #     Path = ''
+        #     PrevLoadDt = 0
+        # }
+        $quickPath   = (Get-Module $ModuleName | % Path )
+        $quickPath ??= (Get-Module $ModuleName -ListAvailable | % Path )
+        if(-not $QuickPath) { throw "Error: Couldn't resolve module $ModuleName " }
+        
+        $state.ByName.$ModuleName =
+            [ModifiedFileInfo]@{
+                Name = $ModuleName
+                Path = Get-Item $quickPath
+                PrevLoadDt = 0
+            }
+    }
+
+
+    if(-not($state.ByName.Contains))
     $state.ModuleName ??= $ModuleName
     if($State.ModuleName -ne $ModuleName) { throw "DynamicListWIP, hardcoded one module"}
     $state.PrevLoadDt ??= 0
