@@ -1070,7 +1070,56 @@ function Fmt.Type {
         return $render
     }
 }
+function Dotils.Module.Test-ModuleHasChanged {
+    [Alias(
+        'DbgTool.ModuleHasChanged',
+        'Dotils.Module.Test-IsNew'
+    )]
+    param(
+        [ArgumentCompletions('Bintils')]
+        [string]$ModuleName
+    )
+    write-warning 'hardcoded single module, todo'
+    $state = $script:___lastImport
+    $state.ModuleName ??= $ModuleName
+    if($State.ModuleName -ne $ModuleName) { throw "DynamicListWIP, hardcoded one module"}
+    $state.PrevLoadDt ??= 0
+    $module = Get-Item ( get-module $ModuleName | % Path )
+    $state.ModulePath ??= $ModuleName
+    [bool]$isNewer = $module.LastWriteTime -gt $state.prevLoadDt
+    if(-not $isNewer) { return $false }
 
+    $Module.Name | Join-string -f 'Module {0} is newer' | write-host -fg '#358053'
+    $state.PrevLoadDt = [Datetime]::Now
+    return $true
+}
+
+function Dotils.Module.ShowSyntaxError {
+    [Alias(
+        'DbgTool.ShowErrors')]
+    param(
+        [switch]$WithoutGetError,
+        [switch]$WithoutPositionMessage,
+        [switch]$WithoutEmoji
+    )
+    if( $global:Error.Count -gt 0) {
+        if( -not $WithoutEmoji  ) {
+            'Bad  🔴' | write-host -bg 'gray30' -fg 'gray80'
+        }
+        if( -not $WithoutGetError ) {
+            hr
+            ($global:error)?[1] | Get-Error
+        }
+        if( -not $WithoutPositionMessage ) {
+            hr
+            $global:error[1].InvocationInfo.PositionMessage
+        }
+    } else {
+        if( -not $WithoutEmoji  ) {
+            'Good 🟢' | write-host -bg 'gray30' -fg 'gray80'
+        }
+    }
+}
 function Console.GetWindowWidth {
     <#
     .SYNOPSIS
@@ -16927,6 +16976,8 @@ $exportModuleMemberSplat = @{
     Function = @(
         # 2023-12-28
         'Fmt.*'
+        'DbgTool.*'
+        'Debug.*'
         # 2023-12-27
         'Fetch*'
         'List.*'
@@ -17267,6 +17318,8 @@ $exportModuleMemberSplat = @{
     Alias    = @(
         # 2023-12-28
         'Fmt.*'
+        'DbgTool.*'
+        'Debug.*'
         # 2023-12-27
         'Fetch*'
         'List.*'
