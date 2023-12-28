@@ -1001,6 +1001,76 @@ function Dotils.Help.FromType {
         }
     }
 }
+function Dotils.Format-ShortType {
+    [OutputType('String')]
+    [ALias(
+        'Dotils.Fmt.ShortType',
+        'Fmt.ShortType'
+    )]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObjectOrType,
+        [hashtable]$Options = @{}
+    )
+    begin {
+        $Config = nin.MergeHash -Other $Options -BaseHash @{
+            IncludeBrackets = $true
+            CoerceTypeNames = $true
+        }
+    }
+    process {
+        $Obj = $InputObjectOrType
+        if($Obj -is 'string') {
+            if( -not $Config.CoerceTypeNames ) {  throw "InvalidParam, Expects type or instance" }
+            $tinfo = $Obj -as [type]
+        }
+        elseif ($Obj -is [type] ) {
+            $tinfo = $Obj
+        } else {
+            $tinfo = $Obj.GetType()
+        }
+        [string]$render =
+            $tinfo | Join-string { $_ -replace '\bSystem\.', ''}
+
+        if( $Config.IncludeBrackets ) {
+           $render = Join-String -f "[{0}]" -In $render
+        }
+        return $render
+    }
+}
+function Fmt.Type {
+    [OutputType('String')]
+    param(
+        [Alias('InputObjectOrType')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $Obj,
+        [hashtable]$Options = @{}
+    )
+    begin {
+        $Config = nin.MergeHash -Other $Options -BaseHash @{
+            IncludeBrackets = $true
+            CoerceTypeNames = $true
+        }
+    }
+    process {
+
+        if($Obj -is 'string') {
+            if( -not $Config.CoerceTypeNames ) {  throw "InvalidParam, Expects type or instance" }
+            $tinfo = $Obj -as [type]
+        }
+        elseif($Obj -is [type] ) {
+            $tinfo = $Obj
+        } else {
+            $tinfo = $Obj.GetType()
+        }
+        [string]$render = $tinfo | Join-string { $_ -replace '\bSystem\.', ''}
+        if( $Config.IncludeBrackets ) {
+           $render = Join-String -f "[{0}]" -In $render
+        }
+        return $render
+    }
+}
+
 function Console.GetWindowWidth {
     <#
     .SYNOPSIS
@@ -16855,6 +16925,9 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2023-12-28
+        'Fmt.*'
+        # 2023-12-27
         'Fetch*'
         'List.*'
         # 2023-12-07
@@ -17192,6 +17265,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2023-12-28
+        'Fmt.*'
         # 2023-12-27
         'Fetch*'
         'List.*'
