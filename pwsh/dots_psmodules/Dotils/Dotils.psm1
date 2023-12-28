@@ -14023,7 +14023,7 @@ function Dotils.Write-DictLine {
 function Dotils.Paths.FindPwshModulesToLoad {
     <#
     .SYNOPSIS
-
+        Find pwsh modules and filter them, based on duplicates or shared root directories
     .EXAMPLE
         # [1] get module names
 
