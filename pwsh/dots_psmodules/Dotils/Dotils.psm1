@@ -1070,6 +1070,9 @@ function Fmt.Type {
         return $render
     }
 }
+$script:___lastImport ??= @{
+        ByName = @{}
+    }
 function Dotils.Module.Test-ModuleHasChanged {
     <#
     .SYNOPSIS
@@ -1102,7 +1105,6 @@ function Dotils.Module.Test-ModuleHasChanged {
         [Datetime]$PrevLoadDt = 0
         # [string]$FullName
     }
-
     if($Force) {  $state.ByName.Remove($ModuleName) }
     if( -not $State.ByName.ContainsKey($ModuleName)) {
         $quickPath   = (Get-Module $ModuleName | % Path )
@@ -1114,23 +1116,19 @@ function Dotils.Module.Test-ModuleHasChanged {
                 ModuleName = $ModuleName
                 Path = Get-Item $quickPath
                 PrevLoadDt = 0
-
             }
     }
     [LastModifiedInfo]$lastModifyRecord = $state.ByName.$ModuleName
     if( -not $LastModifyRecord ) { throw "ShouldNeverReachException: Invalid record"}
-
-    $lastModifyRecord | Json -Depth 0 | Join-String -op 'lastModifyRecord: '  | write-debug
-
+    $lastModifyRecord | ConvertTo-Json -wa ignore -Depth 0 | Join-String -op 'lastModifyRecord: '  | write-debug
     $newModInfo = Get-Item $lastModifyRecord.Path
-    [bool]$isNewer = $newModInfo.LastWriteTime -gt $LastModifyRecord.prevLoadDt
 
+    [bool]$isNewer = $newModInfo.LastWriteTime -gt $LastModifyRecord.prevLoadDt
     if(-not $isNewer) { return $false }
 
     $lastModifyRecord.PrevLoadDt = [Datetime]::Now
-    $Module.Name | Join-string -f 'Module {0} is newer' | write-host -fg '#358053'
-
-    return
+    $newModInfo.Name | Join-string -f 'Module {0} is newer' | write-host -fg '#358053'
+    return $true
     # if(-not($state.ByName.Contains))
     # $state.ModuleName ??= $ModuleName
     # if($State.ModuleName -ne $ModuleName) { throw "DynamicListWIP, hardcoded one module"}
@@ -17718,6 +17716,10 @@ $exportModuleMemberSplat = @{
     Variable = @(
         'Bdg_LastSelect'
         'Bdg_*'
+
+        if('export special debug vars') {
+            '___lastImport'
+        }
     )
 }
 Export-ModuleMember @exportModuleMemberSplat
