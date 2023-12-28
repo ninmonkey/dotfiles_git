@@ -1080,6 +1080,7 @@ function Dotils.Module.Test-ModuleHasChanged {
             import-module Bintils -Force -PassThru }
         DbgTool.ShowErrors
     #>
+    [CmdletBinding()]
     [Alias(
         'DbgTool.ModuleHasChanged',
         'Dotils.Module.Test-IsNew'
@@ -1095,44 +1096,53 @@ function Dotils.Module.Test-ModuleHasChanged {
         ByName = @{}
     }
     $state = $script:___lastImport
-    class ModifedFileInfo {
+    class LastModifiedInfo {
         [string]$ModuleName
         [IO.FileInfo]$Path
         [Datetime]$PrevLoadDt = 0
+        # [string]$FullName
     }
 
     if($Force) {  $state.ByName.Remove($ModuleName) }
     if( -not $State.ByName.ContainsKey($ModuleName)) {
-        # $state.ByName.$ModuleName = @{
-        #     Name = $ModuleName
-        #     Path = ''
-        #     PrevLoadDt = 0
-        # }
         $quickPath   = (Get-Module $ModuleName | % Path )
         $quickPath ??= (Get-Module $ModuleName -ListAvailable | % Path )
         if(-not $QuickPath) { throw "Error: Couldn't resolve module $ModuleName " }
-        
+
         $state.ByName.$ModuleName =
-            [ModifiedFileInfo]@{
-                Name = $ModuleName
+            [LastModifiedInfo]@{
+                ModuleName = $ModuleName
                 Path = Get-Item $quickPath
                 PrevLoadDt = 0
+
             }
     }
+    [LastModifiedInfo]$lastModifyRecord = $state.ByName.$ModuleName
+    if( -not $LastModifyRecord ) { throw "ShouldNeverReachException: Invalid record"}
 
+    $lastModifyRecord | Json -Depth 0 | Join-String -op 'lastModifyRecord: '  | write-debug
 
-    if(-not($state.ByName.Contains))
-    $state.ModuleName ??= $ModuleName
-    if($State.ModuleName -ne $ModuleName) { throw "DynamicListWIP, hardcoded one module"}
-    $state.PrevLoadDt ??= 0
-    $module = Get-Item ( get-module $ModuleName | % Path )
-    $state.ModulePath ??= $ModuleName
-    [bool]$isNewer = $module.LastWriteTime -gt $state.prevLoadDt
+    $newModInfo = Get-Item $lastModifyRecord.Path
+    [bool]$isNewer = $newModInfo.LastWriteTime -gt $LastModifyRecord.prevLoadDt
+
     if(-not $isNewer) { return $false }
 
+    $lastModifyRecord.PrevLoadDt = [Datetime]::Now
     $Module.Name | Join-string -f 'Module {0} is newer' | write-host -fg '#358053'
-    $state.PrevLoadDt = [Datetime]::Now
-    return $true
+
+    return
+    # if(-not($state.ByName.Contains))
+    # $state.ModuleName ??= $ModuleName
+    # if($State.ModuleName -ne $ModuleName) { throw "DynamicListWIP, hardcoded one module"}
+    # $state.PrevLoadDt ??= 0
+    # $module = Get-Item ( get-module $ModuleName | % Path )
+    # $state.ModulePath ??= $ModuleName
+    # [bool]$isNewer = $module.LastWriteTime -gt $state.prevLoadDt
+    # if(-not $isNewer) { return $false }
+
+
+    # $state.PrevLoadDt = [Datetime]::Now
+    # return $true
 }
 
 function Dotils.Module.ShowSyntaxError {
