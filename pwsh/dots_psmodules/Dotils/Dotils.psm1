@@ -1071,6 +1071,15 @@ function Fmt.Type {
     }
 }
 function Dotils.Module.Test-ModuleHasChanged {
+    <#
+    .SYNOPSIS
+        test whether import time is older than file modified
+    .EXAMPLE
+        Pwsh> # run this. then save the file, then run again
+        if( DbgTool.ModuleHasChanged -ModuleName Bintils ) {
+            import-module Bintils -Force -PassThru }
+        DbgTool.ShowErrors
+    #>
     [Alias(
         'DbgTool.ModuleHasChanged',
         'Dotils.Module.Test-IsNew'
@@ -1079,7 +1088,9 @@ function Dotils.Module.Test-ModuleHasChanged {
         [ArgumentCompletions('Bintils')]
         [string]$ModuleName
     )
+
     write-warning 'hardcoded single module, todo'
+    $script:___lastImport ??= @{}
     $state = $script:___lastImport
     $state.ModuleName ??= $ModuleName
     if($State.ModuleName -ne $ModuleName) { throw "DynamicListWIP, hardcoded one module"}
@@ -1095,6 +1106,15 @@ function Dotils.Module.Test-ModuleHasChanged {
 }
 
 function Dotils.Module.ShowSyntaxError {
+    <#
+    .SYNOPSIS
+        test whether import time is older than file modified
+    .EXAMPLE
+        Pwsh> # run this. then save the file, then run again
+        if( DbgTool.ModuleHasChanged -ModuleName Bintils ) {
+            import-module Bintils -Force -PassThru }
+        DbgTool.ShowErrors
+    #>
     [Alias(
         'DbgTool.ShowErrors')]
     param(
