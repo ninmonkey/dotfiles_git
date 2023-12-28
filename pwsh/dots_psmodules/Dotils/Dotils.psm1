@@ -9025,6 +9025,54 @@ function Dotils.Select-NotBlankKeys {
     return $targetHash
 
 }
+function Dotils.List.Collect.Pipeline {
+    [Cmdletbinding()]
+    [OutputType('System.Collections.Generic.List[Object]')]
+    [Alias(
+        'Dotils.Rollup',
+        'Dotils.CollectList',
+        'List.FromPipe')]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]]$InputObject,
+
+
+        # write info showing list count, and typenames of values
+        [Alias('Stats')][switch]$ShowStats,
+
+        # pipe to command <CountOf> for orange infa action summary
+        [switch]$ShowCountOf
+    )
+    begin {
+        [List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange(@( $InputObject) )
+    }
+    end {
+
+        $statsMessage = '   List[ {0} ] := {{ FirstChild: [{1}], .., LastChild: [{2}] }}' -f @(
+            $Items.Count
+            @($Items)[0 ]?.GetType().Name ?? "`u{2400}"
+            @($Items)[-1]?.GetType().Name ?? "`u{2400}"
+        )
+        $statsMessage
+            | Dotils.Write-DimText
+            | write-verbose
+
+        if($ShowStats) {
+            $statsMessage #| Write-information -infa 'Continue'
+                | Dotils.Write-DimText
+                | Infa
+        }
+        if($ShowCountOf) {
+            return $Items | CountOf
+        }
+        return $Items
+    }
+}
+
+
 
 function Dotils.List.ContainsList {
     <#
@@ -14312,6 +14360,8 @@ function Dotils.Fetch.RecurseProperty {
             2 Parent   1707656
             3 Parent   1574506
     #>
+
+    [CmdletBinding()]
     [Alias('Fetch.RecurseProp')]
     param(
         $InputObject,
@@ -14325,15 +14375,17 @@ function Dotils.Fetch.RecurseProperty {
             'MainWindowHandle' )]
         [string[]]$AccessPropertyNames,
 
+        # Check out -Verbose for a warning message when max depth is exceeded
         [int]$MaxDepth,
 
+        # default sorting tab completes
         [ArgumentCompletions(
           "'MemberName', 'Depth'",
           "'Depth', 'MemberName'"
         )]
         [string[]]$OrderBy
     )
-    $depth = 0
+    [uint]$depth = 0
     $target = $InputObject
 
     [List[Object]]$FoundItems = @()
@@ -14341,6 +14393,7 @@ function Dotils.Fetch.RecurseProperty {
         foreach($curAccessName in $AccessPropertyNames) {
 
             $foundItems.Add([pscustomobject]@{
+                PSTypeName = 'dotils.FetchRecuresProperty.Result'
                 Depth     = $Depth
                 DescendBy = $DescendPropertyName
                 MemberName= $curAccessName
@@ -14364,6 +14417,50 @@ function Dotils.Fetch.RecurseProperty {
     }
     return $foundItems
 }
+function Dotils.Fetch.RecurseProperty.Render {
+    <#
+    .synopsis
+        render a Dotils.Fetch.RecurseProperty
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName='FromPipe')]
+        [Parameter(Mandatory, Position=0, ParameterSetName='FromParam')]
+        [object[]]
+        $InputObject
+    )
+    begin {
+        [List[Object]]$items = @()
+        if( -not  $PSCmdlet.MyInvocation.ExpectingInput ) {
+            $Items = $InputObject
+        }
+    }
+    process {
+        $Items.AddRange(@( $InputObject ))
+    }
+    end {
+        'do stuff'
+    }
+}
+#     $InputObject
+
+#     $requirePad =
+#         $try.MemberName | % Length | Measure-Object -Maximum | % Maximum
+
+# $try | %{
+
+
+#     $prefix =  '  ' * $_.Depth -join ''
+#     Join-String -f "${prefix}{0}" -in $_ -Property {@(
+#         $_.MemberName.PadLeft( $requirePad, ' ' )
+#         ': '
+#         $_.Value
+#     ) -join ''}
+
+#     }
+
+
+# }
 function Dotils.Fetch.RecurseProperty.Basic {
     <#
     .SYNOPSIS
@@ -14723,6 +14820,57 @@ function Dotils.Resolve.Command {
                 # | write-information -infa 'continue'
         }
     }
+}
+
+function Dotils.Format-RenderBlankable {
+    <#
+    .SYNOPSIS
+        surely duplicated elsewhere. renders common blankable or nullable strings as human-visible
+    .EXAMPLE
+
+    Pwsh> $Null, 'dfs', ' ' , '' | %{
+            [pscustomobject]@{
+                Input = $_ | fcc
+                Render = Format-RenderBlankable $_
+                Type = ( $_ )?.GetType().Name ?? '<null>'
+                InputRaw  = $_
+            }
+        }
+
+    # outputs
+
+        Input Render     Type   InputRaw
+        ----- ------     ----   --------
+        ␀     ␀          <null>
+        dfs   dfs        String dfs
+        ␠     [Blank]    String
+              [EmptyStr] String
+
+    #>
+    param(
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [Parameter(Mandatory, Position=0)]
+        $InputObject
+    )
+    $Uni = @{
+        Null     = "`u{2400}"
+        Space    = "`u{2420}"
+        Blank    = '[Blank]'
+        EmptyStr = '[EmptyStr]'
+    }
+    [string]$WithoutSpace = $InputObject -replace '\s+', ''
+    [bool]$isBlankable    = [String]::IsNullOrWhiteSpace( $InputObject )
+
+    if( $null -eq $InputObject ) { return $Uni.Null }
+    if( $InputObject -is 'string' ) {
+        if( $InputObject.Length  -eq 0) { return $Uni.EmptyStr }
+        if( $WithoutSpace.Length -eq 0) { return $Uni.Blank }
+    }
+    if($IsBlankable) { return $Uni.Blank}
+
+    return $InputObject #passes final value through if not changed
 }
 
 function Dotils.Test-IsOfType.Basic {
@@ -16558,6 +16706,7 @@ $exportModuleMemberSplat = @{
     # (sort of) most recently added to top
     Function = @(
         'Fetch*'
+        'List.*'
         # 2023-12-07
         'Fd.Go'
         # 2023-12-06
@@ -16895,6 +17044,7 @@ $exportModuleMemberSplat = @{
     Alias    = @(
         # 2023-12-27
         'Fetch*'
+        'List.*'
         # 2023-12-13
         'Dot.ProxyCmd'
         'Dot.List.Contains'
