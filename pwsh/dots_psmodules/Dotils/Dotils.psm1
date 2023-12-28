@@ -14020,7 +14020,100 @@ function Dotils.Write-DictLine {
             | Join-String -sep $Separator -op $OutputPrefix -os $OutputSuffix
     }
 }
+function Dotils.Paths.FindPwshModulesToLoad {
+    <#
+    .SYNOPSIS
 
+    .EXAMPLE
+        # [1] get module names
+
+        Pwsh> Dotils.Paths.FindPwshModulesToLoad -AsBaseNames
+            # Bintils, bintils.common, bintils.completers.AwsCli, ...
+    .EXAMPLE
+    # [2] get modules grouped on common root
+
+    Pwsh> Dotils.Paths.FindPwshModulesToLoad
+
+        ShortName           TotalItems RootDirectory                         ChildModules
+        ---------           ---------- -------------                         ------------
+        PsModules                   33 H:\data\2023\pwsh\PsModules           {H:\data\2023\pwsh\PsM
+        PsModules.👨.Import          6 H:\data\2023\pwsh\PsModules.👨.Import {H:\data\2023\pwsh\PsM
+        PsModules.dev               19 H:\data\2023\pwsh\PsModules.dev       {H:\data\2023\pwsh\PsM
+        PsModules.Import            22 H:\data\2023\pwsh\PsModules.Import    {H:\data\2023\pwsh\PsM
+    .EXAMPLE
+
+    # [3] help finding accidental duplicates? or to ensure module builder cleaned up
+
+    Pwsh> Dotils.Paths.FindPwshModulesToLoad -FindDuplicates
+
+        GroupName                       TotalCount Dupes
+        ---------                       ---------- -----
+        Jsonify.psm1                             4 {H:\data\2023\pwsh\PsModules.Import\Jsonify\0.0.4\Jsonif
+        Marking.psm1                             2 {H:\data\2023\pwsh\PsModules.dev\Marking\Marking\Marking
+        Picky.psm1                               4 {H:\data\2023\pwsh\PsModules.Import\Picky\0.0.4\Picky.ps
+        CacheMeIfYouCan.psm1                     5 {H:\data\2023\pwsh\PsModules.Import\CacheMeIfYouCan\0.0.
+
+    #>
+    param(
+        # returns a distinct list of module's base names, ie: without extensions
+        [Alias('Basic', 'BaseName', 'AsName', 'AsBaseName', 'Simple', 'Name')]
+        [switch]$AsBaseNames,
+        [switch]$FindDuplicates
+    )
+    $CommonRoot = Get-Item -ea 'stop' 'H:\data\2023\pwsh'
+
+    class RecursedModule {
+        [IO.DirectoryInfo]$RootDirectory
+        [List[Object]]$ChildModules = @()
+        [int]$TotalItems = 0
+        [string]$ShortName = ''
+    }
+    # wait-debugger
+    $query = @(
+        'PsModules'
+        'PsModules.👨.Import'
+        'PsModules.dev'
+        'PsModules.Import'
+    ) | %{
+        $curRoot = $_
+        $resolvedRootDir = Get-Item (Join-Path $CommonRoot $curRoot)
+
+        [List[Object]]$BinArgs = @(
+            '-tf'
+            '-e', 'psm1'
+            '--search-path', $ResolvedRootDir
+        )
+        [List[Object]]$queryChildren = @( fd @binArgs  | Get-Item )
+
+        [RecursedModule]@{
+            ShortName     = $curRoot
+            RootDirectory = $resolvedRootDir
+            TotalItems    = $queryChildren.Count
+            ChildModules  = $queryChildren
+        }
+    }   | Sort-Object RootDirectory, ShortName
+
+    $Query
+        | Update-TypeData -Force -DefaultDisplayPropertySet 'ShortName', 'TotalItems', 'RootDirectory', 'ChildModules'
+
+    if( $AsBaseNames ) {
+        return $query | % ChildModules | % BaseName | Sort-Object -Unique
+    }
+    if(-not $FindDuplicates) { return $query }
+
+    if($FindDuplicates){
+        [List[Object]]$groupByDupes = $query.ChildModules | group-object Name | Sort-Object -Descending | ? Count -gt 1
+
+        $groupByDupes | %{
+            [pscustomobject]@{
+                GroupName = $_.Name
+                TotalCount = ($_.Group.FullName).Count
+                Dupes = $_.Group.FullName  | Get-Item | Sort-Object FullName -Unique
+            }
+        }
+        return
+    }
+}
 function Dotils.Paths.FindNamedEnvVarPaths {
     <#
     .SYNOPSIS
@@ -14485,9 +14578,6 @@ function Dotils.Fetch.RecurseProperty.Render {
         }
     }
     end {
-        # $try = Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName 'ProcessName', 'MainWindowHandle' -OrderBy 'Depth', 'MemberName' -MaxDepth 5 -Verbose
-        # $try = $Items
-#$try
         $requirePad =
             $items.MemberName | % Length | Measure-Object -Maximum | % Maximum
 
@@ -14499,8 +14589,6 @@ function Dotils.Fetch.RecurseProperty.Render {
                 $_.Value
             ) -join ''}
         } | Join-String -sep "`n"
-
-
 
         if($OutBat) {
             $pagerTitle = @(
@@ -14867,7 +14955,7 @@ function Dotils.Resolve.Command {
             [PSModuleInfo]
 
         #>
-        # Wait-Debugger
+
     }
     end {
         if($Clipboard) {
@@ -15652,6 +15740,8 @@ function Dotils.Get-CachedExpression {
         [Parameter(mandatory, ParameterSetName='ListOnly')]
         [switch]$List
     )
+
+    write-warning 'This is old code, check out Che'
     if($List){
         return $script:__cachedListState.keys | sort-object
     }
