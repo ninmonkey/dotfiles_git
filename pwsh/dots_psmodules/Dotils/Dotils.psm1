@@ -9026,12 +9026,17 @@ function Dotils.Select-NotBlankKeys {
 
 }
 function Dotils.List.Collect.Pipeline {
-    [Cmdletbinding()]
-    [OutputType('System.Collections.Generic.List[Object]')]
+    <#
+    .synopsis
+        collect pipeline as a [List[Object]]
+
+    #>
     [Alias(
         'Dotils.Rollup',
         'Dotils.CollectList',
         'List.FromPipe')]
+    [Cmdletbinding()]
+    [OutputType('System.Collections.Generic.List[Object]')]
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
         [object[]]$InputObject,
@@ -14339,9 +14344,9 @@ function Dotils.Fetch.RecurseProperty {
         $p.Parent.Parent.MainWindowHandle ....
         $p.Parent.Parent.Parent.MainWindowHandle
     .EXAMPLE
-        Fetch.RecurseProp -InputObject (ps -Id $PID) -DescendPropertyName Parent -AccessPropertyName Name
-        Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
-        Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
+        Pwsh> Fetch.RecurseProp -InputObject (ps -Id $PID) -DescendPropertyName Parent -AccessPropertyName Name
+        Pwsh> Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
+        Pwsh> Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowTitle
     .EXAMPLE
 
         Depth Property Value
@@ -14351,7 +14356,7 @@ function Dotils.Fetch.RecurseProperty {
             2 Parent   Code
             3 Parent   explorer
     .EXAMPLE
-        Fetch.RecurseProperty -InputObject (Get-Process -Id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowHandle
+        Pwsh> Fetch.RecurseProperty -InputObject (Get-Process -Id $PID) -DescendPropertyName Parent -AccessPropertyName MainWindowHandle
 
         Depth Property   Value
         ----- --------   -----
@@ -14359,6 +14364,19 @@ function Dotils.Fetch.RecurseProperty {
             1 Parent         0
             2 Parent   1707656
             3 Parent   1574506
+    .EXAMPLE
+        Pwsh> Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName 'ProcessName', 'MainWindowHandle' -OrderBy 'Depth', 'MemberName' -MaxDepth 5 -Verbose
+
+            Depth DescendBy MemberName          Value
+            ----- --------- ----------          -----
+                0 Parent    MainWindowHandle        0
+                0 Parent    ProcessName          pwsh
+                1 Parent    MainWindowHandle        0
+                1 Parent    ProcessName          Code
+                2 Parent    MainWindowHandle  6685268
+                2 Parent    ProcessName          Code
+                3 Parent    MainWindowHandle  1574506
+                3 Parent    ProcessName      explorer
     #>
 
     [CmdletBinding()]
@@ -14383,21 +14401,30 @@ function Dotils.Fetch.RecurseProperty {
           "'MemberName', 'Depth'",
           "'Depth', 'MemberName'"
         )]
-        [string[]]$OrderBy
+        [string[]]$OrderBy,
+        [ArgumentCompletions(
+            '@{ IgnoreUndefinedMembers = $false }'
+        )]
+        [hashtable]$Options = @{},
+        [switch]$PassThru
     )
+    $Config = nin.MergeHash -OtherHash ($Options ?? @{}) -BaseHash @{
+        IgnoreUndefinedMembers = $true
+    }
     [uint]$depth = 0
     $target = $InputObject
 
     [List[Object]]$FoundItems = @()
     do {
         foreach($curAccessName in $AccessPropertyNames) {
-
+            [bool]$propIsDefined = $Target.PSObject.Properties.Name -contains @( $curAccessName )
             $foundItems.Add([pscustomobject]@{
-                PSTypeName = 'dotils.FetchRecuresProperty.Result'
-                Depth     = $Depth
-                DescendBy = $DescendPropertyName
-                MemberName= $curAccessName
-                Value     = $Target.$curAccessName
+                PSTypeName   = 'dotils.FetchRecuresProperty.Result'
+                Depth        = $Depth
+                DescendBy    = $DescendPropertyName
+                MemberName   = $curAccessName
+                MemberExists = $propIsDefined
+                Value        = $Target.$curAccessName
             })
         }
 
@@ -14415,52 +14442,85 @@ function Dotils.Fetch.RecurseProperty {
     } else {
         $foundItems = $foundItems | Sort-Object -Prop 'DescendBy', 'Depth', 'MemberName'
     }
+
+    if($PassThru) { return $foundItems }
+
+    if($Config.IgnoreUndefinedMembers) {
+        $foundItems = $foundItems | ?{ $_.MemberExists }
+    }
+
     return $foundItems
 }
+
+Update-TypeData -typename 'dotils.FetchRecuresProperty.Result' -DefaultDisplayPropertySet Depth, DescendBy, MemberName, Value -Force
+
 function Dotils.Fetch.RecurseProperty.Render {
     <#
     .synopsis
         render a Dotils.Fetch.RecurseProperty
+    .EXAMPLE
+        Pwsh>
+        $query = Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName 'ProcessName',MainWindowHandle -OrderBy 'Depth', 'MemberName' -MaxDepth 5
+        $query | ft
+        $query | Render.RecurseProp
     #>
+    [Alias('Render.RecurseProp')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ParameterSetName='FromPipe')]
         [Parameter(Mandatory, Position=0, ParameterSetName='FromParam')]
         [object[]]
-        $InputObject
+        $InputObject,
+
+        [Alias('Bat')][switch]$OutBat
     )
     begin {
         [List[Object]]$items = @()
-        if( -not  $PSCmdlet.MyInvocation.ExpectingInput ) {
-            $Items = $InputObject
-        }
     }
     process {
-        $Items.AddRange(@( $InputObject ))
+        if( -not  $PSCmdlet.MyInvocation.ExpectingInput ) {
+            $Items = $InputObject
+        } else {
+            $Items.AddRange(@( $InputObject ))
+        }
     }
     end {
-        'do stuff'
+        # $try = Fetch.RecurseProp -InputObject (ps -id $PID) -DescendPropertyName Parent -AccessPropertyName 'ProcessName', 'MainWindowHandle' -OrderBy 'Depth', 'MemberName' -MaxDepth 5 -Verbose
+        # $try = $Items
+#$try
+        $requirePad =
+            $items.MemberName | % Length | Measure-Object -Maximum | % Maximum
+
+        [string[]]$render = $items | %{
+            $prefix =  '  ' * $_.Depth -join ''
+            Join-String -f "${prefix}{0}" -in $_ -Property {@(
+                $_.MemberName.PadLeft( $requirePad, ' ' )
+                ': '
+                $_.Value
+            ) -join ''}
+        } | Join-String -sep "`n"
+
+
+
+        if($OutBat) {
+            $pagerTitle = @(
+                ($items)?[0].DescendBy
+                ' => '
+                $items.MemberName | Join-String -sep ', '
+            ) -join ''
+            [List[Object]]$BinArgs = @(
+                '-l', 'yml'
+                '-f'
+                '--file-name', $PagerTitle
+            )
+            $render | bat @binArgs
+            return
+        }
+
+        return $render
     }
 }
-#     $InputObject
 
-#     $requirePad =
-#         $try.MemberName | % Length | Measure-Object -Maximum | % Maximum
-
-# $try | %{
-
-
-#     $prefix =  '  ' * $_.Depth -join ''
-#     Join-String -f "${prefix}{0}" -in $_ -Property {@(
-#         $_.MemberName.PadLeft( $requirePad, ' ' )
-#         ': '
-#         $_.Value
-#     ) -join ''}
-
-#     }
-
-
-# }
 function Dotils.Fetch.RecurseProperty.Basic {
     <#
     .SYNOPSIS
@@ -17045,6 +17105,7 @@ $exportModuleMemberSplat = @{
         # 2023-12-27
         'Fetch*'
         'List.*'
+        'Render.*'
         # 2023-12-13
         'Dot.ProxyCmd'
         'Dot.List.Contains'
