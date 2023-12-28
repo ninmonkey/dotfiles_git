@@ -1078,6 +1078,12 @@ function Dotils.Module.Test-ModuleHasChanged {
     .SYNOPSIS
         test whether import time is older than file modified
     .EXAMPLE
+         $what = 'bintils'
+        $isNewer = DbgTool.ModuleHasChanged -ModuleName $what
+        $isNewer | Should -BeOfType ([System.Boolean]) # it's returning a bool
+        if( $isNewer ) { Import-Module $What -Force -PassThru }
+
+    .EXAMPLE
         Pwsh> # run this. then save the file, then run again
         if( DbgTool.ModuleHasChanged -ModuleName Bintils ) {
             import-module Bintils -Force -PassThru }
@@ -1137,7 +1143,6 @@ function Dotils.Module.Test-ModuleHasChanged {
     # $state.ModulePath ??= $ModuleName
     # [bool]$isNewer = $module.LastWriteTime -gt $state.prevLoadDt
     # if(-not $isNewer) { return $false }
-
 
     # $state.PrevLoadDt = [Datetime]::Now
     # return $true
