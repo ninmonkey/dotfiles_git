@@ -1078,6 +1078,9 @@ function Dotils.Module.Test-ModuleHasChanged {
     .SYNOPSIS
         test whether import time is older than file modified
     .EXAMPLE
+        # easier usage now
+        Pwszh> DbgTool.ModuleHasChanged -ModuleName Bintils -AutoLoad
+    .EXAMPLE
          $what = 'bintils'
         $isNewer = DbgTool.ModuleHasChanged -ModuleName $what
         $isNewer | Should -BeOfType ([System.Boolean]) # it's returning a bool
@@ -1088,6 +1091,10 @@ function Dotils.Module.Test-ModuleHasChanged {
         if( DbgTool.ModuleHasChanged -ModuleName Bintils ) {
             import-module Bintils -Force -PassThru }
         DbgTool.ShowErrors
+    .LINK
+        Dotils.Module.Test-ModuleHasChanged
+    .LINK
+        Dotils.Module.ShowSyntaxError
     #>
     [CmdletBinding()]
     [Alias(
@@ -1099,11 +1106,16 @@ function Dotils.Module.Test-ModuleHasChanged {
         [string]$ModuleName,
 
         # force a run
-        [switch]$Force
+        [switch]$Force,
+        # attempt to also run the import command
+        [switch]$AutoLoad
     )
     $script:___lastImport ??= @{
         ByName = @{}
     }
+    $PSBoundParameters
+        | Json -wa ignore -depth 1
+        | Join-string -op 'PSBoundParams: ' | write-debug
     $state = $script:___lastImport
     class LastModifiedInfo {
         [string]$ModuleName
@@ -1134,6 +1146,12 @@ function Dotils.Module.Test-ModuleHasChanged {
 
     $lastModifyRecord.PrevLoadDt = [Datetime]::Now
     $newModInfo.Name | Join-string -f 'Module {0} is newer' | write-host -fg '#358053'
+    if( $AutoLoad ) {
+        Import-Module $ModuleName -Force -passt
+            | Join-String -p { $_.Name, $_.Version } -op '  Loading... '
+            | Dotils.Write-DimText
+            | Infa
+    }
     return $true
     # if(-not($state.ByName.Contains))
     # $state.ModuleName ??= $ModuleName
@@ -1148,15 +1166,40 @@ function Dotils.Module.Test-ModuleHasChanged {
     # return $true
 }
 
+function Dotils.Module.DebugAndShowErrors {
+    <#
+    .SYNOPSIS
+        sugar to first import modified modules, and then show import errors
+    #>
+    [Alias('DbgTool.Module.ImportAndShowError')]
+    param( [string]$ModuleName, [switch]$Force  )
+
+    Dotils.Module.Test-ModuleHasChanged -ModuleName $ModuleName -Force:$Force -AutoLoad | Out-Null
+    $showSyntax = @{
+        WithoutGetError        = $true
+        WithoutEmoji           = $true
+        WithoutPositionMessage = $true
+    }
+
+    Dotils.Module.ShowSyntaxError @showSyntax
+}
 function Dotils.Module.ShowSyntaxError {
     <#
     .SYNOPSIS
-        test whether import time is older than file modified
+        Show syntax errors and the invocation path as a clickable link
+    .EXAMPLE
+        # easier usage now
+        Pwsh> DbgTool.ModuleHasChanged -ModuleName Bintils -AutoLoad
+        Pwsh> Dotils.Module.ShowSyntaxError
     .EXAMPLE
         Pwsh> # run this. then save the file, then run again
         if( DbgTool.ModuleHasChanged -ModuleName Bintils ) {
             import-module Bintils -Force -PassThru }
         DbgTool.ShowErrors
+    .LINK
+        Dotils.Module.Test-ModuleHasChanged
+    .LINK
+        Dotils.Module.ShowSyntaxError
     #>
     [Alias(
         'DbgTool.ShowErrors')]
