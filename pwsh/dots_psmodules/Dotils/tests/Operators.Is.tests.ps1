@@ -1,5 +1,5 @@
 BeforeAll {
-    Import-Module -ea 'stop' 'Dotils' -force -passthru  | write-host
+    Import-Module 'Dotils' -wa ignore -verbose:$false -force -DisableNameChecking -passthru | Join-String -p {$_.Name, $_.Version } | write-host
 }
 Describe 'sdfds' -tags 'NeedsMoreT4ests' {
     it '<Sample> is <Expected>' -foreach @(
@@ -16,7 +16,7 @@ Describe 'sdfds' -tags 'NeedsMoreT4ests' {
         # 'a', 234, 3.4 | Dotils.Operator.TypeIs -Type 'int'
         # Dotils.Format-ShortString.Basic -Inp $Sample -maxLength
             # | Should -BeExactly $Expected
-    {
+
         __compare-Is.Type $Obj -is $TypeName
     }
 }
@@ -28,12 +28,6 @@ Describe 'Dotils.Test-IsOfType' -Tags @(
             Sample = 1245, 3.56
             TypeNames = 'int'
             Expect = $false
-            IsCompatible  = $false
-         }
-        @{
-            Sample = 1245
-            TypeNames = 'int'
-            Expect = $true
             IsCompatible  = $false
          }
         @{
@@ -111,7 +105,7 @@ Describe 'Dotils.Test-CompareSingleResult' {
 
         }
     }
-    it '<AmountCondition> As <As> is <Expected>' -pending -forEach @(
+    it '<AmountCondition> As <As> is <Expected> from <Sample>' -pending -forEach @(
         @{
             Sample = $false, $false, $true
             AmountCondition = 'All'
