@@ -1232,16 +1232,18 @@ function Dotils.Format-ShortType {
     .LINK
         Dotils.Format-ShortNamespace
     .EXAMPLE
-        DbgTool.ModuleHasChanged -ModuleName Bintils -AutoLoad
-        hr -fg orange
+        $nested_tin =
+            [Dictionary[
+                [string],
+                [Dictionary[int,datetime]]  ]]
 
-        [List[System.IO.FileSystemInfo]]$files = gci .
-        [ast]   | Fmt.ShortType  | Label '[Ast]'
-        ,$files | Fmt.ShortType  | Label 'files[]'
-        $files[0] | Fmt.ShortType| Label 'files[0]'
-        ,$files|Fmt.ShortType
 
-        ( $dint = [Dictionary[int,string]]::new() ) | Fmt.ShortType
+        $nested_tin| Dotils.Format-ShortType -MinNamespaceCrumbCount 1
+            [Generic.Dictionary`2<String, Dictionary`2<Int32, DateTime>>]
+
+        $nested_tin| Dotils.Format-ShortType -MinNamespaceCrumbCount 3
+            [System.Collections.Generic.Dictionary`2<String, Dictionary`2<Int32, DateTime>>]
+            
     #>
     [CmdletBinding()]
     [OutputType('String')]
