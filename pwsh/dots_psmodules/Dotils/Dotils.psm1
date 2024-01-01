@@ -5,7 +5,7 @@ using namespace System.Management.Automation.Language
 
 $script:CountersListForAddLabel ??= @{}
 $script:Bdg_LastSelect = @()
-
+$script:QuerySave = @{}
 
 
 $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
@@ -1001,7 +1001,153 @@ function Dotils.Help.FromType {
         }
     }
 }
+
+function Dotils.Query.Save {
+    <#
+    .SYNOPSIS
+        save/load queries to a hashtable, showing metrics like length on use
+    .EXAMPLE
+        # comparing results of ast queries interactively
+        Dotils.qs 'root_all_recurse' (
+            $root.EndBlock.FindAll( {param($Ast, $b) $true}, $true)
+        )
+        Dotils.qs 'root_all' (
+            $root.EndBlock.FindAll(    {param($Ast, $b) $true}, $false)
+        )
+#>
+    [Alias('Dotils.qs', 'qs')]
+    param(
+        [string]$Name,
+        [object]$Data
+    )
+    $state = $script:QuerySave
+    $state[ $Name ] = $Data | CountOf -CountLabel $Name
+}
+function Dotils.Query.Load {
+    <#
+    .SYNOPSIS
+        save/load queries to a hashtable, showing metrics like length on use
+    .EXAMPLE
+        # comparing results of ast queries interactively
+        Dotils.qs 'root_all_recurse' (
+            $root.EndBlock.FindAll( {param($Ast, $b) $true}, $true)
+        )
+        Dotils.qs 'root_all' (
+            $root.EndBlock.FindAll( {param($Ast, $b) $true}, $false)
+        )
+    #>
+    [Alias('Dotils.ql', 'ql')]
+    param(
+        # returns  the entire table
+        [switch]$All,
+        [string]$Name
+    )
+    $state = $script:QuerySave
+    if($All){
+        $state.keys | CountOf -CountLabel '$QuerySave keys'
+        return $state
+    }
+    if(-not $state.Keys.Contains($Name)) { throw ('key {0} does not yet exist' -f $Name) }
+    return $state[$Name] | CountOf -CountLabel $Name
+}
+
+function Dotils.Format-ShortNamespace {
+    <#
+    .SYNOPSIS
+        shorten namespaces
+    .EXAMPLE
+        DbgTool.ModuleHasChanged -ModuleName Bintils -AutoLoad
+        hr -fg orange
+
+        [List[System.IO.FileSystemInfo]]$files = gci .
+        [ast]   | Fmt.ShortType  | Label '[Ast]'
+        ,$files | Fmt.ShortType  | Label 'files[]'
+        $files[0] | Fmt.ShortType| Label 'files[0]'
+        ,$files|Fmt.ShortType
+
+        ( $dint = [Dictionary[int,string]]::new() ) | Fmt.ShortType
+    #>
+    [CmdletBinding()]
+    [OutputType('String')]
+    [ALias(
+        'Dotils.Fmt.ShortNamespace',
+        'Fmt.ShortNamespace'
+    )]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $InputObjectOrType,
+
+        # [ValidateSet('FullName', 'Name', 'Generic')]
+        # [string]$Template = 'FullName',
+        [hashtable]$Options = @{}
+    )
+    begin {
+        $Config = nin.MergeHash -Other $Options -BaseHash @{
+            # CoerceTypeNames = $true
+            # StripNamespaces_OnFullString = $True
+            StripNamespaces = @(
+                'System.Management.Automation.Language'
+                'System.Management.Automation'
+                'System.Collections.Generic'
+                'Collections.Generic'
+                'System.Management'
+                'System'
+            )
+        }
+
+    }
+    process {
+        $Obj = $InputObjectOrType
+        if($Obj -is [type]) {
+            $namespace = $Obj.Namespace
+        }
+        $AsType? = $Obj -as [type]
+        if($Obj -is 'string' -and $AsType?) {
+            $namespace =  $AsType?.Namespace
+        } else {
+            $namespace = $Obj
+        }
+        if(-not $Namespace) {
+            $Namespace = $Obj.GetType().Namespace
+        }
+        $meta = [ordered]@{
+            OriginalName = $Namespace
+            FinalName = ''
+        }
+        if([string]::IsNullOrWhiteSpace( $Namespace)) { throw "ShouldNeverReachException: Namespace evaluated to a blank"}
+        [string]$render = ''
+        # if( $Config.StripNamespaces_OnFullString ) {
+        foreach($toStrip in $Config.StripNamespaces) {
+            $pattern = '^{0}\.' -f $ToStrip
+            'toStrip: {0}' -f $pattern | Write-debug
+            $render = $render -replace $pattern, ''
+        }
+        $meta.FinalName = $render
+        $meta | Json -Compress -depth 0 | Join-string -op 'Format-ShortNamespace: ' | write-verbose
+        return $render
+    }
+}
 function Dotils.Format-ShortType {
+    <#
+    .SYNOPSIS
+        shorten type names
+    .LINK
+        Dotils.Format-ShortType
+    .LINK
+        Dotils.Format-ShortNamespace
+    .EXAMPLE
+        DbgTool.ModuleHasChanged -ModuleName Bintils -AutoLoad
+        hr -fg orange
+
+        [List[System.IO.FileSystemInfo]]$files = gci .
+        [ast]   | Fmt.ShortType  | Label '[Ast]'
+        ,$files | Fmt.ShortType  | Label 'files[]'
+        $files[0] | Fmt.ShortType| Label 'files[0]'
+        ,$files|Fmt.ShortType
+
+        ( $dint = [Dictionary[int,string]]::new() ) | Fmt.ShortType
+    #>
+    [CmdletBinding()]
     [OutputType('String')]
     [ALias(
         'Dotils.Fmt.ShortType',
@@ -1010,13 +1156,26 @@ function Dotils.Format-ShortType {
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
         $InputObjectOrType,
+
+        [ValidateSet('FullName', 'Name', 'Generic')]
+        [string]$Template = 'FullName',
         [hashtable]$Options = @{}
     )
     begin {
         $Config = nin.MergeHash -Other $Options -BaseHash @{
             IncludeBrackets = $true
             CoerceTypeNames = $true
+            StripNamespaces_OnFullString = $True
+            StripNamespaces = @(
+                'System.Management.Automation.Language'
+                'System.Management.Automation'
+                'System.Collections.Generic'
+                'Collections.Generic'
+                'System.Management'
+                'System'
+            )
         }
+
     }
     process {
         $Obj = $InputObjectOrType
@@ -1029,8 +1188,36 @@ function Dotils.Format-ShortType {
         } else {
             $tinfo = $Obj.GetType()
         }
-        [string]$render =
-            $tinfo | Join-string { $_ -replace '\bSystem\.', ''}
+        [bool]$isGeneric = $tinfo.IsGenericType
+
+        [string]$render = ''
+        switch($Template) {
+            'FullName' {
+                $_.Namespace
+                $_.Name
+                if( -not $IsGeneric) {
+                    $render = Join-String { $_.Namespace, $_.Name -join '.' } -in $Tinfo
+                }
+            }
+            'Raw_FullName' { # doesn't mess with generics, basic full
+                $render = Join-String { $_.Namespace, $_.Name -join '.' } -in $Tinfo
+            }
+            'Name' {
+                if( -not $IsGeneric) {
+                    $render = Join-String {$_.Name } -in $Tinfo
+                }
+            }
+            default { throw "Unhandled template: $Template" }
+        }
+        # todo: refactor, only apply to raw namespaces, not to the full, final string
+        if( $Config.StripNamespaces_OnFullString ) {
+            foreach($toStrip in $Config.StripNamespaces) {
+                $pattern = '^{0}\.' -f $ToStrip
+                'toStrip: {0}' -f $pattern | Write-debug
+                $render = $render -replace $pattern, ''
+            }
+        }
+            # $tinfo | Join-string { $_ -replace '\bSystem\.', ''}
 
         if( $Config.IncludeBrackets ) {
            $render = Join-String -f "[{0}]" -In $render
