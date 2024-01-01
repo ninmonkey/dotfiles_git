@@ -1089,14 +1089,18 @@ function Dotils.Format-ShortNamespace {
         'Fmt.ShortNamespace'
     )]
     param(
-        [Parameter(Mandatory, ValueFromPipeline)]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('Namespace')]
         $InputObjectOrType,
 
         # Should short namespace always include N segments?
-        #
+        [ArgumentCompletions(0, 1, 2, 3)]
         [int]$MinCount,
 
         # [ValidateSet('FullName', 'Name', 'Generic')]
+        [ArgumentCompletions(
+            "@{ EnableRequireMinCrumbCount = `$true; MinSegmentCount = 1; StripNamespaces = 'System', 'System.Text' }"
+        )]
         # [string]$Template = 'FullName',
         [hashtable]$Options = @{}
     )
@@ -1146,15 +1150,13 @@ function Dotils.Format-ShortNamespace {
                 $namespace = $Obj
             }
         } else {
-            throw ("ShouldNeverReachException!, Obj was '{0}', Len: {1}" -f @(
+            $namespace = ($Obj)?.GetType().Namespace
+        }
+        if( [string]::IsNullOrWhiteSpace( $namespace )) {
+            throw ("ShouldNeverReachException!, Namespace was blankable. Type: '{0}', Len: {1}" -f @(
                 ($Obj)?.GetType().Name
                 ($Obj).Length ?? 0
             ))
-        }
-
-        if( $namespace.Length -eq 0 -or $Namespace -eq 'System' ) {
-            'was system' | write-host -bg 'darkred'
-            ''
         }
         $meta = [ordered]@{
             RequireMinSegmentCount  = $Config.MinSegmentCount

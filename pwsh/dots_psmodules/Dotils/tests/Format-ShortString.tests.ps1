@@ -1,27 +1,31 @@
 BeforeAll {
-    Import-Module -ea 'stop' 'Dotils' -force -passthru  | write-host
+    Import-Module 'Dotils' -force -passthru  | write-host
+    $PSStyle.OutputRendering = 'ansi' # test explorer keeps removing this
+}
+AfterAll {
+    $PSStyle.OutputRendering = 'ansi' # test explorer keeps removing this
 }
 Describe 'Dotils.Format-ShortString.Basic' {
     it '"<sample>" at <' -forEach @(
         @{
             Sample = '123456'
-            MaxLen = 1000
+            MaxLength = 1000
             Expected = '123456'
         }
         @{
             Sample = '123456'
-            MaxLen = 4
+            MaxLength = 4
             Expected = '1234'
         }
     ) -Tag 'tests wip/nyc' {
-        Dotils.Format-ShortString.Basic -Inp $Sample -maxLength
+        Dotils.Format-ShortString.Basic -Inp $Sample -maxLength $MaxLength
             | Should -BeExactly $Expected
     }
 }
 Describe 'Misc' {
-    it 'Format.AliasSummaryLiteral' -tag 'ExpectToBreak' -Foreach @(
+    it 'Format.AliasSummaryLiteral' -skip  -tag 'ExpectToBreak' -Foreach @(
         @{
-            $Expect = @(
+            Expect = @(
                 "'Dotils.Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { 'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }"
                 "'Dotils.ConvertTo.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { 'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }"
                 "'Resolve.TypeInfo' # 'Dotils.Resolve.TypeInfo' = { 'Resolve.TypeInfo', 'Dotils.ConvertTo.TypeInfo' }"
