@@ -1243,7 +1243,7 @@ function Dotils.Format-ShortType {
 
         $nested_tin| Dotils.Format-ShortType -MinNamespaceCrumbCount 3
             [System.Collections.Generic.Dictionary`2<String, Dictionary`2<Int32, DateTime>>]
-            
+
     #>
     [CmdletBinding()]
     [OutputType('String')]
@@ -1300,6 +1300,11 @@ function Dotils.Format-ShortType {
         [bool]$isGeneric = $tinfo.IsGenericType
 
         [string]$render = ''
+        $nestedConfig = nin.MergeHash -BaseHash $Config -OtherHash @{
+            IncludeBrackets = $false
+        }
+
+
         switch($Template) {
             'Name' {
                 # $dint.GetType() | Join-String -p {
@@ -1328,9 +1333,10 @@ function Dotils.Format-ShortType {
                 if($Tinfo.IsGenericType) {
                     $render +=
                         $tinfo.GenericTypeArguments
-                            | Fmt.ShortType -Options @{
-                                StripNamespaces = $Config.StripNamespaces
-                                IncludeBrackets = $false } -Template $Template
+                            | Dotils.Format-ShortType -Options $nestedConfig
+                            # | Fmt.ShortType -Options @{
+                            #     StripNamespaces = $Config.StripNamespaces
+                            #     IncludeBrackets = $false } -Template $Template
                             | Join-String -sep ', ' -op '<' -os '>'
 
                 }
@@ -1348,9 +1354,10 @@ function Dotils.Format-ShortType {
                 if($Tinfo.IsGenericType) {
                     $render +=
                         $tinfo.GenericTypeArguments
-                            | Fmt.ShortType -Options @{
-                                StripNamespaces = $Config.StripNamespaces
-                                IncludeBrackets = $false } -Template $Template
+                            | Dotils.Format-ShortType -Options $nestedConfig
+                            # | Fmt.ShortType -Options @{
+                            #     StripNamespaces = $Config.StripNamespaces
+                            #     IncludeBrackets = $false } -Template $Template
                             | Join-String -sep ', ' -op '<' -os '>'
 
                 }
@@ -1370,9 +1377,10 @@ function Dotils.Format-ShortType {
                 if($Tinfo.IsGenericType) {
                     $render +=
                         $tinfo.GenericTypeArguments
-                            | Fmt.ShortType -Options @{
-                                StripNamespaces = $Config.StripNamespaces
-                                IncludeBrackets = $false } -Template $Template
+                            | Dotils.Format-ShortType -Options $nestedConfig
+                            # | Fmt.ShortType -Options @{
+                            #     StripNamespaces = $Config.StripNamespaces
+                            #     IncludeBrackets = $false } -Template $Template
                             | Join-String -sep ', ' -op '<' -os '>'
                 }
             }
@@ -1381,9 +1389,10 @@ function Dotils.Format-ShortType {
                 if($Tinfo.IsGenericType) {
                     $render +=
                         $tinfo.GenericTypeArguments
-                            | Fmt.ShortType -Options @{
-                                StripNamespaces = $Config.StripNamespaces
-                                IncludeBrackets = $false } -Template $Template
+                            | Dotils.Format-ShortType -Options $nestedConfig
+                            # | Fmt.ShortType -Options @{
+                            #     StripNamespaces = $Config.StripNamespaces
+                            #     IncludeBrackets = $false } -Template $Template
                             | Join-String -sep ', ' -op '<' -os '>'
                 }
                 # if( -not $IsGeneric) {
