@@ -1054,7 +1054,22 @@ function Dotils.Query.Load {
 function Dotils.Format-ShortNamespace {
     <#
     .SYNOPSIS
-        shorten namespaces
+        shorten namespaces. optional full raw replace verses using crumb counts.
+    .NOTES
+        Lots of output added if you use -Debug -Verbose
+        either through config, or -MinCount lets you toggle forcing non-blank ending  string
+
+    .example
+        [System.Text.Encoding] | fmt.ShortNamespace -MinCount 0
+            Encoding
+            # or could be blank, depending on namespace list
+
+        [System.Text.Encoding] | fmt.ShortNamespace -MinCount 1
+            Encoding
+
+        [System.Text.Encoding] | fmt.ShortNamespace -MinCount 2
+            Text.Encoding
+
     .EXAMPLE
         DbgTool.ModuleHasChanged -ModuleName Bintils -AutoLoad
         hr -fg orange
@@ -1077,6 +1092,10 @@ function Dotils.Format-ShortNamespace {
         [Parameter(Mandatory, ValueFromPipeline)]
         $InputObjectOrType,
 
+        # Should short namespace always include N segments?
+        #
+        [int]$MinCount,
+
         # [ValidateSet('FullName', 'Name', 'Generic')]
         # [string]$Template = 'FullName',
         [hashtable]$Options = @{}
@@ -1085,48 +1104,123 @@ function Dotils.Format-ShortNamespace {
         $Config = nin.MergeHash -Other $Options -BaseHash @{
             # CoerceTypeNames = $true
             # StripNamespaces_OnFullString = $True
+            EnableRequireMinCrumbCount = $false
+            MinSegmentCount =  1
             StripNamespaces = @(
                 'System.Management.Automation.Language'
                 'System.Management.Automation'
                 'System.Collections.Generic'
                 'Collections.Generic'
                 'System.Management'
+                'System.IO'
                 'System'
-            )
+            ) | Sort-Object { $_.Length } -descending
         }
+        if($PSBoundParameters.ContainsKey('MinCount')) {
+            if( $MinCount -le 0 ) {
+                $Config.EnableRequireMinCrumbCount = $false
+            } else {
+                $Config.EnableRequireMinCrumbCount = $true
+                $Config.MinSegmentCount = $MinCount
+            }
+        }
+        'MinSegmentCount: {0}, StripNames: {1}' -f @(
+            $Config.MinSegmentCount
 
+            $Config.StripNamespaces | Join-string -sep ', ' -single
+        ) | Write-Verbose
     }
     process {
         $Obj = $InputObjectOrType
-        if($Obj -is [type]) {
+        if($null -eq $Obj) { return $Null }
+        if('' -eq $Obj) { return '' }
+        [string]$Namespace = ''
+
+        if($Obj -is [Type]) {
             $namespace = $Obj.Namespace
-        }
-        $AsType? = $Obj -as [type]
-        if($Obj -is 'string' -and $AsType?) {
-            $namespace =  $AsType?.Namespace
+        } elseif( $Obj -is [string] ) {
+            $AsType? = $Obj -as [type]
+            if($AsType? -is [type]){
+                $namespace = $AsType?.Namespace
+            } else {
+                $namespace = $Obj
+            }
         } else {
-            $namespace = $Obj
+            throw ("ShouldNeverReachException!, Obj was '{0}', Len: {1}" -f @(
+                ($Obj)?.GetType().Name
+                ($Obj).Length ?? 0
+            ))
         }
-        if(-not $Namespace) {
-            $Namespace = $Obj.GetType().Namespace
+
+        if( $namespace.Length -eq 0 -or $Namespace -eq 'System' ) {
+            'was system' | write-host -bg 'darkred'
+            ''
         }
         $meta = [ordered]@{
+            RequireMinSegmentCount  = $Config.MinSegmentCount
+            EnableRequireMinCrumbCount = $Config.EnableRequireMinCrumbCount
             OriginalName = $Namespace
+            OriginalSegmentCount = ($Namespace -split '\.').count
             FinalName = ''
         }
         if([string]::IsNullOrWhiteSpace( $Namespace)) { throw "ShouldNeverReachException: Namespace evaluated to a blank"}
-        [string]$render = ''
-        # if( $Config.StripNamespaces_OnFullString ) {
+
+        $namespace.length
+            | Join-String -f 'strlen: namespace: {0}'
+            | Write-debug
+
+        $NamespaceCrumbs = @($Namespace -split '\.')
+
+        [string]$render = $Namespace
         foreach($toStrip in $Config.StripNamespaces) {
-            $pattern = '^{0}\.' -f $ToStrip
-            'toStrip: {0}' -f $pattern | Write-debug
+            'render := {0} [ len {1} ]' -f @(
+                $render #?? ''
+                $render.Length ?? 0
+            )
+                | Dotils.Write-DimText | Join-String -op 'iter '
+                |  Write-debug
+
+            $pattern = '^{0}$' -f $ToStrip
+
+            'toStrip: {0}' -f @(
+                $pattern
+            )
+            | Write-debug
+
             $render = $render -replace $pattern, ''
         }
         $meta.FinalName = $render
-        $meta | Json -Compress -depth 0 | Join-string -op 'Format-ShortNamespace: ' | write-verbose
+
+        if($render -match '\.') {
+            [int]$finalSegmentCount = ($render -split '\.').count
+        } else {
+            [int]$finalSegmentCount  = 0
+        }
+        $meta.FinalSegmentCount = $finalSegmentCount
+
+
+        if( $Config.EnableRequireMinCrumbCount -and (
+            $finalSegmentCount -lt $Config.MinSegmentCount
+        )) {
+            'MinCount on, count <= MinSegmentCount' | write-debug
+            # $allowdCrumbCount = [Math]::Min( $namespaceCrumbs.count, $Config.minSegmentCount )
+            $render = $namespaceCrumbs | Select -last $Config.MinSegmentCount
+                | Join-String -sep '.'
+            # $wantedCrumbs
+            $meta.FinalCrumbName = $render
+
+            [int]$finalMinCrumbsCount = ($render -split '\.').count
+            $meta.FinalCrumbsSegmentCount = $finalMinCrumbsCount
+
+        }
+        $meta
+            | Json -Compress:$false -depth 2
+            | Dotils.Write-DimText
+            | Join-string -op 'Format-ShortNamespace: ' | write-verbose
         return $render
     }
 }
+
 function Dotils.Format-ShortType {
     <#
     .SYNOPSIS
