@@ -1253,8 +1253,13 @@ function Dotils.Format-ShortType {
         [Parameter(Mandatory, ValueFromPipeline)]
         $InputObjectOrType,
 
-        [ValidateSet('FullName', 'Name', 'Generic')]
+        [ValidateSet('FullName', 'Name', 'RawName', 'RawFullName')]
         [string]$Template = 'FullName',
+
+        [ArgumentCompletions(
+            "@{ StripNamespaces_OnFullString = `$false }",
+            "@{ IncludeBrackets = `$false }"
+        )]
         [hashtable]$Options = @{}
     )
     begin {
@@ -1288,20 +1293,56 @@ function Dotils.Format-ShortType {
 
         [string]$render = ''
         switch($Template) {
-            'FullName' {
-                $_.Namespace
-                $_.Name
-                if( -not $IsGeneric) {
-                    $render = Join-String { $_.Namespace, $_.Name -join '.' } -in $Tinfo
-                }
+            'Name' {
+                # $dint.GetType() | Join-String -p {
+                #     $IsaGen = $_.IsGenericType
+                #     $_.Namespace
+                #     $_.Name
+                #     $IsaGen ? '[' : ''
+                #     $_.GenericTypeArguments
+                #         | Fmt.ShortType
+                #         | Join-String -sep ', ' -op '<' -os '>'
+                #     $IsaGen ? ']' : ''
+                #     }
+                #     System.Collections.Generic Dictionary`2 [ <[Int32], [String]> ]
+                $render = $tinfo | Dotils.Format-ShortType -Template 'RawName'
             }
-            'Raw_FullName' { # doesn't mess with generics, basic full
+            'FullName' {
+                $render = $tinfo | Dotils.Format-ShortType -Template 'RawFullName'
+                $ns = $tinfo.Namespace | Dotils.Format-ShortNamespace  -MinCount 0
+                $name = $tinfo.Name
+
+                if(-not $Tinfo.IsGenericType) {
+                    $render =  @(
+                        if ($ns.length -gt 0){
+                            $ns
+                        }
+                        $Name
+                    ) -join '.'
+                } else {
+                    $render =  @(
+                        if ($ns.length -gt 0){
+                            $ns
+                            'nyi'
+                        }
+                        $Name
+                    ) -join '.'
+                }
+                # $ns = Dotils.Format-ShortNamespace $_.Namespace -MinCount 0
+                # $name = if($Is)
+                # $_.Name
+                # if( -not $IsGeneric) {
+                #     $render = Join-String { $_.Namespace, $_.Name -join '.' } -in $Tinfo
+                # }
+            }
+            'RawFullName' { # doesn't mess with generics, basic full
                 $render = Join-String { $_.Namespace, $_.Name -join '.' } -in $Tinfo
             }
-            'Name' {
-                if( -not $IsGeneric) {
-                    $render = Join-String {$_.Name } -in $Tinfo
-                }
+            'RawName' {
+                $render = $tinfo.Name
+                # if( -not $IsGeneric) {
+                #     $render = Join-String {$_.Name } -in $Tinfo
+                # }
             }
             default { throw "Unhandled template: $Template" }
         }
