@@ -1232,6 +1232,15 @@ function Dotils.Format-ShortType {
     .LINK
         Dotils.Format-ShortNamespace
     .EXAMPLE
+        ,[List[datetime]]::new() | Dotils.Format-ShortType
+
+            [List`1<DateTime>]
+
+        ,[List[datetime]]::new() | Dotils.Format-ShortType -MinNamespaceCrumbCount 99
+
+            [Collections.Generic.List`1<DateTime>]
+
+    .EXAMPLE
         $nested_tin =
             [Dictionary[
                 [string],
@@ -1278,7 +1287,7 @@ function Dotils.Format-ShortType {
                 'System.Management.Automation'
                 # 'Collections.Generic'
                 # 'System.Management'
-                # 'System'
+                'System'
             )
         }
         if($PSBoundParameters.ContainsKey('MinNamespaceCrumbCount')) {
@@ -1416,6 +1425,57 @@ function Dotils.Format-ShortType {
         }
         return $render
     }
+}
+
+function Dotils.DbgTest.ShortType {
+    <#
+    .EXAMPLE
+
+        $q = dotils.dbgTest.ShortType
+        $q
+            | ? MinCrumbs -in (1,2)
+            | ? template -eq 'name'
+            | sort Object, Template, minCrumbs, render
+        $q
+            | ? template -in @('name')
+            | ? minCrumbs -in (0..2)
+            | sort { $_.render.length }
+
+    #>
+    function __test.Object {
+        param(
+            $TestObject
+        )
+        $TestObject.GetType() | Join-String -op 'for Type: ' | write-host -fg 'tan'
+        foreach($tName in 'FullName', 'Name') {
+            foreach($i in 0..2) {
+                $render = "`u{2400}"
+                try {
+                    $render = $TestObject
+                        | Dotils.Format-ShortType -MinNamespaceCrumbCount $i -Template $tName
+                } catch {
+                    $render = 'Error: {0}' -f @( $_.ToString() )
+                }
+                [pscustomobject]@{
+                    MinCrumbs = $i
+                    Template = $tName
+                    Render = $Render
+                    Object = $testObject
+                }
+            }
+        }
+    }
+    $scary = [Dictionary[
+        [string],
+        [Dictionary[int,datetime]]  ]]::new()
+
+    $scary.GetType() | Join-String -op '$scary Type: ' | write-host -fg 'tan'
+    @(
+        __test.Object -testObject ( ,$scary )
+        __test.Object -testObject ( ,[List[IO.FileSystemInfo]]::new() )
+        __test.Object -testObject ( ,[List[Object]]::new() )
+    )
+    | sort-Object Object, Template
 }
 function Fmt.Type {
     [OutputType('String')]
