@@ -7,6 +7,10 @@ using namespace System.Diagnostics
 using namespace Microsoft.PowerShell
 # using namespace System.Reflection
 # using namespace System.Threading
+$Env:PSModulePath = @(
+    'H:\data\2023\pwsh\PsModules\Picky'
+    $Env:PSModulePath
+) -join [IO.Path]::PathSeparator
 
 $StringModule_DontInjectJoinString = $true
 # using namespace System.Collections
@@ -22,6 +26,8 @@ $global:StringModule_DontInjectJoinString = $true # context: <https://discord.co
 
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $PSDefaultParameterValues['Import-Module:DisableNameChecking'] = $true
+$PSDefaultParameterValues['Dotils.CollectList:ShowStats']   = $true
+$PSDefaultParameterValues['Dotils.CollectList:ShowCountOf'] = $true
 $VerbosePreference = 'silentlyContinue'
 
 
@@ -282,28 +288,6 @@ function Code.File.Get.End {
     $renderPath = '{0}:{1}' -f @( Get-Item -ea stop $TargetFile ; 99999999; )
     & code @('--goto', $renderPath )
 }
-
-## todo: Write-Warning 'move aws completer to typewriter'
-Register-ArgumentCompleter -Native -CommandName aws -ScriptBlock {
-    <#
-    .SYNOPSIS
-        minimal aws autocompleter: to TYPEWRITER
-    .link
-        https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-completion.html
-    #>
-    param($commandName, $wordToComplete, $cursorPosition)
-    $env:COMP_LINE = $wordToComplete
-    if ($env:COMP_LINE.Length -lt $cursorPosition) {
-        $env:COMP_LINE = $env:COMP_LINE + ' '
-    }
-    $env:COMP_POINT = $cursorPosition
-    aws_completer.exe | ForEach-Object {
-        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-    }
-    Remove-Item Env:\COMP_LINE
-    Remove-Item Env:\COMP_POINT
-}
-
 
 function Join.Lines {
     # Super Minimal
@@ -698,45 +682,8 @@ function Add-StreamingLogs {
     }
 }
 
-function pickOne {
-    [CmdletBinding(positionalbinding = $false)]
-    param(
-        # input object[s] to select, for fzf
-        [Parameter(Mandatory, ValueFromPipeline)]
-        [object[]]$InputObject
 
-    )
-    begin {
-        $BinFzf = Get-Command fzf -ea stop -CommandType application
-        [Collections.Generic.List[Objedct]]$items = @()
-    }
-    process {
-        Write-Warning 'wait, feature drift. one func does capture. other gets newest by type.'
-        $items.AddRange($InputObject)
-    }
-    end {
-        [Collections.Generic.List[Object]]$argsFzf = @(
-            '--ansi'
-            # '-m'
-        )
-        $query = $global:LastPick = $items
-        | & $BinFzf @argsFzf
 
-        $query | Select-Object -First 1
-        #| Select-Object -First 1
-    }
-}
-
-function GoClip {
-    [Alias('prof.GoClippy')]
-    [CmdletBinding()]
-    param()
-    $script:LastClip = Get-Clipboard | Get-Item -ea Stop
-    Goto $script:LastClip
-    'jump => {0}' -f @(
-        $script:LastClip | Join-String -DoubleQuote
-    )
-}
 function aws.abbrKeyName {
     [OutputType('System.String')]
     param(
@@ -1267,7 +1214,7 @@ function NewestItem.Basic {
 }
 
 
-function aws.Gci.Templates {
+function oldDotils_aws.Gci.Templates {
     <#
     .SYNOPSIS
         quickly dump clickable filepaths to yaml, etc.
@@ -2020,9 +1967,27 @@ function prof.Io2 {
 
 . (Get-Item -ea 'continue' ('H:\data\2023\dotfiles.2023\pwsh\src\Exported-Show-ErrorRecord.ps1') )
 # . (Get-Item -ea 'stop' ('./Exported-Show-ErrorRecord.ps1') )
+$ModulesToAutoLoad = @(
+    'CacheMeIfYouCan'
+    'Jsonify'
+    'ExcelAnt'
+    'Picky'
+) | Sort-oBject -Unique
+$Disabled_ModulesToAutoLoad = @(
+    'TypeWriter'
+    'Marking'
+    # 'Jsonify.original'
+)| Sort-oBject -Unique
 
+'Autoloading modules...' | write-host -bg 'gray20' -fg 'gray40'
+$ModulesToAutoLoad  | %{
+    Import-Module $_ -PassThru
+}
+  | Render.ModuleName
 
-
+'Skipping auto loading for modules: {0}' -f @(
+    $Disabled_ModulesToAutoLoad | Join-String -sep ', ' -single
+) | Write-host -bg 'gray20' -fg 'gray40'
 
 # if ($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`"" | Write-Warning; } [Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
 
