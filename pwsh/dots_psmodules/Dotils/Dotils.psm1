@@ -1231,6 +1231,12 @@ function Dotils.Test-IsBlank {
         If a string contains text, but it's all invisible or all control chars, then it's considered blank.
     .EXAMPLE
         Pwsh🐒>
+            Test-IsBlank '' -AsBool    # true
+            Test-IsBlank "`n" -AsBool  # true
+            Test-IsBlank $null -AsBool # true
+            Test-IsBlank "`n3" -AsBool # false
+    .EXAMPLE
+        Pwsh🐒>
             $something = [pscustomobject]@{ # sample properties to test
             Name = 'bob'
                 ExistingBlankProp = ''
@@ -1246,56 +1252,11 @@ function Dotils.Test-IsBlank {
             Test-IsBlank $something.ExistingNullProp  ) | ft -AutoSize
 
         # outputs
-            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank      Length RawValue
-            ---------- ------- -------------- -------      ------ --------
-                False   False          False   False            3 bob
-                False    True           True    True   <EmptyStr>
-                 True    True          False    True       <null>
-    .EXAMPLE
-        🐒> $something = @{ Name = 'bob' ; RealProp =  '' }
-        🐒> Test-IsBlank $something -AsBool
-            $false
-        🐒> Test-IsBlank $something.FakeProp -AsBool
-            $true
-
-        🐒> Test-IsBlank $something.Name -AsBool
-            False
-
-        Test-IsBlank $something.RealProp -AsBool
-            True
-
-Dotils.Test-IsBlank $something.FakeProp -AsBool
-True
-
-        🐒> Test-IsBlank ''
-
-            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
-            ---------- ------- -------------- -------
-                False    True           True    True
-
-        🐒> Test-IsBlank $null
-
-            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
-            ---------- ------- -------------- -------
-                True    True          False    True
-
-        🐒> Test-IsBlank ' '
-
-            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
-            ---------- ------- -------------- -------
-                False   False          False    True
-
-        🐒> Test-IsBlank "`n`n`r`a`n    `t"
-
-            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
-            ---------- ------- -------------- -------
-                False   False          False    True
-
-        🐒> Test-IsBlank "`n`n`r`a`n    .`t"
-
-            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
-            ---------- ------- -------------- -------
-                False   False          False   False
+            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank     Length RawValue AsBool
+            ---------- ------- -------------- -------     ------ -------- ------
+                False   False          False   False           3 bob       False
+                False    True           True    True  <EmptyStr>            True
+                True    True          False    True       <null>            True
 
     #>
     param( $Obj, [switch]$AsBool )
