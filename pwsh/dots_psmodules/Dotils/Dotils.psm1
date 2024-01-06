@@ -1222,6 +1222,123 @@ function Dotils.Format-ShortNamespace {
         return $render
     }
 }
+function Dotils.Test-IsBlank {
+    <#
+    .SYNOPSIS
+        quicky test whether something is null, empty string, or other blankable values
+
+    .DESCRIPTION
+        If a string contains text, but it's all invisible or all control chars, then it's considered blank.
+    .EXAMPLE
+        Pwsh🐒>
+            $something = [pscustomobject]@{ # sample properties to test
+            Name = 'bob'
+                ExistingBlankProp = ''
+                ExistingNullProp  = $null
+            }
+
+            Test-IsBlank $something.Name -AsBool              # false
+            Test-IsBlank $something.ExistingBlankProp -AsBool # true
+            Test-IsBlank $something.ExistingNullProp  -AsBool # true
+
+            @( Test-IsBlank $something.Name
+            Test-IsBlank $something.ExistingBlankProp
+            Test-IsBlank $something.ExistingNullProp  ) | ft -AutoSize
+
+        # outputs
+            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank      Length RawValue
+            ---------- ------- -------------- -------      ------ --------
+                False   False          False   False            3 bob
+                False    True           True    True   <EmptyStr>
+                 True    True          False    True       <null>
+    .EXAMPLE
+        🐒> $something = @{ Name = 'bob' ; RealProp =  '' }
+        🐒> Test-IsBlank $something -AsBool
+            $false
+        🐒> Test-IsBlank $something.FakeProp -AsBool
+            $true
+
+        🐒> Test-IsBlank $something.Name -AsBool
+            False
+
+        Test-IsBlank $something.RealProp -AsBool
+            True
+
+Dotils.Test-IsBlank $something.FakeProp -AsBool
+True
+
+        🐒> Test-IsBlank ''
+
+            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
+            ---------- ------- -------------- -------
+                False    True           True    True
+
+        🐒> Test-IsBlank $null
+
+            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
+            ---------- ------- -------------- -------
+                True    True          False    True
+
+        🐒> Test-IsBlank ' '
+
+            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
+            ---------- ------- -------------- -------
+                False   False          False    True
+
+        🐒> Test-IsBlank "`n`n`r`a`n    `t"
+
+            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
+            ---------- ------- -------------- -------
+                False   False          False    True
+
+        🐒> Test-IsBlank "`n`n`r`a`n    .`t"
+
+            IsTrueNull IsEmpty IsTrueEmptyStr IsBlank
+            ---------- ------- -------------- -------
+                False   False          False   False
+
+    #>
+    param( $Obj, [switch]$AsBool )
+    $filtered = $Obj -replace "`a", '' # otherwise ascii bell is not "whitespace"
+    if($AsBool) {
+       return [string]::IsNullOrWhiteSpace( $filtered )
+    }
+
+    $isTrueNull     = $Null -eq $Obj
+    $isStr          = $Obj -is [String]
+    $isTrueEmptyStr = $isStr -and ($Obj.Length -eq 0)
+
+    $finalLength = if(-not $IsTrueNull) { $Obj.ToString().Length }
+    if($isTrueEmptyStr) { $finalLength = '<EmptyStr>' }
+    if($IsTrueNull)     { $finalLength = '<null>'     }
+
+    [pscustomobject]@{
+        IsTrueNull     = $isTrueNull
+        IsEmpty        = [string]::IsNullOrEmpty( $Obj )
+        IsTrueEmptyStr = $isTrueEmptyStr
+        IsBlank        = [string]::IsNullOrWhiteSpace( $filtered )
+        Length         = $finalLength
+        RawValue       = $Obj
+        AsBool         = [string]::IsNullOrWhiteSpace( $filtered )
+    }
+}
+function Dotils.Format-ShortenWhitespace {
+    <#
+    .SYNOPSIS
+    minimal shorten whitespace to a single line, and colorize whitespace (after collapsing)
+    #>
+    param(
+        [Parameter(ValueFromPipeline)]
+        [Alias('Line', 'Text', 'String', 'Str', 'InStr', 'InText', 'InputObject')]
+        [string]$InputText
+    )
+    process {
+        $SP = '␠' | New-Text -bg 'gray50' -fg 'gray80' | Join-string -op $PSStyle.Reset
+        $SP = '␠' | New-Text -bg 'gray30' -fg 'gray60' | Join-string -op $PSStyle.Reset
+        $NL = '␊' | New-Text -bg 'gray20' -fg 'gray40' | Join-string -op $PSStyle.Reset
+        $InputText -replace '(\r?\n)+', $NL -replace '\s+', $SP
+    }
+}
 
 function Dotils.Format-ShortType {
     <#
@@ -1285,10 +1402,18 @@ function Dotils.Format-ShortType {
             StripNamespaces = @(
                 'System.Management.Automation.Language'
                 'System.Management.Automation'
+                'Microsoft.Powershell'
                 # 'Collections.Generic'
                 # 'System.Management'
                 'System'
             )
+            <# warning, to extend:
+
+                currently
+                    Microsoft.PowerShell.PSConsoleReadLine+HistoryItem => [HistoryItem]
+                instead it should be:
+                    PSConsoleReadLine+HistoryItem
+            #>
         }
         if($PSBoundParameters.ContainsKey('MinNamespaceCrumbCount')) {
             $Config.MinNamespaceCount = $MinNamespaceCrumbCount
