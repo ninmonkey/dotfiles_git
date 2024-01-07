@@ -1563,6 +1563,129 @@ function Dotils.DbgTest.ShortType {
     )
     | sort-Object Object, Template
 }
+function Dotils.Fmt-Sci {
+    <#
+    .NOTES
+        uses Private api, expected to change
+    see more:
+        [ClassExplorer.Internal._Format] | fime
+    .EXAMPLE
+        pwsh> '', 'yes', 'no', 1, 0, $true, $false | Fmt.Sci FancyBool | Join-String -sep ', '
+        x, +, +, +, x, +, x # they are colored
+    .EXAMPLE
+        Pwsh>   | Fmt.Sci Type
+            Dictionary<int, string>
+
+        Pwsh> [Dictionary[int,string]]  | Fmt.Sci FullType
+            System.Collections.Generic.Dictionary<int, string>
+
+        Pwsh> [Dictionary[int,string]], [List[IO.FileSystemInfo]] | Fmt.Sci Type
+            Dictionary<int, string>
+            List<FileSystemInfo>
+
+        Pwsh> [List[IO.FileSystemInfo]] | Fmt.Sci TypeAndParent
+            List<FileSystemInfo> : object, IList<FileSystemInfo>, ICollection<FileSystemInfo>, IEnumerable<FileSystemInfo>, IEnumerable, IList, ICollection, IReadOnlyList<FileSystemInfo>, IReadOnlyCollection<FileSystemInfo>
+    #>
+    [CmdletBinding(DefaultParameterSetName='FromPipe')]
+    [Alias('Fmt.Sci')]
+    param(
+        [Parameter(Mandatory, Position = 1, ParameterSetName='FromParam')]
+        [Parameter(Mandatory, Position = 0, ParameterSetName='FromPipe')]
+        [ValidateSet(
+            'Type', 'TypeAndParent', 'FancyBool', 'Variable', 'Color', 'DefaultValue', 'EnumString', 'Failure', 'FullType', 'Keyword', 'Member', 'MemberName', 'Namespace', 'Number', 'Operator', 'String', 'Success'
+        )]
+        [string]$FormatKind,
+
+        [Parameter(Mandatory, Position = 0,      ParameterSetName='FromParam')]
+        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName='FromPipe')]
+        $InputObject
+
+    )
+    process {
+        switch($PSCmdlet.ParameterSetName) {
+            'FromParam' {
+                $Target = $InputObject
+            }
+            'FromPipe' {
+                $Target = $InputObject
+            }
+        }
+
+        switch($FormatKind) {
+            'Type' {
+                [ClassExplorer.Internal._Format]::Type($InputObject)
+                break
+            }
+            'TypeAndParent' {
+                [ClassExplorer.Internal._Format]::TypeAndParent($InputObject)
+                break
+            }
+            'FancyBool' {
+                [ClassExplorer.Internal._Format]::FancyBool($InputObject)
+                break
+            }
+            'Variable' {
+                [ClassExplorer.Internal._Format]::Variable($InputObject)
+                break
+            }
+            'Color' {
+                [ClassExplorer.Internal._Format]::Color( $InputObject )
+                break
+            }
+            'DefaultValue' {
+                [ClassExplorer.Internal._Format]::DefaultValue( $InputObject )
+                break
+            }
+            'EnumString' {
+                [ClassExplorer.Internal._Format]::EnumString( $InputObject )
+                break
+            }
+            'Failure' {
+                [ClassExplorer.Internal._Format]::Failure( $InputObject )
+                break
+            }
+            'FullType' {
+                [ClassExplorer.Internal._Format]::FullType( $InputObject )
+                break
+            }
+            'Keyword' {
+                [ClassExplorer.Internal._Format]::Keyword( $InputObject )
+                break
+            }
+            'Member' {
+                [ClassExplorer.Internal._Format]::Member( $InputObject )
+                break
+            }
+            'MemberName' {
+                [ClassExplorer.Internal._Format]::MemberName( $InputObject )
+                break
+            }
+            'Namespace' {
+                [ClassExplorer.Internal._Format]::Namespace( $InputObject )
+                break
+            }
+            'Number' {
+                [ClassExplorer.Internal._Format]::Number( $InputObject )
+                break
+            }
+            'Operator' {
+                [ClassExplorer.Internal._Format]::Operator( $InputObject )
+                break
+            }
+            'String' {
+                [ClassExplorer.Internal._Format]::String( $InputObject )
+                break
+            }
+            'Success' {
+                [ClassExplorer.Internal._Format]::Success( $InputObject )
+                break
+            }
+            default { throw "UnhandledFormat: $FormatKind"}
+        }
+    }
+
+
+}
 function Fmt.Type {
     [OutputType('String')]
     param(
@@ -17947,6 +18070,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-01-07
+        'Fmt.Sci'
+        'Fmt-Sci'
         # 2023-12-28
         'Fmt.*'
         'DbgTool.*'
