@@ -1585,6 +1585,13 @@ function Dotils.Fmt-Sci {
 
         Pwsh> [List[IO.FileSystemInfo]] | Fmt.Sci TypeAndParent
             List<FileSystemInfo> : object, IList<FileSystemInfo>, ICollection<FileSystemInfo>, IEnumerable<FileSystemInfo>, IEnumerable, IList, ICollection, IReadOnlyList<FileSystemInfo>, IReadOnlyCollection<FileSystemInfo>
+    .EXAMPLE
+        # with colors
+        Pwsh> [List[IO.FileSystemInfo]] | Fime | select -first 1 | Fmt.Sci Member
+            public void Add(FileSystemInfo item);
+
+        Pwsh> [List[IO.FileSystemInfo]] | Fime | select -first 1 | Fmt.Sci MemberName
+            Void Add(System.IO.FileSystemInfo)
     #>
     [CmdletBinding(DefaultParameterSetName='FromPipe')]
     [Alias('Fmt.Sci')]
