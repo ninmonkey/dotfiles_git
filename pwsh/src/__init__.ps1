@@ -12,6 +12,13 @@ $Env:PSModulePath = @(
     $Env:PSModulePath
 ) -join [IO.Path]::PathSeparator
 
+# winget didn't add path right for gum
+$Env:Path = @(
+    $Env:Path
+    Join-Path $Env:LocalAppData 'Microsoft\WinGet\Packages\charmbracelet.gum_Microsoft.Winget.Source_8wekyb3d8bbwe'
+) -join [IO.Path]::PathSeparator
+# $binGum = 'gum.exe' | gi
+
 $StringModule_DontInjectJoinString = $true
 # using namespace System.Collections
 
