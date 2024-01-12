@@ -8798,8 +8798,7 @@ function Dotils.Measure-CommandDuration {
         sugar to run a command and time it. low precision. just a ballpark
     #>
     [Alias(
-        'TimeOfSb',
-        'Dotils.Measure-CommandDuration',
+        # 'TimeOfSb',
         'Dotils.Measure.CommandDuration',
         'Dotils.Measure-CommandDuration',
         'DeltaOfSBScriptBlock',
@@ -18466,7 +18465,7 @@ $exportModuleMemberSplat = @{
 
         'Join.As' # 'Dotils.JoinString.As'
         'CompareCompletions' # 'Dotils.CompareCompletions'
-        'TimeOfSB' # 'Dotils.Measure-CommandDuration'
+        # 'TimeOfSB' # 'Dotils.Measure-CommandDuration'
         'DeltaOfSBScriptBlock' # 'Dotils.Measure-CommandDuration'
         'dotils.DeltaOfSB'     # 'Dotils.Measure-CommandDuration'
         'MonkeyBusiness.Vaidate.ExportedCommands' # 'Dotils.Testing.Validate.ExportedCmds'
