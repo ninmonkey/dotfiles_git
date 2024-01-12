@@ -4,9 +4,6 @@ using namespace System.Collections.Generic
 using namespace System.Globalization
 using namespace System.Text
 
-
-return
-
 $ENV:PATH = @(
     $Env:PATH
     gi 'G:\2023-git\Aws📁\aws-copilot-cli' ) | Join-String -sep ';'
@@ -136,11 +133,9 @@ function F.Dock {
     # | Dotils.Write-DimText | Winfo
 
 
-if($true) {
+if($false) {
     'AgilityPack Types Skipped, from file: "{0}"' -f $PSCommandPath
         | write-host -back 'darkyellow'
-
-} else {
     'AgilityPack Types importing...' | write-host -back 'darkyellow'
     . (gi -ea 'continue' 'H:\data\2023\pwsh\sketches\update-typedata.2023.08\UpdateTypeData-PSParseHtml.AgilityPack.ps1' )
 }
