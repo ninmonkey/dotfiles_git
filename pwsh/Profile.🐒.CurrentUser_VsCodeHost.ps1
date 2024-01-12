@@ -1,5 +1,4 @@
 $PSDefaultParameterValues.remove('import-module:verbose')
-Set-Alias 'Label' -value 'Ninmonkey.Console\Write-ConsoleLabel' -Force
 
 # WhoAmI?
 #   whoAmI? => $PROFILE.CurrentUserCurrentHost
