@@ -15,20 +15,14 @@
             https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/serverless-apps-troubleshooting.html#troubleshooting-samconfig-toml
     */
     "json.schemas": [
-        // custom json schemas : https://code.visualstudio.com/docs/languages/json#_use-rich-formatting-in-hovers
-        {
-            "url": "vscode://schemas/global-snippets",
-            "fileMatch": [
-                "code-snippets"
-            ],
-        },
-        {
-            "url": "vscode://schemas/settings/user",
-            "fileMatch": [
-                "*/dotfiles.2023/vscode/profiles/desktop-main/settings.json"
-            ],
-        }
+        // see docs: https://code.visualstudio.com/docs/languages/json#_use-rich-formatting-in-hovers
+        {   "url": "vscode://schemas/global-snippets",
+            "fileMatch": [ "code-snippets" ],  },
+        {   "url": "vscode://schemas/settings/user",
+            "fileMatch": [ "*/dotfiles.2023/vscode/profiles/desktop-main/settings.json" ], }
+            // schema name came from here <https://github.com/microsoft/vscode/blob/e5e9a6556e8dd4f5c60074b0a9466be4b490ac29/src/vs/workbench/contrib/snippets/browser/snippets.contribution.ts#L100C1-L100C1>
     ],
+
     "launch": {
         "inputs": [
             {
@@ -48,8 +42,9 @@
                 "presentation": {
                     "hidden": false,
                     "group": "Invoke-Run",
-                    "order": 1
+                    "order": 1,
                 },
+
                 // "args": [
                 //     "-Nop"
                 // ],
@@ -2495,7 +2490,6 @@
     /*
 
       details
-
           https://code.visualstudio.com/docs/editor/variables-reference
       */
     "terminal.integrated.profiles.windows": {
@@ -6333,6 +6327,7 @@ new: nearest quick fix command change
 new: Copilot inline:
     <https://code.visualstudio.com/updates/v1_84#_chat-agents>'
  */
+
     "editor.inlineSuggest.enabled": true,
     "github.copilot.enable": { /* copilot-github */
         // related: <https://docs.github.com/en/copilot/github-copilot-in-the-cli/about-github-copilot-in-the-cli>
@@ -6341,7 +6336,8 @@ new: Copilot inline:
         "plaintext": true,
         "markdown": true,
         "javascript": true,
-        "python": true
+        "python": true,
+
     },
     "window.zoomLevel": 1,
     "workbench.sideBar.location": "right"

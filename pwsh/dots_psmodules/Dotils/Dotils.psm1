@@ -1693,6 +1693,66 @@ function Dotils.Fmt-Sci {
 
 
 }
+
+
+function Dotils.Fmt.Join-Hex {
+    <#
+    .SYNOPSIS
+        just format numbers as hex
+    .NOTES
+        fix: [hex] => <Ninmonkey.Console\public\ConvertTo-Number.>
+    .EXAMPLE
+        $what = 'a🐒c'
+        $bytes = [Text.Encoding]::GetEncoding('utf-16le').GetBytes( $what )
+
+    > $bytes | j.Hex
+        61 00 3d d8 12 dc 63 00
+
+    > $bytes | j.Hex -FormatString '{0:x4}' '_'
+        0061_0000_003d_00d8_0012_00dc_0063_0000
+    #>
+    [Alias('j.Hex', 'Fmt.Hex')]
+    [CmdletBinding()]
+    param(
+        [Parameter()]
+        [ARgumentCompletions(
+            "''", "' '" )]
+        [string]$Separator = ' ',
+
+        [ArgumentCompletions(
+            "'{0:x}'",
+            "'{0:x2}'",
+            "'{0:x4}'",
+            "'{0:x8}'",
+            "'{0:x16}'"
+        )]
+        [Alias('FStr')]
+        [string]$FormatString = '{0:x2}',
+
+        [Alias('Op')]
+        [string]$OutputPrefix = '',
+
+        [Alias('Os')]
+        [string]$OutputSuffix = '',
+
+        # expects integers, in general
+        [Alias('InObj', 'Values', 'Num', 'Int')]
+        [Parameter(Mandatory, ValueFromPipeline )]
+        [object[]]$InputObject
+    )
+    begin {
+        [List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange(@( $InputObject ))
+    }
+    end {
+        $Items
+            | Join-String -sep $Separator -f $FormatString
+            | Join-String -op $OutputPrefix -os $OutputSuffix
+    }
+}
+
 function Fmt.Type {
     [OutputType('String')]
     param(
@@ -11174,6 +11234,8 @@ function Dotils.VsCode.ConvertTo.Snippet {
 
 }
 
+
+
 function Dotils.Debug.Find.AstType {
     <#
     .EXAMPLE
@@ -18077,6 +18139,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-01-08
+        'j.Hex'     # 'Dotils.Fmt.Join-Hex' = { 'j.Hex', 'Fmt.Hex' }
+        'Fmt.Hex'   # 'Dotils.Fmt.Join-Hex' = { 'j.Hex', 'Fmt.Hex' }
         # 2024-01-07
         'Fmt.Sci'
         'Fmt-Sci'

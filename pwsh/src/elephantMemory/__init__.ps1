@@ -1,4 +1,5 @@
 ﻿# $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
+# 2023-10-31 : old file, maybe collect?
 
 $PSDefaultParameterValues['Build-Module:verbose'] = $true
 $VerbosePreference = 'silentlyContinue'
@@ -79,7 +80,12 @@ function Export.PipeScript {
 #     Export-Pipescript -InputPath $pattern
 # }
 
+
+
 'finish: nin.Help.Command.OutMarkdown: dotfiles/src/__init__.ps1'
+    | write-warning
+$PSCommandPath
+    | Join-String -op '     from: {0}' | write-warning
 function nin.Help.Command.OutMarkdown {
     <#
     .SYNOPSIS
