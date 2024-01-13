@@ -97,6 +97,35 @@ function Dotils.Format.Show.Space {
     $_ -replace '[ ]', "${fg:gray30}`u{2420}${fg:clear}"
 } }
 
+function Dotils.Split.String {
+    <#
+    .SYNOPSIS
+        Equivalent to -split but on the pipeline
+    .EXAMPLE
+        # this is sugar for having to inline the operator on pipeline like this:
+        ... | %{ $_ -split '\r?\n' } | ...
+    #>
+    [Alias(
+        'Dotils.Split.NL',
+        'Split.NL'
+    )]
+    [CmdletBinding()]
+    param(
+        [Alias('Text', 'In', 'InObj', 'Str', 'InStr', 'Content')]
+        [Parameter(ValueFromPipeline)]
+        [string]$InputObject,
+
+        [Alias('Pattern')][string]$Regex = '\r?\n'
+    )
+    process {
+        if( $MyInvocation.InvocationName.EndsWith(
+            '.NL', <# Ignore? #> $true, <# cultinfo #> $null )) {
+            $Regex = '\r?\n' # is currently reduntant. until more patterns are added
+        }
+        # $MyInvocation.InvocationName | write-verbose
+        $InputObject -split $Regex
+    }
+}
 function Dotils.Select.Error {
     [CmdletBinding()]
     param(
@@ -9687,7 +9716,7 @@ function Dotils.GetCommand {
 
 # function .Str.Substr { }
 function __Dotils.Format.WrapLongLine {
-    [Alias('.Format.Split-StringIntoLines')]
+    # [Alias('.Format.Split-StringIntoLines')]
     param(
         [string]$InputString,
         [int]$MaxLineLength = 80
@@ -11600,6 +11629,108 @@ function Dotils.Datetime.ShowExamples {
             Dt_utc = $dto_utc?
         }
     }
+}
+
+function Dotils.Trace.ParameterBinding {
+    [CmdletBinding()]
+    param(
+
+        [Parameter(Mandatory)]
+        [Alias('Test', 'Expression', 'SB', 'E')]
+        [scriptBlock] $ScriptBlock,
+
+        [string] $Path = (Join-Path temp: 'ParamBinding.log'),
+
+        [string[]] $Name = '*Name*',
+
+        [Alias('PSHost', 'Host', 'Echo')]
+        [switch] $PassThru,
+
+        [Alias('ResetLog')]
+        [switch] $ClearLog
+    )
+    $regex = @{}
+
+    $regex.ParamBindLog_SingleLine = @'
+    (?x)
+        ^
+        (?<Source>.*?)
+        \s
+        (?<Severity>\S*)
+        :\s
+        (?<SomeId>\d+)
+        \s:
+        (?<RawMessage>
+            (?<Indent>\s+)
+            (?<Message>.*)
+        )
+        (?<Rest>.*?)
+        $
+'@
+        $PathRaw = "${Path}.raw"
+        $PathJson = "${Path}.json"
+        $traceCommandSplat = @{
+            Name       = '*Param*'
+            FilePath   = $PathRaw
+            Expression = $ScriptBlock
+        }
+
+        Trace-Command @traceCommandSplat
+
+        Get-Content -Path $PathRaw -raw
+            | StripAnsi | Split.NL
+            | %{
+                if( $_ -match $Regex.ParamBindLog_SingleLine ) {
+                    $matches.remove(0)
+                    $found = [pscustomobject]$matches
+                }
+                $found
+            }
+            | Select -ea 'ignore' -Exclude @( 'RawMessage') -Property @(
+                'Indent', 'Source', 'Severity', 'Message', 'SomeId'
+            )
+            | Json | Set-Content -path $PathJson
+
+        [string]$lastSource = ''
+        Get-Content -Path $PathRaw -raw
+        | StripAnsi | Split.NL
+        | %{
+            if( $_ -match $Regex.ParamBindLog_SingleLine ) {
+                $matches.remove(0)
+                $found = [pscustomobject]$matches
+            }
+            $found
+        }
+        | Join-String -p {
+            $_ | Join-String -p {@(
+            $_.Source | Join.Predent -Depth 0
+            $_.Severity | Join.Predent -Depth 1
+            $_.Message  | Join.Predent -Depth 2 ) -join "`n" }
+        }
+        # } | %{ @(
+        #     # was:
+        #     if($LastSource -ne $_.Source) {
+        #         $LastSource = $_.Source
+        #         "`n${LastSource}`n"
+        #     }
+        #     wait-debugger
+        #     $_.Severity, ' ', $_.Message -join ''
+        # ) -join '' }
+        | Set-Content -path $Path
+        # } | Join-String -p {@(
+        #     # was:
+        #     if($LastSource -ne $_.Source) {
+        #         $LastSource = $_.Source
+        #         "`n${LastSource}`n"
+        #     }
+        #     $_.Severity, ' ', $_.Message -join ''
+        # ) -join '' } -sep "`n" | Set-Content -path $Path
+
+
+
+        $Path, $PathJson, $PathRaw | Get-Item| Join-String -f "`n Wrote: {0}"
+            | Dotils.Write-DimText
+            | Infa
 }
 
 
@@ -18192,6 +18323,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-01-13
+        'Split.NL'
+
         # 2024-01-08
         'j.Hex'     # 'Dotils.Fmt.Join-Hex' = { 'j.Hex', 'Fmt.Hex' }
         'Fmt.Hex'   # 'Dotils.Fmt.Join-Hex' = { 'j.Hex', 'Fmt.Hex' }
@@ -18282,7 +18416,6 @@ $exportModuleMemberSplat = @{
         'Dotils.URL.GetInfo' #  'Dotils.Uri.GetInfo' = { 'Dotils.URL.GetInfo' }
 
         # 2023-09-04
-        '.Format.Split-StringIntoLines'
         '.Format.Wrap.LongLines'
         'Render.Dom.Attributes' # 'Dotils.Render.Dom.Attributes' = { 'Render.Dom.Attributes' }
         'Render.Bool' # 'Dotils.Render.Bool' = { 'Render.Bool', '.Render.Bool' }
