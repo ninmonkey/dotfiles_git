@@ -714,6 +714,7 @@ if ($true -or 'not anymore' ) {
     nin.PSModulePath.Clean
     # nin.PSModulePath.AddNamed -GroupName AWS, JumpCloud   -verbose -debug
     nin.PSModulePath.Add -verbose -debug:$false -RequireExist -LiteralPath @(
+        'H:\data\2024\pwsh\PSModules.🐒.miniLocal'
         'E:/PSModulePath.2023.root\Main'
         'H:/data/2023/pwsh/PsModules/ExcelAnt/Output'
         'H:/data/2023/pwsh/PsModules/TypeWriter/Build'
@@ -1979,6 +1980,7 @@ $ModulesToAutoLoad = @(
     'Jsonify'
     'ExcelAnt'
     'Picky'
+    'n🐒.ParameterBinding.ParseTrace'
 ) | Sort-oBject -Unique
 $Disabled_ModulesToAutoLoad = @(
     'TypeWriter'

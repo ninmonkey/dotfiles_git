@@ -11643,6 +11643,7 @@ function Dotils.Trace.ParameterBinding {
 
         [string[]] $Name = '*Name*',
 
+        [ValidateScript({throw 'nyi'})]
         [Alias('PSHost', 'Host', 'Echo')]
         [switch] $PassThru,
 
@@ -11652,7 +11653,7 @@ function Dotils.Trace.ParameterBinding {
     $regex = @{}
 
     $regex.ParamBindLog_SingleLine = @'
-    (?x)
+(?x)
         ^
         (?<Source>.*?)
         \s
@@ -11674,8 +11675,15 @@ function Dotils.Trace.ParameterBinding {
             FilePath   = $PathRaw
             Expression = $ScriptBlock
         }
+        if($ClearLog) {
+            Clear-Content -path $Path
+            Clear-Content -path $PathRaw
+            Clear-Content -path $PathJson
+        }
 
         Trace-Command @traceCommandSplat
+
+        throw 'wip'
 
         Get-Content -Path $PathRaw -raw
             | StripAnsi | Split.NL
@@ -11692,6 +11700,7 @@ function Dotils.Trace.ParameterBinding {
             | Json | Set-Content -path $PathJson
 
         [string]$lastSource = ''
+
         Get-Content -Path $PathRaw -raw
         | StripAnsi | Split.NL
         | %{
@@ -11733,6 +11742,57 @@ function Dotils.Trace.ParameterBinding {
             | Infa
 }
 
+
+function Dotils.Render.FilePath {
+    <#
+    .SYNOPSIS
+        Render file's full name (if existing), if it exists, and url to edit
+    .EXAMPLE
+        #   you can pipe paths as text or as objects
+        Pwsh> 'test.md', 'fakeFile.md' | Render.FilePath
+
+            Exists?: + <file:///H:\data\2023\pwsh\test.md> edit
+            Exists?: x <file:///fakeFile.md> edit
+    .EXAMPLE
+        #   you can pipe paths as text or as objects
+        gci *.md | Render.FilePath
+
+            Exists?: + <file:///H:\data\2023\foo.md>  edit
+            Exists?: + <file:///H:\data\2023\bar.ps1> edit
+    #>
+    # [CmdletBinding()]
+    [Alias(
+        'Render.FilePath',
+        'Fmt.FilePath'
+    )]
+    param(
+        # [int]$LineNumber
+    )
+    process {
+        $PathName = $_
+        $exists? = test-path $PathName
+        # $file = Get-Item -ea 'ignore' $PathName
+        $Config = @{
+            IncludeUrl = $True
+        }
+        $fullName = $Exists? ? (get-item $PathName) : $PathName
+        $url = $FullName | Join-String -f 'vscode://file/{0}'
+        $ansiUrl = $PSStyle.FormatHyperlink('edit', $url )
+            | Join-String -op ' '
+
+        'Exists?: {0} {1}{2}' -f @(
+            $Exists?
+                | Fmt.Sci -FormatKind FancyBool
+
+            # ( $File ?? $PathName
+            $FullName -replace ' ', '%20'
+                | Join-String -f '<file:///{0}>'
+
+            $Config.IncludeUrl ?
+                $AnsiUrl : ''
+        )
+    }
+}
 
 function Dotils.BasicFormat.Predent {
     <#
@@ -13082,6 +13142,8 @@ function Dotils.Render.Bool {
         $sample = 'true,$true,$null,null,none,false,$false,1,0,, ,y,Yes,n,No,not' -split ','
 
         $sample | Render.Bool | fcc |
+    .LINK
+        Dotils\Fmt.Sci
     .EXAMPLE
         # current expected value
 'true,$true,␀,$null,null,none,false,$false,1,0,, ,y,Yes,n,No,not' -split
@@ -18325,6 +18387,8 @@ $exportModuleMemberSplat = @{
     Alias    = @(
         # 2024-01-13
         'Split.NL'
+        'Fmt.FilePath'
+        'Render.FilePath'
 
         # 2024-01-08
         'j.Hex'     # 'Dotils.Fmt.Join-Hex' = { 'j.Hex', 'Fmt.Hex' }
