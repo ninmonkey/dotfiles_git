@@ -9570,6 +9570,67 @@ Function Dotils.Search-Pipescript.Nin {
 
 
 
+function Dotils.TryCompletion {
+    <#
+    .SYNOPSIS
+        try global generic completions, cached results for speed
+    .NOTES
+        If passThru, you get the full [CommandCompletion]
+        else drills down to the [List[CompletionResult]] for you
+    .EXAMPLE
+        Dotils.TryCompletion -CommandString 'trace-command -name '
+    .LINK
+        Dotils.TryCompletion
+    .LINK
+        Dotils.CompareCompletions
+    #>
+    [Alias('Quick.TryCompletion')]
+    [OutputType( [System.Management.Automation.CompletionResult[]] )] #, ParameterSetName = '__AllParameterSets')]
+    [OutputType( [System.Management.Automation.CommandCompletion], ParameterSetName = 'PassThru')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+            [Alias('Command', 'Text', 'Content')]
+            [ArgumentCompletions(
+                "'Trace-Command -name '"
+            )]
+            [string] $CommandString,
+
+            # index to place cursor. Negative values are relative the end of string
+            # if not set, defaults to the value ($CommandString.Length)
+            [int]    $RelPosition,
+
+            [Parameter(ParameterSetName='PassThru')]
+            [switch] $PassThru
+    )
+    if( -not $PSBoundParameters.ContainsKey('RelPosition') ) {
+        $finalPosition = $CommandString.Length
+    } else {
+        if($RelPosition -lt 0) {
+            $finalPosition = $CommandString.Length + $RelPosition
+        } else {
+            $finalPosition = $RelPosition
+        }
+    }
+
+    $keyName = "${CommandString}_${FinalPosition}"
+    @{
+        RelPosition = $RelPosition
+        FinalPosition = $FinalPosition
+        CommandStr = $CommandString
+    } | Json -Depth 1 | Join-String -op 'TryCompletionParams: ' | write-verbose
+
+    $query = CacheMe -Name $KeyName -PassThru -ScriptBlock {
+        TabExpansion2 -inputScript $CommandString -cursorColumn $FinalPosition
+    }
+    # TabExpansion2 -inputScript ( $str = 'Trace-Command -name *' ) -cursorColumn ($str.Length - 0)
+    # $query =  @( TabExpansion2 -inputScript $CommandString -cursorColumn $FinalPosition )
+
+    if($PassThru) { return $query }
+    # | % CompletionMatches
+    return $Query.CompletionMatches
+}
+
 
 function Dotils.CompareCompletions {
     <#
@@ -9577,6 +9638,10 @@ function Dotils.CompareCompletions {
         capture completion texts, easier
     .description
         two ways to invoke for simplicity. if you pass a 2nd string it will take that as the position.
+    .LINK
+        Dotils.TryCompletion
+    .LINK
+        Dotils.CompareCompletions
     .EXAMPLE
         two ways to invoke for simplicity. if you pass a 2nd string it will take that as the position.
 
