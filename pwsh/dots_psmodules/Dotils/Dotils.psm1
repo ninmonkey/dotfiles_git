@@ -1749,11 +1749,8 @@ function Dotils.Fmt.Join-Hex {
         [string]$Separator = ' ',
 
         [ArgumentCompletions(
-            "'{0:x}'",
-            "'{0:x2}'",
-            "'{0:x4}'",
-            "'{0:x8}'",
-            "'{0:x16}'"
+            "'{0:x}'",  "'{0:x2}'", "'{0:x4}'",
+            "'{0:x8}'", "'{0:x16}'"
         )]
         [Alias('FStr')]
         [string]$FormatString = '{0:x2}',
@@ -1777,8 +1774,8 @@ function Dotils.Fmt.Join-Hex {
     }
     end {
         $Items
-            | Join-String -sep $Separator -f $FormatString
-            | Join-String -op $OutputPrefix -os $OutputSuffix
+            | Join-String -sep $Separator     -f $FormatString
+            | Join-String -op  $OutputPrefix -os $OutputSuffix
     }
 }
 
@@ -2809,6 +2806,139 @@ Left off here on this test,
         }
     }
 }
+
+class DisplayAnsiText {
+    <#
+    .SYNOPSIS
+        # collect raw ansi text in a wrapper that you can save or pass around when  debugging
+    .EXAMPLE
+        $oneLine =
+        ($oneLine.forEach([DisplayAnsiText]).RawText() -split ';').forEach([DisplayAnsiText])
+    .link
+        Dotils.New-AnsiDisplayText
+    #>
+    [string]$SafeText
+    hidden [string]$_RawText
+    [int]$RawLength
+    DisplayAnsiText ( [string]$RawText ) {
+        $This._RawText = $RawText
+        $This.SafeText = $This._RawText | Ninmonkey.Console\Format-ControlChar
+        $this.RawLength = $This._RawText.Length
+    }
+    [string] ToString() {
+        return $This.SafeText
+    }
+    [string] RawText () {
+        return $This._RawText
+    }
+}
+
+function Dotils.New-AnsiDisplayText {
+    <#
+    .SYNOPSIS
+        # collect raw ansi text in a wrapper that you can save or pass around when  debugging
+    .EXAMPLE
+        $oneLine =
+        ($oneLine.forEach([DisplayAnsiText]).RawText() -split ';').forEach([DisplayAnsiText])
+    .EXAMPLE
+        🐒> Dotils.New-AnsiDisplayText "`n`n"
+        🐒> Dotils.New-AnsiDisplayText -RgbColor (gi fg:\green )
+    .EXAMPLE
+        🐒> $blue | Dotils.New-AnsiDisplayText -Verbose
+            VERBOSE: BoundFromRgbColorParam
+
+            SafeText             RawLength
+            --------             ---------
+            ␛[38;2;0;0;255m␛[39m        20
+
+        🐒> "`e[1b foo `n`ttext" | Dotils.New-AnsiDisplayText
+
+            SafeText        RawLength
+            --------        ---------
+            ␛[1b␠foo␠␊␉text        15
+    #>
+    [OutputType( [DisplayAnsiText] )]
+    param(
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
+            [ValidateNotNull()]
+            [Alias('Content', 'InObj', 'InText')]
+            [string] $RawText,
+
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
+            [Alias('ForeGroundColor', 'Color')]
+            [RgbColor] $RgbColor
+    )
+    process {
+        if( $Null -eq $RawText ) { return }
+        # $PSBoundParameters | Json | write-host -fg 'blue'
+        # ($InputText)?.GetTYpe()
+        #     | Label 'in'
+        # ($RgbColor)?.GetType()
+        #         | Label 'rgbcolor'
+
+        if($PSBoundParameters.ContainsKey('RgbColor')) {
+            'BoundFromRgbColorParam' | Write-verbose
+            # [DisplayAnsiText] $RgbColor.ToString()
+            # return [DisplayAnsiText]@{RawText =  New-Text -fg $RgbColor '' }
+            [string] $render = New-Text -fg $RgbColor ''
+            [DisplayAnsiText] $Render
+            return
+        }
+        'BoundFromStringParam' | Write-Verbose
+        return [DisplayAnsiText] $RawText
+    }
+}
+
+function Dotils.InlineExample.Format-HorizontalRule {
+    <#
+    .SYNOPSIS
+        Insert horizontal bars exactly fitting the console window [inline-dependency only example. easier to strip out]
+    .EXAMPLE
+        Hrr
+    .EXAMPLE
+        $Error | Join-String -Property { $_.Exception.Message } -sep (hrr)
+    .EXAMPLE
+        Get-History | Join-String -sep (Hrr) CommandLine -f "Pwsh> {0}"
+    #>
+    [Alias('InlineExample.Hrr')] # I don't actually export these, it's essentially a tag
+    [OutputType('String')]
+    [Alias('Hrr', 'Hr')]
+    param()
+    $pad = "`n" * $PadLines -join ''
+    ('-' * [console]::WindowWidth) -join ''
+        | Join-String -op $Pad -os $Pad
+}
+
+function Dotils.InlineExample.HShowEscape {
+    <#
+    .SYNOPSIS
+        Replaces escape characters with their saffe-to-print runes [inline-dependency only example. easier to strip out]
+    .EXAMPLE
+        # super slow if you don't use split, to reduce the size of strings it enumerates
+        # but it's okay for smaller text
+        ($error| Get-Error | Out-String) -split '\r?\n' | HShowEscape
+    #>
+    [Alias('InlineExample.HShowEscape')] # I don't actually export these, it's essentially a tag
+    [CmdletBinding()]
+    param( [Parameter(ValueFromPipeline)][string]$InputText )
+    process {
+        if( $Null -eq $InputText ) { return }
+        $InputText.EnumerateRunes() | %{
+            ( $_.Value -ge 0 -and $_.value -le 0x1f) ?
+                [Text.Rune]::New( $_.Value + 0x2400 ) :
+                $_
+        } | Join-String
+    }
+}
+function Dotils.InlineExample.ShowEmojiRepeats {
+    # Replaces escape characters with symbols, making them easier to see patterns of
+    process {
+        $_ -replace
+            [Regex]::Escape('␛[32;1m'), '🐈' -replace
+            [Regex]::Escape('␛[0m'),    '🦎'
+    }
+}
+
 
 function Dotils.Format.WildcardPattern {
     <#
@@ -10112,6 +10242,30 @@ function Dotils.Select-NotBlankKeys {
     return $targetHash
 
 }
+
+function Dotils.AutoJson {
+    <#
+    .SYNOPSIS
+        Try one of the automatic methods
+    .notes
+        [System.Text.Json.JsonSerializer] has a ton of overloads
+    .LINK
+        https://docs.microsoft.com/en-us/dotnet/api/system.text.json.jsonserializer?view=net-8.0#methods
+    #>
+    # [Alias('AutoJson')]
+    param(
+        [Alias('InObj', 'In')]
+        [object] $Object,
+
+        # Without a type, it falls back to GetType()
+        [Alias('Tinfo', 'T')]
+        [type] $TypeInfo
+    )
+    if(-not $TypeInfo ) { $TypeInfo = $Object.GetType() }
+    [Text.Json.JsonSerializer]::Serialize( <# value: #> $Object, <# tinfo #> $TypeInfo )
+}
+
+
 function Dotils.List.Collect.Pipeline {
     <#
     .synopsis
