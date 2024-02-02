@@ -2009,6 +2009,26 @@ function Dotils.Console.GetEncoding {
     }
 }
 
+function Dotils.AppDomain.Assembly.GetAll {
+    [System.AppDomain]::CurrentDomain
+    <#
+    .SYNOPSIS
+    .EXAMPLE
+        [System.AppDomain]::CurrentDomain.GetAssemblies().GetTypes() |
+            Where-Object { $_.BaseType -eq [System.Management.Automation.PSPropertyInfo] -and $_.IsPublic }
+    #>
+    param(
+        [ValidateSet('Types','Assemblies')]
+        [Parameter()]
+        $GetKind = 'Assemblies'
+    )
+    switch($GetKind) {
+        'Types' { [AppDomain]::CurrentDomain.GetAssemblies() ; break; }
+        'Assemblies' { [AppDomain]::CurrentDomain.GetAssemblies().GetTypes() ; break; }
+    }
+    return
+}
+
 # .GroupBy
 
 function Dotils.To.Duration {
@@ -2215,6 +2235,7 @@ function Dotils.Console.SetEncoding {
         return
     }
 }
+
 
 
 function Dotils.To.PSCustomObject {
@@ -2939,6 +2960,118 @@ function Dotils.InlineExample.ShowEmojiRepeats {
     }
 }
 
+function Dotils.Join.Enum {
+    <#
+    .SYNOPSIS
+        summarize enum, quickly render it
+    .EXAMPLE
+        [DisplayEntryValueType] | Dotils.Join.Enum
+    #>
+    [CmdletBinding()]
+    param(
+        [Alias('Enum', 'InObj', 'In', 'Obj')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        # [enum]$InputObject
+        [object]$InputObject
+    )
+    process {
+        $shortName = $InputObject | Dotils.Format-ShortType
+
+        # [DisplayEntryValueType]|fime | Join-string -Property { $_.Name  } -sep ', ' -op 'enum [DisplayEntryValueType] = '
+        $joinstringSplat = @{
+            OutputPrefix = 'enum [{0}] = ' -f $shortName
+            Property     = { $_.Name  }
+            Separator    = ', '
+        }
+
+        $InputObject
+            | Find-Member
+            | ? Name -ne 'value__'
+            | Join-string @joinstringSplat
+    }
+}
+
+
+function Dotils.Spectre.Select {
+    <#
+    .SYNOPSIS
+        wraps Spectre[multi|group|none]Select
+    .EXAMPLE
+        dotils.spectre.Select -InputObject (get-process | s -First 10 | sort name -Unique) -Title 'files' -MultiSelect -HeightPercent 0.3 -Property 'Name'
+    .LINK
+        https://spectreconsole.net/widgets/tree
+    .LINK
+        https://spectreconsole.net/prompts/multiselection
+    .LINK
+        https://pwshspectreconsole.com/reference/config/set-spectrecolors/
+    #>
+    param(
+        [Parameter(ValueFromPipeline)]
+        [Alias('InObj', 'In', 'Obj')]
+        [object[]]$InputObject,
+
+        [switch]$MultiSelect,
+
+        [Alias('Property', 'Name')]
+        [ArgumentCompletions(
+            'Name', 'FullName', 'Path', 'Source',
+            "'Name'", "'FullName'", "'Path'" )]
+        [string]$ChoiceLabelProperty,
+        # if set, height is percent of current window (0.0 to 1.0)
+        [ValidateRange(0.0, 1.0)]
+        [ArgumentCompletions( 0.1, 0.5, 1.0)]
+        [double]$HeightPercent,
+
+        [string]$Title = 'Pick'
+    )
+    begin {
+        [List[Object]]$Items = @()
+        if( -not $PSCmdlet.MyInvocation.ExpectingInput) {
+            $Items.AddRange(@( $InputObject))
+        }
+    }
+    process {
+        if( $PSCmdlet.MyInvocation.ExpectingInput) {
+            $Items.AddRange(@( $InputObject ))
+        }
+    }
+    end {
+        $readSpectreSelectionSplat = @{
+            Title               = $Title
+            Choices             = $Items
+            # ChoiceLabelProperty = 'Name'
+            # PageSize            = [int]([console]::WindowHeight / 2)
+        }
+        if ($PSBoundParameters.ContainsKey('ChoiceLabelProperty')) {
+            $readSpectreSelectionSplat.ChoiceLabelProperty = $ChoiceLabelProperty
+        }
+        if ($PSBoundParameters.ContainsKey('HeightPercent')) {
+            $readSpectreSelectionSplat.PageSize = [int]([console]::WindowHeight * $HeightPercent)
+        }
+        if($MultiSelect) {
+            $Mode = 'MultiSelect'
+        } else {
+            $Mode = 'SingleSelect'
+        }
+
+        switch( $Mode ) {
+            # { $_ -eq 'MultiSelect' -or $MultiSelect }  {
+            'MultiSelect' {
+                $selected = Read-SpectreMultiSelection @readSpectreSelectionSplat
+                break
+            }
+            'MultiSelectGrouped' {
+                throw "Unhandled Switch: $Mode"
+                break
+            }
+            default {
+                $selected = Read-SpectreSelection @readSpectreSelectionSplat
+            }
+            # $selected = Read-SpectreMultiSelectionGrouped
+        }
+        return $selected
+    }
+}
 
 function Dotils.Format.WildcardPattern {
     <#
@@ -5532,6 +5665,35 @@ function Dotils.Regex.Split.Basic {
     }
 }
 
+function Dotils.Format.Join-BlockDelim {
+    <#
+    .SYNOPSIS
+        used to join a list of numbers, making them more readable
+    .example
+        ( .to.Encoding -Name utf-16be ).
+           GetBytes( 'hi world', 0, 4 ) | .Fmt.Join-BlockDelim
+    .example
+        $ency.GetBytes(
+            $ency.GetString( $bytes ), 0, 10 )  | .Fmt.Join-BlockDelim
+    #>
+    [Alias('.Fmt.Join-BlockDelim')]
+    param(
+        [hashtable]$Options = @{}
+    )
+    $Config = nin.MergeHash -OtherHash $Options -BaseHash @{
+        Text = ' '
+        Prefix = ' '
+        Suffix = ' '
+        Fg = 'gray60'
+        Bg = 'gray30'
+    }
+    $Input | Join-String -f '{0}' -sep (
+        $Config.Text | new-text -fg $Config.Fg -bg $Config.Bg
+            | Join-string -f (
+                $PSStyle.Reset, ' {0} ', $PSStyle.Reset  -join ''
+            )
+    )
+}
 function Dotils.Format.FullName {
     <#
     .SYNOPSIS
@@ -14586,7 +14748,16 @@ function Dotils.Get-Item.FromClipboard {
         [Alias('AutoPushD', 'Pushd')]
         [switch]$GotoFolder
     )
-    $global:gi  = Get-Clipboard | Get-Item -ea 'stop'
+    $target =  Get-Clipboard
+    if( -not (Test-Path $Target)) {
+        $maybe_target = $target -replace '^[''"]', '' -replace '[''"]$', ''
+        if(test-Path $maybe_target) {
+            $target = $maybe_target
+            write-verbose 'found valid, quoted path. cleaning...'
+        }
+    }
+    $global:gi  = $target | Get-Item -ea 'stop'
+    $target | write-verbose
 
     # write console, but also return GI as well
     $global:gi ?? "`u{2400}"
@@ -18189,6 +18360,20 @@ function Dotils.Ast.GetAstFromFile {
             | write-verbose -verbose
     }
 }
+function Dotils.QuickGcm.ByPrefix {
+    param(
+        [ArgumentCompletions("'sk.*'", "'dotils.*'")]
+        [string]$Pattern = 'sk.*',
+        [switch]$WithoutWildcard,
+        [switch]$PassThru
+    )
+    [bool]$isWildcard = -not $WithoutWildcard
+    # $ExecutionContext.InvokeCommand.GetCommands('sk.*', 'all', $true) | fl *
+    $found = $ExecutionContext.InvokeCommand.GetCommands( $Pattern, 'all', $isWildcard)
+    if($PassThru) { return $found }
+
+    $found | ft Name, CommandType, Visibility, Parameters, ParameterSets -auto
+}
 function Dotils.QuickParams {
     <#
     .synopsis
@@ -18262,6 +18447,9 @@ $exportModuleMemberSplat = @{
     # future: auto generate and export
     # (sort of) most recently added to top
     Function = @(
+        # 2024-02-02
+        'Dotils.Format.*'
+
         # 2023-12-28
         'Fmt.*'
         'DbgTool.*'
@@ -18604,6 +18792,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-02-02
+        '.Fmt.Join-BlockDelim'
+        '.Fmt.*'
         # 2024-01-13
         'Split.NL'
         'Fmt.FilePath'
