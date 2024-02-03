@@ -617,12 +617,12 @@ Cat
             "placeHolder": "monkey",
         }
     },
-    {
-        "key": "ctrl+shift+c",
-        "command": "PowerShell.ShowAdditionalCommands",
-        // "when": "editorLangId == 'powershell'"
-        "when": "editorTextFocus && editorLangId == 'powershell'"
-    },
+    // {
+    //     "key": "ctrl+shift+c",
+    //     "command": "PowerShell.ShowAdditionalCommands",
+    //     // "when": "editorLangId == 'powershell'"
+    //     "when": "editorTextFocus && editorLangId == 'powershell'"
+    // },
     {
         "key": "ctrl+alt+u",
         "command": "cursorRedo",
@@ -644,16 +644,16 @@ Cat
         "command": "-bookmarks.shrinkSelection",
         "when": "editorTextFocus"
     },
-    {
-        "key": "ctrl+shift+.",
-        "command": "editor.action.quickFix",
-        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
-    },
-    {
-        "key": "ctrl+.",
-        "command": "-editor.action.quickFix",
-        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
-    },
+    // {
+    //     "key": "ctrl+shift+.",
+    //     "command": "editor.action.quickFix",
+    //     "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+    // },
+    // {
+    //     "key": "ctrl+.",
+    //     "command": "-editor.action.quickFix",
+    //     "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+    // },
     /*
     section: new patch keybinds
         ref: <he below replaces Ctrl+R with runRecentCommand, with Ctrl+Alt+R available to fallback to the shell's regular behavior:>
@@ -754,9 +754,7 @@ Cat
         "key": "ctrl+shift+m",
         "when": "editorLangId == 'powershell'",
         "command": "PowerShell.InvokeRegisteredEditorCommand",
-        "args": {
-            "commandName": "Invoke-DocumentRefactor"
-        },
+        "args": { "commandName": "Invoke-DocumentRefactor" },
     },
     { // #default
         "key": "ctrl+t",
@@ -767,9 +765,13 @@ Cat
         "key": "ctrl+shift+down",
         "command": "PowerShell.Debug.Start"
     },
+    // {
+    //     "key": "ctrl+shift+down",
+    //     "command": "launch"
+    // },
     /* broken config fighting autocomplete
     {
-        "key": "ctrl+down ctrl+down",
+        "key": "ctrl+down ct2rl+down",
         "command": "editor.action.triggerSuggest",
         "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
     },
@@ -789,42 +791,41 @@ Cat
         "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
     }
     */
-
-        /*
+    /*
   start of new section [924] of binds from: 2023-05-06
   */
-        {
-            "key": "f5",
-            "command": "workbench.action.debug.start",
-            "when": "debuggersAvailable && debugState == 'inactive'"
-        },
-        {
-            "key": "", // from: Pwsh
-            "command": "PowerShell.DebugPesterTestsFromFile"
-        },
-        {
-            "key": "", // from: Pwsh
-            "command": "PowerShell.RunPesterTestsFromFile"
-        },
-        {
-            "key": "", // from: pspester.pester-test
-            "command": "pester.stopPowerShell"
-        },
-        {
-            "key": "", // from: pspester.pester-test
-            "command": "pester.toggleAutoRunOnSave"
-        },
-        /*
+    {
+        "key": "f5",
+        "command": "workbench.action.debug.start",
+        "when": "debuggersAvailable && debugState == 'inactive'"
+    },
+    {
+        "key": "", // from: Pwsh
+        "command": "PowerShell.DebugPesterTestsFromFile"
+    },
+    {
+        "key": "", // from: Pwsh
+        "command": "PowerShell.RunPesterTestsFromFile"
+    },
+    {
+        "key": "", // from: pspester.pester-test
+        "command": "pester.stopPowerShell"
+    },
+    {
+        "key": "", // from: pspester.pester-test
+        "command": "pester.toggleAutoRunOnSave"
+    },
+    /*
   start of new section [924] of binds from: 2023-05-06
   */
-/*
+    /*
 
         2023-07-26
         latest, manually added keys after date
 
 
 */
-      {
+    {
         "key": "ctrl+w",
         "command": "-workbench.action.terminal.killEditor", //Terminal: Kill the Active Terminal in Editor Area
     },
@@ -849,8 +850,21 @@ Cat
     //     // debug only
     //     // "command": "PowerShell.ShowAdditionalCommands", "args": ""
     // }
-
-
+    {
+        "key": "",
+        "command": "editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly",
+    },
+    {
+        "key": "ctrl+shift+.",
+        "command": "editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly && editorLangId == 'powershell'",
+    },
+    {
+        "key": "ctrl+.",
+        "command": "-editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+    },
     {
         "key": "shift+f5", // run pester tests, default menu command
         "command": "PowerShell.DebugPesterTestsFromFile",
@@ -861,18 +875,63 @@ Cat
         "command": "editor.emmet.action.matchTag",
         "when": "editorTextFocus && editorLangId == 'html'"
     },
-
-        // PSES\Refactor
-    { "key": "ctrl+r",
-      "command": "PowerShell.InvokeRegisteredEditorCommand",
-      "args": { "commandName": "Invoke-DocumentRefactor" },
-      "when": "editorLangId == 'powershell'" },
-    {   // splat expression
+    // PSES\Refactor
+    {
+        "key": "ctrl+r",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "Invoke-DocumentRefactor"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    {
+        "key": "ctrl+r",
+        "command": "PowerShell.InvokeRegisteredEditorCommand",
+        "args": {
+            "commandName": "Invoke-DocumentRefactor"
+        },
+        "when": "editorLangId == 'powershell'"
+    },
+    { // splat expression
         "key": "ctrl+shift+s",
         "command": "PowerShell.InvokeRegisteredEditorCommand",
         "args": {
             "commandName": "ConvertTo-SplatExpression"
         },
         "when": "editorLangId == 'powershell'"
+    },
+    // {
+    //     // "key": "ctrl+n",
+    //     "command": "runCommands",
+    //     "args": {
+    //         "commands": [
+    //             {
+    //                 "command": "workbench.action.files.newUntitledFile",
+    //                 "args": {
+    //                     "languageId": "typescript"
+    //                 }
+    //             },
+    //             {
+    //                 "command": "editor.action.insertSnippet",
+    //                 "args": {
+    //                     "langId": "typescript",
+    //                     "snippet": "class ${1:ClassName} {\n\tconstructor() {\n\t\t$0\n\t}\n}"
+    //                 }
+    //             }
+    //         ]
+    //     }
+    // },
+    {
+        "key": "ctrl+m",
+        "command": "editor.action.codeAction",
+        "args": {
+            "kind": "refactor.extract.function"
+        }
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "PowerShell.ShowAdditionalCommands",
+        // "when": "editorLangId == 'powershell'"
+        "when": "editorTextFocus && editorLangId == 'powershell'"
     },
 ]

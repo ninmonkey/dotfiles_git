@@ -16,13 +16,21 @@
     */
     "json.schemas": [
         // see docs: https://code.visualstudio.com/docs/languages/json#_use-rich-formatting-in-hovers
-        {   "url": "vscode://schemas/global-snippets",
-            "fileMatch": [ "code-snippets" ],  },
-        {   "url": "vscode://schemas/settings/user",
-            "fileMatch": [ "*/dotfiles.2023/vscode/profiles/desktop-main/settings.json" ], }
-            // schema name came from here <https://github.com/microsoft/vscode/blob/e5e9a6556e8dd4f5c60074b0a9466be4b490ac29/src/vs/workbench/contrib/snippets/browser/snippets.contribution.ts#L100C1-L100C1>
+        {
+            "url": "vscode://schemas/global-snippets",
+            "fileMatch": [
+                "code-snippets"
+            ],
+        },
+        // windows terminal schema: <https://github.com/microsoft/terminal/blob/main/doc/cascadia/profiles.schema.json>
+        {
+            "url": "vscode://schemas/settings/user",
+            "fileMatch": [
+                "*/dotfiles.2023/vscode/profiles/desktop-main/settings.json"
+            ],
+        }
+        // schema name came from here <https://github.com/microsoft/vscode/blob/e5e9a6556e8dd4f5c60074b0a9466be4b490ac29/src/vs/workbench/contrib/snippets/browser/snippets.contribution.ts#L100C1-L100C1>
     ],
-
     "launch": {
         "inputs": [
             {
@@ -35,6 +43,34 @@
         ],
         "configurations": [
             {
+                "name": "2024-PS: Interactive",
+                "presentation": {
+                    "group": "Powershell"
+                },
+                "request": "launch",
+                "type": "PowerShell"
+            },
+            {
+                "cwd": "${file}",
+                "name": "2024-PS: Run",
+                "presentation": {
+                    "group": "Powershell"
+                },
+                "request": "launch",
+                "script": "${file}",
+                "type": "PowerShell"
+            },
+            {
+                "name": "2024-PS: Attach",
+                "presentation": {
+                    "group": "Powershell"
+                },
+                "processId": "${command:PickPSHostProcess}",
+                "request": "attach",
+                "runspaceId": 1,
+                "type": "PowerShell"
+            },
+            {
                 "name": "Cur.ps1 🏃‍♂️",
                 "type": "PowerShell",
                 "request": "launch",
@@ -42,9 +78,8 @@
                 "presentation": {
                     "hidden": false,
                     "group": "Invoke-Run",
-                    "order": 1,
+                    "order": 1
                 },
-
                 // "args": [
                 //     "-Nop"
                 // ],
@@ -884,13 +919,7 @@
     "editor.hover.delay": 300, // 10, 710,
     "editor.hover.enabled": true, // false,
     // "editor.hover.sticky": false,
-    "editor.inlineHints.enabled": true, // does what? doesn't seem to be "run tests" or "linting"
-    // Code action kinds to be run on save.
-    // "editor.codeActionsOnSave": {
-    //     "source.fixAll": false,
-    //     "source.organizeImports": false,
-    // },
-    "editor.lightbulb.enabled": true,
+    "editor.inlineHints.enabled": true,
     // "editor.occurrencesHighlight": true,
     // "editor.overviewRulerBorder": true, // overview does what?
     // "editor.hideCursorInOverviewRuler": true, // does what?
@@ -1050,7 +1079,7 @@
           https://code.visualstudio.com/docs/editor/intellisense#_customizing-intellisense
 
       */
-    "editor.wordBasedSuggestions": true,
+    "editor.wordBasedSuggestions": "matchingDocuments",
     "editor.suggest.showWords": false, // first test
     "editor.suggest.showKeywords": true,
     // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?", // do not use 'simple' drives me crazy
@@ -1118,7 +1147,7 @@
         //     "strings": true
         // },
         "editor.semanticHighlighting.enabled": true,
-        "editor.wordBasedSuggestions": false,
+        "editor.wordBasedSuggestions": "off",
         "editor.defaultFormatter": "ms-python.vscode-pylance",
         "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "modifications",
@@ -1298,6 +1327,10 @@
         // "editor.formatOnType": true,
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false,
+        // "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.fontSize": 18,
+        "editor.fontSize": 16,
+        "editor.fontSize": 15,
         "editor.inlayHints.enabled": "onUnlessPressed",
         "editor.inlayHints.enabled": "offUnlessPressed",
         "editor.defaultFormatter": "vscode.typescript-language-features",
@@ -4838,11 +4871,11 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.fontFamily": "'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
         // "editor.fontWeight": "bold",
         // "editor.fontWeight": "normal", // # is default default
-        "editor.fontSize": 15,
         "editor.fontSize": 18,
         "editor.fontSize": 16,
-        "editor.fontSize": 14,
         "editor.fontSize": 12,
+        "editor.fontSize": 14,
+        "editor.fontSize": 15,
         "editor.defaultFormatter": "PowerQuery.vscode-powerquery",
     },
     // "[json][jsonc][markdown]": {
@@ -5068,7 +5101,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.suggest.preview": true,
         "editor.suggest.showInlineDetails": true,
         // "editor.suggest.showSnippets": true,
-        "editor.wordBasedSuggestions": true,
+        "editor.wordBasedSuggestions": "matchingDocuments",
         "editor.suggest.showCustomcolors": true,
         "editor.suggest.localityBonus": true, // seems worse if you enable it.
         "editor.suggest.showIcons": true,
@@ -5253,8 +5286,8 @@ workbench.action.quickOpenNavigateNextInViewPicker */
                 experimental settings here
     */
     "powershell.debugging.createTemporaryIntegratedConsole": false,
-    "terminal.integrated.shellIntegration.history": 200,
-    "terminal.integrated.shellIntegration.enabled": true, // need to unbind their keybind somehow
+    // "terminal.integrated.shellIntegration.history": 200,
+    // "terminal.integrated.shellIntegration.enabled": true, // need to unbind their keybind somehow
     "window.commandCenter": true,
     "terminal.integrated.shellIntegration.decorationIcon": "circle-outline",
     "terminal.integrated.shellIntegration.decorationIconSuccess": "primitive-dot",
@@ -5319,7 +5352,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     "powershell.developer.editorServicesLogLevel": "Diagnostic",
     "powershell.developer.editorServicesLogLevel": "Error",
     "editor.guides.highlightActiveIndentation": false,
-    "editor.occurrencesHighlight": true,
+    "editor.occurrencesHighlight": "singleFile",
     "colorInfo.languages": [
         {
             "selector": "ps1",
@@ -5628,17 +5661,13 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "terminal.integrated.macOptionClickForcesSelection": true,
     "aws.samcli.location": "C:\\Program Files\\Amazon\\AWSSAMCLI\\bin\\sam.cmd",
     "github.copilot.enable": {
-        /*
-        language specifiers
-        https://code.visualstudio.com/docs/languages/identifiers
-        */
-        "*": true,
-        "yaml": false,
-        "plaintext": false,
-        "markdown": false,
-        "yaml": true, // def: false
-        "plaintext": true, // def: false
-        "markdown": true, // def: false
+        "*": false,
+        "plaintext": true,
+        "markdown": true,
+        "scminput": false,
+        "yaml": true,
+        "javascript": true,
+        "python": true
     },
     "playwright.reuseBrowser": true,
     "pester.autoDebugOnSave": false,
@@ -5909,7 +5938,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "[typescriptreact]": {
         // "editor.defaultFormatter": "vscode.typescript-language-features",
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         },
         "editor.showUnused": true,
     },
@@ -6292,6 +6321,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
         "debug.showScores": true
     },
     "github.copilot-labs.showBrushesLenses": true,
+    "github.copilot-labs.showBrushesLenses": false,
     "github.copilot-labs.showTestGenerationLenses": true,
     "github.copilot.editor.iterativeFixing": true,
     "github.copilot.editor.enableAutoCompletions": true,
@@ -6304,18 +6334,15 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     // new: code actions on save, on modify <https://code.visualstudio.com/updates/v1_83#_code-actions-on-save-and-auto-save>
     // new preview: nearest quickfix <https://code.visualstudio.com/updates/v1_83#_nearest-quick-fix-keyboard-shortcut>
     // "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
     "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.fontSize": 18,
     },
     "window.menuBarVisibility": "compact",
     "window.menuBarVisibility": "toggle",
     "window.titleBarStyle": "custom",
     "zenMode.showTabs": "single",
-    "workbench.activityBar.location": "top",
-    "workbench.statusBar.visible": false, // <https://code.visualstudio.com/updates/v1_84#_customize-activity-bar-position>
+    "workbench.activityBar.location": "top", // <https://code.visualstudio.com/updates/v1_84#_customize-activity-bar-position>
     /* new command:
     nice. <ctrl+K,ctrl+m>
     <https://code.visualstudio.com/updates/v1_84#_maximize-editor-group>
@@ -6327,7 +6354,6 @@ new: nearest quick fix command change
 new: Copilot inline:
     <https://code.visualstudio.com/updates/v1_84#_chat-agents>'
  */
-
     "editor.inlineSuggest.enabled": true,
     "github.copilot.enable": { /* copilot-github */
         // related: <https://docs.github.com/en/copilot/github-copilot-in-the-cli/about-github-copilot-in-the-cli>
@@ -6337,8 +6363,29 @@ new: Copilot inline:
         "markdown": true,
         "javascript": true,
         "python": true,
-
     },
-    "window.zoomLevel": 1,
-    "workbench.sideBar.location": "right"
+    // new 2023-12-12
+    "scm.showIncomingChanges": "auto",
+    "scm.showOutgoingChanges": "auto",
+    "scm.autoReveal": true,
+    "scm.defaultViewSortKey": "status",
+    "scm.defaultViewSortKey": "path",
+    "scm.inputMaxLines": 10,
+    "scm.alwaysShowActions": false,
+    "scm.inputFontFamily": "default",
+    "scm.inputFontSize": 15,
+    "scm.showInputActionButton": true,
+    "terminal.integrated.stickyScroll.enabled": true,
+    "terminal.integrated.shellIntegration.suggestEnabled": true,
+    "terminal.integrated.shellIntegration.history": 200,
+    "terminal.integrated.shellIntegration.enabled": false, // need to unbind
+    "npm.packageManager": "auto", // [ bun, npm | yarn | pnpm | <auto> ] // new bun
+    // "typescript.preferences.preferTypeOnlyAutoImports": true, # [ <false> | true ]
+    "workbench.editor.dragToOpenWindow": true,
+    "livePreview.autoRefreshPreview": "On Changes to Saved Files",
+    "livePreview.previewDebounceDelay": 1500,
+    "gitlens.ai.experimental.provider": "openai",
+    "gitlens.ai.experimental.openai.model": "gpt-4-1106-preview",
+    "security.promptForLocalFileProtocolHandling": false,
+    "diffEditor.renderSideBySide": false,
 }
