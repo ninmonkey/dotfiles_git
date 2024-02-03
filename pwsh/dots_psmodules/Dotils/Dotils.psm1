@@ -5694,6 +5694,77 @@ function Dotils.Format.Join-BlockDelim {
             )
     )
 }
+
+function Dotils.Set-Content.AsBytes {
+    <#
+    .SYNOPSIS
+        Sugar to write raw bytes to a filepath
+    .example
+        Sc.AsBytes readme.md
+    .example
+        Sc.AsBytes readme.md | .Fmt.Join-BlockDelim
+
+    .link
+        Dotils.Get-Content.AsBytes
+    .link
+        Dotils.Set-Content.AsBytes
+    #>
+    [alias(
+        'Dotils.SetContent.AsBytes',
+        'Dotils.SetByteContent',
+        'Sc.RawBytes', 'Sc.AsBytes'
+    )]
+
+    param(
+        [Alias('Path', 'PSPath', 'Name', 'FullName')]
+        [string]$InputPath
+    )
+    $File          = $InputPath
+    [byte[]]$bytes = [byte[]]@( $Input )
+
+    if( $bytes -isnot [byte[]] ) {
+        throw "InvalidData, expects [byte[]]s as input"
+    }
+    $Bytes | Set-Content -AsByteStream -LiteralPath $File
+    $file = Get-Item $File -ea 'stop'
+    'wrote {0:n0} bytes to {1}' -f @(
+        $File.Length
+        $File.FullName
+    ) | Dotils.Write-DimText | Infa
+}
+function Dotils.Get-Content.AsBytes {
+    <#
+    .SYNOPSIS
+        Sugar to read raw bytes from a filepath
+    .example
+        Gc.AsBytes readme.md
+    .example
+        Gc.AsBytes readme.md | .Fmt.Join-BlockDelim
+
+    .link
+        Dotils.Get-Content.AsBytes
+    .link
+        Dotils.Set-Content.AsBytes
+    #>
+    [alias(
+        'Dotils.GetContent.AsBytes',
+        'Dotils.GetByteContent',
+        'Gc.RawBytes', 'Gc.AsBytes'
+    )]
+    [OutputType( [System.Byte[]] )]
+    param(
+        [Alias('Path', 'PSPath', 'Name', 'FullName')]
+        [string]$InputPath
+    )
+    $File = Get-Item -ea 'stop' $InputPath
+    Get-Content -AsByteStream -Raw -LiteralPath $File
+    'read {0:n0} bytes from {1}' -f @(
+        $File.Length
+        $File.FullName
+    ) | Dotils.Write-DimText | Infa
+}
+
+
 function Dotils.Format.FullName {
     <#
     .SYNOPSIS
@@ -10841,6 +10912,72 @@ function Dotils.Invoke-TipOfTheDay  {
     # gcm -m ImportExcel
 
 }
+function  Dotils.VsCode.PipePassthru {
+    <#
+    .SYNOPSIS
+        Pipe STDIN to vscode, quit to pipe the editor to STDOUT
+    .description
+        You do *not* have to hit save. just edit and ctrl+w
+    .example
+        # default is stdout
+        Get-Clipboard | Dotils.VsCode.PipePassthru
+    .example
+        # you can set an extension for optional syntax highlighting
+        gci . | % Name
+            | Code.Pipe Ps1
+    .example
+        # Set clipboard and optionally echo it as well
+        ... | Code.Pipe Ps1
+        ... | Code.Pipe ClipBoard
+        ... | Code.Pipe PipeAndStdout
+
+        # instead save results to the variable $OutVarVsCode
+        ... | Code.Pipe OutVar
+
+    #>
+    [Alias('Dotils.Code.Pipe', 'Code.Pipe')]
+    param(
+        # Optionally choose a file extension for colors
+        [ArgumentCompletions('Ps1', 'md', 'js', 'ts', 'json', 'csv', 'ini', 'yml', 'cs', 'xml', 'html', 'css')]
+        [string]$Language,
+
+        [ValidateSet('Stdout', 'Clipboard', 'CopyAndPipe', 'OutVar')]
+        $OutputMode = 'Stdout'
+    )
+    $randFile = New-TemporaryFile #
+    if( $Language ) {
+        $RandFile = ($RandFile.FullName -replace '\.tmp$', ".${Language}")
+    }
+    $Stdin = @( $Input ) # forgive me for my sin
+    $Stdin | Set-Content -Path $randFile
+    $RandFile = Get-Item -ea 'stop' $RandFile
+
+    & code @(
+        '--wait'
+        '--goto'
+        $randFile )
+
+    switch($OutputMode) {
+        'CopyAndPipe' {
+            Get-Content -LiteralPath $RandFile | Set-Clipboard -PassThru
+        }
+        'Clipboard' {
+            Get-Content -LiteralPath $RandFile | Set-Clipboard -Passthru:$False
+        }
+        'OutVar' {
+            $global:OutVarVsCode = Get-Content -LiteralPath $RandFile
+            'wrote: $OutVarVsCode'
+                | Dotils.Write-DimText | Infa
+        }
+        default {
+            Get-Content -LiteralPath $RandFile
+        }
+    }
+    $randFile | Join-String -f 'wrote: "{0}"'
+        # | write-verbose -verbose
+        | Dotils.Write-DimText | Infa
+}
+
 function Dotils.SelectBy-Module {
     <#
     .SYNOPSIS
@@ -18792,9 +18929,22 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-02-03
+        'Code.Pipe'
         # 2024-02-02
         '.Fmt.Join-BlockDelim'
         '.Fmt.*'
+
+        'Dotils.SetByteContent'     # 'Dotils.Set-Content.AsBytes' = { 'Dotils.SetContent.AsBytes', 'Dotils.SetByteContent', 'SC.RawBytes', 'SC.AsBytes' }
+        'Dotils.SetContent.AsBytes' # 'Dotils.Set-Content.AsBytes' = { 'Dotils.SetContent.AsBytes', 'Dotils.SetByteContent', 'SC.RawBytes', 'SC.AsBytes' }
+        'SC.AsBytes'                # 'Dotils.Set-Content.AsBytes' = { 'Dotils.SetContent.AsBytes', 'Dotils.SetByteContent', 'SC.RawBytes', 'SC.AsBytes' }
+        'SC.RawBytes'               # 'Dotils.Set-Content.AsBytes' = { 'Dotils.SetContent.AsBytes', 'Dotils.SetByteContent', 'SC.RawBytes', 'SC.AsBytes' }
+
+        'Dotils.GetByteContent'     # 'Dotils.Get-Content.AsBytes' = { 'Dotils.GetContent.AsBytes', 'Dotils.GetByteContent', 'Gc.RawBytes', 'Gc.AsBytes' }
+        'Dotils.GetContent.AsBytes' # 'Dotils.Get-Content.AsBytes' = { 'Dotils.GetContent.AsBytes', 'Dotils.GetByteContent', 'Gc.RawBytes', 'Gc.AsBytes' }
+        'Gc.AsBytes'                # 'Dotils.Get-Content.AsBytes' = { 'Dotils.GetContent.AsBytes', 'Dotils.GetByteContent', 'Gc.RawBytes', 'Gc.AsBytes' }
+        'Gc.RawBytes'               # 'Dotils.Get-Content.AsBytes' = { 'Dotils.GetContent.AsBytes', 'Dotils.GetByteContent', 'Gc.RawBytes', 'Gc.AsBytes' }
+
         # 2024-01-13
         'Split.NL'
         'Fmt.FilePath'
