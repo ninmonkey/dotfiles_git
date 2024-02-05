@@ -1,0 +1,9 @@
+---
+title: WingetApp List
+# usage: >-
+#   winget install -e -h -i -l -m -o -q -s -v -? [options] <manifest> | <search
+#   term>
+---
+
+- Name: 'Blender'
+  Id: 'BlenderFoundation.Blender'

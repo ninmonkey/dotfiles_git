@@ -4,7 +4,7 @@
 **/*.aws-build
 *.lnk
 *.exe
-*.log
+# *.log
 #*.xml
 *.zip
 *.min.css
