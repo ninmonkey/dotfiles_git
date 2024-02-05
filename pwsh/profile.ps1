@@ -14,6 +14,7 @@ Import-Module 'Pansies'
     Set-Alias @splatAlias -name '.fmt.Type'   -Va 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
     Set-Alias @splatAlias -name 'Yaml'        -Va 'powershell-yaml\ConvertTo-Yaml'
     Set-Alias @splatAlias -name 'Yaml.From'   -Va 'powershell-yaml\ConvertFrom-Yaml'
+    Set-Alias @splatAlias -name 'copilot'     -Va 'aws-copilot-cli'
  } | Join-String -sep ', ' -op "   => aliases: "
 
 # required or else it breaks piping 'fd | fzf --preview bat'
@@ -973,7 +974,7 @@ $PSDefaultParameterValues.Remove('*:verbose')
 if($false) {
     Import-Module TypeWriter -PassThru -ea 'continue'
 } else {
-    impo -force -pass (Join-Path 'H:/data/2023/pwsh/PsModules.dev/TypeWriter/Source' 'TypeWriter.psm1')
+    impo -force -pass (Join-Path 'H:/data/2023/pwsh/PsModules.dev/TypeWriter/Source' 'TypeWriter.psd1')
 }
 
 
@@ -1025,7 +1026,7 @@ if ($global:__nin_enableTraceVerbosity) {}
 #>
 
 # root entry point
-. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfile 'pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1') )
+. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1') )
 # it  <== Profile: docs/profile.ps1/ => Pid: '${pid}'" | Write-Warning
 
 function Find-ConsoleKeybinding {
@@ -1054,6 +1055,8 @@ New-Alias 'Write-Host.Original' -value 'Microsoft.Powershell.Utility\write-host'
 nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/PsModules/TypeWriter/Output' -AddToFront
 nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/my🍴'
 nin.PSModulePath.Clean -Write
+
+Import-Module CompletionPredictor -PassThru
 # $Env:PSModulePath = nin.PSModulePath.Clean -Write -PassThru
 
 # H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter
