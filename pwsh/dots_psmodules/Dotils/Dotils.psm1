@@ -2447,14 +2447,16 @@ function Dotils.Select.NoMore.Template {
     }
 }
 
-@'
-left off, finish 'Some.NoMore'
-    {0}
-'@ -f $PSCommandPath | write-host -back 'darkred'
 function Dotils.Select.Some.NoMore {
     <#
     .SYNOPSIS
         better version of 'one' and 'some' that exits early if possible, and saves the value
+    .NOTES
+        - [ ] future: rewrite using steppable pipeline for an earlier exit
+    .EXAMPLE
+        Get-Process | One    # returns 1 item
+        Get-Command | Some   # returns 5 items
+        Get-Process | Some 3 # returns 3 item
     #>
     [Alias('Some', 'One')]
     param(
@@ -2464,42 +2466,39 @@ function Dotils.Select.Some.NoMore {
         [Alias('Count', 'Limit')]
         [Parameter(Position = 0)]
         [int] $FirstN = 5,
-
         [switch]$LastOne
     )
 
     begin {
-        [bool]$IsUsingOne =
-            $MyInvocation.InvocationName -eq 'One'
-        $isUsingOne = $false
-
-
+        [bool]$IsUsingOne = $MyInvocation.InvocationName -eq 'One'
         $selectSplat = @{}
+        if( $IsUsingOne ) { $FirstN = 1 }
 
-        # if($FirstN -lt 0) {
-        #     $LastOne = -not ( $LastOne ?? $false )
-        #     $FirstN *= -1 }
-        if($LastOne)      { $selectSplat.Last  = $FirstN }
-        if(-not $LastOne) { $selectSplat.First = $FirstN }
-
-        $pipe = { Select-Object @selectSplat }.GetSteppablePipeline()
-        $pipe.Begin($PSCmdlet)
+        if( $LastOne ) { $selectSplat.Last = $FirstN }
+        else { $selectSplat.First = $FirstN }
+        # $pipe = { Select-Object @selectSplat }.GetSteppablePipeline()
+        # $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
+        [List[Object]]$Items = @()
     }
     process {
-        $pipe.Process($InputObject)
+        $Items.AddRange(@( $InputObject ))
     }
     end {
-        # wait-debugger
+        # future: performance: use steppable
+        $query = $Items | Select @SelectSplat
+
         if($IsUsingOne) {
-            $global:One = $pipe.End()
+            $Query
+            $global:One = $Query
             'One := {0}' -f @(
-                $query | Format-ShortTypeName
+                $Global:One | Format-ShortTypeName
             )   | Dotils.Write-DimText
                 | Infa
         } else {
-            $global:Some = $pipe.End()
+            $Query
+            $global:Some = $query
             'Some := {0}' -f @(
-                $query
+                $global:Some
                 | CountOf | Format-ShortTypeName
             )   | Dotils.Write-DimText
                 | Infa
@@ -9192,7 +9191,7 @@ function Dotils.Measure-CommandDuration {
     [Alias(
         # 'TimeOfSb',
         'Dotils.Measure.CommandDuration',
-        'Dotils.Measure-CommandDuration',
+        # 'Dotils.Measure-CommandDuration',
         'DeltaOfSBScriptBlock',
         'DeltaOfScriptBlock',
         'DeltaOfSB',
@@ -15095,6 +15094,20 @@ function Dotils.Toast.InvokeAlarm {
             }
         }
     }
+}
+function Dotils.WhatIsMyIp {
+    [CmdletBinding()]
+    param(
+        # [ValidateSet('ipify', 'B')]
+        # [string]$Method
+    )
+    return [pscustomobject]@{
+       'ipify' = irm 'https://api.ipify.org/?format=json'
+       'my-ip' = irm 'https://api.my-ip.io/v2/ip.json'
+    }
+    # switch($Method) {
+    # }
+
 }
 
 function Dotils.DebugUtil.Format.UpdateTypedataLiteral {
