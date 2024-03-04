@@ -12,6 +12,10 @@ $Env:PSModulePath = @(
     $Env:PSModulePath
 ) -join [IO.Path]::PathSeparator
 
+$PROFILE | Add-Member -NotePropertyMembers @{
+    Nin_MiscOldDotfilesCodeEntry = $PSCommandPath | Gi
+} -Force -ea Ignore
+
 # winget didn't add path right for gum
 $Env:Path = @(
     $Env:Path
@@ -21,8 +25,10 @@ $Env:Path = @(
 
 $StringModule_DontInjectJoinString = $true
 # using namespace System.Collections
-
 $global:StringModule_DontInjectJoinString = $true # context: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055>
+
+Import-Module CompletionPredictor -passthru
+Set-PSReadLineOption -PredictionViewStyle ListView -PredictionSource HistoryAndPlugin
 
 # $PSDefaultParameterValues['wait-debugger:verbose'] = 'continue'
 # $PSDefaultparameterValues['ModuleBuilder\Build-Module:verbose'] = $true # fully resolve command name never seems to workmodule scoped never seems to work
@@ -37,9 +43,11 @@ $PSDefaultParameterValues['Dotils.CollectList:ShowStats']   = $true
 $PSDefaultParameterValues['Dotils.CollectList:ShowCountOf'] = $true
 $VerbosePreference = 'silentlyContinue'
 
-
+Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
+[PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
 
 write-warning 'to extract: H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1'
+'to extract: H:\data\2023\web.js\QuickRefs\structureSketch\src\QuickRefs.Md\QuickRefs.Md.psm1' | write-host -fg magenta -bg black
 'early exit: {0}' -f $PSCommandPath | write-warning
 # return
 
@@ -433,7 +441,7 @@ function nin.Tablify.FromText__iter0 {
             <<to replace with future 'ConvertTo-MdTableFromStdout_toCleanup' >>
 
     .EXAMPLE
-    An example
+    An exampleOOO
 
     .NOTES
     - [ ] currently first line is header. argument could skip that.
@@ -606,6 +614,7 @@ function prof.Get-LinuxManPage {
 
     if ($WhatIf) { return }
 
+    # note: need to update this to handle wsl, because wsl *always* outputs utf16 regardless of the output encoding settings
     # ex: wsl --exec man uname
     & 'wsl' @(
         '--exec'
@@ -771,27 +780,7 @@ function Help.Online {
 
     }
 }
-function Collect.Distinct {
-    <#
-    .SYNOPSIS
 
-    .DESCRIPTION
-    Long description
-
-    .EXAMPLE
-
-        get-aduser *
-        | CollectUnique CompanyName
-        | Join-string -sep ', '
-
-        where **all** values are output without filter
-        but only distinct records are saved.
-
-    .NOTES
-    General notes
-    #>
-    throw 'nyi'
-}
 function Help.Param {
     <#
     .SYNOPSIS
@@ -1276,10 +1265,7 @@ $base = Get-Item $PSScriptRoot
 . (Get-Item -ea 'continue' (Join-Path $Base 'autoloadNow_butRefactor.ps1'))
 . (Get-Item -ea 'continue' (Join-Path $Base 'autoload_forDeveloperTools.ps1'))
 
-Set-PSReadLineKeyHandler -Chord 'alt+enter' -Function AddLine
 
-
-[PoshCode.Pansies.RgbColor]::ColorMode = 'Rgb24Bit'
 
 function nin.findNewestItem {
     #if I rewrite it to steppable, maybe can stream items with colors?
@@ -1976,7 +1962,7 @@ function prof.Io2 {
 . (Get-Item -ea 'continue' ('H:\data\2023\dotfiles.2023\pwsh\src\Exported-Show-ErrorRecord.ps1') )
 # . (Get-Item -ea 'stop' ('./Exported-Show-ErrorRecord.ps1') )
 $ModulesToAutoLoad = @(
-    'CacheMeIfYouCan'
+    # 'CacheMeIfYouCan'
     'Jsonify'
     'ExcelAnt'
     'Picky'

@@ -3,6 +3,11 @@ using namespace System.Management.Automation.Language
 using namespace System.Collections.Generic
 using namespace System.Globalization
 using namespace System.Text
+$PROFILE | Add-Member -NotePropertyMembers @{
+    Nin_AliasesEntry          = $PSCommandPath | Gi
+    Nin_InlineFormatDataEntry = $PSCommandpath | Gi
+    Nin_TypeAccelEntry        = $PSCommandPath | Gi
+} -Force -ea Ignore
 
 $ENV:PATH = @(
     $Env:PATH
@@ -35,6 +40,9 @@ find-type -FullName *ps*read* -Namespace Microsoft.PowerShell* | % FullName | so
 docs: https://learn.microsoft.com/en-us/powershell/module/psreadline/?view=powershell-7.4
 
 #>
+# $xl8r::Add( 'JsonSerializer', [Text.Json.Serialization.JsonSerializerContext] )
+$xl8r::add('Linq.E',       [Linq.Enumerable])
+$xl8r::add('Linq_New',     [Linq.Enumerable])
 $xl8r::Add('StrInfo',      [Globalization.StringInfo])
 $xl8r::Add('Sb',           [Text.StringBuilder])
 $xl8r::Add('StrBuild',     [Text.StringBuilder])
@@ -89,6 +97,8 @@ $Env:PSModulePath = @(
     Set-Alias -passThru -ea 'ignore' 'impo' -value 'Import-Module'
     Set-Alias -passThru -ea 'ignore' 'cl' -value  'Set-Clipboard'
     Set-Alias -passThru -ea 'ignore' 'gcl' -value 'Get-Clipboard'
+    Set-Alias -passThru -ea 'ignore' 'shot' -Value 'Microsoft.PowerShell.ConsoleGuiTools\Show-ObjectTree' -Description 'View nested objects, like pester config'
+    set-alias -PassThru 'Encoding' -value Dotils.To.Encoding
 )
 <# single / multi line line #>
     | Join-String -f "• {0}" -op "Set/Add: Alias = [ " -os " ]" -sep ' '
@@ -112,6 +122,45 @@ $Env:PSModulePath = @(
 . (Get-Item -ea 'continue' (Join-Path $Env:Nin_Dotfiles 'pwsh/profile.ps1'))
 
 # if($global:__nin_enableTraceVerbosity) { "⊢🐸 ↩ exit  Pid: '$pid' `"$PSCommandPath`". source: VsCode, term: regular, prof: AllUsersCurrentHost" | Write-Warning; }[Collections.Generic.List[Object]]$global:__ninPathInvokeTrace ??= @(); $global:__ninPathInvokeTrace.Add($PSCommandPath); <# 2023.02 #>
+function Module.Register.ArgCompleters {
+    $sb_argCompleter_AddType_AssemblyName = {
+        param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+        $assemblyItems = @(
+                Get-Assembly | sort -Unique
+                | ?{
+                    $_.Name -match $wordToComplete }
+            )
+
+        $PropNames = @( 'Name', 'Version', 'Culture', 'Target', 'ContentType', 'NameFlags', 'PublicKeyToken', 'FullName', 'HashAlgorithm', 'VersionCompatibility', 'FileName', 'CodeBase', 'EntryPoint', 'DefinedTypes', 'IsCollectible', 'ManifestModule', 'ReflectionOnly', 'Location', 'ImageRuntimeVersion', 'GlobalAssemblyCache', 'HostContext', 'IsDynamic', 'ExportedTypes', 'IsFullyTrusted', 'CustomAttributes', 'EscapedCodeBase', 'Modules', 'SecurityRuleSet' )
+
+        $ignoreBigOrSlowProps = @( 'CustomAttributes', 'ExportedTypes', 'DefinedTypes' )
+
+
+        $assemblyItems | %{
+            $curItem = $_
+            [string] $renderTooltip = $curItem.psobject.properties | %{
+                    [PSPropertyInfo] $Cur = $_
+                    # $Cur = $_
+                    if ( $cur.name -notin @( $PropNames ) ) { return }
+                    # if ( $cur.name -notin @( $assemblyItems.Name ) ) { return }
+                    if ( $cur.name -in @( $ignoreBigOrSlowProps ) ) { return }
+                    $prefix = $cur.Name ?? '<null>'
+                    $cur.Value ?? '' | Join-String -sep ', ' -op ($cur.Name ?? '<null>')
+                    $cur.value
+                        | Join-String -sep ', '
+                        | Join-String -op "${prefix}: "
+                } | Join-String -sep "`n"
+
+            if( [string]::IsNullOrWhiteSpace($renderTooltip) ) {  $renderTooltip = '<invalid tooltip>' }
+            [string] $RenderName = $_.Name ?? '<InvalidName>'
+            $renderTooltip = $curItem | Ft -auto | out-string | Join-String -sep "`n"
+            [CompletionResult]::new( $RenderName, $RenderName, 'ParameterValue', $renderTooltip )
+        }
+    }
+    Register-ArgumentCompleter -CommandName 'Add-Type' -ParameterName 'AssemblyName' -ScriptBlock $sb_argCompleter_AddType_AssemblyName
+}
+
+Module.Register.ArgCompleters
 
 nin.PSModulePath.Clean -Write
 
@@ -262,11 +311,43 @@ Module.ImportInlineLiveFormatData
 
 @'
 try:
-. 'G:\2024-git\pwsh\SeeminglyScience👨\dotfiles\Documents\PowerShell\profile.ps1'
-or
-SciImpo
-'@
+Impo.[SciDotfiles | RunSelect]
+'@ | write-host -fg '#bda0a0'
 
-function SciImpo {
-    . 'G:\2024-git\pwsh\SeeminglyScience👨\dotfiles\Documents\PowerShell\profile.ps1'
+function Impo.RunSelect {
+    <#
+    .SYNOPSIS
+        Load run selector, as an opt-in, because it takes a minute to load
+    .link
+        https://github.com/mdgrs-mei/PowerShellRun?tab=readme-ov-file#invoke-psrunselector
+    #>
+    [Alias('Impo.PSRunSelector')]
+    param(
+        [Parameter(Mandatory)]
+        [ArgumentCompletions(
+            'All', 'Executable', 'Application', 'Favorite', 'Function', 'Utility'
+        )]
+        [string[]]$Category = 'All'
+    )
+    Import-Module -scope global 'PowerShellRun'
+    if($Category -eq 'All') {
+        Write-host 'Warning: -All is slow on first load' -fg '#bda0a0'
+    }
+    Write-host 'Set ctrl+j => Invoke-PSR' -fg '#bda0a0'
+    Enable-PSRunEntry -Category $Category
+    Write-host 'to debug: Set-PSRunPSReadLineKeyHandler isn''t binding over ctrl+j' -fg 'orange'
+    # Set-PSRunPSReadLineKeyHandler -Chord 'Ctrl+j'
+    @(  Set-Alias -ea 'ignore' -PassThru 'IRun' -Value PowerShellRun\Invoke-PSRun
+        Set-Alias -ea 'ignore' -PassThru 'IRun.Sel' -Value PowerShellRun\Invoke-PSRunSelector
+        Set-Alias -ea 'ignore' -PassThru 'IRun.Custom' -Value PowerShellRun\Invoke-PSRunSelectorCustom
+    ) | Join-String -sep ', ' -Property DisplayName
+}
+function Impo.SciDotifiles {
+    <#
+    .SYNOPSIS
+        load SeeminglyScience Profile, on-demand
+    #>
+    [Alias('Impo.Sci')]
+    param()
+    . (Get-Item -ea 'continue' 'G:/2024-git/pwsh/SeeminglyScience👨/dotfiles/Documents/PowerShell/profile.ps1')
 }
