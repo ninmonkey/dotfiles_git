@@ -10,12 +10,35 @@ $script:QuerySave = @{}
 
 $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
 
+$saGlobSplat = @{
+    PassThru    = $true
+    ErrorAction = 'ignore'
+    Scope       = 'Global'
+    # Force       = $true
+}
 @(
-    Set-Alias -ea 'ignore' -PassThru -name 'st' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
-    Set-Alias -ea 'ignore' -PassThru -name '.fmt.Type' -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
-    Set-Alias 'Yaml' -Value 'powershell-yaml\ConvertTo-Yaml'
-    Set-Alias 'Yaml.From' -Value 'powershell-yaml\ConvertFrom-Yaml'
+    Set-Alias @saGlobSplat -name 'st'           -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias @saGlobSplat -name '.fmt.Type'    -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
+    Set-Alias @saGlobSplat -name 'Yaml'         -Value 'powershell-yaml\ConvertTo-Yaml'
+    Set-Alias @saGlobSplat -name 'Yaml.From'    -Value 'powershell-yaml\ConvertFrom-Yaml'
+    Set-Alias @saGlobSplat -Name 'Text.TakeN'   -value 'Picky\Picky.Text.FirstN'
+    # experimentijng with wierd names
 )
+
+write-warning 'super experimental bindings'
+@(
+    Set-Alias @saGlobSplat -Name 'Pk!Empty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
+    Set-Alias @saGlobSplat -Name '?NotEmpty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
+    Set-Alias @saGlobSplat -Name 'Pk?Empty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
+    Set-Alias @saGlobSplat -Name 'Pk.?Empty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
+    Set-Alias @saGlobSplat -Name 'Pk.?NotEmpty' -value 'Picky\Picky.Text.Where-IsNotEmpty'
+    Set-Alias @saGlobSplat -Name 'Pk.?<' -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk>Skip' -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk<Skip' -value 'Picky\Picky.Text.SkipAfterMatch'
+    Set-Alias @saGlobSplat -Name 'Pk?SkipBefore' -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk?Skip<' -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk.B4↪' -value 'Picky\Picky.Text.SkipBeforeMatch'
+) | Ft -auto | Out-String | Write-host
 
 write-warning 'fix: Obj | .Iter.Prop ; '
 write-warning 'finish Dotils.Get-CachedExpression '
@@ -9994,6 +10017,52 @@ function Dotils.TryCompletion {
 }
 
 
+function Dotils.IsBlank {
+    <#
+    .synopsis
+        blank or not sugar. Test whether something is null, empty string, not empty but whitespace
+    .EXAMPLE
+        IsBlank $FakeObject TrueNull
+        IsBlank $FakeObject Empty
+        IsBlank '' Empty
+        IsBlank '' Whitespace
+        IsBlank '' TrueNull
+        IsBlank $Null TrueNull
+        IsBlank "`n" Whitespace
+        IsBlank "`n" Empty
+
+        #outputs
+        True, True, True, True, False, True, True, False
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter()]$Obj,
+
+        # this parameter will auto complete
+        [Parameter()]
+        [validateset('TrueNull', 'Empty', 'EmptyString', 'Whitespace')]
+        $Mode = 'Whitespace'
+    )
+    switch( $Mode ) {
+        'TrueNull' {    $null -eq $Obj }
+        'Empty' {       [string]::IsNullOrEmpty( $Obj ) }
+        'WhiteSpace' {  [string]::IsNullOrWhiteSpace( $Obj ) }
+        'EmptyString' { $Obj -is [string] -and $Obj.Length -eq 0 }
+        default { throw "ShouldNeverReach: Unhandled Mode: $Mode" }
+    }
+}
+
+function Dotils.Db.ConnectDefault {
+    param()
+    Import-Module 'Dbatools'   -PassThru -ea 'stop'
+    Import-Module -PassThru -ea 'stop' -Force (gi -ea 'stop' 'H:/data/2024/sql/Pwsh/MonkeyData/src/MonkeyData/MonkeyData.psm1')
+    $SqlAzureConnectionString ??= Get-Secret -Name 'GitLogger.SqlAzureConnectionString' -AsPlainText
+    MonkeyData.Try-AcceptLocalhostCert -ComputerName $env:COMPUTERNAME
+    @(  Connect-DbaInstance -Connstring $SqlAzureConnectionString
+        Connect-DbaInstance -SqlInstance 'nin8\sql2019'
+    ) | Write-Verbose
+    Get-DbaConnectedInstance
+}
 function Dotils.CompareCompletions {
     <#
     .synopsis
