@@ -9,7 +9,7 @@ $PSDefaultParameterValues.remove('import-module:verbose')
 #     $Env:PSModulePath
 # ) | Join-String -sep ([IO.Path]::PathSeparator)
 
-$PSCommandPath.Name | Join-String -op 'entry: vscode => ' | write-host -ft 'gray50' -bg 'gray20'
+$PSCommandPath.Name | Join-String -op 'entry: vscode => ' | write-host -fg 'gray50' -bg 'gray20'
 Import-CommandSuite -Verbose
 
 <#

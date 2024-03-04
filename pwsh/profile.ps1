@@ -294,6 +294,10 @@ $env:LESSCHARSET = 'utf-8'
 
 
 $Env:PSModulePath = @(
+    # temp because the full filepath is one directory too deep
+    'H:\data\2023\pwsh\PsModules\CacheMeIfYouCan'
+    # and then
+
     'H:/data/2023/pwsh/PsModules.Import'
     'H:/data/2023/pwsh/PsModules'
     'H:/data/2023/dotfiles.2023/pwsh/dots_psmodules'
@@ -974,7 +978,7 @@ $PSDefaultParameterValues.Remove('*:verbose')
 if($false) {
     Import-Module TypeWriter -PassThru -ea 'continue'
 } else {
-    impo -force -pass (Join-Path 'H:/data/2023/pwsh/PsModules.dev/TypeWriter/Source' 'TypeWriter.psd1')
+    impo (Join-Path 'H:/data/2023/pwsh/PsModules.dev/TypeWriter/Source' 'TypeWriter.psd1')
 }
 
 
@@ -1024,6 +1028,10 @@ if ($global:__nin_enableTraceVerbosity) {}
 - see: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4>
 - native command sample: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4#example-3-register-a-custom-native-argument-completer>
 #>
+import-module pansies
+'cleanup: <file:///{0}>' -f @(
+    Join-Path $env:Nin_Dotfiles 'pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1'
+) | write-host -bg '#587458' -fg 'black'
 
 # root entry point
 . (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/autoloadNow_ArgumntCompleter-butRefactor.ps1') )
@@ -1056,7 +1064,10 @@ nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/PsModules/TypeWriter/Output
 nin.PSModulePath.Add -LiteralPath 'H:/data/2023/pwsh/my🍴'
 nin.PSModulePath.Clean -Write
 
-Import-Module CompletionPredictor -PassThru
+@(
+    Import-Module nin.Ast -pass
+    Import-Module CompletionPredictor -PassThru
+)
 # $Env:PSModulePath = nin.PSModulePath.Clean -Write -PassThru
 
 # H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter
