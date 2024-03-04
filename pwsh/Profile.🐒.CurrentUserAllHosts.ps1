@@ -314,12 +314,93 @@ try:
 Impo.[SciDotfiles | RunSelect]
 '@ | write-host -fg '#bda0a0'
 
+function _render-FileName.ForPSRun {
+    # might still have to be global, or user-global?
+    param()
+    process {
+        $Obj = $_
+        Join-String -Inp @(
+            $obj.name
+            "`n"
+            if($obj.Length -gt 1) {
+                '[ {0:n2} kb ]' -f ($obj.length / 1kb)
+                    | Join-String -op 'Size: '
+            }
+            "`n"
+            Join-String -in $Obj -Property LastWriteTime -FormatString 'Modified: {0:yyyy| MMMM dd}'
+            "`n"
+            Join-String -in $Obj -Property CreationTime  -FormatString 'Created:  {0:yyyy| MMMM dd}'
+            "`n"
+
+            # Join-String -op 'LastWrite: ' -inp (gi . ).LastWriteTime.ToString('yyyy| MMMM dd')
+
+            # (gi .) | Join-String -Property LastWriteTime -FormatString '{0:yyyy| MMMM dd}'
+
+            "`n"
+
+        ) -sep ""
+    }
+}
+
+function Invoke.NinPSRun {
+    <#
+    .synopsis
+        quick wrapper of PowerShellRun\Invoke-PSRunSelector that uses custom formatting for tooltips
+    .NOTES
+        future: use Async to enable longer previews, like BAT by invoking Invoke-PSRunSelectorCustom
+    .LINK
+        Impo.RunSelect
+    .LINK
+        PowerShellRun\Invoke-PSRunSelector
+    .LINK
+        PowerShellRun\Invoke-PSRunSelectorCustom
+    .link
+        https://github.com/mdgrs-mei/PowerShellRun?tab=readme-ov-file#invoke-psrunselector
+    #>
+    [cmdletbinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [Object[]]$InputObject,
+
+        [ValidateScript({throw 'nyi'})]
+        [Parameter()][string] $NameProperty,
+
+        [ValidateScript({throw 'nyi'})]
+        [Parameter()][string] $DescriptionProperty,
+
+        [ValidateScript({throw 'nyi'})]
+        [Parameter()][string] $PreviewProperty
+    )
+    begin {
+        [List[Object]]$Items = @()
+    }
+    process {
+        $Items.AddRange(@( $InputObject ))
+    }
+    end {
+        $invokePSRunSelectorSplat = @{
+            MultiSelection      = $true
+            # NameProperty        = 'name'
+            # DescriptionProperty = 'desc'
+            # PreviewProperty     = 'preview'
+            Expression          = {
+                @{
+                    Name = $_.Name
+                    Preview = $_ | _render-FileName.ForPSRun
+                }
+            }
+        }
+        $items | Invoke-PSRunSelector @invokePSRunSelectorSplat
+    }
+}
 function Impo.RunSelect {
     <#
     .SYNOPSIS
         Load run selector, as an opt-in, because it takes a minute to load
     .link
         https://github.com/mdgrs-mei/PowerShellRun?tab=readme-ov-file#invoke-psrunselector
+    .LINk
+        file:///H:/data/2024/pwsh/sketch/2024-03-04-PowerShellRun/PowerShellRun-Test1.ps1
     #>
     [Alias('Impo.PSRunSelector')]
     param(
@@ -330,13 +411,22 @@ function Impo.RunSelect {
         [string[]]$Category = 'All'
     )
     Import-Module -scope global 'PowerShellRun'
+
+
     if($Category -eq 'All') {
         Write-host 'Warning: -All is slow on first load' -fg '#bda0a0'
     }
     Write-host 'Set ctrl+j => Invoke-PSR' -fg '#bda0a0'
     Enable-PSRunEntry -Category $Category
+
+    $SelOpts = [PowerShellRun.SelectorOption]::new()
+    $selOpts.QuitWithBackspaceOnEmptyQuery = $true
+    Set-PSRunDefaultSelectorOption $SelOpts
+
+
     Write-host 'to debug: Set-PSRunPSReadLineKeyHandler isn''t binding over ctrl+j' -fg 'orange'
     # Set-PSRunPSReadLineKeyHandler -Chord 'Ctrl+j'
+    # see: https://github.com/mdgrs-mei/PowerShellRun?tab=readme-ov-file#key-bindings
     @(  Set-Alias -ea 'ignore' -PassThru 'IRun' -Value PowerShellRun\Invoke-PSRun
         Set-Alias -ea 'ignore' -PassThru 'IRun.Sel' -Value PowerShellRun\Invoke-PSRunSelector
         Set-Alias -ea 'ignore' -PassThru 'IRun.Custom' -Value PowerShellRun\Invoke-PSRunSelectorCustom
@@ -350,4 +440,46 @@ function Impo.SciDotifiles {
     [Alias('Impo.Sci')]
     param()
     . (Get-Item -ea 'continue' 'G:/2024-git/pwsh/SeeminglyScience👨/dotfiles/Documents/PowerShell/profile.ps1')
+}
+
+function demo.AsyncSelectString {
+    [Alias('IRun.Grep')]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Path,
+
+        [Parameter(Mandatory)]
+        [string]$Regex,
+
+        [ArgumentCompletions("'*.cs'", "'*.ps1'")]
+        [string]$Kind = '*.*'
+    )
+
+    if( 'PowerShellRun.SelectorOption' -as 'type' -eq $null ) {
+        'AutoImporting module when first invoked...' | write-host -fg 'orange'
+        Impo.RunSelect -Category All
+    }
+    # $word = 'function'
+
+    $option = [PowerShellRun.SelectorOption]::new()
+    $option.Prompt = "Searching for word '{0}'> " -f $regex
+
+    $matches = Get-ChildItem -filter $Kind -Path $Path -Recurse | Select-String $regex
+    $result = $matches | ForEach-Object {
+        $entry = [PowerShellRun.SelectorEntry]::new()
+        $entry.UserData = $_
+        $entry.Name = $_.Filename
+        $entry.Description = $_.Path
+        $entry.PreviewAsyncScript = {
+            param($match)
+            & bat --color=always --highlight-line $match.LineNumber $match.Path
+        }
+        $entry.PreviewAsyncScriptArgumentList = $_
+        $entry.PreviewInitialVerticalScroll = $_.LineNumber
+        $entry
+    } | Invoke-PSRunSelectorCustom -Option $option
+
+    if ($result.KeyCombination -eq 'Enter') {
+        code $result.FocusedEntry.UserData.Path
+    }
 }
