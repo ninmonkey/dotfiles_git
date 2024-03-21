@@ -1,8 +1,12 @@
 $global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.MainEntry_nin = $PSCommandPath | Get-Item
-remove-module PSUtil*, PSFrakework* # keeps loading the string error on me
+remove-module PSUtil*, PSFra*work* # keeps loading the string error on me
 Import-Module 'Pansies'
+# try disable ShellIntegration on menu completer, maybe more.
+$Global:__VSCodeHaltCompletions = $true
+$env:VSCODE_SUGGEST = 0
+
 'trace.👩‍🚀.parse: [1] $Profile.MainEntryPoint : /pwsh/profile.ps1'
     | write-verbose -verb
     # | write-host -bg '7baa7a' -fg black
@@ -22,7 +26,8 @@ $PSNativeCommandArgumentPassing = [System.Management.Automation.NativeArgumentPa
 $PSNativeCommandArgumentPassing | Join-String -f 'Setting: $PSNativeCommandArgumentPassing = {0}'
     | write-verbose
 
-# edit: 2023-05-02
+# edit: 2024-03-20
+# Foreground.FromRgb('#c7af51', #c99067)
 
 # move-to-shared
 $env:PATH += ';', 'C:\Ruby32-x64\bin' -join '' # should already exis, VS Code is missing
@@ -48,19 +53,30 @@ function .Assert.Clamp {
     <#
     .SYNOPSIS
         maybe monkey business?
+    .NOTES
+        requires parameterset to make it easy: .Assert.Clamp 4 3 100
     .link
         .Assert.Clamp
         .fmt.Clamp
         .Where.Clamp
     #>
-
+    [CmdletBinding()]
     param(
         # converts to non terminating, silent errors
-        [Alias('Silent')]
-        [switch]$NullOnError
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$Value,
+        $MinValue,
+        $MaxValue
+        # [Alias('Silent')]
+        # [switch]$NullOnError
 
     )
-    throw 'WIP: NYI: Assert returns bool'
+    process {
+        if( $Value -ge $MinValue -and $Value -le $MaxValue ) {
+            return
+        }
+        Write-Error ('Error Value {0} is out of range Min: {1}, Max: {2}' -f ($Value, $MinValue, $MaxValue))
+    }
 }
 function .fmt.Clamp {
     <#
@@ -239,7 +255,7 @@ function Where-FilterByClamp {
             }
             $valueToTest = $InputObject.Psobject.Properties[$PropertyNameOrExpression ].Value
         }
-        throw 'verify this logic, was on a tangent.'
+        write-warning 'verify this logic, was on a tangent.'
         $targetValue = .fmt.Clamp -min $MinValue -max $MaxValue -InputObject $InputObject
         $value = .Assert.Clamp -min $MinValue -max $MaxValue -NullOnError
 
@@ -297,7 +313,6 @@ $Env:PSModulePath = @(
     # temp because the full filepath is one directory too deep
     'H:\data\2023\pwsh\PsModules\CacheMeIfYouCan'
     # and then
-
     'H:/data/2023/pwsh/PsModules.Import'
     'H:/data/2023/pwsh/PsModules'
     'H:/data/2023/dotfiles.2023/pwsh/dots_psmodules'
@@ -317,11 +332,11 @@ Import-Module 'Ninmonkey.Console' -PassThru
     | Join-String { $_.Name, $_.Version -join ' = '}
     | New-Text -fg 'gray30' -bg 'gray10' | Join-String
 
-if($false) {
-    Import-Module H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter -Force -PassThru -DisableNameChecking -wa Ignore
-    | Join-String { $_.Name, $_.Version -join ': ' } -f "{0}" -sep ', '
-    | New-Text -bg 'gray15' -fg 'gray40' | Join-String
-}
+# if($false) {
+#     Import-Module H:\data\2023\pwsh\PsModules\TypeWriter\Output\TypeWriter -Force -PassThru -DisableNameChecking -wa Ignore
+#     | Join-String { $_.Name, $_.Version -join ': ' } -f "{0}" -sep ', '
+#     | New-Text -bg 'gray15' -fg 'gray40' | Join-String
+# }
 
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint' -NotePropertyValue (Get-Item $PSCommandPath) -Force -PassThru -ea Ignore
 $PROFILE | Add-Member -NotePropertyName 'MainEntryPoint.UsingNamespaces' -NotePropertyValue (Join-Path $env:Nin_Dotfiles 'pwsh/src/__init__.ps1') -Force -PassThru -ea Ignore
@@ -455,6 +470,7 @@ $PROFILE | Add-Member -NotePropertyMembers @{
 # $PROFILE | Add-Member -NotePropertyMembers $global:__ninBag.Profile.PSModulePath -force  -passthru #-ea Ignore
 
 function __aws.sam.InvokeAndPipeLog {
+    # cleanup: delete or go to bintils
     param(
         [string]$LogBase = 'g:\temp',
         [string]$LogName = 'aws_raw.log',
@@ -515,7 +531,7 @@ function nin.GroupByLinqChunk {
             [string[]] $crumbs = (gi .).FullName -split '\\'
             [System.Linq.Enumerable]::Chunk($crumbs, 5) | json
     #>
-
+    # cleanup: delete or go to ninmonkey/notebooks/pwsh
     throw 'not finished, see "RenderLongPathNames"'
     $fullName = Get-Item .
     [string[]] $source = 'hey', 'world', (0..100 -join '_')
@@ -532,6 +548,8 @@ function nin.RenderUnicodeRange {
     .EXAMPLE
         Pwsh> nin.RenderUnicodeRange -InputRunes @(0x2400..0x2410)
         Pwsh> nin.RenderUnicodeRange -InputRunes (0x2400..0x2410 -as [Text.Rune[]])
+    .NOTES
+        # cleanup: delete or go to ninmonkey/notebooks/pwsh
     #>
     param(
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ValueFromPipeline)]
@@ -561,7 +579,7 @@ function nin.RenderUnicodeRange {
         #     $padding, $chars, $padding
         # ) -join ''
 
-        [System.Linq.Enumerable]::Chunk($Runes, $groupSize)
+        [Linq.Enumerable]::Chunk($Runes, $groupSize)
         | ForEach-Object {
             $_ | Join-String {
                 '{0:x} => {1}' -f @(  $_.Value, $_ )
@@ -575,7 +593,7 @@ function nin.RenderUnicodeRange {
 }
 # $fullName = gi .
 # [Text.Rune[]]$rune = 0x2500..0x259f + 0x4dc0..0x4dff + 0xfe20..0xfe2f
-# [System.Linq.Enumerable]::Chunk($rune, 7)
+# [Linq.Enumerable]::Chunk($rune, 7)
 # | %{
 #    $_ | Join-String {
 #       '{0:x} => {1}' -f @(  $_.Value, $_ )
@@ -592,6 +610,7 @@ function RenderModuleName {
         visually summarize a module, maybe make a EzFormat
     .EXAMPLE
         Get-Module | RenderModuleName
+        # cleanup: delete or go to ninmonkey/notebooks/pwsh
     #>
     $Input
     | Join-String {
@@ -971,21 +990,6 @@ $PSDefaultParameterValues.Remove('*:verbose')
 - see: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4>
 - native command sample: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4#example-3-register-a-custom-native-argument-completer>
 #>
-
-# root entry point
-. (Get-Item -ea 'continue' (Join-Path $env:Nin_Dotfiles 'pwsh/src/autoloadNow_ArgumentCompleter-butRefactor.ps1' ))
-
-if($false) {
-    Import-Module TypeWriter -PassThru -ea 'continue'
-} else {
-    impo (Join-Path 'H:/data/2023/pwsh/PsModules.dev/TypeWriter/Source' 'TypeWriter.psd1')
-}
-
-
-
-
-
-
 
 
 

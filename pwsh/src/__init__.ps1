@@ -1974,6 +1974,9 @@ $Disabled_ModulesToAutoLoad = @(
     # 'Jsonify.original'
 )| Sort-oBject -Unique
 
+Remove-Module TypeWriter* -ea ignore
+Remove-Module bintils* -ea ignore
+
 'Autoloading modules...' | write-host -bg 'gray20' -fg 'gray40'
 $ModulesToAutoLoad  | %{
     Import-Module $_ -PassThru

@@ -1,7 +1,6 @@
-
 performance: `PayloRest_CompanyResourceCode`
 
-double chekc
+
 New or updated functions: 
 [].VsCode.ConvertTo.Snipet 
 [ ] .Select.One 
@@ -11,6 +10,7 @@ New or updated functions:
 [x] .To.Type.FromPSTypenames 
 - [] dotils-ToBe.nin-Where-FilterByGroupChoice
 
+- [ ] scriptanalyzer: VerifyValidateSetsCommasAreSynacticallyValid
 
 ```ps1
 goto 'H:\data\2023\pwsh\sketches'

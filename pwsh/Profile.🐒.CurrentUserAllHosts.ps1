@@ -126,9 +126,8 @@ function Module.Register.ArgCompleters {
     $sb_argCompleter_AddType_AssemblyName = {
         param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
         $assemblyItems = @(
-                Get-Assembly | sort -Unique
-                | ?{
-                    $_.Name -match $wordToComplete }
+                Get-Assembly | sort-Object -Unique
+                | ?{ $_.Name -match $wordToComplete }
             )
 
         $PropNames = @( 'Name', 'Version', 'Culture', 'Target', 'ContentType', 'NameFlags', 'PublicKeyToken', 'FullName', 'HashAlgorithm', 'VersionCompatibility', 'FileName', 'CodeBase', 'EntryPoint', 'DefinedTypes', 'IsCollectible', 'ManifestModule', 'ReflectionOnly', 'Location', 'ImageRuntimeVersion', 'GlobalAssemblyCache', 'HostContext', 'IsDynamic', 'ExportedTypes', 'IsFullyTrusted', 'CustomAttributes', 'EscapedCodeBase', 'Modules', 'SecurityRuleSet' )
@@ -164,25 +163,25 @@ Module.Register.ArgCompleters
 
 nin.PSModulePath.Clean -Write
 
-Import-Module Bintils -PassThru
+# Import-Module Bintils -PassThru
 
-function F.Dock {
-    <#
-    .SYNOPSIS
-        sugar for first name of newest docker. ( bDoc.FirstName -FirstNameOnly )
-    #>
-    param()
-    Bintils.Docker.Containers.Ls -FirstNameOnly
-}
+# function F.Dock {
+#     <#
+#     .SYNOPSIS
+#         sugar for first name of newest docker. ( bDoc.FirstName -FirstNameOnly )
+#     #>
+#     param()
+#     Bintils.Docker.Containers.Ls -FirstNameOnly
+# }
 
-'H:\data\2023\pwsh\sketches\update-typedata.2023.08\UpdateTypeData-PSParseHtml.AgilityPack.ps1'
-    | Get-Item
-    | Join-String -f "🚀 => Importing types: '{0}'"
-    | Write-verbose -verb
-    # | Dotils.Write-DimText | Winfo
 
 
 if($false) {
+    'H:\data\2023\pwsh\sketches\update-typedata.2023.08\UpdateTypeData-PSParseHtml.AgilityPack.ps1'
+        | Get-Item
+        | Join-String -f "🚀 => Importing types: '{0}'"
+        | Write-verbose -verb
+        # | Dotils.Write-DimText | Winfo
     'AgilityPack Types Skipped, from file: "{0}"' -f $PSCommandPath
         | write-host -back 'darkyellow'
     'AgilityPack Types importing...' | write-host -back 'darkyellow'
@@ -307,11 +306,14 @@ function Module.ImportInlineLiveFormatData {
 
 }
 
-Module.ImportInlineLiveFormatData
+# Module.ImportInlineLiveFormatData # dont' auto load currently
+function Impo.FormatData {
+    Module.ImportInlineLiveFormatData
+}
 
 @'
 try:
-Impo.[SciDotfiles | RunSelect]
+Impo.[SciDotfiles | RunSelect | FormatData ]
 '@ | write-host -fg '#bda0a0'
 
 function _render-FileName.ForPSRun {
@@ -437,8 +439,12 @@ function Impo.SciDotifiles {
     .SYNOPSIS
         load SeeminglyScience Profile, on-demand
     #>
+    [CmdletBinding()]
     [Alias('Impo.Sci')]
     param()
+    Join-String -f 'Importing File: "{0}"' 'G:/2024-git/pwsh/SeeminglyScience👨/dotfiles/Documents/PowerShell/profile.ps1'
+        | Write-Verbose
+
     . (Get-Item -ea 'continue' 'G:/2024-git/pwsh/SeeminglyScience👨/dotfiles/Documents/PowerShell/profile.ps1')
 }
 

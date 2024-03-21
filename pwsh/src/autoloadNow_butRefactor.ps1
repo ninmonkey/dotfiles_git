@@ -1,4 +1,8 @@
-﻿$global:__ninBag ??= @{}
+﻿$PSCommandpath
+    | Join-String -f 'refactor me: {0}'
+    | write-warning
+
+$global:__ninBag ??= @{}
 $global:__ninBag.Profile ??= @{}
 $global:__ninBag.Profile.AutoLoad_ToRefactor = $PSCommandPath | Get-Item
 
@@ -773,4 +777,3 @@ if ($false) {
         # not actually used just a quick hack to use set
     }
 }
-
