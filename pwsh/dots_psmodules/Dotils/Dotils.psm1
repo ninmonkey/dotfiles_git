@@ -91,6 +91,22 @@ Dotils.Git.AddRecent
 
 
 '@ | write-host -bg '#2e3440' -fg '#acaeb5'
+
+# PSReadLineExtensions
+function Dotils.Impo.PSReadLineExtensions {
+    [CmdletBinding()]
+    param()
+    'loading PSReadLineExensions: from: {0}' -f  $PSCommandPath | Write-verbose
+    @(
+        Join-path $PSScriptRoot './PSReadLine/ParensWrapSelection.ps1' | gi -ea 'continue'
+    )
+    | %{
+        'extension: {0}' -f $_.Name | Write-Verbose
+        . $_
+    }
+}
+
+
 function Dotils.Goto.Error {
     param(
         [Parameter(
@@ -9954,7 +9970,42 @@ Function Dotils.Search-Pipescript.Nin {
 }
 
 
+function Dotils.Completers.FindUsingBindingFlags {
+    <#
+    .synopsis
+        Find [CustomArgumentCompleters] using property info and the context
+    .DESCRIPTION
+        from a [seeminglyscience] discord thread: <https://discord.com/channels/180528040881815552/447476117629304853/1216849408411308093>
+    #>
+    [OutputType(
+        [Dictionary[String, ScriptBlock]],
+        [Object]
+    )]
+    param(
+        # return the dict only
+        [switch]$PassThru
+    )
+    $ctx = $ExecutionContext.GetType().
+            GetField('_context', 'NonPublic, Instance').
+            GetValue($ExecutionContext)
 
+    $completers = $ctx.GetType().GetProperty('CustomArgumentCompleters', [System.Reflection.BindingFlags] 'NonPublic, Instance')
+    # $completers.GetValue($ctx)
+    $info = [ordered]@{
+        CompletersDict = $completers.GetValue($ctx)
+        Ctx = $ctx
+        # -is [RuntimePropertyInfo]
+        CompletersPropertyInfo = $ctx.GetType().
+            GetProperty(
+                'CustomArgumentCompleters',
+                [System.Reflection.BindingFlags] 'NonPublic, Instance'
+            )
+
+        # -is [Dictionary<string, ScriptBlock>]
+    }
+    if($PassThru) { return $info.CompletersDict }
+    return [pscustomobject]$info
+}
 function Dotils.TryCompletion {
     <#
     .SYNOPSIS
@@ -10978,6 +11029,59 @@ function Dotils.Invoke-TipOfTheDay  {
     }
 
     # gcm -m ImportExcel
+
+}
+
+function Dotils.QuickPaths {
+    param(
+        # hardcoded, to impl, and tooltips
+        [ArgumentCompletions(
+            '2024', '2024-git', 'AppData', 'Bintils.Rebuild', 'GitLogger.AzureFunc', 'GitLogger.Docs', 'GitLogger.ReWrite', 'UserProfile', 'VsCode.User/globalStorage',
+            '2023'
+        )]
+        [string]$Name
+    )
+    $script:SavedPaths = [ordered]@{
+        '2024'              = gi 'H:\data\2024\'
+        '2023'              = gi 'H:\data\2023\'
+        'GitLogger.AzureFunc' = gi 'H:\data\2023\pwsh\PsModules.dev\GitLogger\Azure\Function'
+        'GitLogger.Docs' = gi 'H:\data\2023\my_git\GitLoggerDocs'
+        'GitLogger.ReWrite'   = gi 'H:\data\2024\web\GitLoggerTypescriptReWrite-2024-03'
+        '2024-git'            = gi 'G:\2024-git'
+        'AppData'             = gi $Env:AppData
+        'UserProfile'         = gi $Env:UserProfile
+        'Bintils.Rebuild' = gi 'H:\data\2023\pwsh\PsModules\Bintils\references\rebuild-references.ps1'
+        'VsCode.User/globalStorage' = gi $env:APPDATA\Code\User\globalStorage
+    }
+    if( $SavedPaths.Contains($Name)) { return $SavedPaths[ $Name ] }
+    if(-not $Name) {
+        $SavedPaths.Keys | sort-object | join.ul
+    }
+}
+
+function Dotils.VsCode.ShellIntegration.Get-Info {
+    <#
+    .synopsis
+        A command to remember where things are for shell integration VSCode settings
+    #>
+    param(
+        [ArgumentCompletions('pwsh', 'bash', 'zsh')]
+        [string]$ShellName = 'pwsh'
+
+    )
+    $FoundScript = code @('--locate-shell-integration-path', $ShellName) | Get-Item
+    $FoundScript | Join-String -f 'found ShellIntegration init Script: "{0}"' | Write-Information -infa 'Continue'
+    [ordered]@{
+        'HelpUrl' = 'see: https://code.visualstudio.com/docs/terminal/shell-integration'
+        'EnvVars' = @{
+            TERM_PROGRAM = $env:TERM_PROGRAM
+            VSCODE_SUGGEST = $env:VSCODE_SUGGEST
+            'Global:__VSCodeHaltCompletions' = $Global:__VSCodeHaltCompletions
+        }
+        'ShellIntegrationScript' = $FoundScript
+    }
+
+    'try: code --locate-shell-integration-path $ShellName' | write-host -fore blue
 
 }
 function  Dotils.VsCode.PipePassthru {
@@ -14307,6 +14411,20 @@ function Dotils.md.Write.Url {
     }
 }
 
+function Dotils.MkDir.Now {
+    <#
+    .SYNOPSIS
+        create subdir with today's date, and enter it. Otherwise return as a string with -passthru
+    #>
+    param(
+        # create subdir with today's date, else return as a string with -passthru
+        [switch] $PassThru
+    )
+   $datePath = [datetime]::Now.ToString('yyyy-MM-dd')
+   if( $PassThru ) { return $datePath }
+   mkdir -Path $datePath
+   pushd $datePath
+}
 
 function Dotils.md.Format.EscapeFilepath {
     <#
@@ -19517,3 +19635,5 @@ Remove-Module 'Az.*'
 # // this does not import
 # $DotSrc = gi 'H:\data\2023\dotfiles.2023\pwsh\dots_psmodules\Dotils\Template-CompleterType-AsCompletionsType.ps1' -ea 'continue'
 # . $DotSrc
+
+Dotils.Impo.PSReadLineExtensions -verbose
