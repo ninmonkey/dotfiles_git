@@ -743,19 +743,47 @@ function Dotils.EC.GetNativeCommand {
 
 }
 function Dotils.Fd.Recent {
+    <#
+    .SYNOPSIS
+        easier method to invoke a few FD queries
+    .LINK
+        Dotils.Find-MyWorkspace
+    .LINK
+        Dotils.Fd.Recent
+    #>
+    [CmdletBinding()]
     param(
-        [Parameter()]
+        [Parameter(position=0)]
         [Alias('Recent', 'Last', 'Since')]
         [ArgumentCompletions(
             '15minutes', '5minutes', '30seconds', '4hours'
         )]
-        [string]$TimeCondition
+        [string]$TimeCondition,
+
+        [Parameter(Position=1)]
+        [ArgumentCompletions(
+            "'.'", "'h:\data\2023'", "'h:\data\2024'",
+            "'G:\2024-git'"
+            )]
+        [string]$PathRoot,
+        [int]$MaxDepth = 5
     )
 
     [List[Object]]$FdArgs = @(
+
         '--changed-within'
         $TimeCondition
+        if( -not [string]::IsNullOrWhiteSpace($MaxDepth) ) {
+            '-d'
+            $MaxDepth
+        }
+        if($root = Get-Item -ea 'silentlycontinue' $PathRoot) {
+            '--search-path'
+            $PathRoot # double check if it supports multiple roots
+        }
     )
+    $fdArgs | Join-String -sep ' ' | Dotils.Write-DimText
+            | Join-string -op 'Dotils.Fd.recent: ' | write-verbose
 }
 function Dotils.Git.AddRecent {
     param(
@@ -1946,6 +1974,17 @@ function Dotils.Module.Test-ModuleHasChanged {
     # return $true
 }
 
+filter Dotils.Format.GoEditCommand { # jump to code, works for scripts -- not binary cmdlets
+    [Alias(
+        'Dotils.Fmt-GoEditCommand',
+        'Fmt-GoEditCommand'
+    )]
+    param()
+    $ext = $_.ScriptBlock.Ast.Extent
+    if($ext) {
+        $Ext.File, $Ext.StartLineNumber -join ':'
+    }
+}
 function Dotils.Module.DebugAndShowErrors {
     <#
     .SYNOPSIS
@@ -11033,12 +11072,19 @@ function Dotils.Invoke-TipOfTheDay  {
 }
 
 function Dotils.QuickPaths {
+    <#
+    .synopsis
+        complete saved path names. future: show tooltips with FullName
+    #>
+    [Alias('quickPath', 'goPath')]
+    [CmdletBinding()]
     param(
         # hardcoded, to impl, and tooltips
         [ArgumentCompletions(
             '2024', '2024-git', 'AppData', 'Bintils.Rebuild', 'GitLogger.AzureFunc', 'GitLogger.Docs', 'GitLogger.ReWrite', 'UserProfile', 'VsCode.User/globalStorage',
             '2023'
         )]
+        [Parameter()]
         [string]$Name
     )
     $script:SavedPaths = [ordered]@{
@@ -15282,6 +15328,53 @@ function Dotils.Toast.InvokeAlarm {
         }
     }
 }
+
+function Dotils.Git.Blame.FromRegex {
+    <#
+    .SYNOPSIS
+        find blame for regex matches
+    .EXAMPLE
+        Dotils.Git.Blame.FromRegex -BlameFileName $BlameFilename -Pattern 'CrossData'
+    #>
+    param(
+        [string]$BlameFileName,
+
+        [Parameter()]
+        [Alias('Regex')]
+        [string[]]$Pattern
+    )
+    if( -not (Test-Path $BlameFileName)) {
+        throw "Invalid path given"
+    }
+    foreach($curPattern in $Pattern) {
+        $query = Select-String -Path $BlameFileName -Pattern $Pattern
+        $query.LineNumber | %{
+            $curLine = $_
+            git blame -L $curLine $BlameFileName
+        }
+    }
+}
+
+
+function Dotils.Git.Blame.GetLines.WIP {
+    param(
+       [string]$BlameFileName,
+       [int]$StartLine,
+       [int]$EndLine
+    )
+    $lineParam = @(
+       $StartLine
+       if( $PSBoundParameters.ContainsKey('EndLine') ) {
+            '{0},{1}' -f $StartLine, $EndLine
+       }
+       else { $StartLine }
+    )
+
+    git blame -L $Lineparam $(
+        Get-ITem -ea 'stop' $BlameFilename )
+}
+
+
 function Dotils.WhatIsMyIp {
     [CmdletBinding()]
     param(
@@ -15296,6 +15389,27 @@ function Dotils.WhatIsMyIp {
     # }
 
 }
+function Dotils.Text.RemoveDiacritics {
+    <#
+    .SYNOPSIS
+        Removes diacritics from text, by utilizing Cryillic encoding. Works pretty good for no effort.
+    .EXAMPLE
+        > Dotils.Text.RemoveDiacritics -Text 'Áçčèñţş ůşîñģ dïäçřïţïçš'
+        # output:
+        Accents using diacritics
+    #>
+    param(
+        # text with accents and diacritics
+        $Text,
+
+        # Utf-8 seems to work best? Override if you want something else
+        [ArgumentCompletions('Utf-8', 'Ascii')]
+        $DecodeAs = 'Utf-8'
+    )
+    $bytes_cry = [Text.Encoding]::GetEncoding('Cyrillic').GetBytes( $Text )
+    [Text.Encoding]::GetEncoding( $DecodeAs ).GetString( $bytes_cry )
+}
+
 
 function Dotils.DebugUtil.Format.UpdateTypedataLiteral {
     <#
@@ -17696,6 +17810,131 @@ function Dotils.Get-CachedExpression {
         | write-information -infa 'continue'
 
     return $query
+}
+
+Function Dotils.Format-SplitByDelim {
+    <#
+    .example
+        $rawCol = '| Name | Desc | Visible | Updated |'
+        ($rawCol | Dotils.Fmt-SplitByDelim -Delim '\|') | Should -BeExactly @('Name', 'Desc', 'Visible', 'Updated')
+    #>
+    [Alias('Dotils.Fmt-SplitByDelim')]
+    [CmdletBinding()]
+    param(
+        [Alias('InputText', 'InText', 'InStr')]
+        [Parameter(ValueFromPipeline, Mandatory)]
+        [string]$Text,
+
+        [Parameter(Mandatory)]
+        [ArgumentCompletions(
+            # "'\|'", # fancy version? better than Join-String -sep which loses description on completion
+            "'\|' <# Md Table Columns #>", # fancy version
+            "'\t' <# Console Style Columns #>",
+            "','"
+        )]
+        [string]$Delim,
+
+        # warning, this is the original -split x, num.
+        # it does not enforce the number of items after splitting
+        [int]$MaxSplit
+    )
+    process {
+        if( $PSBoundParameters.ContainsKey('MaxSplit')) {
+            ($Text -split '\|', $MaxSplit).
+                ForEach({ $_ -replace '^\s+', '' -replace '\s+$', '' }).
+                Where({ $_ })
+
+            return
+        }
+
+        ($Text -split '\|').
+            ForEach({ $_ -replace '^\s+', '' -replace '\s+$', '' }).
+            Where({ $_ })
+   }
+}
+
+function Dotils.Markdown.SortTable {
+    param(
+        [Parameter()]
+        [string[]]$Content
+    )
+
+    $ColumnNames = $Content[0] | Dotils.Format-SplitByDelim -Delim '\|' <# Md Table Columns #>
+    Join-String 'Found columns: {0}' -sep ', ' $ColumnNames
+    write-warning 'almost done wip'
+}
+
+function Dotils.Build-Gh.RepoList.AsMdTable {
+    <#
+    .synopsis
+        build a new markdown table from the output of 'gh repo list'
+    .notes
+        future:
+        - [ ] filter by public/private
+        - [ ] generic SortMarkdownTableByColumnX that sorts any table
+    .EXAMPLE
+        Dotils.Build-Gh.RepoList.AsMdTable ninmonkey -Limit 24
+        Dotils.Build-Gh.RepoList.AsMdTable StartAutomating
+    #>
+    [CmdletBinding()]
+    param(
+        [ValidateNotNullOrWhiteSpace()]
+        [ArgumentCompletions('ninmonkey', 'StartAutomating', 'SeeminglyScience')]
+        [string]$OwnerName,
+
+        [int]$Limit = 300,
+
+        [ValidateScript({throw 'nyi'})]
+        [switch]$OnlyPublic,
+        [ValidateScript({throw 'nyi'})]
+        [switch]$OnlyPrivate,
+        [ValidateScript({throw 'nyi'})]
+        [Alias('Since')][string]$ChangedWithin = '1years',
+        [switch]$SortByLastModified
+
+    )
+
+    $joinMdTable = @{
+        Sep = ' | '
+        Op  = '| '
+        Os  = ' |' }
+    $joidMdTable_Escaped = @{
+        Sep      = ' | '
+        Op       = '| '
+        Os       = ' |'
+        Property = {
+            $_ -replace '\|', '\|' -replace '\\', '\\'
+        }
+    }
+
+    $rows =
+        ((gh repo list $ownerName --limit $Limit) -split '\r?\n').
+            forEach({ $_ -split '\t', 4 | Join-String @joinMdTable -p {
+                    $_ -replace '\|', '\|'
+                } }
+            )
+            # or also
+            # forEach({ $_ -split '\t', 4 | Join-String @joinMdTable })
+            # or also
+            # forEach({ $_ -replace '\t', ' | ' | Join-string -op '| ' -os ' |' })
+
+    if($SortByLastModified) {
+        $Rows = $rows
+    }
+
+    return @(
+        'Name', 'Desc', 'Visible', 'Updated' | Join-string @joinMdTable
+        '-', '-', '-', '-'                   | Join-string @joinMdTable
+        $rows
+    ) | Join-String -sep "`n"
+
+    # origSort
+    <#
+    ($stuff -split '\r?\n').forEach({
+        ( $asDate =
+            ($_ -split '\|' | ?{ $_ } | Select -Last 1) -as [datetime] )})
+    #>
+
 }
 
 function Dotils.Gh.Gist.Cmds {
