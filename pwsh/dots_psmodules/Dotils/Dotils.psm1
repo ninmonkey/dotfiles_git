@@ -623,6 +623,38 @@ function Dotils.DropNamespace {
     }
     return $Found
 }
+
+function Dotils.Invoke-NoProfilePwsh {
+    <#
+    .SYNOPSIS
+        quickly start a new no-profile with minimal presets
+    .EXAMPLE
+        Dotils.Quick.NoProfilePwsh
+    #>
+    [Alias('Dotils.Quick.NoProfilePwsh')]
+    param(
+        [ArgumentCompletions(
+            'Pipescript', 'ugit'
+        )]
+        [string[]]$ImportModuleNames
+
+    )
+    'starting pwsh --NoProfile...' | write-host -fore green
+    pwsh -NoP -NoLogo -NoExit -Command {
+        Set-PSReadLineKeyHandler -Chord 'Alt+Enter'   -Function InsertLineBelow
+        Set-PSReadLineKeyHandler -Chord 'Shift+Enter' -Function InsertLineAbove
+        $setAliasSplat = @{
+            ErrorAction = 'ignore'
+            PassThru    = $true
+        }
+        @(
+            Set-Alias @setAliasSplat 'gcl' -Value Get-ClipBoard
+            Set-Alias @setAliasSplat 'cl' -Value Set-Clipboard
+        ) | Join-String -op 'Set Aliases: ' -sep ', ' | Write-verbose -verbose
+        # Import-Module -Name $ImportModuleNames -PassThru -Verbose # using scope issue?
+        function Prompt {@( "`n"; $PSStyle.Foreground.FromRgb('#6e6e6e'); Get-Location; "`n"; '> '; $PSStyle.Reset; ) -join ''}
+    }
+}
 function Dotils.EC.GetCommandName {
     <#
     .SYNOPSIS
@@ -15335,6 +15367,8 @@ function Dotils.Git.Blame.FromRegex {
         find blame for regex matches
     .EXAMPLE
         Dotils.Git.Blame.FromRegex -BlameFileName $BlameFilename -Pattern 'CrossData'
+    .LINK
+        https://git-scm.com/docs/git-blame
     #>
     param(
         [string]$BlameFileName,
