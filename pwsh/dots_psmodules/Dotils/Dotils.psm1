@@ -11228,6 +11228,55 @@ function  Dotils.VsCode.PipePassthru {
         | Dotils.Write-DimText | Infa
 }
 
+function Dotils.Encoding.FindEncoding {
+    <#
+    .SYNOPSIS
+        searches the Name's and DisplayName's metadata
+    .EXAMPLE
+        Dotils.Encoding.FindEncoding cyrillic, windows
+        Dotils.Encoding.FindEncoding -Name ^\D+$
+        Dotils.Encoding.FindEncoding -DisplayName '\(.*(utf|iso)'
+
+    #>
+    [OutputType( [Text.EncodingInfo] )]
+    param(
+       # searches both -DisplayName and -Pattern
+       [ArgumentCompletions( 'Windows', 'cyrillic' )]
+       [string[]]$Pattern,
+       # only compare these patterns against [EncodingInfo].Name
+       [string[]]$Name,
+       # only compare these patterns against [EncodingInfo].DisplayName
+       [ArgumentCompletions("'\(.*(utf|iso)'")]
+       [string[]]$DisplayName
+    )
+    $HasParam_Name = $PSBoundParameters.ContainsKey('Name')
+    $HasParam_DisplayName = $PSBoundParameters.ContainsKey('DisplayName')
+    $HasParam_Pattern = $PSBoundParameters.ContainsKey('Pattern')
+
+    if( -not $HasParam_Name        -and
+        -not $HasParam_DisplayName -and
+        -not $HasParamPattern ) {
+        return [Text.Encoding]::GetEncodings()
+    }
+
+    [Text.Encoding]::GetEncodings() | Where-Object {
+        [Text.EncodingInfo]$current = $_
+        $matches_tests = @(
+            if( $HasParam_Pattern ) {
+                $Pattern.ForEach({ $current.Name -match $_ })
+                $Pattern.ForEach({ $current.DisplayName -match $_ })
+            }
+            if( $HasParam_Name ) {
+                $Name.ForEach({ $current.Name -match $_ })
+            }
+            if( $HasParam_DisplayName ) {
+                $DisplayName.ForEach({ $current.DisplayName -match $_ })
+            }
+        )
+        return ($matches_tests.where({ [bool]$_ }).count -gt 0)
+    }
+}
+
 function Dotils.SelectBy-Module {
     <#
     .SYNOPSIS
@@ -12813,6 +12862,65 @@ function Dotils.Network.Find-ReversePortLookup {
     } | Sort-Object Name
 
 }
+
+function Dotils.From.BaseB64String {
+    <#
+    .synopsis
+        reads values as base64 string, and may auto-detects padding
+    .example
+        err -Clear && impo Dotils -Force -PassThru &&
+        h1 'break'; Dotils.From.BaseB64String -Str 'ae' -Debug
+        h1 'work'; Dotils.From.BaseB64String -Str 'ae==' -Debug
+    #>
+    [Alias('Dotils.From.StrB64')]
+    [CmdletBinding()]
+    param( [string]$Str, [int]$padEnd ) # , [switch]$VerboseOutput )
+    write-host 'partial wip, should clean up, or exit early if the exception is invalidb64 chars' -bg 'gray30' -fg 'gray80'
+
+    $Bytes? = $Null # ensure local scope is clean
+    # $Bytes? = @( [Convert]::FromBase64String( $Str ) )
+    if($PadEnd) {
+        $autoPadSuffix =
+            @(  $Str
+                ('=' * $padEnd -join '')) -join ''
+
+        $Bytes? = [Convert]::FromBase64String( $autoPadSuffix )
+    } else {
+        foreach($i in 0..4) { # only 2 padding is valid?
+            $autoPad = $null
+            try {
+                $autoPadSuffix =
+                    @(  $Str
+                        ('=' * $padEnd -join '')
+                    ) -join ''
+                $Bytes? = [Convert]::FromBase64String( $autoPadSuffix )
+                break
+            } catch {
+                continue
+            }
+        }
+    }
+    if($true) {
+        [pscustomobject]@{
+            PSTypeName = Join-String -op 'Dotils.Result.' -in $PSCmdlet.MyInvocation.MyCommand Name
+            TrueNull   = $null -eq $Bytes?
+            Length     = $Bytes?.Length
+            Sin        = $Str
+            PadEnd     = $PadEnd ?? $false
+            Bytes      = $Bytes? | Join-String -f '{0:x}' -sep ' '
+            BytesCount = $Bytes?.count
+        } | ft -auto | out-string -Width 1kb | Join-string -sep "`n"
+            | New-Text -fg 'lightgreen' -bg 'gray20'
+            | Write-Debug
+    }
+
+    [ArgumentException]::ThrowIfNullOrEmpty(
+        $bytes?, 'Auto padding failed for all cases. $Bytes was null.' )
+
+    return $Bytes?
+}
+
+
 function Fd.Go {
    param()
    @(

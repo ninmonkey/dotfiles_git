@@ -1967,12 +1967,20 @@ $ModulesToAutoLoad = @(
     'ExcelAnt'
     'Picky'
     'n🐒.ParameterBinding.ParseTrace'
+    $false ? 'n🐒.FilterUtils\nin.FilterUtils.psd1' :
+        (gi 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.FilterUtils\nin.FilterUtils.psd1')
+    $false ? 'n🐒.FilterUtils\nin.FilterUtils.psd1' :
+        (gi 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.TruthTesting\nin.TruthTesting.psd1')
+        # is 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.FilterUtils\nin.FilterUtils.psd1'
 ) | Sort-oBject -Unique
 $Disabled_ModulesToAutoLoad = @(
     'TypeWriter'
     'Marking'
     # 'Jsonify.original'
 )| Sort-oBject -Unique
+
+gci -ea ignore 'h:\data\2024\pwsh\PSModules.🐒.miniLocal'
+    | Join-string -f "`n - {0}" Name -Op 'try other "PSModules.🐒.miniLocal" modules'
 
 Remove-Module TypeWriter* -ea ignore
 Remove-Module bintils* -ea ignore
