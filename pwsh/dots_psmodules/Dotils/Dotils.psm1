@@ -15469,6 +15469,87 @@ function Dotils.Toast.InvokeAlarm {
     }
 }
 
+
+
+function Dotils.Quick.EverythingSearch {
+    <#
+    .synopsis
+        just remember a few EverythingSearch base queries
+    #>
+    [cmdletBinding()]
+    param(
+        [ArgumentCompletions(
+            'Template.yml' )]
+        [string]$TemplateName,
+
+        # 'nyi: [ ] parameter that runs a regex against the query string, rather than the TemplateName'
+        [ValidateScript({throw 'nyi'})]
+        [string]$QueryPattern,
+
+        # if no params, return the mapping dict. if params, return the string rather than invoking StartEverything
+        [switch]$PassThru
+        # [switch]$PassThru
+    )
+    write-warning 'todo: [ ] make autocomplete use hashtable, and preview using tooltip (and render using preview of replace "\s{3,}", "\n")'
+    write-warning 'todo: [ ] add a new -QueryPattern parameter that runs a regex against the query string, rather than the TemplateName'
+    write-warning 'todo: nyi: If regex matches exactly 1, then use it. after step1 which is exactly equal, because that otherwise could be a regex match if not priority'
+    $Mappings = [ordered]@{
+        'Last1' = 'ext:code-workspace dm:last3weeks !Env.UserProfile:'
+        'Last2' = 'ext:psm1;ps1 !Env.AppData: *aws*utils*               !path:*gitlogg*         !path:ww:.aws-sam'
+        'Last3' = '( dm:last22hours ext:code-workspace;ps1;py;psm1;md; ) | ( dm:last3weeks ext:code-workspace  ( my_roots: )                ) !path:"%AppData%" !path:"%userprofile%" ext:ps1 "*entry*1*"'
+        'Last4' = 'ext:code-workspace ext:code-workspace;pbix;pq;ps1;psm1 dm:last29days ( ( ext:code-workspace;launch.json;pbix;ps1;psm1 dm:last7weeks  !path:ww:history | ( path:ww:".vscode" !path:ww:%AppData\Code" !path:ww:"%UserProfile%\.vscode" )  | ( ext:vhd;vhdx ) | ( dm:last5minutes ext:log )      ) ( !path:"%UserProfile%\.vscode" )       '
+        'Last5' = 'ext:code-workspace dm:last3weeks !Env.UserProfile:'
+        'Last6' = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile: ( path:H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim* )'
+        'Last7' = 'ext:psm1;ps1 !Env.AppData: "*aws*utils*"               !path:"*gitlogg*"         !path:ww:".aws-sam"'
+
+        'Frequent1'   = 'ext:code-workspace ext:code-workspace;pbix;pq;ps1;psm1 dm:last29days ( ( ext:code-workspace;launch.json;pbix;ps1;psm1 dm:last7weeks  !path:ww:history | ( path:ww:".vscode" !path:ww:%AppData\Code" !path:ww:"%UserProfile%\.vscode" )  | ( ext:vhd;vhdx ) | ( dm:last5minutes ext:log )   ) ( !path:"%UserProfile%\.vscode" )   '
+        'LastSeconds' = 'dm:last200seconds                                            ( !path:"%LocalAppData%\Packages\Spotify*" !path:"*windows*search*" !path:"c:\windows\prefetch" !path:ww:"c:\windows\system"    !path:ww:"%LocalAppData%" !path:ww:"%AppData%\Code" )    '
+
+        'BAR_gui_ordermenu' = 'ext:lua ( path:h:\data\2024  | ( path:ww:"G:\2024-git\Game📁" ) ) gui_ordermenu'
+        'BAR'               = '( Dirs.BeyondAllReason: ) '
+        'BAR_lua_all'       = 'ext:lua  ( Dirs.BeyondAllReason: ) ' # new, simplified
+
+        'Files_WithLongName' = 'file:regex:"^.{30}$"'
+
+        # 'BAR_lua_all' = 'ext:lua  ( path:ww:"G:\2024-git\Game📁" | path:ww:"F:\games\Beyond-All-Reason\data" | path:ww:"H:\data\2024\games\BeyondAllReason" )'
+
+        'Bdg_Examples' = 'ext:psm1;ps1;json;csv;md;log;js;yml "H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtime\examples" '
+        'my_roots' = 'dm:last3weeks ( my_roots: ) '
+        'Recent Contains Fmt-' = '( dm:last22hours ext:code-workspace;ps1;py;psm1;md; ) | ( dm:last3weeks ext:code-workspace  ( my_roots: )                ) !path:"%AppData%" !path:"%userprofile%" content:"fmt-"'
+        'Bdg-Contains-StopLog' = 'ext:psm1;ps1;json;csv;md;log;js;yml "H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtime\examples" !path:".aws-sam" content:"🔴 caught"'
+
+        'pbix'           = 'ext:pbix;pbir;pbit;tmdl  dm:last3months'
+        'AwsUtils_All'   = 'ext:psm1;ps1  !Env.AppData:  "*aws*utils*"  !path:"*gitlogg*"  !path:ww:".aws-sam"'
+        'Template.yml'   = 'dm:last3weeks  template.yml'
+        'Code-Workspace' = 'dm:last3weeks  ext:code-workspace  !Env.UserProfile:'
+        'SamConfig.toml' = 'samconfig.toml !Env.AppData:'
+        'Template.yml'   = 'template ext:yaml;yml  !Env.AppData:'
+
+        'BdgRoot-2023'            = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile: ( path:"H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim*" )'
+        'BdgRoot-2023-CoreConfig' = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile:   core_config*   ( path:"H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim*" )'
+    }
+    if( $PassThru -and -not $PSBoundParameters.ContainsKey('TemplateName')) {
+        return $Mappings
+    }
+    $ResolvedByPattern = $Mappings.keys -match $TemplateName
+    $ResolvedByPattern -match $TemplateName | Join-String -op "`nPatterns -match `$TemplateName" -f "`n{0} " | Write-host -fg 'blue'
+
+    Join-String -f 'ViaRegx: {0}' $ResolvedByPattern.Count | StripAnsi | write-verbose -verb
+    if($ResolvedByPattern.count -eq 1) {
+        $TemplateName = $ResolvedPattern
+    }
+    if( -not $Mappings.Contains($TemplateName)) {
+        $Mappings | ft -auto | out-string | StripAnsi | write-host -fg 'gray80' -bg 'gray15'
+        $Mappings.Keys
+        return
+    }
+
+    $QueryStr = $Mappings[ $TemplateName ]
+    if( $PassThru ) { return $QueryStr }
+    Start-Process (Join-String -f 'es:{0}' -In $QueryStr )
+}
+
+
 function Dotils.Git.Blame.FromRegex {
     <#
     .SYNOPSIS
