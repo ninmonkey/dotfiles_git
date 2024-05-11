@@ -2017,6 +2017,18 @@ filter Dotils.Format.GoEditCommand { # jump to code, works for scripts -- not bi
         $Ext.File, $Ext.StartLineNumber -join ':'
     }
 }
+
+function Dotils.Regex.RegexEscape {
+    # minimal regx escape wrapper, from pipeline or parameters
+    [Alias('Dotils.ReEsc')]
+    param(
+        [Parameter(ValueFromPipeline)]
+            [string]$Str )
+
+    process {
+        [regex]::Escape( $Str )  }
+}
+
 function Dotils.Module.DebugAndShowErrors {
     <#
     .SYNOPSIS
@@ -15521,9 +15533,9 @@ function Dotils.Quick.EverythingSearch {
         'pbix'           = 'ext:pbix;pbir;pbit;tmdl  dm:last3months'
         'AwsUtils_All'   = 'ext:psm1;ps1  !Env.AppData:  "*aws*utils*"  !path:"*gitlogg*"  !path:ww:".aws-sam"'
         'Template.yml'   = 'dm:last3weeks  template.yml'
+        # 'Template.yml'   = 'template ext:yaml;yml  !Env.AppData:'
         'Code-Workspace' = 'dm:last3weeks  ext:code-workspace  !Env.UserProfile:'
         'SamConfig.toml' = 'samconfig.toml !Env.AppData:'
-        'Template.yml'   = 'template ext:yaml;yml  !Env.AppData:'
 
         'BdgRoot-2023'            = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile: ( path:"H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim*" )'
         'BdgRoot-2023-CoreConfig' = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile:   core_config*   ( path:"H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim*" )'
