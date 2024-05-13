@@ -15622,19 +15622,23 @@ function Dotils.Quick.FormatScript {
             # Settings = $config
         }
 
-        $Render = Invoke-Formatter @invokeFormatterSplat
+        $Render = Invoke-Formatter @invokeFormatterSplat | Join-String -sep  "`n"
+        $PSBoundParameters | Json -Depth 4
+            | Join-String -op 'PSBound: ' | Write-debug
 
-        # if( $PSBoundParameters.ContainsKey('PredentLevel') ) {
-        # if($PredentLevel -gt 0) {
-        $PSBoundParameters | Json -Depth 4 | Write-debug
+        'prefixBy: [ PredentLevel: {0}, PredentString: "{1}" ]'
+            | Write-Debug
+
+
         if( $PSBoundParameters.ContainsKey('PredentLevel') ) {
-            wait-debugger
+            # wait-debugger
             $Prefix = $PredentString * $PredentLevel -join ''
             $Render = $Render -split '\r?\n'
                 | Join-String -f "`n    {0}"
-
         }
-
+        if( [string]::IsNullOrWhiteSpace( $Render )) {
+            throw 'Render was Blank!'
+        }
         # ($raw2 | Dotils.Quick.FormatScript) -split '\r?\n' | Join-String -f "`n    {0}"
 
         if($ToClipboard) {
