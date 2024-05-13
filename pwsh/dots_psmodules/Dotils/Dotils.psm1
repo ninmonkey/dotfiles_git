@@ -15488,6 +15488,7 @@ function Dotils.Quick.EverythingSearch {
     .synopsis
         just remember a few EverythingSearch base queries
     #>
+    [Alias('Quick.Es')]
     [cmdletBinding()]
     param(
         [ArgumentCompletions(
@@ -15495,7 +15496,7 @@ function Dotils.Quick.EverythingSearch {
         [string]$TemplateName,
 
         # 'nyi: [ ] parameter that runs a regex against the query string, rather than the TemplateName'
-        [ValidateScript({throw 'nyi'})]
+        # [ValidateScript({throw 'nyi'})]
         [string]$QueryPattern,
 
         # if no params, return the mapping dict. if params, return the string rather than invoking StartEverything
@@ -15506,6 +15507,7 @@ function Dotils.Quick.EverythingSearch {
     write-warning 'todo: [ ] add a new -QueryPattern parameter that runs a regex against the query string, rather than the TemplateName'
     write-warning 'todo: nyi: If regex matches exactly 1, then use it. after step1 which is exactly equal, because that otherwise could be a regex match if not priority'
     $Mappings = [ordered]@{
+        'Last0' = 'ext:code-workspace dm:last9000minutes ( ( my_roots: ) | ( path:ww:"H:\data\client_bdg\2023.03.17-bdg" ) )'
         'Last1' = 'ext:code-workspace dm:last3weeks !Env.UserProfile:'
         'Last2' = 'ext:psm1;ps1 !Env.AppData: *aws*utils*               !path:*gitlogg*         !path:ww:.aws-sam'
         'Last3' = '( dm:last22hours ext:code-workspace;ps1;py;psm1;md; ) | ( dm:last3weeks ext:code-workspace  ( my_roots: )                ) !path:"%AppData%" !path:"%userprofile%" ext:ps1 "*entry*1*"'
@@ -15514,6 +15516,7 @@ function Dotils.Quick.EverythingSearch {
         'Last6' = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile: ( path:H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim* )'
         'Last7' = 'ext:psm1;ps1 !Env.AppData: "*aws*utils*"               !path:"*gitlogg*"         !path:ww:".aws-sam"'
 
+        'NewBigFilesToday' = 'dm:today ( ( dm:last3hours size:>=1mb ) |   ( folder: dc:today ) )'
         'Frequent1'   = 'ext:code-workspace ext:code-workspace;pbix;pq;ps1;psm1 dm:last29days ( ( ext:code-workspace;launch.json;pbix;ps1;psm1 dm:last7weeks  !path:ww:history | ( path:ww:".vscode" !path:ww:%AppData\Code" !path:ww:"%UserProfile%\.vscode" )  | ( ext:vhd;vhdx ) | ( dm:last5minutes ext:log )   ) ( !path:"%UserProfile%\.vscode" )   '
         'LastSeconds' = 'dm:last200seconds                                            ( !path:"%LocalAppData%\Packages\Spotify*" !path:"*windows*search*" !path:"c:\windows\prefetch" !path:ww:"c:\windows\system"    !path:ww:"%LocalAppData%" !path:ww:"%AppData%\Code" )    '
 
@@ -15540,13 +15543,25 @@ function Dotils.Quick.EverythingSearch {
         'BdgRoot-2023'            = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile: ( path:"H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim*" )'
         'BdgRoot-2023-CoreConfig' = 'ext:code-workspace;ps1 ( dm:last13days ) !Env.UserProfile:   core_config*   ( path:"H:\data\client_bdg\2023.03.17-bdg\core\src\pass1\lab-lambda-runtim*" )'
     }
-    if( $PassThru -and -not $PSBoundParameters.ContainsKey('TemplateName')) {
+
+    write-warning 'not all paramsets are working'?
+    # if( $PassThru -and -not $PSBoundParameters.ContainsKey('TemplateName')) {
+    if( $passThru -and -not $HasParamQuery -and -not $HsParamTemplate ) {
         return $Mappings
     }
+
+    $HasParamQuery    = -not [string]::IsNullOrWhiteSpace( $QueryPattern )
+    $HasParamTemplate = -not [string]::IsNullOrWhiteSpace( $TemplateName )
+
+    if( $)
     $ResolvedByPattern = $Mappings.keys -match $TemplateName
     $ResolvedByPattern -match $TemplateName | Join-String -op "`nPatterns -match `$TemplateName" -f "`n{0} " | Write-host -fg 'blue'
-
     Join-String -f 'ViaRegx: {0}' $ResolvedByPattern.Count | StripAnsi | write-verbose -verb
+
+    if( -not [String]::IsNullOrWhiteSpace( $QueryPattern ) ) {
+        $mappings.GetEnumerator().Where({ $_.value -match 'df' } )
+    }
+
     if($ResolvedByPattern.count -eq 1) {
         $TemplateName = $ResolvedPattern
     }
@@ -15565,6 +15580,9 @@ function Dotils.Quick.FormatScript {
     <#
     .SYNOPSIS
         sugar to format code in the console, or clipboard
+    .NOTES
+        future:
+            - [ ] expand alias names, and correct cases
     .EXAMPLE
         # format the last console command you ran
         > Quick.Fmt.Sb
@@ -15610,7 +15628,7 @@ function Dotils.Quick.FormatScript {
         [switch]$ToClipboard
     )
     begin {
-        Import-Module PSScriptAnalyzer -MinimumVersion 1.22.0 -PassThru | Write-Verbose
+        Import-Module PSScriptAnalyzer -MinimumVersion 1.22.0 -PassThru | Write-Verbose # piping added in ~1.20 ish?
         [List[Object]]$Lines = @()
 
     }
@@ -19251,7 +19269,7 @@ function Dotils.Ast.GetAstFromFile {
     [Alias('Dotils.AstFromFile')]
     param(
         [ValidateNotNullOrWhiteSpace()]
-        [string]$FileName
+        [string] $FileName
     )
     if( -not (Test-Path $FileName)) {
         throw "InvalidFilepath: '$FileName'"
@@ -19265,10 +19283,10 @@ function Dotils.Ast.GetAstFromFile {
         <# errors  : #> [ref] $AstErrors )
 
     [pscustomobject]@{
-        Tokens =  $Tokens
-        Errors = $AstErrors
-        Fullname = $filename
-        Ast = $DocRoot
+        Tokens   = $Tokens
+        Errors   = $AstErrors
+        Fullname = $filename | Get-Item
+        Ast      = $DocRoot
     }
 
     if( $AstErrors.count -gt 0 ) {
@@ -19279,9 +19297,9 @@ function Dotils.Ast.GetAstFromFile {
 function Dotils.QuickGcm.ByPrefix {
     param(
         [ArgumentCompletions("'sk.*'", "'dotils.*'")]
-        [string]$Pattern = 'sk.*',
-        [switch]$WithoutWildcard,
-        [switch]$PassThru
+        [string] $Pattern = 'sk.*',
+        [switch] $WithoutWildcard,
+        [switch] $PassThru
     )
     [bool]$isWildcard = -not $WithoutWildcard
     # $ExecutionContext.InvokeCommand.GetCommands('sk.*', 'all', $true) | fl *
@@ -19708,6 +19726,10 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-05-13
+        'Quick.Es'
+
+
         # 2024-05-12
         'Quick.Fmt.Sb'
         # 2024-02-03
