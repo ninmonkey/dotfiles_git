@@ -15561,7 +15561,90 @@ function Dotils.Quick.EverythingSearch {
     Start-Process (Join-String -f 'es:{0}' -In $QueryStr )
 }
 
+function Dotils.Quick.FormatScript {
+    <#
+    .SYNOPSIS
+        sugar to format code in the console, or clipboard
+    #>
+    [CmdletBinding()]
+    [Alias('Quick.Fmt.Sb')]
+    param(
+        [Parameter(ValueFromPipeline)]
+        [string[]]$ScriptBlock,
 
+
+        # Is multiplied by -PredentString, so 1 = 4 spaces, 2 = 8, etc.... Default: 0
+        [ArgumentCompletions( 1, 2, 3, 4)]
+        [Alias('Depth', 'Indent')]
+        [int]$PredentLevel = 0,
+
+        # How deep is one level: default is 4 spaces. Default: "    "
+        [Alias('IndentString')]
+        [ArgumentCompletions("'    '", "'  '")]
+        [string]$PredentString = '    ',
+
+        # currently not using parametersets, logic is in body
+        [Alias('Gcl')]
+        [switch]$FromClipboard,
+
+        # write output to clipboard
+        [Alias('Cl')]
+        [switch]$ToClipboard
+    )
+    begin {
+        Import-Module PSScriptAnalyzer -MinimumVersion 1.22.0 -PassThru | Write-Verbose
+        [List[Object]]$Lines = @()
+
+    }
+    process {
+        if($ScriptBlock) {
+            $Lines.Add( @(
+                $ScriptBlock | Join-String -sep "`n" ) )
+        }
+    }
+    end {
+        if($FromClipboard) {
+            # $Content = Get-Clipboard -Raw | Join-String -sep "`n"
+            $Lines.AddRange( @(
+                Get-Clipboard -Raw | Join-String -sep "`n" ))
+        }
+        $Content = $Lines | Join-String -sep "`n"
+
+        if( [string]::IsNullOrWhiteSpace( $Content ) ) {
+            'Blank Content, using last command...' | Write-host -fg 'gray60' -bg 'gray15'
+            $Content = (Get-History | Select -Last 1).CommandLine | Join-String -sep "`n"
+        }
+
+        [ArgumentException]::ThrowIfNullOrWhiteSpace( $Content, 'Content' )
+        $invokeFormatterSplat = @{
+            ScriptDefinition = $Content
+            # Range = 10, 304
+            # Settings = $config
+        }
+
+        $Render = Invoke-Formatter @invokeFormatterSplat
+
+        # if( $PSBoundParameters.ContainsKey('PredentLevel') ) {
+        # if($PredentLevel -gt 0) {
+        $PSBoundParameters | Json -Depth 4 | Write-debug
+        if( $PSBoundParameters.ContainsKey('PredentLevel') ) {
+            wait-debugger
+            $Prefix = $PredentString * $PredentLevel -join ''
+            $Render = $Render -split '\r?\n'
+                | Join-String -f "`n    {0}"
+
+        }
+
+        # ($raw2 | Dotils.Quick.FormatScript) -split '\r?\n' | Join-String -f "`n    {0}"
+
+        if($ToClipboard) {
+            $Render | Set-Clipboard -PassThru
+        } else {
+            $Render
+        }
+
+    }
+}
 function Dotils.Git.Blame.FromRegex {
     <#
     .SYNOPSIS
@@ -19603,6 +19686,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-05-12
+        'Quick.Fmt.Sb'
         # 2024-02-03
         'Code.Pipe'
         # 2024-02-02
