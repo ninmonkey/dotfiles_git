@@ -15553,26 +15553,47 @@ function Dotils.Quick.EverythingSearch {
     $HasParamQuery    = -not [string]::IsNullOrWhiteSpace( $QueryPattern )
     $HasParamTemplate = -not [string]::IsNullOrWhiteSpace( $TemplateName )
 
-    if( $)
-    $ResolvedByPattern = $Mappings.keys -match $TemplateName
-    $ResolvedByPattern -match $TemplateName | Join-String -op "`nPatterns -match `$TemplateName" -f "`n{0} " | Write-host -fg 'blue'
-    Join-String -f 'ViaRegx: {0}' $ResolvedByPattern.Count | StripAnsi | write-verbose -verb
-
-    if( -not [String]::IsNullOrWhiteSpace( $QueryPattern ) ) {
-        $mappings.GetEnumerator().Where({ $_.value -match 'df' } )
+    if( $HasParamTemplate ) {
+        $ResolvedByPattern = $Mappings.keys -match $TemplateName
+        $ResolvedByPattern -match $TemplateName | Join-String -op "`nPatterns -match `$TemplateName" -f "`n{0} " | Write-host -fg 'blue'
+        Join-String -f 'UsedTemplatePattern on keys: {0}' $ResolvedByPattern.Count | StripAnsi | write-verbose -verb
+    } else if ( $HasParamQuery ) {
+        $ResolvedByPattern = $mappings.GetEnumerator().Where({ $_.value -match $QueryPattern } )
+        Join-String -f 'UsedQueryParamPattern on values: {0}' $ResolvedByPattern.Count | StripAnsi | write-verbose -verb
+    } else {
+        throw 'Wip,NYI, should not reach here'
     }
+    if( $ResolvedByPattern.count -eq 1) {
+        Join-String -f 'Single Match: {0}' -in $ResolvedByPattern |write-verbose -verbose
 
-    if($ResolvedByPattern.count -eq 1) {
-        $TemplateName = $ResolvedPattern
-    }
-    if( -not $Mappings.Contains($TemplateName)) {
-        $Mappings | ft -auto | out-string | StripAnsi | write-host -fg 'gray80' -bg 'gray15'
-        $Mappings.Keys
-        return
+        if( -not $Mappings.Contains($ResolvedByPattern)) {
+            $Mappings | ft -auto | out-string | StripAnsi | write-host -fg 'gray80' -bg 'gray15'
+            $Mappings.Keys
+            return
+        } else {
+            $QueryStr = $Mappings[ $TemplateName ]
+            if( $PassThru ) { return $QueryStr }
+        }
     }
 
     $QueryStr = $Mappings[ $TemplateName ]
+
     if( $PassThru ) { return $QueryStr }
+    # if( -not [String]::IsNullOrWhiteSpace( $QueryPattern ) ) {
+    #     $mappings.GetEnumerator().Where({ $_.value -match 'df' } )
+    # }
+
+
+    throw 'left off here, was rewriting to support more fancy stuff'
+
+    if( -not $Mappings.Contains($TemplateName)) {
+        $Mappings | ft -auto | out-string | StripAnsi | write-host -fg 'gray80' -bg 'gray15'
+        $Mappings.Keys
+
+    }
+
+
+    throw 'left off here, was rewriting to support more fancy stuff'
     Start-Process (Join-String -f 'es:{0}' -In $QueryStr )
 }
 
