@@ -15565,6 +15565,24 @@ function Dotils.Quick.FormatScript {
     <#
     .SYNOPSIS
         sugar to format code in the console, or clipboard
+    .EXAMPLE
+        # format the last console command you ran
+        > Quick.Fmt.Sb
+    .EXAMPLE
+        # format and save to clipboard
+        > (get-history -Id 140).CommandLine | Quick.Fmt.Sb -ToClipboard
+
+    .EXAMPLE
+        # From piped string
+        > $rawString | Quick.Fmt.Sb
+
+    .EXAMPLE
+        # and indent 2 levels
+        $rawString | Quick.Fmt.Sb -Debug -Depth 2
+    .EXAMPLE
+        read from clipboard
+        > Quick.Fmt.Sb -FromClipboard
+
     #>
     [CmdletBinding()]
     [Alias('Quick.Fmt.Sb')]
@@ -15626,15 +15644,15 @@ function Dotils.Quick.FormatScript {
         $PSBoundParameters | Json -Depth 4
             | Join-String -op 'PSBound: ' | Write-debug
 
-        'prefixBy: [ PredentLevel: {0}, PredentString: "{1}" ]'
-            | Write-Debug
+        'prefixBy: "{0}" from: {{ PredentLevel: {1}, PredentString: "{2}" }}' -f @(
+            $Prefix, $PredentLevel, $PredentString ) | Write-Debug
 
 
         if( $PSBoundParameters.ContainsKey('PredentLevel') ) {
             # wait-debugger
             $Prefix = $PredentString * $PredentLevel -join ''
             $Render = $Render -split '\r?\n'
-                | Join-String -f "`n    {0}"
+                | Join-String -f "`n${Prefix}{0}" #-sep "`n"
         }
         if( [string]::IsNullOrWhiteSpace( $Render )) {
             throw 'Render was Blank!'
