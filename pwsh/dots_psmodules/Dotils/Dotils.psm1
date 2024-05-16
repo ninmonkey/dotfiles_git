@@ -11289,6 +11289,40 @@ function Dotils.Encoding.FindEncoding {
     }
 }
 
+filter Dotils.Format.Quick.RenderHashtable {
+    [Alias('.Show.Dict')]
+    param()
+    hr
+    $_.GetEnumerator().ForEach({@(
+    $_.Name
+            $_.Value | Fp
+        ) | Join-String -f '{0,15} ' })
+    hr
+
+}
+filter Dotils.Format.Quick.RenderColorPath {
+    # returns string, with ansi escapes. colorizes like fd
+    [Alias( 'Fmt-Path.Color', '.Show.Path')]
+    param()
+    $path   = $_ | Get-Item
+
+    $Colors = @{
+        Blue   = '#5ac6ec'
+        Yellow = '#d7d75f'
+    }
+
+    if( $Path.PSIsContainer ) {
+        return $Path.FullName | Join-String -f '{0}\'
+            | New-Text -fg $Colors.Blue | Join-String
+    }
+    @(
+        $Path.Directory | Join-String -f '{0}\'
+            | New-Text -fg $Colors.Blue
+
+        $Path.Name | New-text -fg $Colors.Yellow
+    ) | Join-String -sep ''
+}
+
 function Dotils.SelectBy-Module {
     <#
     .SYNOPSIS
@@ -15507,6 +15541,17 @@ function Dotils.Quick.EverythingSearch {
     write-warning 'todo: [ ] add a new -QueryPattern parameter that runs a regex against the query string, rather than the TemplateName'
     write-warning 'todo: nyi: If regex matches exactly 1, then use it. after step1 which is exactly equal, because that otherwise could be a regex match if not priority'
     $Mappings = [ordered]@{
+
+        'SpeedDial.Projects' = 'ext:code-workspace dm:last27days !Env.AppData:'
+        'SpeedDial.FancyMain' = 'ext:code-workspace ext:code-workspace;pbix;pq;ps1;psm1 dm:last29days ( ( ext:code-workspace;launch.json;pbix;ps1;psm1 dm:last7weeks  !path:ww:history | ( path:ww:".vscode" !path:ww:%AppData\Code" !path:ww:"%UserProfile%\.vscode" )  | ( ext:vhd;vhdx ) | ( dm:last5minutes ext:log )      ) ( !path:"%UserProfile%\.vscode" )        '
+
+        'Book.History.0' = 'ext:code-workspace ext:code-workspace;pbix;pq;ps1;psm1 dm:last29days ( ( ext:code-workspace;launch.json;pbix;ps1;psm1 dm:last7weeks  !path:ww:history | ( path:ww:".vscode" !path:ww:%AppData\Code" !path:ww:"%UserProfile%\.vscode" )  | ( ext:vhd;vhdx ) | ( dm:last5minutes ext:log )      ) ( !path:"%UserProfile%\.vscode" )        '
+        'Last.Aws1' = 'ext:code-workspace dm:last27days !Env.AppData:'
+        'Last.Aws2' = 'dm:last1months root_entry_part1.ps1 content:"Paylo-GetNewIdentity"            !path:".aws-sam"'
+
+        'Last.Aws3' = 'dm:last1months root_entry_part1.ps1 content:"Paylo-GetNewIdentity"            !path:".aws-sam"'
+        'Last.Aws4' = 'dm:last2years ext:yml ( file:ww:"template.yml" ) '
+
         'Last0' = 'ext:code-workspace dm:last9000minutes ( ( my_roots: ) | ( path:ww:"H:\data\client_bdg\2023.03.17-bdg" ) )'
         'Last1' = 'ext:code-workspace dm:last3weeks !Env.UserProfile:'
         'Last2' = 'ext:psm1;ps1 !Env.AppData: *aws*utils*               !path:*gitlogg*         !path:ww:.aws-sam'
@@ -15557,7 +15602,7 @@ function Dotils.Quick.EverythingSearch {
         $ResolvedByPattern = $Mappings.keys -match $TemplateName
         $ResolvedByPattern -match $TemplateName | Join-String -op "`nPatterns -match `$TemplateName" -f "`n{0} " | Write-host -fg 'blue'
         Join-String -f 'UsedTemplatePattern on keys: {0}' $ResolvedByPattern.Count | StripAnsi | write-verbose -verb
-    } else if ( $HasParamQuery ) {
+    } elseif ( $HasParamQuery ) {
         $ResolvedByPattern = $mappings.GetEnumerator().Where({ $_.value -match $QueryPattern } )
         Join-String -f 'UsedQueryParamPattern on values: {0}' $ResolvedByPattern.Count | StripAnsi | write-verbose -verb
     } else {
@@ -17084,6 +17129,70 @@ function Dotils.Fetch.RecurseProperty.Basic {
         $target = $Target.$DescendPropertyName
     } until ( $null -eq $target )
 }
+filter Dotils.Convert.ScriptBlock.asRange {
+    <#
+    .SYNOPSIS
+        sugar because ranges aren't convient to use in interactive mode
+    .EXAMPLE
+        # return positions or vscode path
+
+        > gcm DoStuff | Convert.ScriptBlock.asRange | Join-string -sep ', '
+            13, 13, 16, 14
+
+        > gcm DoStuff | Convert.ScriptBlock.asRange -AsVsCodePath
+            H:\data\2023\pwsh\notebooks\Pwsh\Other\QueryRegistryKeysWithResults.ps1:13:13
+
+    .EXAMPLE
+        # opens function in vscode at the correct line and columns:
+        > code -g ( gcm DoStuff | Convert.ScriptBlock.asRange -AsVsCodePath )
+    .EXAMPLE
+        > . 'QueryRegistryKeysWithResults.ps1'
+        > $what = gcm DoStuff
+        > $where = $what.ScriptBlock.File  | gi -ea 'stop'
+        > $rng   = $what | Convert.ScriptBlock.asRange
+        > $pos   = $rng  | Select -First 2 | Join-String -sep ':'
+
+        # code --goto (Join-string -f "{0}:$Pos" -in $where)
+    .EXAMPLE
+        > $what | Convert.ScriptBlock.asRange | Join-String -sep ', '
+            13, 13, 16, 14
+
+        > $what | Convert.ScriptBlock.asRange -AsVsCodePath
+            H:\data\2023\pwsh\notebooks\Pwsh\Other\QueryRegistryKeysWithResults.ps1:13:13
+    #>
+    [Alias('Convert.ScriptBlock.asRange')]
+    param(
+        [Alias('-Goto')] # sily alias, allows --Goto like vs code uses. it does not autocomplete
+        [switch]$AsVsCodePath
+        # [switch]${-GoTo}
+    )
+    # $EaSplat = @{ ErrorAction = 'continue' } # redundant since the scriptblock file is valid
+    # if( $AsVsCode ) {
+    #     $EaSplat.ErrorAction = 'stop'
+    # }
+    [ScriptBlock]$ScriptBlock = $_ -is [ScriptBlock] ? $_ : $_.ScriptBlock
+    [Ast]$Ast         = $_ -is [Ast] ? $_ : $_.ScriptBlock.Ast
+
+    if( -not $Ast ) {
+        Join-String -f 'Could not resolve ScriptBlock.Ast: Unhandled input type: "{0}"' -in $_ -Property { $_.GetType() }  | Write-error
+        return }
+    if( -not $ScriptBlock ) {
+        Join-String -f 'Could not resolve ScriptBlock: Unhandled input type: "{0}"' -in $_ -Property { $_.GetType() }  | Write-error
+        return }
+
+    if( $AsVsCodePath ) {
+        # builds path: 'foo.ps1:304:23
+        return ( Get-Item -ea 'stop' $ScriptBlock.File ),
+            $Ast.Extent.StartLineNumber,
+            $Ast.Extent.StartColumnNumber
+        | Join-String -sep ':'
+    }
+    # else returns 304,23,400, 10
+    $Ast.Extent.StartLineNumber, $Ast.Extent.StartColumnNumber, $Ast.Extent.EndLineNumber, $Ast.extent.EndColumnNumber
+
+}
+
+# gcm doStuff | ScriptBlock.asRange
 
 function Dotils.Select-VariableByType {
     <#
@@ -19747,6 +19856,13 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-05-15
+        'Convert.ScriptBlock.asRange'
+
+        # 2024-05-15
+        'Fmt-Path.Color'
+        '.Show.Dict'
+        '.Show.Path'
         # 2024-05-13
         'Quick.Es'
 
