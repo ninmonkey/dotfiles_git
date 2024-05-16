@@ -53,8 +53,8 @@ function Dotils.Show.TypeName.Short {
     #>
     [Alias('Show.ShortName')]
     param(
-        # Outputs and array of strings, unless you pass Csv
-        [Alias('ToString')][switch]$Csv )
+        # Outputs and array of strings, unless you pass Csv. defaulted to true because currently the return value of an array of strings wasn't working
+        [Alias('ToString')][switch]$Csv = $True )
     $splat = @{
         FormatString = '[{0}]'
         Separator    = ', '
@@ -73,15 +73,20 @@ function Dotils.Quick.SummarizeResolvedCommand {
             Ninmonkey.Console\shortTypeName  # Is: Alias
             Ninmonkey.Console\Format-ShortSciTypeName  # Is: Function
             Ninmonkey.Console\Format-ShortTypeName  # Is: Function
-
+    .LINK
+        Dotils.Show.TypeName.Short
+    .LINK
+        Dotils.Show.TypeName.Long
     #>
-    $Input
+    $items = @( $Input )
+    $items
         | sort-Object Source, CommandType, Name
         | Join-String -f "`n{0}" -p {
-            $_.Source, $_.Name -join '\' | Join-String -os "  # Is: $( $_.CommandType )"
+            $_.Source, $_.Name -join '\' | Join-String -os "  # Is: $(
+                $_.CommandType )"
         }
 }
-filter Dotils.Show.TypeName.Long {
+function Dotils.Show.TypeName.Long {
     <#
     .SYNOPSIS
         Long name without the fully qualified assembly name verbocity
@@ -102,26 +107,33 @@ filter Dotils.Show.TypeName.Long {
         Ninmonkey.Console\Format-ShortSciTypeName  # Is: Function
         Ninmonkey.Console\Format-ShortTypeName  # Is: Function
         Ninmonkey.Console\Render-ShortTypeName  # Is: Function
-
+    .LINK
+        Dotils.Show.TypeName.Short
+    .LINK
+        Dotils.Show.TypeName.Long
     #>
     [Alias('Show.LongName')]
     [OutputType( [String[]] )]
     param(
-        # Outputs and array of strings, unless you pass Csv
-        [Alias('ToString')][switch]$Csv )
+        # Outputs and array of strings, unless you pass Csv. defaulted to true because currently the return value of an array of strings wasn't working
+        [Alias('ToString')][switch]$Csv = $True )
 
+    $items = @( $Input )
     $splat = @{
         FormatString = '[{0}]'
         Separator    = ', '
-        Property     = {
-            $_.GetType().Namespace -replace '(Text.RegularExpressions|Management.Automation)\.',
+        Property     = { @(
+            $_.GetType().Namespace -replace '^System\.(Text.RegularExpressions|Management.Automation)\.',
                 '' -replace '(System\.)',
                 ''
+            # $_.GetType().Namespace -replace '^System\.(Text.RegularExpressions\.?|Management.Automation)',
+            #     '' -replace '^(System\.?)$',
+            #     ''
             $_.GetType().Name
-        }
+        ) |Join-String -sep '.' }
     }
-    if( -not $Csv ) { $splat.Remove('Separator') }
-    $_ | Join-String @splat
+    if( -not $Csv ) { $splat.Remove('Separator') } # partially not working
+    $items | Join-String @splat
 }
 
 # https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4
