@@ -42,6 +42,41 @@ write-warning 'super experimental bindings'
 
 write-warning 'fix: Obj | .Iter.Prop ; '
 write-warning 'finish Dotils.Get-CachedExpression '
+
+# short version if you want minimal code for a polyfill
+filter _basic.Type.Short { $_ | Join-String -f '[{0}]' -sep ', ' { $_.GetType().Name  } }
+filter _basic.Type.Long  { $_ | Join-String -f '[{0}]' -sep ', ' { $_.GetType().FullName  } }
+filter Dotils.Show.TypeName.Short {
+    param(
+        # Outputs and array of strings, unless you pass Csv
+        [Alias('ToString')][switch]$Csv )
+    $splat = @{
+        FormatString = '[{0}]'
+        Separator    = ', '
+        Property     = { $_.GetType().Name  }
+    }
+    if( -not $Csv ) { $splat.Remove('Separator') }
+    $_ | Join-String @splat
+}
+filter Dotils.Show.TypeName.Long {
+    <#
+    .SYNOPSIS
+        Long name without the fully qualified assembly name verbocity
+    #>
+    [OutputType( [String[]] )]
+    param(
+        # Outputs and array of strings, unless you pass Csv
+        [Alias('ToString')][switch]$Csv )
+
+    $splat = @{
+        FormatString = '[{0}]'
+        Separator    = ', '
+        Property     = { $_.GetType().Name  }
+    }
+    if( -not $Csv ) { $splat.Remove('Separator') }
+    $_ | Join-String @splat
+}
+
 # https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.4
 
 # function Dotils.Resolve.TypeInfo.WithDefault {
@@ -2020,7 +2055,7 @@ filter Dotils.Format.GoEditCommand { # jump to code, works for scripts -- not bi
 
 function Dotils.Regex.RegexEscape {
     # minimal regx escape wrapper, from pipeline or parameters
-    [Alias('Dotils.ReEsc')]
+    [Alias('Dotils.ReEsc', 'RegEsc')]
     param(
         [Parameter(ValueFromPipeline)]
             [string]$Str )
@@ -17062,6 +17097,26 @@ function Dotils.Fetch.RecurseProperty.Render {
     }
 }
 
+filter Dotils.Convert.Resolve.Command {
+    <#
+    .DESCRIPTION
+    experimenting with syntax. sometimes ternary with filters
+    simplify super short, macros.
+    this is not a style recommendation
+    .EXAMPLE
+        # these options all resolve to one command.
+        > 'label'    | Convert.Resolve.Command
+        >  gcm label | Convert.Resolve.Command
+        > (gcm label).ResolvedCommand | Convert.Resolve.Command
+        > (gcm label).ResolvedCommand.Name  | Convert.Resolve.Command
+    #>
+    [Alias('Convert.Resolve.Command' )]
+    param()
+    $t = $_ -is [string] ? (gcm $_) : $_
+    -not $t.ResolvedCommand ? $t :
+         (gcm $t.ResolvedCommand)
+}
+
 function Dotils.Fetch.RecurseProperty.Basic {
     <#
     .SYNOPSIS
@@ -17190,6 +17245,50 @@ filter Dotils.Convert.ScriptBlock.asRange {
     # else returns 304,23,400, 10
     $Ast.Extent.StartLineNumber, $Ast.Extent.StartColumnNumber, $Ast.Extent.EndLineNumber, $Ast.extent.EndColumnNumber
 
+}
+
+function Dotils.Convert.Regex.FromMatchGroup {
+    <#
+    .synopsis
+        converts resutls of [Regex]::Matches
+    .description
+
+    expected input input from [Regex]::Matches() which returns
+        type: [Match] > [Text.RegularExpressions.Match]
+        pstypenames: [Match], [Group], [Capture] > Text.RegularExpressions.*
+    #>
+    [Alias('Convert.Regex.MatchGroup')]
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline)]
+        [object[]]$FoundRecords,
+        [switch]$PreserveNumberedGroups,
+
+        [switch]$ReturnKeyNamesOnly
+    )
+    end {
+        $LineId = 0
+        return @(
+            $FoundRecords | %{
+                $LineId++
+                $FieldId = 0
+                $_.Groups.
+                    Where({ $_.Success }).
+                    Where({
+                        $PreserveNumberedGroups ?
+                            $true :
+                            $_.Name -notmatch '^\d+$' })
+                | %{
+                    [pscustomobject]@{
+                        LineId = $LineId
+                        FieldId     = $FieldId++
+                        Name    = $_.Name
+                        Value   = $_.Value
+                    }
+                }
+            }
+        )
+    }
 }
 
 # gcm doStuff | ScriptBlock.asRange
@@ -19856,6 +19955,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-05-16
+        'RegEsc'
+        'Convert.Regex.MatchGroup'
         # 2024-05-15
         'Convert.ScriptBlock.asRange'
 
