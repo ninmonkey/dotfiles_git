@@ -44,9 +44,14 @@ write-warning 'fix: Obj | .Iter.Prop ; '
 write-warning 'finish Dotils.Get-CachedExpression '
 
 # short version if you want minimal code for a polyfill
-filter _basic.Type.Short { $_ | Join-String -f '[{0}]' -sep ', ' { $_.GetType().Name  } }
-filter _basic.Type.Long  { $_ | Join-String -f '[{0}]' -sep ', ' { $_.GetType().FullName  } }
-filter Dotils.Show.TypeName.Short {
+# filter _basic.Type.Short { $_ | Join-String -f '[{0}]' -sep ', ' { $_.GetType().Name  } }
+# filter _basic.Type.Long  { $_ | Join-String -f '[{0}]' -sep ', ' { $_.GetType().FullName  } }
+function Dotils.Show.TypeName.Short {
+    <#
+    .SYNOPSIS
+        Long name without the fully qualified assembly name verbocity
+    #>
+    [Alias('Show.ShortName')]
     param(
         # Outputs and array of strings, unless you pass Csv
         [Alias('ToString')][switch]$Csv )
@@ -56,13 +61,50 @@ filter Dotils.Show.TypeName.Short {
         Property     = { $_.GetType().Name  }
     }
     if( -not $Csv ) { $splat.Remove('Separator') }
-    $_ | Join-String @splat
+    $input | Join-String @splat
+}
+function Dotils.Quick.SummarizeResolvedCommand {
+    <#
+    .SYNOPSIS
+        quickly render module names etc, as strings
+    .EXAMPLE
+        > gcm *short*type* | Dotils.Quick.SummarizeResolvedCommand
+
+            Ninmonkey.Console\shortTypeName  # Is: Alias
+            Ninmonkey.Console\Format-ShortSciTypeName  # Is: Function
+            Ninmonkey.Console\Format-ShortTypeName  # Is: Function
+
+    #>
+    $Input
+        | sort-Object Source, CommandType, Name
+        | Join-String -f "`n{0}" -p {
+            $_.Source, $_.Name -join '\' | Join-String -os "  # Is: $( $_.CommandType )"
+        }
 }
 filter Dotils.Show.TypeName.Long {
     <#
     .SYNOPSIS
         Long name without the fully qualified assembly name verbocity
+    .NOTES
+        see related:
+
+    > gcm *short*type* | Dotils.Quick.SummarizeResolvedCommand
+
+        dotils\Dotils.Fmt.ShortType  # Is: Alias
+        dotils\Fmt.ShortType  # Is: Alias
+        dotils\Dotils.DbgTest.ShortType  # Is: Function
+        dotils\Dotils.Format-ShortType  # Is: Function
+        NameOf\NameOf.Format.ShortType  # Is: Function
+        nin.ChainLinq\Fmt.ShortType  # Is: Function
+        Ninmonkey.Console\renderShortTypeName  # Is: Alias
+        Ninmonkey.Console\shortType  # Is: Alias
+        Ninmonkey.Console\shortTypeName  # Is: Alias
+        Ninmonkey.Console\Format-ShortSciTypeName  # Is: Function
+        Ninmonkey.Console\Format-ShortTypeName  # Is: Function
+        Ninmonkey.Console\Render-ShortTypeName  # Is: Function
+
     #>
+    [Alias('Show.LongName')]
     [OutputType( [String[]] )]
     param(
         # Outputs and array of strings, unless you pass Csv
@@ -71,7 +113,12 @@ filter Dotils.Show.TypeName.Long {
     $splat = @{
         FormatString = '[{0}]'
         Separator    = ', '
-        Property     = { $_.GetType().Name  }
+        Property     = {
+            $_.GetType().Namespace -replace '(Text.RegularExpressions|Management.Automation)\.',
+                '' -replace '(System\.)',
+                ''
+            $_.GetType().Name
+        }
     }
     if( -not $Csv ) { $splat.Remove('Separator') }
     $_ | Join-String @splat
@@ -19958,6 +20005,8 @@ $exportModuleMemberSplat = @{
         # 2024-05-16
         'RegEsc'
         'Convert.Regex.MatchGroup'
+        'Show.ShortName'
+        'Show.LongName'
         # 2024-05-15
         'Convert.ScriptBlock.asRange'
 
