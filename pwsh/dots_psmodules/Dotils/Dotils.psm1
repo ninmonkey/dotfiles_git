@@ -16,6 +16,10 @@ $saGlobSplat = @{
     Scope       = 'Global'
     # Force       = $true
 }
+# quick path hack, because I don't have a path for a build version, and the paths had a double Picky in the name, to fix
+$env:PSModulePath = @( $env:PSModulePath ; 'H:\data\2024\pwsh\Modules.devNin.🦍\Picky' ) |Join-String -sep ';'
+# Import-Module -force -pass 'H:\data\2024\pwsh\Modules.devNin.🦍\Picky\Picky\Picky.psd1'
+Import-Module -force -pass 'Picky'
 @(
     Set-Alias @saGlobSplat -name 'st'           -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
     Set-Alias @saGlobSplat -name '.fmt.Type'    -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
@@ -39,6 +43,8 @@ write-warning 'super experimental bindings'
     Set-Alias @saGlobSplat -Name 'Pk?Skip<' -value 'Picky\Picky.Text.SkipBeforeMatch'
     Set-Alias @saGlobSplat -Name 'Pk.B4↪' -value 'Picky\Picky.Text.SkipBeforeMatch'
 ) | Ft -auto | Out-String | Write-host
+
+
 
 write-warning 'fix: Obj | .Iter.Prop ; '
 write-warning 'finish Dotils.Get-CachedExpression '
@@ -17315,6 +17321,10 @@ function Dotils.Convert.Regex.FromMatchGroup {
     expected input input from [Regex]::Matches() which returns
         type: [Match] > [Text.RegularExpressions.Match]
         pstypenames: [Match], [Group], [Capture] > Text.RegularExpressions.*
+    .EXAMPLE
+        $found.q | Dotils.Convert.Regex.FromMatchGroup -PreserveNumberedGroups -ReturnKeyNamesOnly | Join-String -sep
+        ', '
+        0, FieldName, FieldValue, OuterTextFromNoQuoteRecord, ValueWithQuotesOrNot
     #>
     [Alias('Convert.Regex.MatchGroup')]
     [CmdletBinding()]
@@ -17323,11 +17333,13 @@ function Dotils.Convert.Regex.FromMatchGroup {
         [object[]]$FoundRecords,
         [switch]$PreserveNumberedGroups,
 
+        # returns every possible named capture group, that found
+        # something in at least one or more collections
         [switch]$ReturnKeyNamesOnly
     )
     end {
         $LineId = 0
-        return @(
+        $query = @(
             $FoundRecords | %{
                 $LineId++
                 $FieldId = 0
@@ -17347,6 +17359,10 @@ function Dotils.Convert.Regex.FromMatchGroup {
                 }
             }
         )
+        if( $ReturnKeyNamesOnly ) {
+            return $query.Name | Sort-Object -Unique
+        }
+        $query
     }
 }
 
@@ -17392,7 +17408,7 @@ function Dotils.Select-VariableByType {
         [switch]$ListCategory
     )
 
-    write-warning 'slightly NYI, validate working'
+    write-warning 'superceded by: Picky\Picky.ConvertFrom.RegexCollection'
 
     $OptionalParams = @{}
     if($PSBoundParameters.ContainsKey('scope')){
