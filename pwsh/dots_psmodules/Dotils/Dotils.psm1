@@ -15735,7 +15735,7 @@ function Dotils.Jekyll.InvokeBuild {
         [switch] $LiveReload, # in
 
         [ArgumentCompletions(4001, 3001)]
-        [int] $Port = 4001,
+        [int] $Port = 3001,
 
         [alias('WhatIf')][switch] $TestArgBuilderOnly,
 
@@ -15745,8 +15745,10 @@ function Dotils.Jekyll.InvokeBuild {
         [switch] $VerboseBuild,
 
         [Alias('UrlRoot')]
+        [ArgumentCompletions('http://localhost')]
         [string] $BaseUrl = 'http://localhost',
 
+        [Alias('Quiet')]
         [switch] $Silent
     )
 
