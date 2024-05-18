@@ -15716,12 +15716,14 @@ function Dotils.Jekyll.InvokeBuild {
         [ValidateScript({throw 'nyi'})]
         [string] $Config,
         [ValidateScript({throw 'nyi'})]
-        [string] $Destination,
-        [ValidateScript({throw 'nyi'})]
-        [string] $Source,
+
+        [string] $Destination = './_site',
 
         [ValidateScript({throw 'nyi'})]
-        [string] $LayoutsPath,
+        [string] $Source = './',
+
+        [ValidateScript({throw 'nyi'})]
+        [string] $LayoutsPath = './_layouts',
 
         [Alias('NoAutoBuildOnChanges')]
         [switch] $NoWatchForChanges, # jekyyl auto compiles on changes
@@ -15742,12 +15744,15 @@ function Dotils.Jekyll.InvokeBuild {
         [switch] $FullBacktraceOnError,
         [switch] $VerboseBuild,
 
+        [Alias('UrlRoot')]
+        [string] $BaseUrl = 'http://localhost',
+
         [switch] $Silent
     )
 
     $BinBundle = get-command -Name 'bundle' -CommandType Application -TotalCount 1 -ea 'stop'
 
-    [List[Object]]$BinArgs = @(
+    [List[Object]] $BinArgs = @(
         'exec'
         'jekyll'
         <#
@@ -15764,9 +15769,12 @@ function Dotils.Jekyll.InvokeBuild {
 
         # if( $Watch.IsPresent -or $LiveReload.IsPresent ) { '--watch', $Port }
         # for now always
-        'http://localhost'
         if( -not $NoWatchForChanges ) { '--watch' }
         if( $Port ) { $Port }
+
+        if ( $BaseUrl ) { '--baseurl', $BaseUrl}
+
+
         if( $IncrementalBuild ) { '--incremental' }
         if( $VerboseBuild ) { '--verbose' }
         if( $Silent ) { '--quiet' }
