@@ -731,7 +731,7 @@ function Dotils.Invoke-NoProfilePwsh {
     .EXAMPLE
         Dotils.Quick.NoProfilePwsh
     #>
-    [Alias('Dotils.Quick.NoProfilePwsh')]
+    [Alias('Dotils.Quick.NoProfilePwsh', 'Quick.Pwsh.Nop')]
     param(
         [ArgumentCompletions(
             'Pipescript', 'ugit'
@@ -741,6 +741,10 @@ function Dotils.Invoke-NoProfilePwsh {
     )
     'starting pwsh --NoProfile...' | write-host -fore green
     pwsh -NoP -NoLogo -NoExit -Command {
+        # get-date | write-verbose
+        if( -not $ImportModuleNames ) {
+            $ImportModuleNames = 'Pipescript', 'ugit'
+        }
         Set-PSReadLineKeyHandler -Chord 'Alt+Enter'   -Function InsertLineBelow
         Set-PSReadLineKeyHandler -Chord 'Shift+Enter' -Function InsertLineAbove
         $setAliasSplat = @{
@@ -748,11 +752,19 @@ function Dotils.Invoke-NoProfilePwsh {
             PassThru    = $true
         }
         @(
+            Set-Alias @setAliasSplat 'impo' -Value Import-Module
             Set-Alias @setAliasSplat 'gcl' -Value Get-ClipBoard
             Set-Alias @setAliasSplat 'cl' -Value Set-Clipboard
         ) | Join-String -op 'Set Aliases: ' -sep ', ' | Write-verbose -verbose
         # Import-Module -Name $ImportModuleNames -PassThru -Verbose # using scope issue?
         function Prompt {@( "`n"; $PSStyle.Foreground.FromRgb('#6e6e6e'); Get-Location; "`n"; '> '; $PSStyle.Reset; ) -join ''}
+
+        @(  Import-Module 'pansies'
+            Import-Module $importModulenames -pass
+        # )   | Join-string -sep ', ' -prop { $_.Name, $_.Version -sep ': ' }
+        )   | Join-string -sep ', '
+            | Write-host -fore green
+        # get-date | write-verbose
     }
 }
 function Dotils.EC.GetCommandName {
@@ -15616,7 +15628,163 @@ function Dotils.Toast.InvokeAlarm {
 }
 
 
+function Dotils.Jekyll.InvokeBuild {
+    <#
+    .SYNOPSIS
+        quick build Jeykyll templates in root
+    .link
+        https://jekyllrb.com/docs/
+    .link
+        https://jekyllrb.com/docs/usage/
+    .link
+        https://jekyllrb.com/docs/step-by-step/10-deployment/
+    .example
 
+        Pwsh> jekyll help
+
+        jekyll <subcommand> [options]
+        Options:
+                -s, --source [DIR]  Source directory (defaults to ./)
+                -d, --destination [DIR]  Destination directory (defaults to ./_site)
+                    --safe         Safe mode (defaults to false)
+                -p, --plugins PLUGINS_DIR1[,PLUGINS_DIR2[,...]]  Plugins directory (defaults to ./_plugins)
+                    --layouts DIR  Layouts directory (defaults to ./_layouts)
+                    --profile      Generate a Liquid rendering profile
+                -h, --help         Show this message
+                -v, --version      Print the name and version
+                -t, --trace        Show the full backtrace when an error occurs
+
+        Subcommands:
+        compose
+        docs
+        import
+        build, b              Build your site
+        clean                 Clean the site (removes site output and metadata file) without building.
+        doctor, hyde          Search site and print specific deprecation warnings
+        help                  Show the help message, optionally for a given subcommand.
+        new                   Creates a new Jekyll site scaffold in PATH
+        new-theme             Creates a new Jekyll theme scaffold
+        serve, server, s      Serve your site locally
+    jekyll help build
+
+
+    Pwsh> Jeykll help build
+
+        Usage:
+
+        jekyll build [options]
+
+        Options:
+                    --config CONFIG_FILE[,CONFIG_FILE2,...]  Custom configuration file
+                -d, --destination DESTINATION  The current folder will be generated into DESTINATION
+                -s, --source SOURCE  Custom source directory
+                    --future       Publishes posts with a future date
+                    --limit_posts MAX_POSTS  Limits the number of posts to parse and publish
+                -w, --[no-]watch   Watch for changes and rebuild
+                -b, --baseurl URL  Serve the website from the given base URL
+                    --force_polling  Force watch to use polling
+                    --lsi          Use LSI for improved related posts
+                -D, --drafts       Render posts in the _drafts folder
+                    --unpublished  Render posts that were marked as unpublished
+                    --disable-disk-cache  Disable caching to disk in non-safe mode
+                -q, --quiet        Silence output.
+                -V, --verbose      Print verbose output.
+                -I, --incremental  Enable incremental rebuild.
+                    --strict_front_matter  Fail if errors are present in front matter
+                -s, --source [DIR]  Source directory (defaults to ./)
+                -d, --destination [DIR]  Destination directory (defaults to ./_site)
+                    --safe         Safe mode (defaults to false)
+                -p, --plugins PLUGINS_DIR1[,PLUGINS_DIR2[,...]]  Plugins directory (defaults to ./_plugins)
+                    --layouts DIR  Layouts directory (defaults to ./_layouts)
+                    --profile      Generate a Liquid rendering profile
+                -h, --help         Show this message
+                -v, --version      Print the name and version
+                -t, --trace        Show the full backtrace when an error occurs
+    #>
+    [Alias('Quick.Jekyll')]
+    [CmdletBinding()]
+    param(
+
+        [ValidateScript({throw 'nyi'})]
+        [string] $Config,
+        [ValidateScript({throw 'nyi'})]
+        [string] $Destination,
+        [ValidateScript({throw 'nyi'})]
+        [string] $Source,
+
+        [ValidateScript({throw 'nyi'})]
+        [string] $LayoutsPath,
+
+        [bool] $Watch, # jekyyl auto compiles on changes
+
+        [switch] $Clean,
+        [switch] $NoServe,
+        [switch] $IncrementalBuild, # Enable incremental rebuild
+
+        [switch] $LiveReload, # in
+        [int] $Port = 4001,
+
+        [alias('WhatIf')][switch] $TestArgBuilderOnly,
+
+        [Alias('Help')][switch] $ShowHelp,
+
+        [switch] $FullBacktraceOnError,
+        [switch] $VerboseBuild,
+
+        [switch] $Silent
+    )
+
+    $BinBundle = get-command -Name 'bundle' -CommandType Application -TotalCount 1 -ea 'stop'
+    [List[Object]]$BinARgs = @(
+        'exec',
+        'jekyll',
+
+        <#
+             # which is cleaner to read?
+            if ( -not $NoServe ) { 'serve'}
+            $NoServe ? $null : 'serve'
+            $NoServe ?
+                $null : 'serve'
+
+        #>
+        -not $NoServe ? 'serve' : $null
+        $LiveReload ? '--livereload' : $Null
+
+        # if( $Watch.IsPresent -or $LiveReload.IsPresent ) { '--watch', $Port }
+        # for now always
+        'http://localhost'
+        if( $Watch ) {
+            '--watch'
+            if( $Port ) { $Port }
+        }
+
+        if( $IncrementalBuild ) { '--incremental' }
+        if( $VerboseBuild ) { '--verbose' }
+        if( $Silent ) { '--quiet' }
+
+        # if( $Watch.IsPresent -or $LiveReload.IsPresent ) { '--watch', $Port }
+        # 'jekyll'
+        # 'serve' <# --livereload #> --watch 4001 http://localhost <# --incremental #>
+        # bundle exec jekyll serve <# --livereload #> --watch 4001 http://localhost <# --incremental #>
+        if( $FullBacktraceOnError ) {  '--trace' }
+    )
+
+    if( $TestArgBuilderOnly) {
+        $binArgs | Join-String -op 'invoke bundle: args := ' -sep ', ' | Write-host -fg '#b2cd9b'
+        return
+    }
+    if( $Clean ) { # // what if?
+        & $binBundle @('clean')
+        return
+    }
+    if ( $ShowHelp ) {
+        & $binBundle @('jekyll help build')
+        & $binBundle @('jekyll help')
+        return
+    }
+    $binArgs | Join-String -op 'invoke bundle: args := ' -sep ', ' | Write-host -fg '#b2cd9b'
+    & $BinBundle @BinArgs
+}
 function Dotils.Quick.EverythingSearch {
     <#
     .synopsis
@@ -20030,6 +20198,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-05-18
+        'Quick.Pwsh.Nop'
+        'Quick.Jekyll'
         # 2024-05-16
         'RegEsc'
         'Convert.Regex.MatchGroup'
