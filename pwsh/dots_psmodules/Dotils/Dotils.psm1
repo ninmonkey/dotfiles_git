@@ -15638,7 +15638,15 @@ function Dotils.Jekyll.InvokeBuild {
         https://jekyllrb.com/docs/usage/
     .link
         https://jekyllrb.com/docs/step-by-step/10-deployment/
+    .DESCRIPTION
+        see .notes for more
     .example
+        # First, preview the command built:
+        Pwsh> Quick.Jekyll -WhatIf -Watch -LiveReload:$false -NoServe:$true -IncrementalBuild:$false -Port 3001
+
+        # out: Invoke bundle: args := exec jekyll http://localhost --watch 3001
+
+    .notes
 
         Pwsh> jekyll help
 
@@ -15715,13 +15723,16 @@ function Dotils.Jekyll.InvokeBuild {
         [ValidateScript({throw 'nyi'})]
         [string] $LayoutsPath,
 
-        [bool] $Watch, # jekyyl auto compiles on changes
+        [Alias('NoAutoBuildOnChanges')]
+        [switch] $NoWatchForChanges, # jekyyl auto compiles on changes
 
         [switch] $Clean,
         [switch] $NoServe,
         [switch] $IncrementalBuild, # Enable incremental rebuild
 
         [switch] $LiveReload, # in
+
+        [ArgumentCompletions(4001, 3001)]
         [int] $Port = 4001,
 
         [alias('WhatIf')][switch] $TestArgBuilderOnly,
@@ -15735,10 +15746,10 @@ function Dotils.Jekyll.InvokeBuild {
     )
 
     $BinBundle = get-command -Name 'bundle' -CommandType Application -TotalCount 1 -ea 'stop'
-    [List[Object]]$BinARgs = @(
-        'exec',
-        'jekyll',
 
+    [List[Object]]$BinArgs = @(
+        'exec'
+        'jekyll'
         <#
              # which is cleaner to read?
             if ( -not $NoServe ) { 'serve'}
@@ -15747,17 +15758,15 @@ function Dotils.Jekyll.InvokeBuild {
                 $null : 'serve'
 
         #>
-        -not $NoServe ? 'serve' : $null
+        if( -not $NoServe ) { 'serve' }
+        # -not $NoServe ? 'serve' : $null
         $LiveReload ? '--livereload' : $Null
 
         # if( $Watch.IsPresent -or $LiveReload.IsPresent ) { '--watch', $Port }
         # for now always
         'http://localhost'
-        if( $Watch ) {
-            '--watch'
-            if( $Port ) { $Port }
-        }
-
+        if( -not $NoWatchForChanges ) { '--watch' }
+        if( $Port ) { $Port }
         if( $IncrementalBuild ) { '--incremental' }
         if( $VerboseBuild ) { '--verbose' }
         if( $Silent ) { '--quiet' }
@@ -15770,7 +15779,7 @@ function Dotils.Jekyll.InvokeBuild {
     )
 
     if( $TestArgBuilderOnly) {
-        $binArgs | Join-String -op 'invoke bundle: args := ' -sep ', ' | Write-host -fg '#b2cd9b'
+        $binArgs | Join-String -op 'invoke bundle: args := ' -sep ' ' | Write-host -fg '#b2cd9b'
         return
     }
     if( $Clean ) { # // what if?
@@ -15782,7 +15791,7 @@ function Dotils.Jekyll.InvokeBuild {
         & $binBundle @('jekyll help')
         return
     }
-    $binArgs | Join-String -op 'invoke bundle: args := ' -sep ', ' | Write-host -fg '#b2cd9b'
+    $binArgs | Join-String -op 'invoke bundle: args := ' -sep ' ' | Write-host -fg '#b2cd9b'
     & $BinBundle @BinArgs
 }
 function Dotils.Quick.EverythingSearch {
