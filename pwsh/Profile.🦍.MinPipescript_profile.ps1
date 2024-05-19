@@ -2,15 +2,16 @@
 # stand alone scrip so that it can be ran with pwsh -File from build scripts
 'NoProfile min pipescript: {0}' -f $PSCommandPath | Write-verbose
 
-if (-not $Profile.CurrentUserPipe🐍Profile ) {
+if (-not $Profile.'CurrentUserPipe🐍Profile' ) {
     $Profile | Add-member -NotePropertyName 'CurrentUser🐍Profile' -value (gi $PSCommandPath) -ea ignore -Force
 }
 
 $PipeConfig = @{
     ImportModules = @(
         'PSReadLine',
-        'Pansies', 'ugit',
-        'Pipescript',
+        'Pansies',
+        'ugit',
+        'Pipescript'
         # 'GitLogger'
     )
     ErrorHandling = @{
@@ -92,6 +93,7 @@ function __init__pipeProfile_Modules {
 
 function __init__pipeProfile_EntryPoint {
     param()
+    __init__pipeProfile_Modules
     __init__pipeProfile_Alias
     __init__pipeProfile_Keybinds
 
@@ -130,16 +132,24 @@ function Dotils.Invoke-NoProfilePwsh {
         # Import-Module -Name $ImportModuleNames -PassThru -Verbose # using scope issue?
     }
 }
-function Prompt.1Liner {@( "`n"; $PSStyle.Foreground.FromRgb('#6e6e6e'); Get-Location; "`n"; '> '; $PSStyle.Reset; ) -join ''}
+function __init__pipeProfile_Prompt.1Liner {@( "`n"; $PSStyle.Foreground.FromRgb('#6e6e6e'); Get-Location; "`n"; '> '; $PSStyle.Reset; ) -join ''}
 function Prompt {
     # minimal prompt mainly for pipescript evaluations
     param()
-    $delta = $script:__pipeProfile_State.Dt_LastInvoke - [datetime]::Now
+    $now   = [Datetime]::Now
+    $delta = $now - $script:__pipeProfile_State.Dt_LastInvoke
+    $script:__pipeProfile_State.Dt_LastInvoke = $Now
     @(
+        "`n"
+        if( $global:error.count -gt 0 ) {
+            $PSStyle.Foreground.FromRgb('#6e3344')
+            $global:error.count
+        }
         "`n"
         $PSStyle.Foreground.FromRgb('#6e6e6e')
         (get-date).ToShortTimeString()
-        ' '
+        ': '
+        $PSStyle.Foreground.FromRgb('#9e9e9e')
         Join-String -f '{0:n0} ms' -In $delta -Property TotalMilliseconds
         ', or '
         Join-String -f '{0:n2} min ' -In $delta -Property TotalMinutes
