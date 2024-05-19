@@ -7,6 +7,7 @@ $PROFILE | Add-Member -NotePropertyMembers @{
     Nin_AliasesEntry          = $PSCommandPath | Gi
     Nin_InlineFormatDataEntry = $PSCommandpath | Gi
     Nin_TypeAccelEntry        = $PSCommandPath | Gi
+    'CurrentUser🐍Profile'    = (Join-Path $PSScriptRoot 'Profile.🦍.MinPipescript_profile.ps1' | gi )
 } -Force -ea Ignore
 
 $ENV:PATH = @(
