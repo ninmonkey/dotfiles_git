@@ -18,9 +18,13 @@ $saGlobSplat = @{
 }
 # quick path hack, because I don't have a path for a build version, and the paths had a double Picky in the name, to fix
 $env:PSModulePath = @( $env:PSModulePath ; 'H:\data\2024\pwsh\Modules.devNin.🦍\Picky' ) |Join-String -sep ';'
+# future: ensure never duplicate paths in psmoduelspath, case-insensitive always
+
+
 # Import-Module -force -pass 'H:\data\2024\pwsh\Modules.devNin.🦍\Picky\Picky\Picky.psd1'
 Import-Module -force -pass 'Picky'
 @(
+    Set-Alias @saGlobSplat -name 'impo'         -Value 'Import-Module' -desc 'Import Module'
     Set-Alias @saGlobSplat -name 'st'           -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
     Set-Alias @saGlobSplat -name '.fmt.Type'    -Value 'Ninmonkey.Console\Format-ShortTypeName' -desc 'Abbreviate types'
     Set-Alias @saGlobSplat -name 'Yaml'         -Value 'powershell-yaml\ConvertTo-Yaml'
@@ -15751,6 +15755,7 @@ function Dotils.Jekyll.InvokeBuild {
         [Alias('Quiet')]
         [switch] $Silent
     )
+    write-verbose 'or try: "bundle exec jekyll serve <# --livereload #> --watch 4001 http://localhost --incremental"' -Verbose
 
     $BinBundle = get-command -Name 'bundle' -CommandType Application -TotalCount 1 -ea 'stop'
 
@@ -15803,6 +15808,34 @@ function Dotils.Jekyll.InvokeBuild {
     }
     $binArgs | Join-String -op 'invoke bundle: args := ' -sep ' ' | Write-host -fg '#b2cd9b'
     & $BinBundle @BinArgs
+}
+function Dotils.Quick.Fd.FindPipescript {
+    <#
+    .SYNOPSIS
+        find all files that are specifically pipescript
+    #>
+    [Alias('Quick.Fd.GetPipescript', 'Quick.Fd.IsPipescript')]
+    [cmdletbinding()]
+    param(
+        # root path or '.'
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('BaseFolder', 'RootFolder', 'Path', 'PSPath')]
+        [object] $BaseSearchPath,
+
+        # use fd recency dates
+        [ArgumentCompletions('30minutes', '2hours', '8hours', '7days', '3months', '2years')]
+        [string]$ChangedWithin
+    )
+    if( [string]::IsNullOrWhiteSpace($Path) ) { $Path = gi '.' }
+    $regex_IsPipescript = '(?i)\.ps\.[^.]+$' # force insensitive, basically find: "*.ps.*"
+
+    [List[Object]]$FdArgs = @(
+        $regex_IsPipescript
+        '--search-path', $Path
+        if( $ChangedWithin ) { '--changed-within', $ChangedWithin }
+    )
+    $FdArgs | Join-String -op 'Invoke bin Fd => ' -sep ' '  | Write-verbose
+    & fd @fdArgs
 }
 function Dotils.Quick.EverythingSearch {
     <#
@@ -20218,6 +20251,7 @@ $exportModuleMemberSplat = @{
     | Sort-Object -Unique
     Alias    = @(
         # 2024-05-18
+        'Quick.Fd.IsPipescript'
         'Quick.Pwsh.Nop'
         'Quick.Jekyll'
         # 2024-05-16
