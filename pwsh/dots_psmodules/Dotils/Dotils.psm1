@@ -738,19 +738,26 @@ function Dotils.Invoke-NoProfilePwsh {
     [Alias('Dotils.Quick.NoProfilePwsh', 'Quick.Pwsh.Nop')]
     param(
         [ArgumentCompletions(
-            'Pipescript', 'ugit'
+            'Pipescript', 'ugit', 'Pansies', 'Dotils'
         )]
         [string[]]$ImportModuleNames
 
     )
     'starting pwsh --NoProfile...' | write-host -fore green
     pwsh -NoP -NoLogo -NoExit -Command {
+        $global:StringModule_DontInjectJoinString = $true # this matters, because Nop imports the polyfill which breaks code on Join-String:  context/reason: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055> or just delete the module
         # get-date | write-verbose
         if( -not $ImportModuleNames ) {
-            $ImportModuleNames = 'Pipescript', 'ugit'
+            $ImportModuleNames = 'Pansies', 'Pipescript', 'ugit'
         }
+        # normal defaults
         Set-PSReadLineKeyHandler -Chord 'Alt+Enter'   -Function InsertLineBelow
         Set-PSReadLineKeyHandler -Chord 'Shift+Enter' -Function InsertLineAbove
+        Set-PSReadLineKeyHandler -Chord 'Ctrl+r' -Function ReverseSearchHistory
+        Set-PSReadLineKeyHandler -Chord 'Ctrl+a' -Function SelectAll
+        Set-PSReadLineKeyHandler -Chord 'Ctrl+z' -Function Undo
+        Set-PSReadLineKeyHandler -Chord 'Alt+a' -Function SelectCommandArgument
+
         $setAliasSplat = @{
             ErrorAction = 'ignore'
             PassThru    = $true
