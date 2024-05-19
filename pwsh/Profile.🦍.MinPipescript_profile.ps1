@@ -1,9 +1,12 @@
 ﻿#Requires -Version 7
+
 # stand alone scrip so that it can be ran with pwsh -File from build scripts
 'NoProfile min pipescript: {0}' -f $PSCommandPath | Write-verbose
 
 if (-not $Profile.'CurrentUserPipe🐍Profile' ) {
-    $Profile | Add-member -NotePropertyName 'CurrentUser🐍Profile' -value (gi $PSCommandPath) -ea ignore -Force
+    if( $PSCommandPath ) { # doesn't exist on -File
+        $Profile | Add-member -ea 'ignore' -Force -NotePropertyName 'CurrentUserPipe🐍Profile' -NotePropertyValue (gi $PSCommandPath)
+    }
 }
 
 $PipeConfig = @{
@@ -32,13 +35,13 @@ function __init__pipeProfile_Alias {
         PassThru    = $true
     }
     @(
-        Set-Alias @setAliasSplat 'Sc'        -Value Set-Content
-        Set-Alias @setAliasSplat 'Gc'        -Value Get-Content
-        Set-Alias @setAliasSplat 'impo'      -Value Import-Module
-        Set-Alias @setAliasSplat 'Gcl'       -Value Get-ClipBoard
-        Set-Alias @setAliasSplat 'Cl'        -Value Set-Clipboard
-        Set-Alias @setAliasSplat 'Json'      -Value ConvertTo-Json
-        Set-Alias @setAliasSplat 'Json.From' -Value ConvertFrom-Json
+        Set-Alias @alias_Splat -Name 'Sc'        -Value Set-Content
+        Set-Alias @alias_Splat -Name 'Gc'        -Value Get-Content
+        Set-Alias @alias_Splat -Name 'impo'      -Value Import-Module
+        Set-Alias @alias_Splat -Name 'Gcl'       -Value Get-ClipBoard
+        Set-Alias @alias_Splat -Name 'Cl'        -Value Set-Clipboard
+        Set-Alias @alias_Splat -Name 'Json'      -Value ConvertTo-Json
+        Set-Alias @alias_Splat -Name 'Json.From' -Value ConvertFrom-Json
 
     ) | Join-String -op '-Nop Pipe🐍 + Aliases: ' -sep ', '
         | Write-verbose -verbose
@@ -59,7 +62,8 @@ function __init__pipeProfile_Fancy {
 
     @(  Import-Module @impo_Splat -name CompletionPredictor
         Import-Module @impo_Splat -name ClassExplorer
-    ) | Join-String
+    )   | Join-String -f 'Loading Modules: {0}' -sep ', ' -p { $_.Name, $_.Version -join ': ' }
+        | Write-Verbose -verbose
 
 }
 
@@ -74,12 +78,19 @@ function __init__pipeProfile_Keybinds {
     Set-PSReadLineKeyHandler -Chord 'Shift+Alt+?' -Function WhatIsKey
 }
 function __init__pipeProfile_Modules {
+    [CmdletBinding()]
     param(
         [string[]]$ModuleNames
     )
+    $ModuleNames | Join-String -sep ', ' -op 'try modules: '
+        | Write-verbose -verb
     foreach($name in $ModuleNames) {
         try {
-            Import-Module $Name -force -PassThru -ea 'stop'
+            @(
+                Import-Module $Name -force -PassThru -ea 'stop'
+            )   | Join-String -f 'Loading Module: {0}' -sep ', ' -p { $_.Name, $_.Version -join ': ' }
+                | Write-Verbose -verbose
+
         } catch {
             'Import failed for module: {0} from {1}' -f $Name, $PSCommandPath
                 | Write-warning
@@ -93,7 +104,7 @@ function __init__pipeProfile_Modules {
 
 function __init__pipeProfile_EntryPoint {
     param()
-    __init__pipeProfile_Modules
+    __init__pipeProfile_Modules -ModuleNames $Script:PipeConfig.ImportModules
     __init__pipeProfile_Alias
     __init__pipeProfile_Keybinds
 
@@ -132,6 +143,35 @@ function Dotils.Invoke-NoProfilePwsh {
         # Import-Module -Name $ImportModuleNames -PassThru -Verbose # using scope issue?
     }
 }
+function __pipeProfile__Fd.FindPipescript {
+    <#
+    .SYNOPSIS
+        find all files that are specifically pipescript
+    #>
+    [Alias('Pipe.Fd.FindPipescript')]
+    [cmdletbinding()]
+    param(
+        # root path or '.'
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('BaseFolder', 'RootFolder', 'Path', 'PSPath')]
+        [object] $BaseSearchPath,
+
+        # use fd recency dates
+        [ArgumentCompletions('30minutes', '2hours', '8hours', '7days', '3months', '2years')]
+        [string]$ChangedWithin
+    )
+    if( [string]::IsNullOrWhiteSpace($Path) ) { $Path = gi '.' }
+    $regex_IsPipescript = '(?i)\.ps\.[^.]+$' # force insensitive, basically find: "*.ps.*"
+
+    [Collections.Generic.List[Object]]$FdArgs = @(
+        $regex_IsPipescript
+        '--search-path', $Path
+        if( $ChangedWithin ) { '--changed-within', $ChangedWithin }
+    )
+    $FdArgs | Join-String -op 'Invoke bin Fd => ' -sep ' '  | Write-verbose
+    & fd @fdArgs
+}
+
 function __init__pipeProfile_Prompt.1Liner {@( "`n"; $PSStyle.Foreground.FromRgb('#6e6e6e'); Get-Location; "`n"; '> '; $PSStyle.Reset; ) -join ''}
 function Prompt {
     # minimal prompt mainly for pipescript evaluations
@@ -227,3 +267,6 @@ function Prompt {
 #         return $global:gi
 #     }
 # }
+
+
+__init__pipeProfile_EntryPoint
