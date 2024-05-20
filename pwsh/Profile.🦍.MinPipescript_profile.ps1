@@ -30,6 +30,7 @@ $PipeConfig = @{
         AlwaysCatchImports = $false
     }
     AlwaysFindOnLoad = $true
+    AlwaysWaitAtEnd_Sec = 3
 }
 
 $Script:__pipeProfile_State = @{
@@ -305,4 +306,8 @@ __init__pipeProfile_EntryPoint
 
 if($PipeConfig.AlwaysFindOnLoad) {
     Pipe.Fd.FindPipescript
+}
+if($PipeConfig.AlwaysWaitAtEnd_Sec ) {
+    '...done' | write-host -fore green
+    Sleep -sec $PipeConfig.AlwaysWaitAtEnd_Sec
 }
