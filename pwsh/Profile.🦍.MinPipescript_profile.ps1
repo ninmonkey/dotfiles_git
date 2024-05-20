@@ -11,15 +11,25 @@ if (-not $Profile.'CurrentUserPipe🐍Profile' ) {
 
 $PipeConfig = @{
     ImportModules = @(
+        # 'PSReadLine',
+        # 'Pansies',
+        # 'ugit',
+        'Pipescript'
+        # 'GitLogger'
+    )
+    ImportExtraModules = @(
         'PSReadLine',
         'Pansies',
         'ugit',
-        'Pipescript'
+        'CompletionPredictor',
+        'ClassExplorer'
+        # 'Pipescript'
         # 'GitLogger'
     )
     ErrorHandling = @{
         AlwaysCatchImports = $false
     }
+    AlwaysFindOnLoad = $true
 }
 
 $Script:__pipeProfile_State = @{
@@ -47,12 +57,34 @@ function __init__pipeProfile_Alias {
         | Write-verbose -verbose
 }
 
+function __pipeProfile__BuildPipescript {
+    [Alias('Pipe.BuildIt')]
+    param()
+    'Building...' | Write-host -fore blue
+    Build-Pipescript *.ps.* -verbose
+
+}
+function __pipeProfile__compileThenSleepLoop {
+    <#
+    .SYNOPSIS
+        for cases that start as a pipescript session that then want to be  interactive
+    #>
+    [Alias('Pipe.BuildChangesLoop',  'Pipe.Start-WatchForChangesLoop', 'Pipe.CompileSleepLoop')]
+    param()
+
+    write-warning 'nyi: would be invoking compile here. then sleeping'
+    while($true) {
+        sleep -sec 5
+        __pipeProfile__BuildPipescript
+    }
+}
 function __init__pipeProfile_Fancy {
     <#
     .SYNOPSIS
         for cases that start as a pipescript session that then want to be  interactive
     #>
-    [Alias('PipeSess.ImportFancy')]
+
+    [Alias('Pipe.ImportFancy')]
     param()
     $impo_Splat = @{
         PassThru = $True
@@ -60,11 +92,10 @@ function __init__pipeProfile_Fancy {
         ea = 'Continue'
     }
 
-    @(  Import-Module @impo_Splat -name CompletionPredictor
-        Import-Module @impo_Splat -name ClassExplorer
-    )   | Join-String -f 'Loading Modules: {0}' -sep ', ' -p { $_.Name, $_.Version -join ': ' }
+    @(  foreach($Name in $Script:PipeConfig.ImportExtraModules ) {
+        Import-Module @impo_Splat -name $Name
+    })   | Join-String -f 'Loading Modules: {0}' -sep ', ' -p { $_.Name, $_.Version -join ': ' }
         | Write-Verbose -verbose
-
 }
 
 function __init__pipeProfile_Keybinds {
@@ -87,7 +118,7 @@ function __init__pipeProfile_Modules {
     foreach($name in $ModuleNames) {
         try {
             @(
-                Import-Module $Name -force -PassThru -ea 'stop'
+                Import-Module $Name -force:$False -scope:Global -PassThru -ea 'stop'
             )   | Join-String -f 'Loading Module: {0}' -sep ', ' -p { $_.Name, $_.Version -join ': ' }
                 | Write-Verbose -verbose
 
@@ -103,6 +134,7 @@ function __init__pipeProfile_Modules {
 }
 
 function __init__pipeProfile_EntryPoint {
+    [Alias('Pipe.MainEntryPoint')]
     param()
     __init__pipeProfile_Modules -ModuleNames $Script:PipeConfig.ImportModules
     __init__pipeProfile_Alias
@@ -270,3 +302,7 @@ function Prompt {
 
 
 __init__pipeProfile_EntryPoint
+
+if($PipeConfig.AlwaysFindOnLoad) {
+    Pipe.Fd.FindPipescript
+}
