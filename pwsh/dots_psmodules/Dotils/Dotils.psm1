@@ -15587,21 +15587,22 @@ function Dotils.Toast.InvokeAlarm {
         # See types:
         > find-type '*toast*' -Base enum
     #>
+    [Alias('Quick.ToastAlarm')]
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory, Position=0)]
+        [Parameter(Position=0)]
         [Alias('OutputMode')]
         [ValidateSet(
             'Repeat.Loud',
             'Repeat.Silent'
         )]
-        [string]$TemplateName = 'Repeat.Silent',
+        [string]$TemplateName = 'Repeat.Loud',
 
         [Parameter(Position=1)]
         [Alias('Cooldown', 'Secs', 'Delay', 'WaitSeconds', 'SleepSecs')]
         [ArgumentCompletions(
             30, 60, 90,
-            "(60 * 7.5)",
+            "(60 * 7.5) <# 7.5min #>",
             "(60 * 15)",
             "(60 * 3.5)"
         )]
@@ -20257,6 +20258,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-05-25
+        'Quick.ToastAlarm'
         # 2024-05-18
         'Quick.Fd.IsPipescript'
         'Quick.Pwsh.Nop'

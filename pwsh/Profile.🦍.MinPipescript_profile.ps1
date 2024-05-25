@@ -16,6 +16,7 @@ $PipeConfig = @{
         # 'ugit',
         'Pipescript'
         # 'GitLogger'
+        'BurntToast'
     )
     ImportExtraModules = @(
         'PSReadLine',
@@ -29,6 +30,9 @@ $PipeConfig = @{
     ErrorHandling = @{
         AlwaysCatchImports = $false
     }
+    Using = @{
+        BurntToast = $True
+    }
     AlwaysFindOnLoad = $true
     AlwaysWaitAtEnd_Sec = 3
 }
@@ -37,6 +41,19 @@ $Script:__pipeProfile_State = @{
     Dt_LastInvoke = [datetime]::Now
 }
 
+<#
+.EXAMPLE
+    Pipe🐍>
+    >>
+    >> pushd  'H:\data\2024\pwsh\nin.🍴\4bitcss'
+    >> rm .\docs\_site\* -Recurse
+    >> rm .\docs\.jekyll-cache -Recurse
+    >> Pipe.BuildIt' # bps -InputPath *.ps.* -Verbose
+    >> New-BurntToastNotification -Text 'Pipe🐍 Completed!'
+    >>
+    >> pushd 'H:\data\2024\pwsh\nin.🍴\4bitcss\docs'
+    >> bundle exec jekyll serve --watch 4001 http://localhost
+#>
 function __init__pipeProfile_Alias {
     # alias to always load
     [CmdletBinding()]
@@ -64,6 +81,11 @@ function __pipeProfile__BuildPipescript {
     'Building...' | Write-host -fore blue
     Build-Pipescript *.ps.* -verbose
 
+    if($PipeConfig.Using.BurntToast) {
+        New-BurntToastNotification -Text 'Pipe🐍 Completed!'
+        (Get-Item .).BaseName
+    }
+
 }
 function __pipeProfile__compileThenSleepLoop {
     <#
@@ -75,6 +97,7 @@ function __pipeProfile__compileThenSleepLoop {
 
     write-warning 'nyi: would be invoking compile here. then sleeping'
     while($true) {
+        '.' | Write-host -NoNewline
         sleep -sec 5
         __pipeProfile__BuildPipescript
     }
