@@ -2773,18 +2773,18 @@ function Dotils.Select.Some.NoMore {
     }
     end {
         # future: performance: use steppable
-        $query = $Items | Select @SelectSplat
-
+        $query = @($Items | Select @SelectSplat) # simplifes missing tes
+        if($Query.Count -eq 0 ) { 'No inputs' | Write-Debug; return; }
         if($IsUsingOne) {
             $Query
-            $global:One = $Query
+            $global:One = @( $Query )
             'One := {0}' -f @(
                 $Global:One | Format-ShortTypeName
             )   | Dotils.Write-DimText
                 | Infa
         } else {
             $Query
-            $global:Some = $query
+            $global:Some = @( $query )
             'Some := {0}' -f @(
                 $global:Some
                 | CountOf | Format-ShortTypeName
