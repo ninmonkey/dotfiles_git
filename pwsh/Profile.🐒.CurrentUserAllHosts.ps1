@@ -74,11 +74,14 @@ $xl8r::Add('LangyPrims',   [System.Management.Automation.LanguagePrimitives]) # 
     Import-Module -PassThru 'H:/data/2023/pwsh/PsModules.👨.Import/Jaykul👨/Jaykul👨Grouping/Jaykul👨Grouping.psm1'
     # import-module -PassThru -Force 'H:\data\2023\pwsh\my🍴\ugit.🍴.beta\ugit.psm1'
     Import-Module -passThru 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.LocalHost.Serve.GitLoggerAzureFunc\nin.LocalHost.Serve.GitLogger.psd1'
+    Import-Module -passThru 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.GittingGood\nin.GittingGood.psd1'
 ) | Join-String -sep ', ' -Prop ModuleName | Write-Host -fore 'darkgray'
 
-Set-Alias 'Label' -value 'Ninmonkey.Console\Write-ConsoleLabel' -Force
-Set-Alias 's' -value 'Select-Object'
-Set-Alias 'nin.Wrap' -value 'Ninmonkey.Console\Format-WrapJaykul'
+@(
+    Set-Alias -PassThru -Name 'Label' -value 'Ninmonkey.Console\Write-ConsoleLabel' -Force
+    Set-Alias -PassThru -Name 's' -value 'Select-Object'
+    Set-Alias -PassThru -Name 'nin.Wrap' -value 'Ninmonkey.Console\Format-WrapJaykul'
+)
 
 $Env:PSModulePath = @(
     # gi -ea 'continue' 'H:\data\2024\pwsh\Pipescript'
