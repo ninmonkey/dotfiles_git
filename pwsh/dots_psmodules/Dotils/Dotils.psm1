@@ -2702,20 +2702,33 @@ function Dotils.Select.Some.NoMore {
         Get-Process | One    # returns 1 item
         Get-Command | Some   # returns 5 items
         Get-Process | Some 3 # returns 3 item
+    .EXAMPLE
+        gci .
+        gci . | One
+        gci . | Some 3
+        get-process | one
+        get-process | some
+        get-process | some 3
+        get-process | some -LastOne 2
     #>
     [Alias('Some', 'One')]
     param(
+        # Source
         [Parameter(Mandatory, ValueFromPipeline)]
         [object] $InputObject,
 
+        # how many items? default is 5, unless you use 'one', then it's 1
         [Alias('Count', 'Limit')]
         [Parameter(Position = 0)]
         [int] $FirstN = 5,
+
+        # first N items from the start, or end?
+        [Alias('Reverse', 'FromEnd', 'End')]
         [switch]$LastOne
     )
 
     begin {
-        [bool]$IsUsingOne = $MyInvocation.InvocationName -eq 'One'
+        [bool] $IsUsingOne = $MyInvocation.InvocationName -eq 'One'
         $selectSplat = @{}
         if( $IsUsingOne ) { $FirstN = 1 }
 
@@ -2727,6 +2740,7 @@ function Dotils.Select.Some.NoMore {
     }
     process {
         $Items.AddRange(@( $InputObject ))
+        # Using .AddRange() vs .Add() , this works for paramter type [object[]] or [object]
     }
     end {
         # future: performance: use steppable
@@ -15454,6 +15468,84 @@ function Dotils.Get-Item.FromClipboard {
     }
     return $global:gi
 }
+
+
+[Collections.Generic.HashSet[string]]$script:___warnHistoryLog ??= @() # used by: function:\Dotils.Write.WarnOnce
+$script:__warnLogPath = Join-Path 'temp:' 'Dotils.WarnOnce.log' # used by: function:\Dotils.Write.WarnOnce
+function Dotils.Write.WarnOnce {
+    <#
+    .synopsis
+        writes log message first time, is a no-op the rest of the time
+    #>
+    # [DocumentUsesScriptScopeNamed('__warnHistoryLog', '__warnLogPath')]
+    [Alias('Quick.WarnOnce')]
+    [CmdletBinding()]
+    param(
+        # what to print, saves inner dat
+        [Parameter(Mandatory, ValueFromPipeline, Position = 0)]
+        [string]$Message,
+
+        # optional context ata
+        [Alias('TargetObject')]
+        [object]$Details = $Null,
+
+        # also write to the host? otherwise it just writes to the log
+        [Alias('PSHost')]
+        [switch]$WriteHost,
+
+        [Alias('FlushHistory', 'Force', 'Always')]
+        [switch]$ResetHistory
+    )
+    process {
+        $State  = $script:___warnHistoryLog
+        if( $ResetHistory ) {
+            $state.Clear()
+        }
+
+        if( $state.Contains( $Message )) {
+            'Message Already exists' | Write-debug
+            return }
+
+        $State.Add( $Message )
+
+
+        $StackInfo = Get-PSCallStack
+
+        $data = @{
+            PSScriptRoot  = $PSScriptRoot  ?  $PSScriptRoot.ToString() : 'null'
+            PSCommandPath = $PSCommandPath ? $PSCommandPath.ToString() : 'null'
+
+            Message            = $Message
+            FromFile           = ($StackInfo)?[0].ScriptName ?? $Null
+            FromLineNumber     = ($StackInfo)?[0].ScriptLineNumber
+            FromLocationString = ($StackInfo)?[0]?.GetScriptLocation()
+            FromCommand        = ($StackInfo)?[0].Command
+            FromFunctionName   = ($StackInfo)?[0].FunctionName
+        }
+        if($Details) {
+            $data.Details = $Details # or target object?
+        }
+        if($False) { #script extent, flatten props
+            $Data.FromScriptExtent = ($stacky)?[0].Position |Json -Depth 1  | Json.From
+        }
+        $Json = $Data | ConvertTo-Json -Depth 2
+        $Prefix = 'nin.WarnOnce: {0}: ' -f [DateTime]::now.ToString('yyyy-MM-dd')
+        $rendJson = $Json
+            | Join-String -op $Prefix
+
+        $rendJson
+            | Add-Content -LiteralPath $script:__warnLogPath
+        'wrote: {0}' -f $script:__warnLogPath
+            | write-verbose
+
+        if( $Writehost ) {
+            $RendJson | Write-Host -fg 'gray80' -bg 'gray30'
+
+            'wrote: <file:///{0}>' -f ( $script:__warnLogPath |  Get-Item )
+                | Write-information -infa 'continue'
+        }
+    }
+}
 function Dotils.Accumulate.Hashtables {
     <#
     .SYNOPSIS
@@ -20260,6 +20352,7 @@ $exportModuleMemberSplat = @{
     Alias    = @(
         # 2024-05-25
         'Quick.ToastAlarm'
+        'Quick.WarnOnce'
         # 2024-05-18
         'Quick.Fd.IsPipescript'
         'Quick.Pwsh.Nop'
