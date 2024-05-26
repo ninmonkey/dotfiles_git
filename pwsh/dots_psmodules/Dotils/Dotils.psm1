@@ -4018,6 +4018,111 @@ function Dotils.Quick.Pwd {
         Get-Location | Set-Clipboard
     }
 }
+
+function Dotils.Write-FormatHumanSize {
+    <#
+    .SYNOPSIS
+    Sugar to render size as human readable, but emit the raw numeric value
+
+    .DESCRIPTION
+    Long description
+
+    .PARAMETER SizeAsBytes
+    Parameter description
+
+    .PARAMETER Prefix
+    Parameter description
+
+    .PARAMETER PassThru
+    Parameter description
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+    General notes
+    #>
+    # [OutputType('number else string set')]
+    [Alias('Dotils.Fmt.HumanFileSize')]
+    [CmdletBinding()]
+    # [Alias('__writeSizeAsMb')]
+    param(
+        [Alias(
+            'Bytes'
+            # 'Length'
+        )]
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        # [int]$SizeAsBytes,
+        [long]$SizeAsBytes,
+
+        [Alias('AsAnsiColors')]
+        [string]$Prefix = '',
+
+        # returns string with ansi escapes, that would have been written to host
+        [Alias('NoWriteHost', 'AsString')]
+        [switch]$PassThru,
+        [float]$SizeAsMb,
+        [float]$SizeAsKb,
+
+        # Compared to -NoWriteHost, this controls whether the numeric part is output or not
+        [Alias('AsValue', 'EmitValue', 'ByteCount')]
+        [switch]$WithValue
+
+    )
+    process {
+        Quick.WarnOnce -Message 'NYI: Humanized system not fully implemented for dt.Write-FormatHumanSize' -WriteHost
+        if( -not $SizeAsBytes -and
+            -not $SizeAsMb -and
+            -not $SizeAsKb ) {
+                # wait-debugger
+                throw [ArgumentException]::new('Invalid args, no size was found', 'SizeAsBytes|SizeAsMb|SizeAsKb' )
+            }
+
+        if($SizeAsMb -and -not $SizeAsBytes ) {
+            $SizeAsBytes = [int]($SizeAsMb * 1mb)
+        }
+        if($SizeAsKb -and -not $SizeAsBytes ) {
+            $SizeAsBytes = [int]($SizeAsKb * 1kb)
+        }
+        # :( , quick implmentation
+        switch($SizeAsBytes) {
+            { $SizeAsBytes -ge 1tb } {
+                $unitName = 'tb'
+                $unitValue = $SizeAsBytes / 1tb
+            }
+            { $SizeAsBytes -ge 1gb } {
+                $unitName = 'gb'
+                $unitValue = $SizeAsBytes / 1gb
+            }
+            { $SizeAsBytes -ge 1mb } {
+                $unitName = 'mb'
+                $unitValue = $SizeAsBytes / 1mb
+            }
+            { $SizeAsBytes -ge 1kb } {
+                $unitName = 'kb'
+                $unitValue = $SizeAsBytes / 1kb
+            }
+            default {
+                $unitName = 'b'
+                $unitValue = $SizeAsBytes / 1
+            }
+            # default { throw "UhandledSize: $SizeAsBytes" }
+        }
+        $render = Join-String -f "{0:n2} ${UnitName}" -in $UnitValue
+        $unitName, $unitValue, $Render, $finalRender
+            | Join-String -sep ', ' -op 'UnitName, UnitValue, Render, FinalRender []= ' -SingleQuote
+            | Write-Debug
+
+        [string]$finalRender = Join-String -op $Prefix -f "{0:n2} $unitName" -In $UnitValue -Separator ''
+
+         # emit either numeric otherwise the rendered ansi formatted string (before wriiting to host)
+        if( $WithValue ) { $SizeAsBytes }
+        if( $PassThru ) { $finalRender }
+        $finalRender | Write-host -fore 'gray80' -bg 'gray30'
+    }
+}
+
+
 function Dotils.Error.GetInfo {
     <#
     .SYNOPSIS
@@ -15573,10 +15678,15 @@ function Dotils.Write.WarnOnce {
             | write-verbose
 
         if( $Writehost ) {
-            $RendJson | Write-Host -fg 'gray80' -bg 'gray30'
+            # $RendJson  # this was too much info
+            @(
+                $Message
+                if( $Details ) { $Json } )
+            | Join-String -sep ' '
+            | Write-Host -fg 'gray80' -bg 'gray30'
 
-            'wrote: <file:///{0}>' -f ( $script:__warnLogPath |  Get-Item )
-                | Write-information -infa 'continue'
+            # 'wrote: <file:///{0}>' -f ( $script:__warnLogPath |  Get-Item )
+            #     | Write-information -infa 'continue'
         }
     }
 }
