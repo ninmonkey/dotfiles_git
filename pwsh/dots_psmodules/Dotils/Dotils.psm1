@@ -231,6 +231,35 @@ function Dotils.Goto.Error {
         | Infa
 }
 
+function Dotils.Module.ForceLoad {
+    <#
+    .SYNOPSIS
+        quickly force load a module, and nicer imported command table. default clears errors
+    .NOTES
+        future: - [ ] complete or import modules from <
+            gci 'H:\data\2024\pwsh\PSModules.🐒.miniLocal' *.psd1 -Recurse | % name | sort
+    #>
+    [Alias('ReImpo','Quick.ReImpo')]
+    param(
+        [ValidateNotNullOrWhiteSpace()]
+        [ArgumentCompletions(
+            '$Module'
+        )]
+        [string] $Name,
+
+        # don't clear errors?
+        [switch] $NeverClearErrors
+    )
+
+    Join-String -f ' => Importing: {0}' -Inp $Name
+        | Dotils.Write-DimText
+        | Infa
+
+    if( -not $NeverClearErrors ) { $Error.clear() }
+
+    (Import-Module -Scope Global $Name -PassThru -Force).ExportedCommands.Values
+}
+
 function Dotils.Format.Show.Space {
     <#
     .synopsis
@@ -20494,6 +20523,10 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-05-26
+        'ReImpo'
+        'Quick.ReImpo'
+
         # 2024-05-25
         'Quick.ToastAlarm'
         'Quick.WarnOnce'
