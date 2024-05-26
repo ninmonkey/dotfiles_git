@@ -255,7 +255,7 @@ function Dotils.Module.ForceLoad {
         | Dotils.Write-DimText
         | Infa
 
-    if( -not $NeverClearErrors ) { $Error.clear() }
+    if( -not $NeverClearErrors ) { $global:Error.clear() }
 
     (Import-Module -Scope Global $Name -PassThru -Force).ExportedCommands.Values
 }
