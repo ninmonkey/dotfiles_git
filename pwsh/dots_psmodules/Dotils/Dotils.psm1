@@ -15475,26 +15475,52 @@ $script:__warnLogPath = Join-Path 'temp:' 'Dotils.WarnOnce.log' # used by: funct
 function Dotils.Write.WarnOnce {
     <#
     .synopsis
-        writes log message first time, is a no-op the rest of the time
+        writes log message first time, optionally to the console. It is a no-op the rest of the time
+    .example
+        # run twice, and it will only log or print messages one time (in the current session)
+
+        > Quick.WarnOnce 'missing date calculation'
+        > Quick.WarnOnce 'missing date calculation'
+    .EXAMPLE
+        # auto open the log in vs code, to the newest record (the bottom of the file)
+        > Quick.WarnOnce -OpenLog
+    .example
+        # you can include extra data in the log ( as json )
+        > Quick.WarnOnce 'stuff first try' -Details @{ 'species' = 'cat' }
+    .example
+        # -ResetHistory: this *always* writes a warning
+        > Quick.WarnOnce 'missing date calculation' -ResetHistory
+        > Quick.WarnOnce 'missing date calculation' -ResetHistory
+
+    .notes
+        so far performance is fast. Uses the callstack but only on the very first invoke
+        future invokes are set containment test then an immediate exit
     #>
-    # [DocumentUsesScriptScopeNamed('__warnHistoryLog', '__warnLogPath')]
     [Alias('Quick.WarnOnce')]
-    [CmdletBinding()]
+    # [DocumentUsesScriptScopeNamed('__warnHistoryLog', '__warnLogPath')]
+    [CmdletBinding( DefaultParameterSetName = 'UsingWarn' )]
     param(
         # what to print, saves inner dat
-        [Parameter(Mandatory, ValueFromPipeline, Position = 0)]
+        [Parameter(ValueFromPipeline, Position = 0, ParameterSetName='UsingWarn', Mandatory)]
         [string]$Message,
 
         # optional context ata
+        [Parameter( ParameterSetName = 'UsingWarn' )]
         [Alias('TargetObject')]
         [object]$Details = $Null,
 
         # also write to the host? otherwise it just writes to the log
+        [Parameter( ParameterSetName = 'UsingWarn' )]
         [Alias('PSHost')]
         [switch]$WriteHost,
 
+        [Parameter( ParameterSetName = 'UsingWarn' )]
         [Alias('FlushHistory', 'Force', 'Always')]
-        [switch]$ResetHistory
+        [switch]$ResetHistory,
+
+        # Opens log in vs code, writes nothing.
+        [Parameter(ParameterSetName='OpenOnly')]
+        [switch]$OpenLog
     )
     process {
         $State  = $script:___warnHistoryLog
@@ -15502,19 +15528,26 @@ function Dotils.Write.WarnOnce {
             $state.Clear()
         }
 
+        if($OpenLog) {
+            $File = Get-Item -ea 'stop' $__warnLogPath
+            $GotoPath = Join-String -f '{0}:99999999' -InputObject $File.FullName
+            code --goto $GotoPath
+            return
+        }
+
         if( $state.Contains( $Message )) {
             'Message Already exists' | Write-debug
             return }
 
-        $State.Add( $Message )
+        [void] $State.Add( $Message )
 
 
         $StackInfo = Get-PSCallStack
 
         $data = @{
-            PSScriptRoot  = $PSScriptRoot  ?  $PSScriptRoot.ToString() : 'null'
-            PSCommandPath = $PSCommandPath ? $PSCommandPath.ToString() : 'null'
-
+            PwshPid            = $PID
+            PSScriptRoot       = $PSScriptRoot  ?  $PSScriptRoot.ToString() : 'null'
+            PSCommandPath      = $PSCommandPath ? $PSCommandPath.ToString() : 'null'
             Message            = $Message
             FromFile           = ($StackInfo)?[0].ScriptName ?? $Null
             FromLineNumber     = ($StackInfo)?[0].ScriptLineNumber
@@ -15528,9 +15561,10 @@ function Dotils.Write.WarnOnce {
         if($False) { #script extent, flatten props
             $Data.FromScriptExtent = ($stacky)?[0].Position |Json -Depth 1  | Json.From
         }
-        $Json = $Data | ConvertTo-Json -Depth 2
-        $Prefix = 'nin.WarnOnce: {0}: ' -f [DateTime]::now.ToString('yyyy-MM-dd')
-        $rendJson = $Json
+        $Json      = $Data | ConvertTo-Json -Depth 2
+        $PrePrefix = Join-String -f 'nin.WarnOnce {0}:' -In $pid
+        $Prefix    = "${PrePrefix} {0}: " -f [DateTime]::now.ToString('yyyy-MM-dd')
+        $rendJson  = $Json
             | Join-String -op $Prefix
 
         $rendJson
