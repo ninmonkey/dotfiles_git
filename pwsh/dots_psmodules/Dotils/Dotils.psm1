@@ -3,6 +3,8 @@ using namespace System.Collections
 using namespace System.Management.Automation
 using namespace System.Management.Automation.Language
 
+$global:StringModule_DontInjectJoinString = $true # this matters, because Nop imports the polyfill which breaks code on Join-String:  context/reason: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055> or just delete the module
+
 $script:CountersListForAddLabel ??= @{}
 $script:Bdg_LastSelect = @()
 $script:QuerySave = @{}
