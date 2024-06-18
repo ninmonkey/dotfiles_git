@@ -706,6 +706,17 @@ Cat
                     "kind": "refactor.extract.function" } }
 
     */
+
+    // {
+    //     "key": "",
+    //     "command": "editor.action.codeAction",
+    //     "args": {
+    //         "kind": "refactor.extract.interface",
+
+    //     }
+
+    // },
+
     /*
 
     section: ...

@@ -380,13 +380,20 @@ function VsCode.Dotfiles.CopyToRepo {
     <#
     .SYNOPSIS
         Copy (some) files to the dotfiles repo
+    .DESCRIPTION
+        To explore paths used, check out properties on $PROFILE
+    .EXAMPLE
+        # one pair of source and dest paths:
 
+        $SourcePath = $PROFILE.VSCode.Local.Snippets_Root
+        $DestPath   = $PROFILE.VSCode.DotfilesRepo.Snippets_Root
     #>
     param()
 
     @(  # I think you need to use passthru to see the write-progress
-        # Can I chain it to also use CountOf ?
-        ## [1]
+
+        ## [1] : settings.json
+        '[1] : settings.json' | Write-host -fore 'green'
         $SourcePath = $PROFILE.VSCode.Local.Settings_Json
         $DestPath   = $PROFILE.VSCode.DotfilesRepo.Settings_Json
 
@@ -397,7 +404,8 @@ function VsCode.Dotfiles.CopyToRepo {
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
 
-        ## [2]
+        ## [2] : keybindings.json
+        '[1] : keybindings.json' | Write-host -fore 'green'
         $SourcePath = $PROFILE.VSCode.Local.Keybindings_Json
         $DestPath   = $PROFILE.VSCode.DotfilesRepo.Keybindings_Json
 
@@ -408,7 +416,8 @@ function VsCode.Dotfiles.CopyToRepo {
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
 
-        ## [3]
+        ## [3] : tasks.json
+        '[1] : tasks.json' | Write-host -fore 'green'
         $SourcePath = $PROFILE.VSCode.Local.Tasks_Json
         $DestPath   = $PROFILE.VSCode.DotfilesRepo.Tasks_Json
 
@@ -419,10 +428,26 @@ function VsCode.Dotfiles.CopyToRepo {
         Get-Item -ea 'stop' $SourcePath
             | Copy-Item -Destination $DestPath -PassThru
 
+        ## [4] : snippets + code-snippets
+        '[4] : /snippets/*.json + /snippets/*.code-snippets, NoRecurse' | Write-host -fore 'green'
+        $SourcePath = $PROFILE.VSCode.Local.Snippets_Root
+        $DestPath   = $PROFILE.VSCode.DotfilesRepo.Snippets_Root
+
+        gci $SourcePath -Recurse:$false
+            | ?{ $_.Extension -in @( '.json', '.code-snippets' ) }
+            | Copy-Item -Destination $DestPath -WhatIf -PassThru
+
+
+#    | ?{ $_.Name -in @( $profile.VSCode.DotfilesRepo.Snippets_all
+
+        # @( 'from: {0}' -f ( $SourcePath )
+        #     'to:   {0}' -f ( $DestPath ) )
+        #     | Join-String -sep "`n" | Dotils.Write-DimText | Infa
+
+        # Get-Item -ea 'stop' $SourcePath
+        #     | Copy-Item -Destination $DestPath -PassThru
+
     ) | CountOf
-
-    'snippets: nyi' | write-warning
-
     # pushd $DestPath.Directory
     # pwd
     $PROFILE.VSCode.DotfilesRepo.Settings_Json | Goto -AlwaysLsAfter
