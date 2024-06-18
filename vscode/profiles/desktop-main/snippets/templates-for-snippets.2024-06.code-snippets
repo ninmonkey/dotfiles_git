@@ -1,0 +1,241 @@
+{
+    /*
+    see related files: linked: 2024-06-01
+
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\templates-2023-08.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\templates-for-snippets.2024-06.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\wordpress-markdown-2024-06.code-snippets>
+        - <https://gist.github.com/ninmonkey/434317e07a1245e426a975416b36ad9b>
+
+    refs:
+        - <https://code.visualstudio.com/docs/editor/userdefinedsnippets>
+        - <https://code.visualstudio.com/api/language-extensions/snippet-guide>
+        - <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables>
+        - <https://code.visualstudio.com/api/get-started/your-first-extension>
+        - [Snippet EBNF Grammar defintion](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_grammar)
+
+    */
+    "SnippetTemlate_RegexReplace_BackslashesAsForwardSlash": { // fixed: 2024-06-02
+        // this could be editor command1
+        // safety, should probably require '['"]' on both ends of matches
+        // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        // "scope": "disabled", //json,jsonc",
+        "scope": "snippets",
+        "prefix": "SnipTemplate ReplaceBackslash",
+        // "prefix": "fixPath",
+        // "prefix": "replaceBackslash filepaths",
+        "description": "Transforms \\\\ ⇒ /",
+        "body": [
+            "${TM_SELECTED_TEXT/\\x5c/\\//gi}" // this version replaces with the right string
+            // "${TM_SELECTED_TEXT/\\\/\\//gi}" // this version replaces with the right string
+            // "${TM_SELECTED_TEXT/./\\//gi}" // working, almost. this version replaces with the right string
+            // "${TM_SELECTED_TEXT/./\//gi}"
+            // "${TM_SELECTED_TEXT/[\\]/🦇/gi}"
+            // was: "${TM_SELECTED_TEXT/(\\\\{2})/\\//gi}", // out: /
+        ]
+    },
+    "SnippetTemplate_SelectionWithVariableFallback": { // 2024-06-01
+        "scope": "snippets",
+        "description": "Wrap selected text, else fallback to another variable when there is in selection",
+        "prefix": "SnipTemplate SelectVarFallback",
+        "body": [
+            "<p>",
+            "${TM_SELECTED_TEXT:$CURRENT_YEAR}", // possible variables listed here: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables>
+            "</p>",
+            "$0"
+        ]
+    },
+    "debug_ShowBothInOneGo": { // 2024-06-01
+        "scope": "snippets",
+        "description": "debug: try both in one go",
+        "prefix": "debug_tryBoth",
+        "body": [
+            // possible variables listed here: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variables>
+            "📌 Clip:",
+            "$CLIPBOARD",
+            "📌 Selection: ",
+            "$TM_SELECTED_TEXT",
+            "📌 Selection or Variable: ",
+            "${TM_SELECTED_TEXT:$CURRENT_YEAR}",
+            "📌 Selection or Clip: ",
+            "${TM_SELECTED_TEXT:$CLIPBOARD}",
+            "$0"
+        ]
+    },
+
+// Clipboard 🐈
+// Selection 🦎
+
+// in: Clipboard 🐈
+/* out:
+    📌 Clip:
+    Clipboard 🐈
+    📌 Selection:
+
+    📌 Selection or Variable:
+    2024
+    📌 Selection or Clip:
+    Clipboard 🐈
+*/
+
+
+// in: Selection 🦎
+/* out:
+    📌 Clip:
+    Clipboard 🐈
+    📌 Selection:
+    Selection 🦎
+    📌 Selection or Variable:
+    Selection 🦎
+    📌 Selection or Clip:
+    Selection 🦎
+*/
+
+
+    "SnippetTemplateForClippy8": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        // "scope": "markdown,html,snippets",
+        "scope": "snippets",
+        "description": "(wip) Use selected text, else falls back to clipboard",
+        "prefix": "test8",
+        "body": [
+            "<p>",
+            // "${1:${TM_SELECTED_TEXT:${CLIPBOARD}}}", // not quite
+            // "${1:${TM_SELECTED_TEXT:$CLIPBOARD}}", // not quite
+            // "${1:${TM_SELECTED_TEXT:stuff}}", // works
+            // "${1:${$TM_SELECTED_TEXT:$CLIPBOARD}}", // works , sort of. both at once with extra bars
+            // "$TM_SELECTED_TEXT:$CLIPBOARD", // another works , sort of. both at once with extra bars
+            // "${TM_SELECTED_TEXT:${CLIPBOARD:sdfds}}", // another works , sort of. both at once with extra bars
+            // "<p>${1:${TM_SELECTED_TEXT:$CLIPBOARD}}</p>", // clip always is blank
+            // "<p>${1:${TM_SELECTED_TEXT:${CLIPBOARD:TM_SELECTED}}</p>", // clip always is blank
+            // "${$TM_SELECTED_TEXT:$CLIPBOARD}", // sort of works but also does not
+            // "${$TM_SELECTED_TEXT:$CLIPBOARD}", // sort of works but also does not
+            // "${TM_SELECTED_TEXT}:${CLIPBOARD}", // another works , sort of. both at once with extra bars
+            // "${TM_SELECTED_TEXT:$CURRENT_YEAR}", // another works , sort of. both at once with extra bars
+            "${TM_SELECTED_TEXT:$CLIPBOARD}", // another works , sort of. both at once with extra bars
+            // "${TM_SELECTED_TEXT:$CLIPBOARD}", // another works , sort of. both at once with extra bars
+            "</p>",
+            "$0"
+        ]
+    },
+
+
+
+// My Clip
+// Some Text
+
+/* using
+ "${$TM_SELECTED_TEXT:$CLIPBOARD}",
+ */
+
+/* selected outputs:
+<p>
+${Some Text:My Clip}
+</p>
+*/
+/* no selection
+<p>
+${:My Clip}
+</p>
+*/
+
+
+
+
+    "SnippetTemplateForClippy12": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        // "scope": "markdown,html,snippets",
+        "scope": "snippets",
+        "description": "wrap in strike",
+        "prefix": "t12",
+        "body": [
+            "<p>",
+            // "~~${1:${TM_SELECTED_TEXT}}~~", // from default snippet
+            // sketch
+            // "~~${1:${CLIPBOARD:TM_SELECTED_TEXT}}~~", // mod
+            // "~~${TM_SELECTED_TEXT:${CLIPBOARD}}~~", // not quite
+            // "~~${TM_SELECTED_TEXT:$CLIPBOARD}~~", // not quite
+            // "~~${TM_SELECTED_TEXT:${CLIPBOARD:def}}~~", // uses selection, else default. so it's closer?
+            "~~${TM_SELECTED_TEXT:${CLIPBOARD:def}~~", // then?
+
+            // "${1:${TM_SELECTED_TEXT:${CLIPBOARD}}}", // not quite
+            // "${1:${TM_SELECTED_TEXT:$CLIPBOARD}}", // not quite
+            // "${1:${TM_SELECTED_TEXT:stuff}}", // works
+            "</p>",
+            "$0"
+        ]
+    },
+
+
+
+
+
+
+     "SnippetTemplateForClippy4": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        // "scope": "markdown,html,snippets",
+        "scope": "snippets",
+        "description": "select from a list of options, default body text and close the element",
+        "prefix": "test4",
+        "body": [
+            // "<p>${1:${TM_SELECTED_TEXT:$CLIPBOARD}}</p>",
+            "<${1|p,h1,h2,h3,h4,h5,h6,a,div|}>",
+            "${2:stuff here}",
+            "</${1}>",
+            "$0"
+        ]
+    },
+    "SnippetTemplateForClippy3": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        // "scope": "markdown,html,snippets",
+        "scope": "snippets",
+        "description": "Does not work. can the selected text fallback to clipboard values?",
+        "prefix": "test3",
+        "body": [
+            "<p>${1:${TM_SELECTED_TEXT:$CLIPBOARD}}</p>",
+            "$0"
+        ]
+    },
+    "SnippetTemplateForClippy2": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        // "scope": "markdown,html,snippets",
+        "scope": "snippets",
+        "description": "template using selected text else hardcoded text",
+        "prefix": "test1",
+        "body": [
+            "<p>${1:${TM_SELECTED_TEXT:a cat in the hat}}</p>",
+            "$0"
+        ]
+    },
+
+    "SnippetTemplateForClippy6": {
+        "scope": "snippets",
+        "description": "Wordpress Block for Headers H1, h2, ..",
+        "prefix": "test6",
+        "body": [
+            "<!-- wp:heading -->",
+            // "<h2>${1:stuff}</h2>",
+            "<p>",
+            "${1:${$TM_SELECTED_TEXT:$CLIPBOARD}}",
+            "</p>",
+            // "<h${1:2}>${2:${TM_SELECTED_TEXT:$CLIPBOARD}}</h${1:2}>", // almost perfect
+            // "<h${1:2}>${2:${CLIPBOARD:$TM_SELECTED_TEXT}}</h${1:2}>", // almost perfect
+            // "<h$1>Me of the function type</h$1>",
+            "<!-- /wp:heading -->",
+            "$0"
+        ]
+    },
+}
+
+// <!-- wp:heading -->
+// <p>
+// ${:// for test1:}
+// </p>
+// <!-- /wp:heading -->
+
+
+// for test1:
+
+// for test1:
+//  selected text: works
+//  zero selection: works
+
+
+// for test2:
+//  selected text: works
+//  zero selection: uses empty string

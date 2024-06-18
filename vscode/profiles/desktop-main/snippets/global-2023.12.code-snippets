@@ -1,0 +1,16 @@
+
+{
+    // 2023-12-04 : started a new one
+
+    "🐒regex: Fixes Backslash escaped filepaths": {
+        // this could be editor command1
+        // safety, should probably require '['"]' on both ends of matches
+        // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
+        // "scope": "disabled", //json,jsonc",
+        "prefix": "🦍Backslash filepaths 📌",
+        "description": "🦍Transforms    \\\\   ⇒ \\  ",
+        "body": [
+            "${TM_SELECTED_TEXT/(\\\\{2})/\\//gi}",
+        ]
+    },
+}

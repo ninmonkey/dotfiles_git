@@ -1,0 +1,113 @@
+{
+    /*
+    see related files: linked: 2024-06-01
+
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\templates-2023-08.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\templates-for-snippets.2024-06.code-snippets>
+        - <file:///C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\wordpress-markdown-2024-06.code-snippets>
+        - <https://gist.github.com/ninmonkey/434317e07a1245e426a975416b36ad9b>
+
+    */
+    // "SnippetTemplateForClippy2": { // created: 2024-06-01 . template snippet for clipboard else selected text
+    //     "scope": "markdown,html,snippets",
+    //     "description": "template using selected text else hardcoded text",
+    //     "prefix": "test1",
+    //     "body": [
+    //         // "<p>${1:${TM_SELECTED_TEXT:$CLIPBOARD}}</p>",
+    //         "<p>${1:${TM_SELECTED_TEXT:a cat in the hat}}</p>",
+    //         "$0"
+    //     ]
+    // },
+    // "SnippetTemplateForClippy": { // created: 2024-06-01 . template snippet for clipboard else selected text
+    //     "scope": "markdown,html,snippets",
+    //     "description": "template using selected text else fallback to clipboard",
+    //     "prefix": "test2",
+    //     "body": [
+    //         "<p>${1:${TM_SELECTED_TEXT:$CLIPBOARD}}</p>",
+    //         "$0"
+    //     ]
+    // },
+    "Wordpress Header": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        "scope": "markdown,html,code-snippets,snippets",
+        "description": "Wordpress Block for Headers H1, h2, ..",
+        "prefix": "wp head",
+        "body": [
+            "",
+            "<!-- wp:heading -->",
+            // "<h2>${1:stuff}</h2>",
+            // "<p>${1:${TM_SELECTED_TEXT:$CLIPBOARD}}</p>",
+            // "<${2|h1,h2,h3,h4,h5,h6|}>${1:${TM_SELECTED_TEXT}}</$2>",
+            "<${1|h1,h2,h3,h4,h5,h6|}>${2:${TM_SELECTED_TEXT}}</$1>",
+            // "<h${1:2}>${2:${TM_SELECTED_TEXT:$CLIPBOARD}}</h${1:2}>", // almost perfect
+            // "<h${1:2}>${2:${CLIPBOARD:$TM_SELECTED_TEXT}}</h${1:2}>", // almost perfect
+            // "<h$1>Me of the function type</h$1>",
+            "<!-- /wp:heading -->",
+            "",
+            "$0"
+        ]
+    },
+    "Wordpress UL List": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        "scope": "markdown,html,code-snippets,snippets",
+        "description": "Wordpress Block for Paragraph",
+        "prefix": "wp list ul",
+        "body": [
+            "",
+            "<!-- wp:list -->",
+            "<ul>",
+            // "<li>{1:Item}</li>",
+            "${1:${TM_SELECTED_TEXT}}",
+            "<!-- <li><a href=\"https://bengribaudo.com/blog/2021/03/17/5523/power-query-m-primer-part20-metadata\">Power Query M Primer - Part 20: Metadata - Ben Gribaudo</a></li> -->",
+            "</ul>",
+            "<!-- /wp:list -->",
+            "",
+            "$0"
+        ]
+    },
+    "Wordpress Paragraph": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        "scope": "markdown,html,code-snippets,snippets",
+        "description": "Wordpress Block for Paragraph",
+        "prefix": "wp paragraph",
+        "body": [
+            "",
+            "<!-- wp:paragraph -->",
+            "<p>",
+            "${1:${TM_SELECTED_TEXT}}",
+            "</p>",
+            "<!-- /wp:paragraph -->",
+            "",
+            "$0"
+        ]
+    },
+    "Wordpress Codefence Prismatic syntax color": { // created: 2024-06-01 . template snippet for clipboard else selected text
+        "scope": "markdown,html,code-snippets,snippets",
+        "description": "Wordpress Code with Syntax Highlighting using Prismatic",
+        "prefix": "wp code",
+        "body": [
+            // raw original: "<!-- wp:prismatic/blocks {\"language\":\"powerquery\"} -->",
+            // "<!-- wp:prismatic/blocks {\"language\":\"${1:powerquery}\"} -->", // first iter, single suggest choice works
+            "",
+            "<!-- wp:prismatic/blocks {\"language\":\"${1|powerquery,powershell,typescript,javascript,csv,json,jsonc,md,xml,html|}\"} -->", // language choice
+            "<pre class=\"wp-block-prismatic-blocks\"><code class=\"language-$1\">",
+            "${2:${TM_SELECTED_TEXT}}",
+            "</code></pre>",
+            "<!-- /wp:prismatic/blocks -->",
+            "",
+            "$0"
+        ]
+    },
+    // "Global Space with %20": {
+    //     "scope": "snippets",
+    //     "prefix": "replaceSpace",
+    //     "body": [
+    //         "${TM_SELECTED_TEXT/ /%20/g}"
+    //     ],
+    //     "description": "Replaces a space with %20"
+    // }
+}
+// <file:///H:\data\2024\ninmonkey.com\posted\Using Web APIs in Power Query\2024-05-31-GettingMetadaFromWeb.Contents▸Part1\post.▸Capture-Web.Contents-Metadata.wp_source.html>
+// for test1:
+//  selected text: works
+//  zero selection: works
+// for test2:
+//  selected text: works
+//  zero selection: uses empty string

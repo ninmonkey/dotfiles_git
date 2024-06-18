@@ -42,6 +42,7 @@
             -- and o.Name = 'YourTableName'
             ORDER BY o.Name, c.Name
     */
+
     "sdfs": {
         "prefix": "Fix newlines",
         "description": "replace newlines",

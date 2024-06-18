@@ -74,21 +74,45 @@
         ]
         // C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
     },
+    "[meta] New-Guid": {
+        "prefix": "Guid",
+        "body": "${UUID}",
+        "description": "Inserts a new GUID(), nothing else. Spartan. 🦍",
+    },
 
 
+    "[meta] full Path + new-guid() + log - iter1": {
+        // "scope": "powershell,ps1",
+        "prefix": "guid filepath log",
+        "description": "📚 bookmark, Inserts filepath logging func /w filepath with a new GUID()",
+        "body": "\"📚 ${1:enter} ==> ${2:other ==>} local: <file:///${TM_FILEPATH}> ⁞ ${UUID}\" | write-warning$0"
+        /*
+        '==>.📚: root ==>  build\lamb-pwsh-runtime\function\examplehandler.ps1/684bbcbd-54d4-49b7-97d8-c43c185a0df8' | Write-Host
+        */
+    },
+
+
+
+    "[meta] relative Path + new-guid() + Log - iter1": {
+        // "scope": "powershell,ps1",
+        "prefix": "guid RelativePath log",
+        "description": "📚 bookmark, Inserts filepath logging func /w relativepath with a new GUID()",
+        "body": "\"📚 ${1:enter} ==> ${2:other ==>}  ${RELATIVE_FILEPATH} ⁞ ${UUID}\" | write-warning$0"
+        /*
+        '==>.📚: root ==>  build\lamb-pwsh-runtime\function\examplehandler.ps1/684bbcbd-54d4-49b7-97d8-c43c185a0df8' | Write-Host
+        */
+    },
     // sample snippet using UUID and RELATIVE_FILEPATH
     "[meta] relative Path + new-guid() - iter0": {
         "prefix": "[meta].Guid() ; filepath unique name",
         "description": "Inserts relativepath with a new GUID()",
         "body": "${RELATIVE_FILEPATH}/${UUID}$0"
     },
-    "[meta] relative Path + new-guid() - iter1": {
-        // "scope": "powershell,ps1",
-        "prefix": "guid filepath",
-        "description": "📚 bookmark, Inserts filepath logging func /w relativepath with a new GUID()",
-        "body": "\"📚 ${1:enter} ==> ${2:other ==>}  ${RELATIVE_FILEPATH}/${UUID}\" | write-warning$0"
-        /*
-        '==>.📚: root ==>  build\lamb-pwsh-runtime\function\examplehandler.ps1/684bbcbd-54d4-49b7-97d8-c43c185a0df8' | Write-Host
-        */
-    }
+
+    // sample snippet using UUID and RELATIVE_FILEPATH
+    "[meta] full Path + new-guid() - iter0": {
+        "prefix": "[meta].Guid() ; filepath unique name",
+        "description": "Inserts full path with a new GUID()",
+        "body": "${TM_FILEPATH}/${UUID}$0"
+    },
 }
