@@ -8,6 +8,7 @@ $global:StringModule_DontInjectJoinString = $true # this matters, because Nop im
 $script:CountersListForAddLabel ??= @{}
 $script:Bdg_LastSelect = @()
 $script:QuerySave = @{}
+[list[Object]]$script:WasHistory = @( gi $PSScriptRoot )
 
 
 $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $PSCommandPath ) -Force -ea 'ignore'
@@ -16408,6 +16409,13 @@ function Dotils.WhatIsMyIp {
     # }
 
 }
+function Dotils.Was {
+    $state = $script:WasHistory
+    throw 'WIP Left off. idea is to check if path is already in list, otherwise add ((gi .))'
+    # if( -not $State.Con ) { }
+    $state.Find( { param($x) $x.Fullname -eq (gi .).FullName } )
+    $state.Find( { param($x) $x.tostring() -eq (gi .).tostring() } )
+}
 function Dotils.Text.RemoveDiacritics {
     <#
     .SYNOPSIS
@@ -20525,6 +20533,7 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+
         # 2024-05-26
         'ReImpo'
         'Quick.ReImpo'
@@ -20920,6 +20929,7 @@ $exportModuleMemberSplat = @{
         'PipeUntil.Match' # Dotils.Stdout.CollectUntil.Match
     ) | Sort-Object -Unique
     Variable = @(
+        'WasHistory'
         'Bdg_LastSelect'
         'Bdg_*'
 
