@@ -34,45 +34,50 @@ C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
     ninmonkey. created: 2021-06-30
 
     */
+    "🐒🦍path: Wraps selected text with a file uri": { // updated: 2024-06-18
+        // "scope": "html,markdown,plaintext,snippets,code-snippets,code-workspace,json,jsonc,yaml,ps1,md,powershell",
+        "prefix": "insertFileUrl fileUrl",
+        "description": "🦍 wraps selected text with a file url like: <file:///foo.txt> . Note: Currently wraps, does not convert spaces. 2024-06-14",
+        "body": [
+            "<file:///${TM_SELECTED_TEXT:foobar.txt}>$0"
+        ],
+    },
     "🐒🦍regex: Escapes Spaces with %20 for filepath urls": { // updated: 2024-06-18
-        // "scope": "snippets",
         // "scope": "html,markdown,plaintext,snippets,code-snippets,code-workspace,json,jsonc,yaml,ps1,md,powershell",
         "prefix": "replaceSpace fixSpace",
+        "description": "🦍 Replaces spaces in selected text with %20 . For example filepath formats <file:///> . 2024-06-01",
         "body": [
             "${TM_SELECTED_TEXT/ /%20/g}"
         ],
-        "description": "🦍 Replaces spaces in selected text with %20 . For example filepath formats <file:///> . 2024-06-01"
     },
     "🐒🦍regex: Undo Escapes Spaces with %20 for filepath urls": { // updated: 2024-06-18
-        // "scope": "snippets",
         // "scope": "html,markdown,plaintext,snippets,code-snippets,code-workspace,json,jsonc,yaml,ps1,md,powershell",
         "prefix": "undoReplaceSpace undoFixSpace",
+        "description": "🦍 Converts %20 escaped filepaths back into spaces. For example filepath formats <file:///> . 2024-06-01",
         "body": [
             "${TM_SELECTED_TEXT/%20/ /g}"
         ],
-        "description": "🦍 Converts %20 escaped filepaths back into spaces. For example filepath formats <file:///> . 2024-06-01"
         // test inp:  <file:///H:\data\2024\ninmonkey.com\posted\Using Web APIs in Power Query\2024-05-31-GettingMetadaFromWeb.Contents▸Part1\post.▸Capture-Web.Contents-Metadata.wp_source.html>
         // test out: <file:///H:\data\2024\ninmonkey.com\posted\Using%20Web%20APIs%20in%20Power%20Query\2024-05-31-GettingMetadaFromWeb.Contents▸Part1\post.▸Capture-Web.Contents-Metadata.wp_source.html>
     },
-// "${TM_FILEPATH/\\\\/\\//g}"
     "🐒🦍regex: Fix Backslash escaped filepaths": { // updated: 2024-06-18
-        // this could be editor command1
-        // safety, should probably require '['"]' on both ends of matches
-        // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-        // "scope": "disabled", //json,jsonc",
-        // "prefix": "replaceBackslash fixPath fixBackslash",
         "prefix": "replaceBackslash fixPath",
-        // "prefix": "replaceBackslash filepaths",
         "description": "🦍 Transforms \\\\ ⇒ /",
+        // safety, should probably require '['"]' on both ends of matches ?
         "body": [
-            "${TM_SELECTED_TEXT/\\x5c/\\//gi}" // this version replaces with the right string
-            // "${TM_SELECTED_TEXT/\\\/\\//gi}" // this version replaces with the right string
-            // "${TM_SELECTED_TEXT/./\\//gi}" // working, almost. this version replaces with the right string
-            // "${TM_SELECTED_TEXT/./\//gi}"
-            // "${TM_SELECTED_TEXT/[\\]/🦇/gi}"
-            // was: "${TM_SELECTED_TEXT/(\\\\{2})/\\//gi}", // out: /
+            "${TM_SELECTED_TEXT/\\x5c/\\//gi}", // 0x5c is '\'
+            // an alternate regex, harder to read:  "${TM_SELECTED_TEXT/(\\\\{2})/\\//gi}",
         ]
     },
+    /*
+
+    broken or related variants -- incase you want to test broken syntax iterations
+
+        "${TM_SELECTED_TEXT/\\\/\\//gi}", // this version replaces with the right string
+        "${TM_SELECTED_TEXT/./\\//gi}", // working, almost. this version replaces with the right string
+        "${TM_SELECTED_TEXT/./\//gi}",
+        "${TM_SELECTED_TEXT/[\\]/🦇/gi}",
+    */
     "🐒🦍.regex: Replace or Escape Double Quotes with Double Double": { // updated: 2024-05-??
         /*
         in:
@@ -82,19 +87,12 @@ C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
             ""scope"": ""snippets"",
             ""prefix"": ""SnipTemplate ReplaceBackslash"",
         */
-
-        // "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-        // "scope": "disabled", //json,jsonc",
         // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
         "prefix": "replaceDouble with Double",
         "description": "Transforms \" ⇒ \"\" 🐪",
         "body": [
-            "${TM_SELECTED_TEXT/\\x22/\"\"/gi}"
-            // "${TM_SELECTED_TEXT/[\"]/\\\"/gi}" # or also
+            "${TM_SELECTED_TEXT/\\x22/\"\"/gi}" // 0x22 is '"'
         ]
-        // "body": [
-        //     "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
-        // ]
     },
     "🐒🦍.regex: Undo Replace or Escape Double Quotes with Double Double": { // updated: 2024-05-??
         /*
@@ -110,13 +108,7 @@ C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
         "body": [
             "${TM_SELECTED_TEXT/\\x22\\x22/\"/gi}"
         ]
-        // "${TM_SELECTED_TEXT/[\"]/\\\"/gi}" # or also
-        // "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-        // "scope": "disabled", //json,jsonc",
         // "scope": "powershell,ps1,wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
-        // "body": [
-        //     "${TM_SELECTED_TEXT/[\"]/\\\"/gi}"
-        // ]
     },
     "🐒snippet: Insert New Snippet definition": {
         "scope": "wip,json,jsonc,code-snippets,code-workspace", //json,jsonc",
@@ -139,11 +131,10 @@ C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
         ]
     },
     "regex: strip extension": {
-        // "description": "c:\\windows\\bar",
         // "scope": "json,jsonc",
-        "scope": "example",
+        "scope": "ruby,code-snippets", // for dev mode only
         "prefix": "[wip]\"_ re\"_\"_ex: strip the final .text",
-        "description": "regex strip",
+        "description": "regex strip. 🟠WIP: to verify",
         "body": [
             "${TM_SELECTED_TEXT/(.*)\\..+?$/$1/}"
         ]
@@ -152,7 +143,7 @@ C:\Users\cppmo_000\AppData\Roaming\Code\User\snippets\escape_text.code-snippets
     "regex: quote all lines, up to selection": {
         "scope": "json,jsonc",
         "prefix": "re: QuoteText (as Json)",
-        "description": "regex: quote all lines, to selection. at this point it's better to use an extension",
+        "description": "regex: quote all lines, to selection. at this point it's better to use an extension. 🟠WIP: to verify",
         "body": [
             "${TM_SELECTED_TEXT/^(.*)$/\"$1\",/gim}"
         ]
