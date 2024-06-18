@@ -1,4 +1,5 @@
 using namespace System.Collections.Generic
+write-warning 'is not set to auto load, yet'
 function Dotils.New.UsingStatement {
     [OutputType([string])]
     param(
