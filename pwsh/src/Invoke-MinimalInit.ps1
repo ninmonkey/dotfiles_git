@@ -138,8 +138,9 @@ function minimal.Prompt {
     param(
 
     ) @(
-
-        if(-not $global:__minimalPromptConfig.Enable.QuickDisableAll) {
+        # "`n"
+#
+        if(-not $global:__minimalPromptConfig.Enable.QuickDisableAll) { ## todo: major refactor : 2024-06-09
             minimal.Prompt.Render.RecentItems
 
         }
@@ -160,10 +161,12 @@ function minimal.Prompt {
 
 function prompt {
     # todo: capture previous prompt
-    minimal.Prompt
+    @(
+        "`n"
+        minimal.Prompt
+    ) | Join-String
 }
 
 
 Set-PSReadLineOption -ContinuationPrompt ''
 # 'minimal.Prompt is controlled by "$global:__minimalPromptConfig.Enable"' | Dotils.Write-DimText
-

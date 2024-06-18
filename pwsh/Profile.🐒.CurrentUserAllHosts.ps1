@@ -3,6 +3,8 @@ using namespace System.Management.Automation.Language
 using namespace System.Collections.Generic
 using namespace System.Globalization
 using namespace System.Text
+$global:StringModule_DontInjectJoinString = $true # this matters, because Nop imports the polyfill which breaks code on Join-String:  context/reason: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055> or just delete the module
+
 $PROFILE | Add-Member -NotePropertyMembers @{
     Nin_AliasesEntry          = $PSCommandPath | Gi
     Nin_InlineFormatDataEntry = $PSCommandpath | Gi
