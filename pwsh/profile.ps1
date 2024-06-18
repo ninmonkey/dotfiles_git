@@ -472,7 +472,7 @@ $PROFILE | Add-Member -NotePropertyMembers @{
 # $PROFILE | Add-Member -NotePropertyMembers $global:__ninBag.Profile.PSModulePath -force  -passthru #-ea Ignore
 
 function __aws.sam.InvokeAndPipeLog {
-    # cleanup: delete or go to bintils
+    # todo: cleanup: delete or refactor into bintils
     param(
         [string]$LogBase = 'g:\temp',
         [string]$LogName = 'aws_raw.log',
@@ -534,7 +534,7 @@ function nin.GroupByLinqChunk {
             [System.Linq.Enumerable]::Chunk($crumbs, 5) | json
     #>
     # cleanup: delete or go to ninmonkey/notebooks/pwsh
-    throw 'not finished, see "RenderLongPathNames"'
+    throw "not finished, see 'RenderLongPathNames', from: '<file:///$PSCommandPath>'"
     $fullName = Get-Item .
     [string[]] $source = 'hey', 'world', (0..100 -join '_')
     [string[]] $crumbs = (Get-Item .).FullName -split '\\'
