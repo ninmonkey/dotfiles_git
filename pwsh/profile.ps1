@@ -392,8 +392,9 @@ function VsCode.Dotfiles.CopyToRepo {
 
     @(  # I think you need to use passthru to see the write-progress
 
+        $FgGreen = '#57724e'
         ## [1] : settings.json
-        '[1] : settings.json' | Write-host -fore 'green'
+        '[1] : settings.json' | Write-host -fg $FgGreen
         $SourcePath = $PROFILE.VSCode.Local.Settings_Json
         $DestPath   = $PROFILE.VSCode.DotfilesRepo.Settings_Json
 
@@ -405,7 +406,7 @@ function VsCode.Dotfiles.CopyToRepo {
             | Copy-Item -Destination $DestPath -PassThru
 
         ## [2] : keybindings.json
-        '[1] : keybindings.json' | Write-host -fore 'green'
+        '[1] : keybindings.json' | Write-host -fg $FgGreen
         $SourcePath = $PROFILE.VSCode.Local.Keybindings_Json
         $DestPath   = $PROFILE.VSCode.DotfilesRepo.Keybindings_Json
 
@@ -417,7 +418,7 @@ function VsCode.Dotfiles.CopyToRepo {
             | Copy-Item -Destination $DestPath -PassThru
 
         ## [3] : tasks.json
-        '[1] : tasks.json' | Write-host -fore 'green'
+        '[1] : tasks.json' | Write-host -fg $FgGreen
         $SourcePath = $PROFILE.VSCode.Local.Tasks_Json
         $DestPath   = $PROFILE.VSCode.DotfilesRepo.Tasks_Json
 
@@ -429,7 +430,7 @@ function VsCode.Dotfiles.CopyToRepo {
             | Copy-Item -Destination $DestPath -PassThru
 
         ## [4] : snippets + code-snippets
-        '[4] : /snippets/*.json + /snippets/*.code-snippets, NoRecurse' | Write-host -fore 'green'
+        '[4] : /snippets/*.json + /snippets/*.code-snippets, NoRecurse' | Write-host -fg $FgGreen
         $SourcePath = $PROFILE.VSCode.Local.Snippets_Root
         $DestPath   = $PROFILE.VSCode.DotfilesRepo.Snippets_Root
 
