@@ -435,7 +435,7 @@ function VsCode.Dotfiles.CopyToRepo {
 
         gci $SourcePath -Recurse:$false
             | ?{ $_.Extension -in @( '.json', '.code-snippets' ) }
-            | Copy-Item -Destination $DestPath -WhatIf -PassThru
+            | Copy-Item -Destination $DestPath -PassThru
 
 
 #    | ?{ $_.Name -in @( $profile.VSCode.DotfilesRepo.Snippets_all
