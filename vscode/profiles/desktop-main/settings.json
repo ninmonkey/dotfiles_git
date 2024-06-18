@@ -28,8 +28,66 @@
             "fileMatch": [
                 "*/dotfiles.2023/vscode/profiles/desktop-main/settings.json"
             ],
-        }
+        },
         // schema name came from here <https://github.com/microsoft/vscode/blob/e5e9a6556e8dd4f5c60074b0a9466be4b490ac29/src/vs/workbench/contrib/snippets/browser/snippets.contribution.ts#L100C1-L100C1>
+        // json.schemas: for power bi (added: 2024-03-28)
+        // https://github.com/microsoft/powerbi-desktop-samples/tree/main/item-schemas
+        {
+            "fileMatch": [
+                "*.pbidataset"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/dataset/definition.pbidataset-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "/*.Dataset/.pbi/editorSettings.json"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/dataset/editorSettings-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "/*.Dataset/.pbi/localsettings.json"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/dataset/localSettings-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "/*.Dataset/.pbi/unappliedchanges.json"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/dataset/unappliedChanges-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "*.pbir"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/report/definition.pbir-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "/*.Report/.pbi/localsettings.json"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/report/localSettings-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "*.pbip"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/common/pbip-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "/*.Report/item.config.json",
+                "/*.Dataset/item.config.json"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/common/item.config-1.0.json"
+        },
+        {
+            "fileMatch": [
+                "/*.Report/item.metadata.json",
+                "/*.Dataset/item.metadata.json"
+            ],
+            "url": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/item-schemas/common/item.metadata-1.0.json"
+        }
     ],
     "launch": {
         "inputs": [
@@ -42,6 +100,32 @@
             },
         ],
         "configurations": [
+            {
+                "name": "🦍Invoke-Pester ➔ 2024-06 -Out Detailed | from Dotfiles",
+                "type": "PowerShell",
+                "request": "launch",
+                // [config 1]: if there's a specific file, you can run this
+                // "script": "Invoke-Pester -Output Detailed -Path ${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
+                // "cwd": "${workspaceFolder}/source-pwsh/tests",
+
+                // [config 2]: else, try:
+                "script": "Invoke-Pester -Output Detailed", //  -Path ${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
+                "cwd": "${workspaceFolder}", // "${workspaceFolder}/source-pwsh/tests",
+
+                // "script": "Invoke-Pester -Output Detailed -Path ${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
+                // "args": [
+                //     "-Path",
+                //     "${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
+                //     "-Output",
+                //     "Detailed"
+                // ],
+                // invoke-pester $Srctest -Output Detailed
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Build",
+                    "order": 0
+                },
+            },
             {
                 "name": "2024-PS: Interactive",
                 "presentation": {
@@ -886,7 +970,7 @@
     "editor.trimAutoWhitespace": true,
     "editor.dragAndDrop": true,
     // "editor.codeActionsOnSave":{
-    //     "source.fixAll": true,
+    //     "source.fixAll": true, warning: fixAll includes removing deleting unreachable code
     //     "source.organizeImports": true
     // },
     "debug.console.wordWrap": true,
@@ -898,10 +982,6 @@
     // "editor.fontLigatures": true,
     // "editor.fontLigatures": true,
     "editor.find.cursorMoveOnType": true,
-    "editor.fontFamily": "'Monaspace Neon', monospace", // <https://github.blog/2022-12-02-introducing-mona-sans-and-hubot-sans/>
-    // <https://github.com/mona-sans>
-    "editor.fontLigatures": "'calt', 'liga', 'dlig', 'ss01', 'ss02'", // ligature docs: <https://github.com/githubnext/monaspace#coding-ligatures>
-    "editor.fontLigatures": "'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08'", // , 'ss09', 'ss10'", // ligature docs: <https://github.com/githubnext/monaspace#coding-ligatures> remove 'calt' to remove 'texture-healing' ' https://github.com/githubnext/monaspace/blob/main/docs/Texture%20Healing.md'
     /*
         Monaspace is available as a variable-axis font and a static build. You can install them both side-by-side; their family names are distinct. For example:
 
@@ -932,6 +1012,7 @@
     */
     "editor.minimap.enabled": false,
     "editor.minimap.autohide": true, // zen:config
+
     /*
         new: https://code.visualstudio.com/updates/v1_69#_minimap-context-menu
     */
@@ -989,7 +1070,7 @@
         "comments": false,
         "strings": false
     },
-    "diffEditor.ignoreTrimWhitespace": false,
+    "diffEditor.ignoreTrimWhitespace": true,
     // more: "diffEditor.*"
     // "workbench.editor.limit.value": 10,
     // 20 more: "workbench.editor.*"
@@ -1027,6 +1108,7 @@
           "preserve-aligned",             // Preserve wrapping of attributes but align
 
           */
+
     "html.format.wrapAttributes": "auto",
     "editor.definitionLinkOpensInPeek": true,
     "editor.definitionLinkOpensInPeek": false,
@@ -1163,7 +1245,6 @@
         // },
         // "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": false,
-        "editor.formatOnSave": true,
         "editor.suggest.showSnippets": false,
         // "editor.fontSize": 13,
         // "editor.fontSize": 18,
@@ -1214,14 +1295,6 @@
         }
     },
     "workbench.tree.indent": 14, //  # might be good for XML / JSON that's nested
-    "[xml]": {
-        "editor.formatOnSave": true,
-        /* for formatting, try these depending on what's installed
-       */
-        "editor.defaultFormatter": "esbenp.prettier-vscode", // prettier
-        "editor.defaultFormatter": "vscode.html-language-features", // built-in
-        "editor.defaultFormatter": "redhat.vscode-xml"
-    },
     /*
     You can now set the server's root path to a sub-folder in your workspace. For example, you can ask Live Preview to serve files from your src folder in your workspace by setting livePreview.serverRoot to "src".,
 
@@ -1325,6 +1398,10 @@
         // "editor.defaultFormatter": "esbenp.prettier-vscode",
         // "editor.defaultFormatter": "vscode.typescript-language-features",
         // "editor.formatOnType": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "never", // warning: if set to 'explicit', will delete unreachable code
+            "source.organizeImports": "explicit"
+        },
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false,
         // "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -1658,9 +1735,23 @@
     "files.encoding": "utf8",
     "files.autoGuessEncoding": false,
     "files.associations": {
+        // section: power bi reports, (added: 2024-03-28), <https://github.com/microsoft/powerbi-desktop-samples/tree/main/item-schemas>
+        "*.pbir": "json",
+        "*.pbidataset": "json",
+        "*.pbip": "json",
+        // section: main
         // these have higher precendence than extensions
         "*.ps1xml": "xml", // unsure if you have to disable this for 'xml' schema to work?
+        //
+        // pbi
+        "*.bim": "json",
+        "definition.pbidataset": "json",
+        "definition.pbir": "json",
+        //
         "*.dax": "sql",
+        //
+        // ...etc
+        //
         "*.json": "jsonc",
         "*.jsonl": "jsonc",
         // powershell
@@ -1675,6 +1766,11 @@
         "*.psm1": "powershell",
         "*.resx": "xml", // visual studio
         // "*.psm1": "ps1",
+        /* elixer: <https://github.com/elixir-lsp/vscode-elixir-ls?tab=readme-ov-file#troubleshooting> */
+        "*.html.heex": "html-eex",
+        // beyond all reason
+        "_script.txt": "lua",
+        "infolog.txt": "log",
     },
     /*
 
@@ -1725,7 +1821,7 @@
     "search.collapseResults": "alwaysExpand",
     // Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `files.exclude` setting. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options).
     "search.exclude": {
-        "**/*.ps1": true,
+        "**/*.ps1": false,
         "**/{.input,.export,.output}/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
         "**/*.log": true,
         "**/*.lnk": true,
@@ -1858,7 +1954,6 @@
     // "terminal.integrated.allowMnemonics": false, ?
     // "terminal.integrated.windowsEnableConpty": true,
     "terminal.integrated.showLinkHover": true,
-    "terminal.integrated.sendKeybindingsToShell": false,
     "terminal.integrated.splitCwd": "workspaceRoot",
     "terminal.integrated.titleMode": "sequence",
     "terminal.integrated.tabs.enabled": true,
@@ -2149,13 +2244,12 @@
     // },
     "terminal.integrated.allowWorkspaceConfiguration": false,
     // "terminal.integrated.defaultProfile.windows": "PowerShell",
-    "terminal.integrated.automationProfile.windows": null,
-    "terminal.integrated.automationProfile.windows": {
-        "args": [],
-        "color": "terminal.ansiMagenta",
-        "path": "pwsh.exe",
-        "icon": "browser"
-    },
+    // "terminal.integrated.automationProfile.windows": {
+    //     "args": ["-NoLogo"], // ["-NoProfile", "-NoLogo"],
+    //     "color": "terminal.ansiMagenta",
+    //     "path": "pwsh.exe",
+    //     "icon": "browser"
+    // },
     "terminal.integrated.enableFileLinks": true,
     "terminal.integrated.environmentChangesIndicator": "warnonly",
     /*
@@ -2212,7 +2306,7 @@
     //  - view: Create terminals in the terminal view
     "terminal.integrated.defaultLocation": "view", // [ <view> | editor]
     // The default profile used on Linux. This setting will currently be ignored if either `terminal.integrated.shell.linux` or `terminal.integrated.shellArgs.linux` are set.
-    "terminal.integrated.defaultProfile.linux": null,
+    // "terminal.integrated.defaultProfile.linux": null,
     // The default profile used on macOS. This setting will currently be ignored if either `terminal.integrated.shell.osx` or `terminal.integrated.shellArgs.osx` are set.
     // The default profile used on Windows. This setting will currently be ignored if either `terminal.integrated.shell.windows` or `terminal.integrated.shellArgs.windows` are set.
     //  - PowerShell: $(terminal-powershell) PowerShell
@@ -2445,6 +2539,16 @@
         // or global
         "enabled": true,
         "rules": {
+            // "regexQuantifier": {
+            //     // "foreground": "#e99434",
+            //     "strikethrough": true,
+            //     "fontStyle": "bold"
+            // },
+            // "*.deprecated": {
+            //     // "foreground": "#e99434",
+            //     "strikethrough": true,
+            //     "fontStyle": "bold"
+            // }
             // "comment": "# "
             /*
               "parameter": "#d4d4d4",
@@ -2459,11 +2563,11 @@
     },
     "oneDarkPro.bold": true,
     "pesterExplorer.autoDiscoverOnOpen": true,
-    "editor.renderWhitespace": "none",
+    "editor.renderWhitespace": "trailing",
     // "powershell.codeFormatting.pipelineIndentationStyle": "NoIndentation",
     "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
     "redhat.telemetry.enabled": false,
-    "snippets.viewer.sortSnippetsByName": true,
+    "snippets.viewer.sortSnippetsByName": false,
     "python.defaultInterpreterPath": "C:\\Users\\cppmo_000\\AppData\\Local\\Microsoft\\WindowsApps\\python3.11.exe",
     // "python.defaultInterpreterPath": "C:/Users/cppmo_000/AppData/Local/Microsoft/WindowsApps/python3.9.exe",
     "errorLens.enabledDiagnosticLevels": [
@@ -2513,7 +2617,7 @@
         "xml",
         "svg"
     ],
-    "workbench.iconTheme": "vscode-icons",
+    "workbench.iconTheme": null,
     // "editor.rulers": [
     //     120,
     // ],
@@ -2525,6 +2629,19 @@
       details
           https://code.visualstudio.com/docs/editor/variables-reference
       */
+    // Loads user and system-wide PowerShell profiles (profile.ps1 and Microsoft.VSCode_profile.ps1) into the PowerShell session. This affects IntelliSense and interactive script execution, but it does not affect the debugger.
+    "powershell.enableProfileLoading": false,
+    "powershell.enableProfileLoading": true,
+    "terminal.integrated.defaultProfile.linux": null, // "Pwsh🐧", // or null
+    "terminal.integrated.defaultProfile.osx": "Pwsh🐧", // or null
+    "terminal.integrated.profiles.osx": {
+        "Pwsh🐧": {
+            "path": [ "C:/Users/ninmonkey/scoop/apps/pwsh/current/pwsh.exe", "pwsh" ],
+            "args": ["-NoLogo"],
+            "icon": "terminal-linux"
+        }
+    },
+
     "terminal.integrated.profiles.windows": {
         "Pwsh🐒 -Nop": {
             "color": "terminal.ansiGreen",
@@ -2579,6 +2696,26 @@
             "overrideName": true,
             "source": "PowerShell",
             "icon": "terminal-powershell"
+        },
+        "Pwsh Pipe🐍🧪-iter0": { // this does not run ineractive mode, but runs without errors?
+            "overrideName": true,
+            "path": [
+                "pwsh.exe",
+                "C:/Program Files/PowerShell/7/pwsh.exe"
+            ],
+            "color": "terminal.ansiCyan",
+            "args": [
+                "-NoProfile",
+                "-WorkingDirectory", "${workspaceFolder}",
+                "-NoLogo", "-Interactive",
+                "-File", "H:/data/2023/dotfiles.2023/pwsh/Profile.🦍.MinPipescript_profile.ps1",
+            ],
+            "env": {
+                // "PSModulePath": "H:/data/2023/dotfiles.2023/pwsh/Modules",
+                "PipeScript_ImportModules": "Pipescript,ugit,pansies",
+
+            },
+            "icon": "bracket-dot"  // "terminal-powershell"
         },
         "Pwsh -NoProfile": {
             "overrideName": true,
@@ -2877,7 +3014,8 @@
     // When enabled, the diff editor ignores changes in leading or trailing whitespace.
     "diffEditor.ignoreTrimWhitespace": true,
     // Timeout in milliseconds after which diff computation is cancelled. Use 0 for no timeout.
-    "diffEditor.maxComputationTime": 5000,
+    // "diffEditor.maxComputationTime": 5000,
+    // "diffEditor.maxComputationTime": 5000,
     // Controls whether the diff editor shows +/- indicators for added/removed changes.
     "diffEditor.renderIndicators": false,
     //
@@ -3030,7 +3168,8 @@
     "search.sortOrder": "modified",
     // Controls whether to use global `.gitignore` and `.ignore` files when searching for files.
     "git.repositoryScanIgnoredFolders": [
-        "node_modules"
+        "node_modules",
+        ".aws-sam",
         /*
         List of folders that are ignored while scanning for Git repositories when #git.autoRepositoryDetection# is set to true or subFolders.
         */
@@ -3381,7 +3520,7 @@
     // Specifies whether you should be prompted to update your version of PowerShell.
     "powershell.promptToUpdatePowerShell": false,
     // Starts PowerShell extension features automatically when a PowerShell file opens. If false, to start the extension, use the 'PowerShell: Restart Current Session' command. IntelliSense, code navigation, integrated console, code formatting, and other features are not enabled until the extension starts.
-    "powershell.startAutomatically": false,
+
     "powershell.startAutomatically": true,
     "testExplorer.addToEditorContextMenu": true,
     "testExplorer.showOnRun": true,
@@ -3409,8 +3548,6 @@
     "powershell.developer.editorServicesWaitForDebugger": false,
     // When the PowerShell extension is starting up, it checks for a session file in order to connect to the language server. This setting determines how long until checking for the session file times out. (default is 240 seconds or 4 minutes)
     "powershell.developer.waitForSessionFileTimeoutSeconds": 240,
-    // Loads user and system-wide PowerShell profiles (profile.ps1 and Microsoft.VSCode_profile.ps1) into the PowerShell session. This affects IntelliSense and interactive script execution, but it does not affect the debugger.
-    "powershell.enableProfileLoading": true,
     // Controls the comment-based help completion behavior triggered by typing '##'. Set the generated help style with 'BlockComment' or 'LineComment'. Disable the feature with 'Disabled'.
     "powershell.helpCompletion": "BlockComment",
     // Switches focus to the console when a script selection is run or a script file is debugged. This is an accessibility feature. To disable it, set to false.
@@ -3516,6 +3653,12 @@
     "editor.fontFamily": "consolas, monospace",
     "editor.fontFamily": "'fira code', monospace",
     "editor.fontFamily": "'CaskaydiaCove NF',  'cascadia code pl', 'cascadia code', 'consolas', monospace", // PL variant may not come with font
+    // new: 2024-03-28
+    "editor.fontFamily": "'Monaspace Neon', monospace", // ref: <https://github.com/githubnext/monaspace?tab=readme-ov-file#visual-studio-code>, and: <https://github.blog/2022-12-02-introducing-mona-sans-and-hubot-sans/>
+    // "editor.fontLigatures": "'calt', 'liga', 'dlig', 'ss01', 'ss02'", // ligature docs: <https://github.com/githubnext/monaspace#coding-ligatures>
+    "editor.fontLigatures": "'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08'", // all. ref: <https://github.com/githubnext/monaspace?tab=readme-ov-file#coding-ligatures>
+    // ligature docs: <https://github.com/githubnext/monaspace#coding-ligatures> remove 'calt' to remove 'texture-healing' ' https://github.com/githubnext/monaspace/blob/main/docs/Texture%20Healing.md'
+    // <https://github.com/mona-sans>
     "editor.fontWeight": "bold",
     "editor.fontWeight": "normal", // # is default default
     "editor.fontSize": 14,
@@ -3953,7 +4096,7 @@
     "bookmarks.navigateThroughAllFiles": false,
     "bookmarks.navigateThroughAllFiles": true,
     "gitlens.advanced.abbreviateShaOnCopy": true,
-    "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp",
+    "snippets.viewer.skipLanguageSnippets": "vb,groovy,java,php,coffeescript,c,cpp,swift",
     "gitlens.mode.active": "zen",
     // "debug.console.acceptSuggestionOnEnter":,
     // List of tags, comma separated, that shouldn't be reformatted. `null` defaults to all tags listed at https://www.w3.org/TR/html5/dom.html#phrasing-content.
@@ -4522,9 +4665,9 @@ workbench.action.quickOpenNavigateNextInViewPicker */
             ]
         }
     },
-    "powershell.powerShellAdditionalExePaths": {
-        "Pwsh 7 Scoop": "C:\\Users\\cppmo_000\\scoop\\apps\\pwsh\\current\\pwsh.exe"
-    },
+    // "powershell.powerShellAdditionalExePaths": {
+    //     "Pwsh 7 Scoop": "C:\\Users\\cppmo_000\\scoop\\apps\\pwsh\\current\\pwsh.exe"
+    // },
     "redhat.telemetry.enabled": false,
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
@@ -4611,6 +4754,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     */
         // EBTI explicit better than implicit, and smaller patterns for less problems
         "*.ps.md": "${capture}.md",
+        "*.ps.markdown": "${capture}.markdown",
         // "*.ps.psd1": "${capture}.psd1",
         // "*.ps.psd1": "${capture}.psd1, ${capture}.psm1",
         "*.ps.psm1": "${capture}.psd1, ${capture}.psm1",
@@ -4814,6 +4958,7 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     "powerquery.benchmark.enable": false, // almost always disable
     "powerquery.trace.server": "messages", // [ off* | verbose | messages ]
     "powerquery.trace.server": "verbose", // [ off* | verbose | messages ] # you need verbose enabled for debugging
+    // "powerquery.general.mode": "SDK", // [ Power Query* | SDK ],
     "powerquery.general.mode": "SDK", // [ Power Query* | SDK ],
     // "editor.inlineSuggest.enabled": false,
     "[powerquery]": {
@@ -4861,7 +5006,6 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "diffEditor.wordWrap": "inherit",
         // "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
         "editor.formatOnSave": false,
-        "editor.semanticHighlighting.enabled": false,
         "editor.semanticHighlighting.enabled": true,
         // "editor.semanticHighlighting.enabled": false,
         // todo: edit theme
@@ -4877,18 +5021,23 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.fontSize": 14,
         "editor.fontSize": 15,
         "editor.defaultFormatter": "PowerQuery.vscode-powerquery",
+        "github.copilot.editor.enableAutoCompletions": false,
+        "github.copilot.editor.enableAutoCompletions": true,
+        "editor.inlineSuggest.showToolbar": "onHover",
     },
     // "[json][jsonc][markdown]": {
     "[json]": {
         "editor.fontSize": 16,
         "editor.fontSize": 18,
-        "editor.fontFamily": "'cascadia code', monospace",
         "editor.fontLigatures": true,
         // "editor.fontWeight": "400",
         // "editor.fontWeight": "400",
         // "editor.fontWeight": "normal",
-        // "editor.fontFamily": "Cascaydia NF Mono",
+        "editor.fontFamily": "'Cascaydia NF Mono', monospace",
+        "editor.fontFamily": "Cascaydia NF Mono",
         "editor.fontFamily": "'Monaspace Neon', monospace",
+        "editor.fontFamily": "'cascadia code pl', monospace",
+
         "editor.codeLensFontFamily": "Cascaydia NF Mono",
         "editor.codeLensFontFamily": "'Cascaydia NF Mono'",
         "editor.inlayHints.fontFamily": "'Cascaydia code'",
@@ -4929,6 +5078,12 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "editor.snippetSuggestions": "none",
         "editor.quickSuggestionsDelay": 150,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.formatOnSave": true,
+        /* for formatting, try these depending on what's installed
+       */
+        "editor.defaultFormatter": "redhat.vscode-xml", // prettier
+        // "editor.defaultFormatter": "vscode.html-language-features", // built-in
+        // "editor.defaultFormatter": "redhat.vscode-xml"
     },
     "[powershell]": {
         "editor.suggest.showInlineDetails": true,
@@ -5287,7 +5442,6 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     */
     "powershell.debugging.createTemporaryIntegratedConsole": false,
     // "terminal.integrated.shellIntegration.history": 200,
-    // "terminal.integrated.shellIntegration.enabled": true, // need to unbind their keybind somehow
     "window.commandCenter": true,
     "terminal.integrated.shellIntegration.decorationIcon": "circle-outline",
     "terminal.integrated.shellIntegration.decorationIconSuccess": "primitive-dot",
@@ -5295,7 +5449,8 @@ workbench.action.quickOpenNavigateNextInViewPicker */
     "intellicodeApiExamples.loggingLevel": "ERROR",
     // "intellicodeApiExamples.loggingLevel": "DEBUG",
     "dev.containers.logLevel": "debug",
-    "aws.logLevel": "warn",
+    "aws.logLevel": "debug",
+
     "aws.ecs.openTerminalCommand": "/bin/sh",
     // "aws.lambda.recentlyUploaded": [],
     // "aws.samcli.location": "",
@@ -5408,7 +5563,10 @@ workbench.action.quickOpenNavigateNextInViewPicker */
         "!Split",
         "!Split sequence"
     ],
-    "mergeEditor.diffAlgorithm": "experimental", // new: 1.7
+    "mergeEditor.diffAlgorithm": "experimental", // does experimental no longer exists or just not in the json schema? new in 1.7
+    "mergeEditor.diffAlgorithm": "advanced", // new: 1.7
+    // "diffEditor.diffAlgorithm": "legacy",
+    "diffEditor.diffAlgorithm": "advanced", // is the default
     "bookmarks.experimental.enableNewStickyEngine": true,
     "bookmarks.wrapNavigation": true,
     "bookmarks.showCommandsInContextMenu": true,
@@ -5545,18 +5703,12 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
 
 
     */
-    // "powershell.integratedConsole.startInBackground": false,
-    // "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new: <https://code.visualstudio.com/docs/terminal/shell-integration#_command-decorations-and-the-overview-ruler>
-    "workbench.experimental.editor.dragAndDropIntoEditor.enabled": true, // new: <https://code.visualstudio.com/updates/v1_66#_drop-into-editor>
-    "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new features: <https://code.visualstudio.com/updates/v1_66#_terminal-shell-integration
-    // MASSIVE CONFIGS AT <https://code.visualstudio.com/docs/terminal/appearance>
-    "terminal.integrated.smoothScrolling": true,
     "editor.cursorSurroundingLines": 5,
     // "editor.cursorSurroundingLinesStyle":
     // "editor.multiCursorPaste": "full"
     // "editor.cursorWidth": 400,
     "rainbow_csv.enable_cursor_position_info": true,
-    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.2.3-win32-x64\\.nuget\\Microsoft.PowerQuery.SdkTools.2.114.4\\tools",
+    "powerquery.sdk.tools.location": "c:\\Users\\cppmo_000\\.vscode\\extensions\\powerquery.vscode-powerquery-sdk-0.4.0-win32-x64\\.nuget\\Microsoft.PowerQuery.SdkTools.2.127.3\\tools",
     // When set to false, the SDK does not try to automatically detect connector workspaces and prompt to create a settings file.
     "powerquery.sdk.features.autoDetection": true,
     // "[html][js][jsx][python][markdown]": {
@@ -5580,7 +5732,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
         */
     "workbench.tree.expandMode": "singleClick",
     "editor.stickyScroll.enabled": true,
-    "editor.stickyScroll.maxLineCount": 5,
+    "editor.stickyScroll.maxLineCount": 5, // <5>
     "powerquery.timeout.symbolTimeoutInMs": 400,
     "powerquery.sdk.features.useServiceHost": true,
     // Try the new feature using a reusable engine service host other than the command lines
@@ -5600,7 +5752,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
         - None: Disable all logging possible. No log files will be written!
 
     */
-    "powershell.developer.editorServicesLogLevel": "Warning",
+    "powershell.developer.editorServicesLogLevel": "Diagnostic",
     "markdown.experimental.editor.pasteLinks.enabled": true,
     "markdown.editor.drop.enabled": true,
     "editor.dropIntoEditor.enabled": true,
@@ -5614,7 +5766,6 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "markdown.experimental.updateLinksOnFileMove.externalFileGlobs": "**/*.{jpg,jpe,jpeg,png,bmp,gif,ico,webp,avif,tiff,svg,mp4,pq}",
     // "markdown.experimental.updateLink": ,
     "editor.experimental.pasteActions.enabled": true,
-    "audioCues.terminalQuickFix": "on",
     "editor.suggest.matchOnWordStartOnly": false,
     "notebook.editorOptionsCustomizations": {
         "editor.autoSurround": "languageDefined",
@@ -5662,8 +5813,8 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "aws.samcli.location": "C:\\Program Files\\Amazon\\AWSSAMCLI\\bin\\sam.cmd",
     "github.copilot.enable": {
         "*": false,
-        "plaintext": true,
-        "markdown": true,
+        "plaintext": false,
+        "markdown": false,
         "scminput": false,
         "yaml": true,
         "javascript": true,
@@ -5680,7 +5831,6 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "github.copilot.advanced": {
         "debug.showScores": true
     },
-    "github.copilot.inlineSuggest.enable": true,
     "pesterExplorer.testRootDirectory": "tests",
     "jupyter.interactiveWindow.codeLens.commands": "jupyter.runcell, jupyter.runallcellsabove, jupyter.debugcell",
     "gitlens.graph.dimMergeCommits": true,
@@ -5691,6 +5841,34 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     // "powershell.integratedConsole.startInBackground": false
     /* 2023-04 : peacock theme I ~wavy~ like */
     "workbench.colorCustomizations": {
+        /* new diffing style test
+        2024-05-21
+        */
+        // "inlineChatDiff.inserted": "#ff0000",
+        // "inlineChatDiff.inserted": "#ff000030",
+        // "inlineChatDiff.removed": "#ff0000",
+        // "inlineChatDiff.removed": "#ff000033",
+        // "diffEditor.removedLineBackground": "#79036950",
+        // "diffEditor.removedLineBackground": "#9e098a50",
+        // "diffEditor.removedLineBackground": "#96528d50",
+        // "diffEditor.removedLineBackground": "#ff0033aa",
+        // "diffEditor.removedLineBackground": "#960622aa",
+        // "diffEditor.insertedLineBackground": "#99000033",
+        // "diffEditor.insertedTextBackground": "#ff0033aa",
+        // "diffEditor.removedLineBackground": "#2c936faa",
+        // "diffEditor.insertedTextBackground": "#960622aa",
+        // "diffEditor.insertedTextBackground": "#2c936faa",
+        // "diffEditor.insertedTextBackground": "#2c936f7f", // 📌🖌
+        // "diffEditor.insertedTextBackground": "#",
+        "diffEditor.removedLineBackground": "#ff880071",
+        "diffEditor.removedLineBackground": "#8f520d71",
+        // "diffEditor.removedTextBackground": "#79036950",
+        "diffEditor.insertedLineBackground": "#ff0033aa", // 📌🖌
+        "diffEditor.insertedLineBackground": "#ff0033aa", // 📌🖌
+        "diffEditor.insertedLineBackground": "#2c936f41", // 📌🖌
+
+        // "diffEditor.removedTextBackground": "#ff000033",
+        /* end of git diff style compare */
         "activityBar.activeBackground": "#e2ca9e",
         "activityBar.background": "#e2ca9e",
         "activityBar.foreground": "#15202b",
@@ -5716,8 +5894,9 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
         "tab.activeModifiedBorder": "#ff7b00",
         "tab.activeModifiedBorder": "#ff3300",
         "titleBar.inactiveForeground": "#15202b99",
+
     },
-    "powerquery.sdk.tools.version": "2.114.4",
+    "powerquery.sdk.tools.version": "2.127.2",
     // "peacock.color": "#d6b577",
     /* 2023-04 : peacock theme I like */
     // "workbench.colorCustomizations": {
@@ -5768,18 +5947,23 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     },
     // *** start => file watchers ( 2023-05-05 )
     "files.exclude": {
+        "**/.aws-sam/*": true, // show folder, hide contents
+        // "**/_site": true, // jekyll build dir
+        "**/_site/*": false, // jekyll build dir
+        "**/_site": false, // jekyll build dir
         "**/*.lnk": true,
         "**/.git": true,
-        "**/*.aws-sam": true, // makes type invisible
-        "**/*.aws-sam": false, // re-enables invisible folder
+        // "**/*.aws-sam": true, // makes type invisible
+        // "**/.aws-sam/*": true, // re-enables invisible folder
         "**/Output": true,
         "**/*.pbix": true,
         "**/*.zip": true,
         "**/*.cache": true,
         // venv, cache, or compiled
+        // "**/node_modules": true,
+        "**/node_modules/*": true,
         "**/*.py[co]": true,
         "**/__pycache__": true,
-        "**/node_modules": true,
         "**/.mypy_cache": true,
         // node and
         // "**sdfds": { "when": "$(basename).extension" }
@@ -5800,7 +5984,6 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
             "exclude": false,
         },
         "**/*.{exe,zip,7z,xlsx}": true,
-        "**/*.zip": true,
         "**/.output/*.csv": true,
         "**/.export/*.csv": true,
         "**/.input/*.csv": true,
@@ -5812,15 +5995,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
         "**/.output/*.json": true,
         "**/.export/*.json": true,
         "**/.input/*.json": true,
-        "**/*.lnk": true,
-        "**/.git": true,
-        "**/*.pbix": true,
-        "**/*.zip": true,
         // venv, cache, or compiled
-        "**/*.py[co]": true,
-        "**/__pycache__": true,
-        "**/node_modules": true,
-        "**/.mypy_cache": true,
         "**/venv": true,
         "**/.output/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
         "**/.input/*.{csv,json,jsonl,log,xlsx,zip,pbix,pbit}": true,
@@ -5933,6 +6108,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
 */
     "[typescript]": {
         "editor.showUnused": true,
+        "editor.defaultFormatter": "vscode.typescript-language-features",
         // "editor.defaultFormatter": "vscode.typescript-language-features",
     },
     "[typescriptreact]": {
@@ -6111,117 +6287,12 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     "javascript.preferGoToSourceDefinition": true,
     "javascript.referencesCodeLens.enabled": true,
     "javascript.referencesCodeLens.showOnAllFunctions": true, // [ always | <disabled> | onlyWithFlag | smart ] <https://code.visualstudio.com/docs/nodejs/nodejs-debugging>
-    "terminal.integrated.shellIntegration.enabled": false, // need to unbind their keybind somehow
-    // 2023-08-23 : audio cues test
-    // Plays a sound when a chat request is made.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.chatRequestSent": "off",
-    // Plays a sound on loop while the response is pending.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.chatResponsePending": "auto",
-    // Plays a sound on loop while the response has been received.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.chatResponseReceived": "off",
-    // Whether or not position changes should be debounced
-    // "audioCues.debouncePositionChanges": false,
-    // Plays a sound when the focus moves to a deleted line in accessible diff viewer mode or to the next/previous change
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.diffLineDeleted": "auto",
-    // Plays a sound when the focus moves to an inserted line in accessible diff viewer mode or to the next/previous change
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.diffLineInserted": "auto",
-    // Plays a sound when the focus moves to a modified line in accessible diff viewer mode or to the next/previous change
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.diffLineModified": "auto",
-    // Plays a sound when the active line has a breakpoint.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.lineHasBreakpoint": "auto",
-    // Plays a sound when the active line has an error.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    "audioCues.lineHasError": "on", // [ <auto> | on | off ]
-    // Plays a sound when the active line has a folded area that can be unfolded.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.lineHasFoldedArea": "auto",
-    // Plays a sound when the active line has an inline suggestion.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.lineHasInlineSuggestion": "auto",
-    // Plays a sound when the active line has a warning.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.lineHasWarning": "off",
-    // Plays a sound when trying to read a line with inlay hints that has no inlay hints.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.noInlayHints": "auto",
-    // Plays a sound when a notebook cell execution is successfully completed.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    "audioCues.notebookCellCompleted": "auto", // [ <auto> | on | off ]
-    // Plays a sound when a notebook cell execution fails.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    "audioCues.notebookCellFailed": "on", // [ <auto> | on | off ]
-    // Plays a sound when the debugger stopped on a breakpoint.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.onDebugBreak": "auto",
-    "audioCues.onDebugBreak": "auto", // [ <auto> | on | off ]
-    // Plays a sound when a task is completed.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.taskCompleted": "auto",
-    // Plays a sound when a task fails (non-zero exit code).
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.taskFailed": "auto",
-    "audioCues.taskFailed": "on", // [ <auto> | on | off ]
-    // Plays a sound when a terminal command fails (non-zero exit code).
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    // "audioCues.terminalCommandFailed": "auto",
-    "audioCues.terminalCommandFailed": "on", // [ <auto> | on | off ]
-    // Plays a sound when terminal Quick Fixes are available.
-    //  - auto: Enable audio cue when a screen reader is attached.
-    //  - on: Enable audio cue.
-    //  - off: Disable audio cue.
-    "audioCues.terminalQuickFix": "on", // [ <auto> | on | off ]
-    // The volume of the audio cues in percent (0-100).
-    "audioCues.volume": 15,
-    "audioCues.debouncePositionChanges": true,
-    "audioCues.lineHasWarning": "on",
     "powershell.codeFormatting.autoCorrectAliases": true,
     "workbench.editor.wrapTabs": false,
     "workbench.editor.tabSizing": "shrink",
     // new JS test 2023-08-27
-    "debug.inlineValues": "off",
+    "debug.inlineValues": "auto",
+    "debug.inlineValues": "off", // breaks if lens is multi-line, vscode bug
     "javascript.referencesCodeLens.enabled": true,
     "javascript.referencesCodeLens.showOnAllFunctions": true,
     "debug.javascript.codelens.npmScripts": "top",
@@ -6254,67 +6325,7 @@ https://code.visualstudio.com/api/references/when-clause-contexts#available-cont
     //    "editor.stickyScroll.scrollWithEditor": "",
     "editor.showFoldingControls": "mouseover",
     // "json.sortOnSave.enable": "", // test if it supports duplicate keys,
-    "diffEditor.experimental.showMoves": true, // <https://code.visualstudio.com/updates/v1_82#_moved-code-detection>,
-    "diffEditor.hideUnchangedRegions.enabled": true, // see <https://code.visualstudio.com/updates/v1_82#_collapsed-unchanged-code-headers>,
-    // "terminal.integrated.hideOnStartup": "", // see: <https://code.visualstudio.com/updates/v1_82#_control-how-terminals-restore-on-startup>
-    // "terminal.integrated.focusAfterRun": "", // pecify if the terminal should be focused when Terminal: Run Selected Text In Active Terminal is invoked
-    // "terminal.integrated.cursorStyleInactive": "", // is supports all styles of the existing terminal.integrated.cursorStyle, plus outline (default) and none
-    /*
-
-    2023-09-15
-    new JustinGrote logger
-        https://marketplace.visualstudio.com/items?itemName=justin-grote.crisp-logs
-        see also: https://marketplace.visualstudio.com/items?itemName=emilast.LogFileHighlighter
-
-        JSON:{ "your-json-here": "ok" }
-
-        currently supports the tags:
-            JSON:{}
-            YAML:{}
-            PS:{}
-
-
-        "editor.tokenColorCustomizations": {
-        "[Default Dark+ Experimental]": { #Replace with your your preferred theme or leave empty for all themes
-            "textMateRules": [
-            {
-                "scope": ["log.warning"], #Replace with the token you want to adjust
-                "settings": {"foreground": "#9CDCFE"}
-            }
-            ]
-            }
-        }
-
-    Currently known tokens:
-        log.timestamp
-        log.function
-        log.silly
-        log.trace
-        log.debug
-        log.info
-        log.verbose
-        log.warning
-        log.error
-        log.fatal
-        log.constant.git.commitid
-        log.constant.guid
-        log.constant.numeric
-        log.constant.language
-        log.constant.hex
-        log.constant.sha256
-        log.constant.macaddress
-        log.path.windows
-        log.path.uri
-        log.string.double
-        log.string.single
-        log.exception.function
-        log.exceptiontype
-
-    Git Log Specific:
-        log.function
-
-    */
-    "github.copilot.inlineSuggest.enable": true,
+    "diffEditor.experimental.showMoves": true,
     // "[copilotignore]": {
     // }
     "github.copilot-labs.advanced": {
@@ -6375,17 +6386,90 @@ new: Copilot inline:
     "scm.inputFontFamily": "default",
     "scm.inputFontSize": 15,
     "scm.showInputActionButton": true,
+    // "powershell.integratedConsole.startInBackground": false,
+    // "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new: <https://code.visualstudio.com/docs/terminal/shell-integration#_command-decorations-and-the-overview-ruler>
+    "workbench.experimental.editor.dragAndDropIntoEditor.enabled": true, // new: <https://code.visualstudio.com/updates/v1_66#_drop-into-editor>
+    "terminal.integrated.shellIntegration.decorationsEnabled": "both", // new features: <https://code.visualstudio.com/updates/v1_66#_terminal-shell-integration
+    // MASSIVE CONFIGS AT <https://code.visualstudio.com/docs/terminal/appearance>
     "terminal.integrated.stickyScroll.enabled": true,
-    "terminal.integrated.shellIntegration.suggestEnabled": true,
     "terminal.integrated.shellIntegration.history": 200,
-    "terminal.integrated.shellIntegration.enabled": false, // need to unbind
+    // try new: -- f22f9e8d-3b9f-4bf1-b8ff-b0c36c051a5f
+    "terminal.integrated.shellIntegration.suggestEnabled": false,
+    "terminal.integrated.shellIntegration.enabled": false, // need to unbind,
+    "terminal.integrated.shellIntegration.suggestEnabled": true,
+    "terminal.integrated.shellIntegration.enabled": true, // need to unbind,
+    // end new: -- f22f9e8d-3b9f-4bf1-b8ff-b0c36c051a5f
+    "terminal.integrated.showExitAlert": true,
+    "terminal.integrated.showLinkHover": true,
+    "terminal.integrated.smoothScrolling": true,
     "npm.packageManager": "auto", // [ bun, npm | yarn | pnpm | <auto> ] // new bun
     // "typescript.preferences.preferTypeOnlyAutoImports": true, # [ <false> | true ]
     "workbench.editor.dragToOpenWindow": true,
     "livePreview.autoRefreshPreview": "On Changes to Saved Files",
     "livePreview.previewDebounceDelay": 1500,
     "gitlens.ai.experimental.provider": "openai",
-    "gitlens.ai.experimental.openai.model": "gpt-4-1106-preview",
+    // "gitlens.ai.experimental.openai.model": "gpt-4-1106-preview",
+    // "gitlens.ai.experimental.openai.model": "",
     "security.promptForLocalFileProtocolHandling": false,
-    "diffEditor.renderSideBySide": false,
+    "diffEditor.renderSideBySide": true,
+    // "powershell.sideBar.CommandExplorerExcludeFilter": [
+    //     "*"
+    // ],
+    // Specifies the visibility of the Command Explorer in the side bar.
+    // "powershell.sideBar.CommandExplorerVisibility": true,
+    // Configures if the built-in HTML language suggests HTML5 tags, properties and values.
+    "html.suggest.html5": true,
+    "html.autoClosingTags": true,
+    "accessibility.voice.keywordActivation": "inlineChat",
+    "git.inputValidation": true,
+    "git.useEditorAsCommitInput": true,
+    "accessibility.signals.lineHasError": {
+        "sound": "on"
+    },
+    "accessibility.signals.lineHasWarning": {
+        "sound": "on"
+    },
+    "accessibility.signals.terminalQuickFix": {
+        "sound": "on"
+    },
+    "accessibility.signals.onDebugBreak": {
+        "sound": "auto"
+    },
+    "accessibility.signals.taskFailed": {
+        "sound": "on"
+    },
+    "accessibility.signals.terminalCommandFailed": {
+        "sound": "on"
+    },
+    "accessibility.signals.notebookCellCompleted": {
+        "sound": "auto"
+    },
+    "accessibility.signals.notebookCellFailed": {
+        "sound": "on"
+    },
+    "markdown-preview-enhanced.liveUpdate": false,
+    "terminal.integrated.experimentalInlineChat": true,
+    "emmet.includeLanguages": {
+        /* these emmet includes are real
+            see more:
+            - <https://code.visualstudio.com/docs/editor/emmet>
+            - <https://github.com/elixir-lsp/vscode-elixir-ls?tab=readme-ov-file#add-support-for-emmet>
+        */
+        "html-eex": "html"
+        /* these emmet includes may be Pilot-Hallucinations */
+        // "javascript": "javascriptreact",
+        // "markdown": "markdown",
+        // "typescript": "typescriptreact",
+        // "html": "html",
+        // "json": "jsonc",
+        // "yaml": "yaml",
+        // "plaintext": "plaintext",
+        // "powershell": "powershell",
+        // "python": "python"
+    },
+    "accessibility.signalOptions": {
+        "volume": 15,
+        "debouncePositionChanges": true
+    },
+    "workbench.statusBar.visible": false
 }
