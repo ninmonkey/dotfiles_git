@@ -402,6 +402,26 @@ function Invoke.NinPSRun {
         $items | Invoke-PSRunSelector @invokePSRunSelectorSplat
     }
 }
+function Impo.Winget.Completer {
+    [CmdletBinding()]
+    param()
+    if( $global:_________tempWingetDefined ) { return } 
+    $global:_________tempWingetDefined = $true 
+    'Init Completer: Winget' | New-Text -fg 'gray40' -bg 'gray15' | Write-Information
+     Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+        [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
+        $Local:word = $wordToComplete.Replace('"', '""')
+        $Local:ast = $commandAst.ToString().Replace('"', '""')
+        winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        }
+}
+}
+
+
+Impo.Winget.Completer -Infa Continue
+
 function Impo.RunSelect {
     <#
     .SYNOPSIS
