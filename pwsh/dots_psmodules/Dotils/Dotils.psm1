@@ -759,6 +759,30 @@ function Dotils.DropNamespace {
     }
     return $Found
 }
+function Dotils.Docker.EnterPwshSession {
+    param( [string] $Id )
+    '...invoking' | write-host
+    if( -not $ID ) {
+        docker exec -it $(docker container ls | Select -first 1).ID /bin/pwsh -NoL
+    } else {
+        docker exec -it $Id /bin/pwsh -NoL
+    }
+}
+function Dotils.Goto-Item {
+    [Alias('GoItem')]
+    [CmdletBinding()]
+    param(
+        [Parameter( ValueFromPipeline )]
+        $InputObject
+    )
+    $target = @( $InputObject ) | Select -first 1 | Get-Item
+    if( -not $Target ) { return }
+
+    if( $target.PSIscontainer ) { Pushd $Target }
+    else                        { pushd $target.Directory }
+
+    (pwd).Path | Write-host -fg 'gray60'
+}
 
 function Dotils.Invoke-NoProfilePwsh {
     <#
@@ -17869,11 +17893,86 @@ function Dotils.Convert.Regex.FromMatchGroup {
     }
 }
 
-# gcm doStuff | ScriptBlock.asRange
+function Dotils.EventViewer.FindRecentDefenderLogs {
+    <#
+    .synopsis
+        Search for WindowsDefender logs when there's something detected
+    .EXAMPLE
+        > Dotils.Events.Defender
+    #>
+    [Alias('Dotils.Events.Defender')]
+    [OutputType('System.Diagnostics.Eventing.Reader.EventLogRecord')]
+    [CmdletBinding()]
+    param(
+        # date param
+        [int] $Days = -1,
+
+        # don't pre-filter logs that are noise
+        [switch] $PassThru
+    )
+    # Define the log name and time range
+    $logName   = "Microsoft-Windows-Windows Defender/Operational"
+    $startTime = (Get-Date).AddDays( $Days ) # 24 hours ago
+
+    # Query the event log
+    $when = $startTime.ToUniversalTime().ToString('o')
+    $getWinEventSplat = @{
+        LogName     = $logName
+        FilterXPath = "*[System[TimeCreated[@SystemTime>='${when}']]]"
+    }
+    $getWinEventSplat | ConvertTo-Json -depth 9
+        | Join-String -op 'EventViewer: ' | Dotils.Write-DimText -PSHost
+
+    $query = Get-WinEvent @getWinEventSplat
+
+    if( $PassThru ) { return $query }
+
+    $clean_orig = $query
+        | ?{
+            $results = @(
+                $_.Message -NotMatch ([Regex]::Escape('Endpoint Protection client is up and running in a healthy state'))
+                $_.Message -match [Regex]::Escape( 'Microsoft Defender Antivirus has taken action' )
+                $_.Message -match [Regex]::Escape( 'Microsoft Defender Antivirus has detected' )
+                $_.Message -notmatch [Regex]::Escape( 'Endpoint Protection client health report' )
+                ( $false ? $true : $_.LevelDisplayName -ne 'Information' ) # some are wanted, like take action
+            )
+            return ($results -eq $true).count -gt 0
+        }
+
+
+        $clean = $query
+            | ?{
+                (
+                    (
+                        $_.Message -NotMatch [Regex]::Escape('Endpoint Protection client is up and running in a healthy state')
+                    ) -and (
+                        $_.Message -notmatch [Regex]::Escape( 'Endpoint Protection client health report')
+                    )
+                ) -and (
+                    (
+                        $_.Message -match [Regex]::Escape( 'Microsoft Defender Antivirus has taken action' )
+                    ) -or (
+                        $_.Message -match [Regex]::Escape( 'Microsoft Defender Antivirus has detected' )
+                    )
+                )
+                # ( $false ? $true : $_.LevelDisplayName -ne 'Information' ) # some are wanted, like take action
+            }
+
+
+
+
+    'Found {0} logs, filtered to {1}' -f @(
+        $query.count
+        $clean.count
+    )   | Dotils.Write-DimText -PSHost
+
+    return $clean
+}
 
 function Dotils.Select-VariableByType {
     <#
     .SYNOPSIS
+        I forget
     .EXAMPLE
     Pwsh> # try a bunch scopes
         Dotils.Select-VariableByType -ListCategory -Scope local
@@ -20533,6 +20632,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-07-05
+        'GoItem'
 
         # 2024-05-26
         'ReImpo'
