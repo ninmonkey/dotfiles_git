@@ -1884,6 +1884,130 @@ function glam.Bps.🐍.All {
 }
 
 
+function Dotils.TraceParam {
+    <#
+    .SYNOPSIS
+        simplify output from tracing parameter bindings. 2024-06-24
+    .DESCRIPTION
+        first see module: <n🐒.ParameterBinding.ParseTrace.psm1>
+    .EXAMPLE
+        # defaults
+        > .Dotils.TraceParam -Expression { $true | Should -Be $true -because $true }
+        # output:
+            wrote: C:\Users\nin\AppData\Local\Temp\trace-parameterbinding-raw.log
+            wrote: C:\Users\nin\AppData\Local\Temp\trace-parameterbinding-clean.log
+    .EXAMPLE
+        # stay quiet:
+        > Dotils.TraceParam -Expression { $true | Should -Be $true -because $true } -LogPath ./trace-parameterbinding-raw.log -RawLogPath ./trace-parameterbinding-clean.log
+        #
+        Dotils.TraceParam -Expression { Should -Be $true $true } -LogPath ./trace-parameterbinding-raw.log -RawLogPath ./trace-parameterbinding-clean.log -PSHost:$false -Verbose
+    .LINK
+        file:///H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.ParameterBinding.ParseTrace\n🐒.ParameterBinding.ParseTrace.psm1
+    #>
+    [Alias('Dotils.TraceParam.Inline')]
+    [CmdletBinding()]
+    param(
+        [ArgumentCompletions(
+            '{ Should -Be a b }',
+            '{ Should -Be $true $true }'
+        )]
+        [ValidateNotNull()]
+        [ScriptBlock] $Expression,
+
+        # filepath for log, after cleaning
+        [ArgumentCompletions('./trace-parameterbinding-raw.log')]
+        [string] $LogPath,
+
+        # raw file, untouched output
+        [ArgumentCompletions('./trace-parameterbinding-clean.log')]
+        [string] $RawLogPath,
+
+        # also write log to console
+        [switch] $PSHost,
+
+        [switch]$AutoOpen
+    )
+
+    if( [string]::IsNullOrWhiteSpace( $RawLogPath ) ) {
+        $RawLogPath = Join-Path (Get-Item 'temp:') 'trace-parameterbinding-raw.log'
+    }
+
+    if( [string]::IsNullOrWhiteSpace( $LogPath ) ) {
+        $LogPath = Join-Path (Get-Item 'temp:') 'trace-parameterbinding-clean.log'
+    }
+
+    filter _format_simplifyLog {
+        <#
+        .SYNOPSIS
+            drops redundant prefix, abbr namespace, skip blank lines
+        #>
+        $line = $_
+        $RegexPrefix = '.*: 0 : '
+        if( [string]::IsNullOrWhiteSpace( $line ) ) { return }
+        $line = $line -replace $regexPrefix, ''
+
+        $regexNamespace = [Regex]::escape('[System.Management.Automation.')
+        $line = $line -replace $regexNamespace, '['
+
+        $line
+    }
+
+
+    # ensure it's not stale for either item (ie: when something errors early)
+    Clear-Content -ea ignore -path $RawLogPath
+    Clear-Content -ea ignore -path $LogPath
+    $traceCommandSplat = @{
+        Expression = $Expression
+        Name       = 'ParameterBinding'
+        PSHost     = $PSHost
+        FilePath   = $RawLogPath
+    }
+
+    $RawLogPath, $LogPath
+        # | Get-Item
+        | Join-String -f "`nwrote: {0}"
+        # | write-verbose -verbose
+        | write-host -fore 'green'
+
+    Trace-Command @traceCommandSplat
+
+    Get-Content (Get-Item -ea 'stop' $RawLogPath)
+        | _format_simplifyLog
+        | sc -path $LogPath
+
+    if( $AutoOpen ) {
+        Get-Item -ea 'stop' $LogPath | ii
+        # or vscode:
+        # code --goto ( get-item -ea 'stop' $logPath )
+    }
+
+    <#
+    todo: later
+
+        $regexPredentRootWithChild = @'
+    (?x)
+        (?<Found>
+            ^\S.*$
+        )
+        # was named <FirstChildLine>
+        (?:
+            \s{4,}.*
+        )
+        # works. didn't apply yet bec
+    '@
+            if($true) {
+                $lines | Set-Content -Path $LogPath
+            } else {
+                throw 'to do later'
+                ($lines | Join-String -sep "`n") -replace $regexPredentRootWithChild, {
+                    "`n", $_.Found # or use no names and just replace with $_
+                }
+            }
+    #>
+
+}
+
+
 function DeleteOldModule.MoveToNormalPath {
     <#
     .SYNOPSIS
