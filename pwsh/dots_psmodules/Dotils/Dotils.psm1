@@ -769,6 +769,35 @@ function Dotils.Docker.Native.FirstId {
         (& $BinDocker @('container', 'ls') | Select -Last 1) -split '\s+' | Select -first 1
     return $LastId
 }
+function Dotils.Docker.Native.Start-WaitConnectLoop {
+    <#
+    .synopsis
+        Auto reconnect to next container as it is built. Disconnects/container stops  will continue to reconnect
+    .NOTES
+        Hides Errors (in stdout stream)
+    .EXAMPLE
+        Pwsh> Dotils.Docker.Native.Start-WaitConnectLoop
+    #>
+    param(
+        # write stdout to host, too
+        [switch]$PSHost
+    )
+
+    while( $true ) { & { docker exec -it (Dotils.Docker.Native.FirstId) /bin/pwsh -NoL } | Write-verbose ; sleep -Milliseconds 300 ; }
+
+    return
+
+    # while( $true ) {
+    #     $stdout = docker exec -it (Dotils.Docker.Native.FirstId) /bin/pwsh -NoL
+    #     if($PSHost) {
+    #         $stdout | write-host
+    #     }
+    #     if( $stdout -notmatch 'no such container') {
+    #         $stdout | Write-host -fore 'darkred'
+    #     }
+    #     sleep -milliseconds 300
+    # } # loops for auto-reconnect
+}
 function Dotils.Docker.EnterPwshSession {
     <#
     .SYNOPSIS
