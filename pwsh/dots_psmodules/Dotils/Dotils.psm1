@@ -759,19 +759,75 @@ function Dotils.DropNamespace {
     }
     return $Found
 }
+function Dotils.Docker.Native.FirstId {
+    <#
+    .SYNOPSIS
+        Parses the docker natived command to return the first Container ID. ( even if Rocker is imported )
+    #>
+    $binDocker = gcm docker -CommandType Application -TotalCount 1 -ea 'stop'
+    $lastId =
+        (& $BinDocker @('container', 'ls') | Select -Last 1) -split '\s+' | Select -first 1
+    return $LastId
+}
 function Dotils.Docker.EnterPwshSession {
+    <#
+    .SYNOPSIS
+        runs: 'docker exec -it (newest)' using pwsh -- (using Rocker)
+    #>
     param( [string] $Id )
     '...invoking' | write-host
+    import-module Rocker -ea 'stop'
+
     if( -not $ID ) {
         docker exec -it $(docker container ls | Select -first 1).ID /bin/pwsh -NoL
     } else {
         docker exec -it $Id /bin/pwsh -NoL
     }
 }
+function Dotils.Docker.FirstId {
+    <#
+    .SYNOPSIS
+        runs: 'docker container ls -- to grab the newest container Id -- (using Rocker)
+    #>
+    param(
+        [switch]$PassThru
+    )
+    Import-Module Rocker -ea 'stop'
+    if( $PassThru ) {
+        (docker container ls | Select -first 1)
+    } else {
+        (docker container ls | Select -first 1).ID
+    }
+}
+function Dotils.Docker.Logs {
+    <#
+    .SYNOPSIS
+        logs of newest
+    #>
+    param( [string] $Id )
+    '...invoking' | write-host
+    <#
+    .SYNOPSIS
+        runs: 'docker logs --details --timestamps -- to grab the container log -- (using Rocker)
+    #>
+    import-module Rocker -ea 'stop'
+    # docker logs ( docker container ls )[0].Id --details --timestamps
+    if( -not $ID ) {
+        # docker logs --details --timestamps (docker container ls | Select -first 1).ID
+        docker logs --details --timestamps (Dotils.Docker.Native.FirstId)
+    } else {
+        docker logs --details --timestamp $Id
+    }
+}
 function Dotils.Goto-Item {
+    <#
+    .SYNOPSIS
+        Go to the folder a file is in, or the folder if it's a directory
+    #>
     [Alias('GoItem')]
     [CmdletBinding()]
     param(
+        # Folder or File to navigate to. Can pipe.
         [Parameter( ValueFromPipeline )]
         $InputObject
     )
