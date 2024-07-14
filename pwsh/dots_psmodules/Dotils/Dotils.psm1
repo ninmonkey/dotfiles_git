@@ -783,9 +783,19 @@ function Dotils.Docker.Native.Start-WaitConnectLoop {
         [switch]$PSHost
     )
 
-    while( $true ) { & { docker exec -it (Dotils.Docker.Native.FirstId) /bin/pwsh -NoL } | Write-verbose ; sleep -Milliseconds 300 ; }
+    while( $true ) {
+        ($FirstId = (Dotils.Docker.Native.FirstId) )
+            | Join-String -f '   reconnecting to {0} . ctrl+z/c to exit loop'
+            | Write-host -fg 'salmon'
 
-    return
+        docker exec -it $FirstId /bin/pwsh -NoL
+        sleep -Milliseconds 700
+    }
+
+
+    # broken: while( $true ) { & { docker exec -it (Dotils.Docker.Native.FirstId) /bin/pwsh -NoL } | Write-verbose ; sleep -Milliseconds 300 ; }
+
+
 
     # while( $true ) {
     #     $stdout = docker exec -it (Dotils.Docker.Native.FirstId) /bin/pwsh -NoL
@@ -1134,6 +1144,64 @@ function Dotils.To.Type.FromPSTypenames {
         | Sort-Object -Unique
 
 }
+# old names: function Format-HumanizeFileSize # Dotils.Write-FormatHumanSize
+function Dotils.Format.HumanizeFileSize {
+    <#
+    .synopsis
+        Convert integer bytes into a humanized abbreviated strings  ( added: 2024-07 )
+    .notes
+        new: 2024-07-10
+
+        Pwsh 6.2 and 7 added additional units: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_numeric_literals?view=powershell-7.4#integer-literals>
+    .example
+        pwsh> Format-HumanizeFileSize 1.234kb
+            1.2 KB
+
+        pwsh> Format-HumanizeFileSize 1.234kb -Digits 5
+            1.23438 KB
+    .example
+        pwsh> 12.45gb, .9mb, 91231451, 2 | Format-HumanizeFileSize | Join-string -sep ', '
+            12.5 GB, 921.6 KB, 87.0 MB, 2.0 b
+    #>
+
+    [Alias(
+        'Dotils.Write-FormatHumanSize', # this is the command name of what was renamed to 'Dotils.Write-FormatHumanSize.old'
+        'Dotils.Fmt.HumanFileSize' # 'FormatFilesize' # 'Format-HumanizeFileSize'
+    )]
+    [OutputType( [String]) ]
+    param(
+        # Size in bytes. future could include [uint64]. I used [long] because pwsh 5.1 and 7 use that
+        [Parameter( Mandatory, ValueFromPipeline)]
+        [long[]] $SizeInBytes,
+
+        # 0-to-number of digits after the decimal
+        [Parameter()]
+        [int] $Digits = 1
+    )
+
+    # example final template string:
+        # '{0:n2} TB'
+    process {
+        $Prefix = '{0:n', $Digits, '}' -join ''
+        foreach($Item in $SizeInBytes) {
+            switch( $Item) {
+                # outer bounds
+                { $_ -lt 1kb } { "$Prefix b" -f $_ ; break}
+                { $_ -ge 1pb } { "$Prefix PB" -f ($_ / 1pb) ; break}
+                # rest
+                { $_ -ge 1tb } { "$Prefix TB" -f ($_ / 1tb) ; break}
+                { $_ -ge 1gb } { "$Prefix GB" -f ($_ / 1gb) ; break}
+                { $_ -ge 1mb } { "$Prefix MB" -f ($_ / 1mb) ; break}
+                { $_ -ge 1kb } { "$Prefix KB" -f ($_ / 1kb) ; break}
+                default {
+                    # break should be redundant, and this should too, unless there's a logic error
+                    throw "ShouldNeverReachCase: $SizeInBytes"
+                }
+            }
+        }
+    }
+}
+
 
 function Dotils.Format.NumberedList {
     <#
@@ -4160,10 +4228,10 @@ function Dotils.Quick.Pwd {
     }
 }
 
-function Dotils.Write-FormatHumanSize {
+function Dotils.Write-FormatHumanSize.Old {
     <#
     .SYNOPSIS
-    Sugar to render size as human readable, but emit the raw numeric value
+    Sugar to render size as human readable, but emit the raw numeric value ( added: <= 2023 )
 
     .DESCRIPTION
     Long description
@@ -4184,7 +4252,7 @@ function Dotils.Write-FormatHumanSize {
     General notes
     #>
     # [OutputType('number else string set')]
-    [Alias('Dotils.Fmt.HumanFileSize')]
+    # [Alias()]
     [CmdletBinding()]
     # [Alias('__writeSizeAsMb')]
     param(
@@ -4254,7 +4322,7 @@ function Dotils.Write-FormatHumanSize {
             | Join-String -sep ', ' -op 'UnitName, UnitValue, Render, FinalRender []= ' -SingleQuote
             | Write-Debug
 
-        [string]$finalRender = Join-String -op $Prefix -f "{0:n2} $unitName" -In $UnitValue -Separator ''
+        [string] $finalRender = Join-String -op $Prefix -f "{0:n2} $unitName" -In $UnitValue -Separator ''
 
          # emit either numeric otherwise the rendered ansi formatted string (before wriiting to host)
         if( $WithValue ) { $SizeAsBytes }
