@@ -10,6 +10,7 @@ $PROFILE | Add-Member -NotePropertyMembers @{
     Nin_InlineFormatDataEntry = $PSCommandpath | Gi
     Nin_TypeAccelEntry        = $PSCommandPath | Gi
     'CurrentUser🐍Profile'    = (Join-Path $PSScriptRoot 'Profile.🦍.MinPipescript_profile.ps1' | gi )
+    KnownLogpaths             = 'H:\data\2024\pwsh\gists🦍\Big List of Locations of Known Log Files.🦍.2024.md\LogPaths.yml'
 } -Force -ea Ignore
 
 $ENV:PATH = @(
@@ -405,8 +406,8 @@ function Invoke.NinPSRun {
 function Impo.Winget.Completer {
     [CmdletBinding()]
     param()
-    if( $global:_________tempWingetDefined ) { return } 
-    $global:_________tempWingetDefined = $true 
+    if( $global:_________tempWingetDefined ) { return }
+    $global:_________tempWingetDefined = $true
     'Init Completer: Winget' | New-Text -fg 'gray40' -bg 'gray15' | Write-Information
      Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
