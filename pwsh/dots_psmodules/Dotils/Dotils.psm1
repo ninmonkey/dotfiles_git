@@ -1176,6 +1176,48 @@ function Dotils.To.Type.FromPSTypenames {
         | Sort-Object -Unique
 
 }
+function Dotils.Format.PathToEnvVars {
+    <#
+    .SYNOPSIS
+        converts an absolute filepath to one using standard Environment Variables
+    .EXAMPLE
+        > 'C:\Users\jen\Documents\2024' | Dotils.Format.PathToEnvVars
+        %UserProfile%\Documents\2024
+    .DESCRIPTION
+        see also an older version: Dotils.to.EnvVarPath
+    .link
+        Dotils\Dotils.to.EnvVarPath
+    .link
+        Dotils.EnvVars.AsMarkdownTable
+    #>
+    [CmdletBinding()]
+    [Alias('Quick.Format.PathToEnvVars')]
+    param(
+        # filepaths, as string
+        [Alias('PSPath', 'Path', 'FullName')]
+        [Parameter( ValueFromPipeline, ValueFromPipelineByPropertyName )]
+        [string] $PathName
+    )
+    process {
+        Join-String -f 'Input Path: "{0}"' -Inp $PathName | Write-Verbose
+        $accum = $_
+        # for env vars using windows DOS style paths:
+        if( $false ) {
+            # mode: simple greedy replacement, first replace
+            $accum = $accum -replace [regex]::Escape( 'C:\Users\CPPMO_~1\' ), '%UserProfile%\'
+            $accum = $accum -replace [regex]::Escape( 'C:\Users\cppmo_000\' ), '%UserProfile%\'
+        } else {
+            # mode: expand to full, absolute value. allowing even longer env var replacements, below.
+            $accum = $accum -replace [regex]::Escape( 'C:\Users\CPPMO_~1\' ), "${Env:UserProfile}\"
+            $accum = $accum -replace [regex]::Escape( 'C:\Users\cppmo_000\' ), "${Env:UserProfile}\"
+        }
+        $accum = $accum -replace [regex]::Escape( $env:UserProfile ), '%UserProfile%'
+        $accum = $accum -replace [regex]::Escape( $env:LocalAppData ), '%LocalAppData%'
+        $accum = $accum -replace [regex]::Escape( $env:AppData ), '%AppData%'
+        return $accum
+    }
+}
+
 # old names: function Format-HumanizeFileSize # Dotils.Write-FormatHumanSize
 function Dotils.EnvVars.AsMarkdownTable {
     <#
@@ -1197,10 +1239,10 @@ function Dotils.EnvVars.AsMarkdownTable {
     $InputObject | %{ $_.Key, $_.value | Join-String -sep ' | '
             | Join-String -f "| {0} |`n"  } | Join-string -sep ""
     #>
-    filter _fmt_EnvVar_Substitute {
+    filter _private_fmt_EnvVar_Substitute {
         <#
         .EXAMPLE
-            > 'C:\Users\jen\Documents\2024' | _fmt_EnvVar_Substitute
+            > 'C:\Users\jen\Documents\2024' | _private_fmt_EnvVar_Substitute
             %UserProfile%\Documents\2024
         #>
         $accum = $_
@@ -1226,7 +1268,7 @@ function Dotils.EnvVars.AsMarkdownTable {
         return $Input
             | Join-String -sep ' | '
             # | Join-String -f "| {0} |`n"
-            | Join-String -f "| {0} |"
+            | Join-String -f '| {0} |'
     }
     function _writeMarkdownHeader {
         # [OutputType( [string] )]
@@ -1248,11 +1290,19 @@ function Dotils.EnvVars.AsMarkdownTable {
         $InputObject
             | %{
                 if( $WithoutReplaceEnvVars ) {
-                    $_.Key, $_.Value | _writeMarkdownRow
+                    @(
+                        $_.Key
+                        $_.Value | Join-String -DoubleQuote
+                    )
+                        | _writeMarkdownRow
                 } else {
-                    @(    $_.Key;
-                            $_.Value | _fmt_EnvVar_Substitute
-                    ) | _writeMarkdownRow
+                    @(
+                        $_.Key;
+                        $_.Value
+                            | _private_fmt_EnvVar_Substitute
+                            | Join-String -DoubleQuote
+                    )
+                    | _writeMarkdownRow
                 }
             }
             | Join-String -sep "`n" -op "`n"
@@ -8023,7 +8073,10 @@ function Dotils.Is.KindOf {
 function Dotils.to.EnvVarPath  {
     <#
     .SYNOPSIS
+        Older implementation that converts paths into Environment Variable paths
     .notes
+        first try: Dotils.Format.PathToEnvVars
+
         future: auto grab PSPath, turn into
     .EXAMPLE
         Pwsh7🐒>  $query
@@ -8049,6 +8102,8 @@ function Dotils.to.EnvVarPath  {
 
         ${Env:USERPROFILE}\Microsoft\Power BI Desktop Store App\CertifiedExtensions
         ${Env:LOCALAPPDATA}\Microsoft\Power BI Desktop\CertifiedExtensions
+    .LINK
+        Dotils.Format.PathToEnvVars
     #>
     [Alias('.to.envVarPath')]
     [CmdletBinding()]
