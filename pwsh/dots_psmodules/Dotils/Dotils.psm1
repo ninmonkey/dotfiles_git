@@ -1185,6 +1185,11 @@ function Dotils.Format.PathToEnvVars {
         %UserProfile%\Documents\2024
     .DESCRIPTION
         see also an older version: Dotils.to.EnvVarPath
+    .notes
+        future:
+            - [ ] sort regex replacements by total string length, for the longest possible replacements, first.
+            - [ ] to be safer, make sure paths end with '$' or '\' to prevent potential partial matches
+            - [ ] fine tune replacement order, like 'CommonProgramFiles' or 'CommonProgramFilesW6432' if they are equal
     .link
         Dotils\Dotils.to.EnvVarPath
     .link
@@ -1201,6 +1206,12 @@ function Dotils.Format.PathToEnvVars {
     process {
         Join-String -f 'Input Path: "{0}"' -Inp $PathName | Write-Verbose
         $accum = $_
+
+
+        $accum = $accum -replace [regex]::Escape( ${Env:MSMPI_BIN} ),           '%MSMPI_BIN%'
+        $accum = $accum -replace [regex]::Escape( ${Env:VS120COMNTOOLS} ),      '%VS120COMNTOOLS%'
+        $accum = $accum -replace [regex]::Escape( ${Env:VS140COMNTOOLS} ),      '%VS140COMNTOOLS%'
+
         # for env vars using windows DOS style paths:
         if( $false ) {
             # mode: simple greedy replacement, first replace
@@ -1211,9 +1222,22 @@ function Dotils.Format.PathToEnvVars {
             $accum = $accum -replace [regex]::Escape( 'C:\Users\CPPMO_~1\' ), "${Env:UserProfile}\"
             $accum = $accum -replace [regex]::Escape( 'C:\Users\cppmo_000\' ), "${Env:UserProfile}\"
         }
-        $accum = $accum -replace [regex]::Escape( $env:UserProfile ), '%UserProfile%'
-        $accum = $accum -replace [regex]::Escape( $env:LocalAppData ), '%LocalAppData%'
-        $accum = $accum -replace [regex]::Escape( $env:AppData ), '%AppData%'
+        $accum = $accum -replace [regex]::Escape( $env:TEMP ),          (Join-path $Env:LocalAppData 'temp')
+        $accum = $accum -replace [regex]::Escape( $env:TMP  ),          (Join-path $Env:LocalAppData 'temp')
+
+        $accum = $accum -replace [regex]::Escape( ${Env:ProgramFiles(x86)} ),       '%ProgramFiles(x86)%'
+        $accum = $accum -replace [regex]::Escape( ${Env:ProgramW6432} ),            '%ProgramW6432%'  # same as ProgramFiles(x86)
+        $accum = $accum -replace [regex]::Escape( ${Env:CommonProgramFiles} ),      '%CommonProgramFiles%'
+        $accum = $accum -replace [regex]::Escape( ${Env:CommonProgramFiles(x86)} ), '%CommonProgramFiles(x86)%'
+        $accum = $accum -replace [regex]::Escape( ${Env:CommonProgramW6432} ),      '%CommonProgramW6432%'
+
+        $accum = $accum -replace [regex]::Escape( $env:LocalAppData ),  '%LocalAppData%'
+        $accum = $accum -replace [regex]::Escape( $env:AppData ),       '%AppData%'
+        $accum = $accum -replace [regex]::Escape( $env:UserProfile ),   '%UserProfile%'
+        $accum = $accum -replace [regex]::Escape( $env:ProgramData ),   '%ProgramData%'
+        $accum = $accum -replace [regex]::Escape( $env:ALLUSERSPROFILE ),   '%ALLUSERSPROFILE%' # same as ProgramData
+        $accum = $accum -replace [regex]::Escape( $env:SystemRoot ),   '%SystemRoot%'
+        # $accum = $accum -replace [regex]::Escape( $env:OneDrive ),  '%OneDrive%' # skip because of appdata
         return $accum
     }
 }
@@ -1246,6 +1270,7 @@ function Dotils.EnvVars.AsMarkdownTable {
             %UserProfile%\Documents\2024
         #>
         $accum = $_
+        throw 'ReplaceBy: Dotils.Format.PathToEnvVars'
         # for env vars using windows DOS style paths:
         if( $false ) {
             # mode: simple greedy replacement, first replace
@@ -1256,9 +1281,9 @@ function Dotils.EnvVars.AsMarkdownTable {
             $accum = $accum -replace [regex]::Escape( 'C:\Users\CPPMO_~1\' ), "${Env:UserProfile}\"
             $accum = $accum -replace [regex]::Escape( 'C:\Users\cppmo_000\' ), "${Env:UserProfile}\"
         }
-        $accum = $accum -replace [regex]::Escape( $env:UserProfile ), '%UserProfile%'
         $accum = $accum -replace [regex]::Escape( $env:LocalAppData ), '%LocalAppData%'
         $accum = $accum -replace [regex]::Escape( $env:AppData ), '%AppData%'
+        $accum = $accum -replace [regex]::Escape( $env:UserProfile ), '%UserProfile%'
         return $accum
     }
     function _writeMarkdownRow {
@@ -1299,7 +1324,7 @@ function Dotils.EnvVars.AsMarkdownTable {
                     @(
                         $_.Key;
                         $_.Value
-                            | _private_fmt_EnvVar_Substitute
+                            | Dotils.Format.PathToEnvVars
                             | Join-String -DoubleQuote
                     )
                     | _writeMarkdownRow
