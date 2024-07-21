@@ -929,6 +929,38 @@ function Dotils.Invoke-NoProfilePwsh {
         # get-date | write-verbose
     }
 }
+
+function Dotils.CommandLookup.GroupByImplementingType {
+    <#
+    .SYNOPSIS
+        Get a list of ImplementingTypes from [CommandInfo], optionally lookup using: InvokeCommand.GetCmdletByTypeName( [type] )
+    .DESCRIPTION
+        from a [SeeminglyScience discord thread](<https://discord.com/channels/180528040881815552/447475598911340559/1263899564151279658>)
+        > it's a longer way of doing CommandStopper $__exceptionToThrow. The reason for the syntax is that the cmdlet isn't resolvable, it's not exported from any module. So gotta do it manually
+    #>
+    param(
+        [hashtable] $GetCommandSplat = @{},
+
+        # also invokes: InvokeCommand.GetCmdletByTypeName( [type] )
+        [Alias('CmdletLookup', 'WithCmdletLookup')]
+        [switch] $IncludeCmdletLookup
+
+    )
+    # output: [CommandInfo[]]
+    $query = Get-Command @GetCommandSplat
+
+    $found = [pscustomobject]@{
+        HasType = $query | ?{ -not [string]::IsNullOrWhiteSpace( $_.ImplementingType ) }
+        NoType  = $query | ?{ [string]::IsNullOrWhiteSpace( $_.ImplementingType ) }
+    }
+    if( -not $WithTypeLookup ) { return $found }
+
+    # output: [CmdletInfo[]] now its only this type
+    return @( $found.HasType.ForEach({
+        $ExecutionContext.InvokeCommand.GetCmdletByTypeName( $_.ImplementingType )
+    }) | Sort-Object )
+}
+
 function Dotils.EC.GetCommandName {
     <#
     .SYNOPSIS
@@ -1145,6 +1177,85 @@ function Dotils.To.Type.FromPSTypenames {
 
 }
 # old names: function Format-HumanizeFileSize # Dotils.Write-FormatHumanSize
+function Dotils.EnvVars.AsMarkdownTable {
+   <#
+   .SYNOPSIS
+      Export env vars as markdown table. quick / awkward implementation, but worked.
+   .EXAMPLE
+      Pwsh> Dotils.EnvVars.AsMarkdownTable -ReplaceEnvVars
+   #>
+   [OutputType( [string] )]
+   param(
+      # Default value is 'Gci Env:' filtered to include filepaths only
+      [object[]] $InputObject,
+
+      # skip replacing absolute path with env var paths?
+      [Alias('PassThru')]
+      [switch] $WithoutReplaceEnvVars
+   )
+   <# orig version:
+   $InputObject | %{ $_.Key, $_.value | Join-String -sep ' | '
+         | Join-String -f "| {0} |`n"  } | Join-string -sep ""
+   #>
+   filter _fmt_EnvVar_Substitute {
+      <#
+      .EXAMPLE
+         > 'C:\Users\jen\Documents\2024' | _fmt_EnvVar_Substitute
+            %UserProfile%\Documents\2024
+      #>
+      $accum = $_
+      $accum = $_ -replace [regex]::Escape( $env:UserProfile ), '%UserProfile%'
+      $accum = $_ -replace [regex]::Escape( $env:LocalAppData ), '%LocalAppData%'
+      $accum = $_ -replace [regex]::Escape( $env:AppData ), '%AppData%'
+
+      # for env vars using windows DOS style paths:
+      $accum = $_ -replace [regex]::Escape( 'C:\Users\CPPMO_~1\' ), '%UserProfile%\'
+      $accum = $_ -replace [regex]::Escape( 'C:\Users\cppmo_000\' ), '%UserProfile%\'
+
+
+      return $accum
+
+   }
+   function _writeMarkdownRow {
+      # a,b,c: renders: '| a | b | c |'
+      # $_ | Join-String -sep ' | '
+      #    | Join-String -f "| {0} |`n"
+      return $Input
+         | Join-String -sep ' | '
+         # | Join-String -f "| {0} |`n"
+         | Join-String -f "| {0} |"
+   }
+    function _writeMarkdownHeader {
+        # [OutputType( [string] )]
+        # param( [string[]] $HeaderNames )
+        $HeaderNames = @( $Input )
+        return @(
+            $HeaderNames | _writeMarkdownRow
+            ( '-' * $HeaderNames.count -split '').
+            Where({$_}) | _writeMarkdownRow
+        ) | Join-String -sep "`n"
+    }
+    $InputObject ??=
+        gci env:
+            | ?{ Test-Path $_.Value }
+            | Sort-Object Value
+    @(
+        'Env Var', 'Path' | _writeMarkDownHeader | Join-String
+        $InputObject
+            | %{
+                if( -not $ReplaceEnvVars ) {
+                    $_.Key, $_.Value | _writeMarkdownRow
+                } else {
+                    @(    $_.Key;
+                            $_.Value | _fmt_EnvVar_Substitute
+                    ) | _writeMarkdownRow
+                }
+            }
+            | Join-String -sep "`n" -op "`n"
+    )
+    | Join-String -sep ''
+}
+
 function Dotils.Format.HumanizeFileSize {
     <#
     .synopsis
