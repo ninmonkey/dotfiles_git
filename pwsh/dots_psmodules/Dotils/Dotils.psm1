@@ -1178,53 +1178,49 @@ function Dotils.To.Type.FromPSTypenames {
 }
 # old names: function Format-HumanizeFileSize # Dotils.Write-FormatHumanSize
 function Dotils.EnvVars.AsMarkdownTable {
-   <#
-   .SYNOPSIS
-      Export env vars as markdown table. quick / awkward implementation, but worked.
-   .EXAMPLE
-      Pwsh> Dotils.EnvVars.AsMarkdownTable -ReplaceEnvVars
-   #>
-   [OutputType( [string] )]
-   param(
-      # Default value is 'Gci Env:' filtered to include filepaths only
-      [object[]] $InputObject,
+    <#
+    .SYNOPSIS
+        Export env vars as markdown table. quick / awkward implementation, but worked.
+    .EXAMPLE
+        Pwsh> Dotils.EnvVars.AsMarkdownTable -ReplaceEnvVars
+    #>
+    [OutputType( [string] )]
+    param(
+        # Default value is 'Gci Env:' filtered to include filepaths only
+        [object[]] $InputObject,
 
-      # skip replacing absolute path with env var paths?
-      [Alias('PassThru')]
-      [switch] $WithoutReplaceEnvVars
-   )
-   <# orig version:
-   $InputObject | %{ $_.Key, $_.value | Join-String -sep ' | '
-         | Join-String -f "| {0} |`n"  } | Join-string -sep ""
-   #>
-   filter _fmt_EnvVar_Substitute {
-      <#
-      .EXAMPLE
-         > 'C:\Users\jen\Documents\2024' | _fmt_EnvVar_Substitute
+        # skip replacing absolute path with env var paths?
+        [Alias('PassThru')]
+        [switch] $WithoutReplaceEnvVars
+    )
+    <# orig version:
+    $InputObject | %{ $_.Key, $_.value | Join-String -sep ' | '
+            | Join-String -f "| {0} |`n"  } | Join-string -sep ""
+    #>
+    filter _fmt_EnvVar_Substitute {
+        <#
+        .EXAMPLE
+            > 'C:\Users\jen\Documents\2024' | _fmt_EnvVar_Substitute
             %UserProfile%\Documents\2024
-      #>
-      $accum = $_
-      $accum = $_ -replace [regex]::Escape( $env:UserProfile ), '%UserProfile%'
-      $accum = $_ -replace [regex]::Escape( $env:LocalAppData ), '%LocalAppData%'
-      $accum = $_ -replace [regex]::Escape( $env:AppData ), '%AppData%'
-
-      # for env vars using windows DOS style paths:
-      $accum = $_ -replace [regex]::Escape( 'C:\Users\CPPMO_~1\' ), '%UserProfile%\'
-      $accum = $_ -replace [regex]::Escape( 'C:\Users\cppmo_000\' ), '%UserProfile%\'
-
-
-      return $accum
-
-   }
-   function _writeMarkdownRow {
-      # a,b,c: renders: '| a | b | c |'
-      # $_ | Join-String -sep ' | '
-      #    | Join-String -f "| {0} |`n"
-      return $Input
-         | Join-String -sep ' | '
-         # | Join-String -f "| {0} |`n"
-         | Join-String -f "| {0} |"
-   }
+        #>
+        $accum = $_
+        # for env vars using windows DOS style paths:
+        $accum = $_ -replace [regex]::Escape( 'C:\Users\CPPMO_~1\' ), '%UserProfile%\'
+        $accum = $_ -replace [regex]::Escape( 'C:\Users\cppmo_000\' ), '%UserProfile%\'
+        $accum = $_ -replace [regex]::Escape( $env:UserProfile ), '%UserProfile%'
+        $accum = $_ -replace [regex]::Escape( $env:LocalAppData ), '%LocalAppData%'
+        $accum = $_ -replace [regex]::Escape( $env:AppData ), '%AppData%'
+        return $accum
+    }
+    function _writeMarkdownRow {
+        # a,b,c: renders: '| a | b | c |'
+        # $_ | Join-String -sep ' | '
+        #    | Join-String -f "| {0} |`n"
+        return $Input
+            | Join-String -sep ' | '
+            # | Join-String -f "| {0} |`n"
+            | Join-String -f "| {0} |"
+    }
     function _writeMarkdownHeader {
         # [OutputType( [string] )]
         # param( [string[]] $HeaderNames )
@@ -1239,11 +1235,12 @@ function Dotils.EnvVars.AsMarkdownTable {
         gci env:
             | ?{ Test-Path $_.Value }
             | Sort-Object Value
+
     @(
         'Env Var', 'Path' | _writeMarkDownHeader | Join-String
         $InputObject
             | %{
-                if( -not $ReplaceEnvVars ) {
+                if( $WithoutReplaceEnvVars ) {
                     $_.Key, $_.Value | _writeMarkdownRow
                 } else {
                     @(    $_.Key;
