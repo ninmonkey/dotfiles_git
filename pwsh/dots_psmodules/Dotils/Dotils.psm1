@@ -759,10 +759,34 @@ function Dotils.DropNamespace {
     }
     return $Found
 }
+function Dotils.Docker.FirstId {
+    <#
+    .SYNOPSIS
+        runs: 'docker container ls -- to grab the newest container Id -- (using Rocker)
+    .LINK
+        Dotils.Docker.Native.FirstId
+    .link
+        Dotils.Docker.FirstId
+    #>
+    param(
+        [switch]$PassThru
+    )
+    Import-Module Rocker -ea 'stop'
+    if( $PassThru ) {
+        (docker container ls | Select -first 1)
+    } else {
+        (docker container ls | Select -first 1).ID
+    }
+}
+
 function Dotils.Docker.Native.FirstId {
     <#
     .SYNOPSIS
         Parses the docker natived command to return the first Container ID. ( even if Rocker is imported )
+    .LINK
+        Dotils.Docker.Native.FirstId
+    .link
+        Dotils.Docker.FirstId
     #>
     $binDocker = gcm docker -CommandType Application -TotalCount 1 -ea 'stop'
     $lastId =
@@ -821,21 +845,6 @@ function Dotils.Docker.EnterPwshSession {
         docker exec -it $(docker container ls | Select -first 1).ID /bin/pwsh -NoL
     } else {
         docker exec -it $Id /bin/pwsh -NoL
-    }
-}
-function Dotils.Docker.FirstId {
-    <#
-    .SYNOPSIS
-        runs: 'docker container ls -- to grab the newest container Id -- (using Rocker)
-    #>
-    param(
-        [switch]$PassThru
-    )
-    Import-Module Rocker -ea 'stop'
-    if( $PassThru ) {
-        (docker container ls | Select -first 1)
-    } else {
-        (docker container ls | Select -first 1).ID
     }
 }
 function Dotils.Docker.Logs {
@@ -1333,6 +1342,341 @@ function Dotils.EnvVars.AsMarkdownTable {
             | Join-String -sep "`n" -op "`n"
     )
     | Join-String -sep ''
+}
+function Dotils.Select.Error.FromUGit {
+    <#
+    .SYNOPSIS
+        filter out errors, specifically finding ugit error records based on pstypenames
+    #>
+    param(
+        # $Error instance
+        [Parameter(Mandatory, Position = 0)]
+        [Alias('InputObject')]
+        $ErrorObject,
+
+        # Regex of the pstypenames to search for. ( Most permissive first)
+        [Parameter(Mandatory, Position = 0)]
+        [Alias('PSTypeName')]
+        [ArgumentCompletions( "'git\..*\.error'", "'git\.error'", "'git\.clone\.error'" )]
+        [string] $RegexFilterUgitTypeName
+    )
+    return $ErrorObject
+        | Where-Object {
+            ($_.PSTypeNames -match $RegexFilterUgitTypeName).count -gt 0
+        }
+}
+
+function Dotils.Flatten.ExceptionMessage {
+    <#
+    .SYNOPSIS
+        input is an $Error, serializes as JSON
+    #>
+    [OutputType( [string] )]
+    param( $ErrorRecord )
+
+    write-warning 'wip: this worked in the console, but not module'
+    # $ErrorRecord ??=  $global:Error
+    $select_Splat = @{
+        ErrorAction = 'ignore'
+        Property    = 'FullyQualifiedErrorId', 'CategoryInfo', 'Exception', 'TargetObject', 'ScriptStackTrace'
+    }
+
+    $ErrorRecord | Select-Object @select_Splat
+        | ConvertTo-Json -Depth 2 -Compress -wa 'ignore'
+}
+
+function Dotils.Render.Error.AllErrorsToMarkdownPreview {
+    <#
+    .SYNOPSIS
+        exports your $errors to a markdown file with navigation, and lots of expanded info
+    .EXAMPLE
+        Dotils.Render.Error.AllErrorsToMarkdownPreview
+    #>
+    [CmdletBinding()]
+    param(
+        # try $Global:error
+        [ArgumentCompletions('$global:Error', '$Error')]
+        # [Parameter(Mandatory)]
+        $InputError,
+
+        [ArgumentCompletions(
+            "(Join-Path (gi temp:) 'render_error.md'"
+        )]
+        # [string] $OutputPath = ('temp:\render_error.md')
+        [string] $OutputPath = (Join-Path (gi temp:) 'render_error.md'),
+
+        [switch]$AutoOpenVsCode
+    )
+    $InputError ??= $Global:Error
+    if( -not $PSBoundParameters.ContainsKey('InputError') ) {
+        $InputError = $Global:Error
+    }
+    if( $InputError.count -le 0 ) {
+        throw "Input Error had no records"
+    }
+
+    $OutputPath
+        | Join-String -f 'Writing to: "{0}"' | Write-Verbose
+
+    $curId = 0
+
+<#
+future:
+    [string] $TableOfContents = @'
+'@
+
+example:
+    - [Top](#top)
+    - [Environment](#environment)
+    - [ErrorNum: 0](#errornum-0)
+        - [CommandLine](#commandline)
+        - [StackTrace](#stacktrace)
+        - [Get-Error](#get-error)
+        - [Format-List force](#format-list-force)
+    - [ErrorNum: 1](#errornum-1)
+        - [CommandLine](#commandline-1)
+        - [StackTrace](#stacktrace-1)
+        - [Get-Error](#get-error-1)
+        - [Format-List force](#format-list-force-1)
+    - [ErrorNum: 2](#errornum-2)
+        - [CommandLine](#commandline-2)
+        - [StackTrace](#stacktrace-2)
+        - [Get-Error](#get-error-2)
+        - [Format-List force](#format-list-force-2)
+#>
+
+
+
+[string] $MainHeader = @'
+## Top
+
+## Environment
+
+```yml
+Generated at: {0}
+PSVersion: {3}
+Cwd: {1}
+Host: {2}
+Parents: {5}
+Modules: {4}
+
+## Errors
+```
+'@ -f @(
+    # [0] Dt
+    [Datetime]::Now.ToString('u')
+        | Join-String -SingleQuote
+
+    # [1] Cwd
+    (Get-Location).ToString()
+        | Join-String -SingleQuote
+
+    # [2] Host
+    $Host.Name
+
+    # [3] PsVersion
+    $PSVersionTable.PSVersion.ToString()
+
+    # [4] module names, no module version
+    if($true) {
+        (gmo)
+            | Sort-Object
+            | Join-String {
+                $_.Name, $_.Version | Join-String -sep ': '
+            } -f "`n- '{0}'"
+    } else {
+        (gmo)
+            | Sort-Object
+            | %{
+                [pscustomobject]@{
+                    Name = $_.Name ;
+                    Version = $_.Version.ToString();
+                }
+            }
+            | ConvertTo-Yaml
+            | Join-String -sep "`n"
+
+    }
+    # [5] Parent process name chain
+    @(  (ps -ea 'ignore' -Pid $PID)
+        (ps -ea 'ignore' -Pid $PID).Parent
+        (ps -ea 'ignore' -Pid $PID).Parent.Parent
+        (ps -ea 'ignore' -Pid $PID).Parent.Parent.Parent
+        (ps -ea 'ignore' -Pid $PID).Parent.Parent.Parent.Parent
+        (ps -ea 'ignore' -Pid $PID).Parent.Parent.Parent.Parent.Parent
+    )
+        | %{ $_ | Select ProcessName, *Id* | Json -Depth 1 -Compress }
+        | Join-String -f "`n  - '{0}'"
+
+)
+[string] $MainFooter = @'
+
+end
+'@
+
+    $fStr = @'
+
+### ErrorNum: {0}
+
+[Back to Top](#top)
+
+Duration: {1}
+
+**Error**:
+```ps1
+{2}
+```
+
+#### CommandLine
+
+```ps1
+{3}
+```
+
+#### StackTrace
+```
+{6}
+```
+
+#### Get-Error
+
+```ps1
+{4}
+```
+
+#### Format-List force
+
+```ps1
+{5}
+```
+
+
+
+'@
+    $origStyle = $PSStyle.OutputRendering
+    $PSStyle.OutputRendering = 'PlainText'
+
+
+    $global:Error[0..1000] | %{
+        $cur = $_
+        [string] $renderErr = $cur
+            | Get-Error | Out-String
+            | Join-String -sep "`n"
+            | StripAnsi
+
+        $curHistory =
+            if( -not $cur.InvocationInfo.HistoryId ) {
+                $null
+            } else {
+                Get-History -Id $cur.InvocationInfo.HistoryId
+            }
+
+        $fstr -f @(
+                # [0] err number
+                ($curId++)
+
+                # [1] duration
+                ($curHistory.Duration.TotalSeconds)?.ToString('f2') ?? '<missing>'
+                    | Join-String -f '{0} secs'
+
+
+                # [2] Error exception as string
+                ($cur.Exception)?.ToString() ?? '<none>'
+
+                # [3] CommandLine
+                $curHistory.CommandLine ?? '<missing>'
+
+                # [4] render Get-Error
+                $renderErr ?? '<none>'
+
+                # [5] Format-list -force
+                ( $cur | Format-List * -Force
+                    | out-string -Width 1kb ) ?? '<none>'
+
+                # [6] StackTrace
+                ($cur.ScriptStackTrace
+                    | StripAnsi ) ?? '<none>'
+        )
+    }
+        | Join-String -op $MainHeader -os $MainFooter
+        | Set-Content -Path $OutputPath
+
+    $PSStyle.OutputRendering = $origStyle
+
+    $OutputPath
+        | Join-String -f 'Wrote "{0}"'
+        | Write-Host -fg 'salmon'
+
+    if( $AutoOpenVsCode ) {
+        code -g (  gi -ea 'stop' $OutputPath)
+    }
+}
+
+function Dotils.Format.HexLiteral  {
+    <#
+    .SYNOPSIS
+        converts numerics into hex literals (strings)
+    .EXAMPLE
+        > 2, 9, 123, 4 | HexLiteral -Verbose -NumDigits 8 -Separator '-' -NoEnumerate
+        # output: 00000002-00000009-0000007b-00000004
+    .EXAMPLE
+        > 2, 9, 123, 4 | HexLiteral -NumDigits 3 -Separator ' ' -NoEnumerate -Prefix '0x'
+        # output: 0x002 0x009 0x07b 0x004
+    .EXAMPLE
+        > $nums = 3, 10kb, 99, 0x23245
+        > $nums | HexLiteral
+        > $nums | HexLiteral -Digits 8
+        > $nums | HexLiteral -Separator ''
+    #>
+    [OutputTYpe( [string] )]
+    [Alias('HexLiteral', 'Quick.HexLit')]
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline)]
+            [object[]] $InputObject,
+
+        [ArgumentCompletions( "' '", "''", "', '" )]
+        [string] $Separator = ' ',
+
+        # the minimum number
+        [Alias('Digits')]
+        [int] $NumDigits = 2,
+
+        [ArgumentCompletions("'0x'", "''")]
+        [string] $Prefix = '',
+
+        # if specified, has priority over NumDigits and Prefix. Separator is kept.
+        [ArgumentCompletions(
+            "'{0:x2}'", "'0x{0:x2}'",
+            "'{0:X6}'"
+        )]
+        [string]$FormatString = "'0x{0:x2}'",
+
+        # collect all items, piping to join-string as one object
+        [switch] $NoEnumerate
+    )
+    begin {
+        # ex: $FStr = '0x{0:x2}'
+        if( $PSBoundParameters.ContainsKey('FormatString') ) {
+            $FStr = $FormatString
+        } else {
+            $FStr = "${Prefix}", '{0:x', "${NumDigits}", '}' | Join-String
+        }
+        "FStr: $FStr" | Write-verbose
+
+        [List[Object]] $Collected = @()
+    }
+    process {
+        if( -not $NoEnumerate ) {
+            return $InputObject
+                | Join-String -f $FStr -sep $Separator
+        }
+        $Collected.AddRange(@( $InputObject ))
+    }
+    end {
+        if( -not $NoEnumerate ) { return }
+        return $Collected | Join-String -f $FStr -sep $Separator
+    }
 }
 
 function Dotils.Format.HumanizeFileSize {
@@ -8095,6 +8439,25 @@ function Dotils.Is.KindOf {
     }
 }
 
+function Dotils.Quick.BatLog {
+    <#
+    .SYNOPSIS
+        pipe to bat with colors, no numbers, default to not paging
+    .EXAMPLE
+        Pwsh> GlGet.LogPath /tmp/GitLogger-Microservice.log | BatLog
+    #>
+    [Alias('Quick.BatLog')]
+    param(
+        [string] $Language = 'log',
+        [switch] $Paging
+    )
+    if($Paging) {
+        $Input | bat --paging=always --language $Language --style=header
+    } else {
+        $Input | bat --paging=never --language $Language --style=header
+    }
+}
+
 function Dotils.to.EnvVarPath  {
     <#
     .SYNOPSIS
@@ -11327,11 +11690,15 @@ function Dotils.Select-NotBlankKeys {
 function Dotils.AutoJson {
     <#
     .SYNOPSIS
-        Try one of the automatic methods
+        Try one of the automatic methods uses [Text.Json]
     .notes
         [System.Text.Json.JsonSerializer] has a ton of overloads
     .LINK
-        https://docs.microsoft.com/en-us/dotnet/api/system.text.json.jsonserializer?view=net-8.0#methods
+        https://docs.microsoft.com/en-us/dotnet/api/system.text.json.jsonserializer?view=net-8.0#method
+    .link
+        Dotils.AutoJson
+    .link
+        Dotils.AutoJson.FromCOnvertToCmdlet
     #>
     # [Alias('AutoJson')]
     param(
@@ -11345,7 +11712,51 @@ function Dotils.AutoJson {
     if(-not $TypeInfo ) { $TypeInfo = $Object.GetType() }
     [Text.Json.JsonSerializer]::Serialize( <# value: #> $Object, <# tinfo #> $TypeInfo )
 }
+function Dotils.AutoJson.FromConvertToCmdlet {
+    <#
+    .SYNOPSIS
+        uses the Pwsh cmdlet's function rather than Text.Json
+    .EXAMPLE
+        Dotils.AutoJson.FromConvertToCmdlet -MaxDepth 0 -InputObject (get-item .) | jq -C
+    .link
+        Dotils.AutoJson
+    .link
+        Dotils.AutoJson.FromCOnvertToCmdlet
+    .link
+        [Microsoft.PowerShell.Commands.JsonObject]
+    .link
+        [Microsoft.PowerShell.Commands.JsonObject+ConvertToJsonContext]
+    #>
+    param(
+        $InputObject,
+        [int] $MaxDepth = 4,
+        [switch] $WithoutEnumStrings,
 
+        [Alias('Minify')]
+        [Parameter()]
+        [switch] $Compress
+    )
+    <#
+
+    ### overloads
+
+    public ConvertToJsonContext(
+        int maxDepth, bool enumsAsStrings, bool compressOutput);
+
+    public ConvertToJsonContext(
+        int maxDepth, bool enumsAsStrings, bool compressOutput,
+        StringEscapeHandling stringEscapeHandling,
+        PSCmdlettargetCmdlet,
+        CancellationToken cancellationToken);
+    #>
+
+    $conText = [Microsoft.PowerShell.Commands.JsonObject+ConvertToJsonContext]::new(
+            <# MaxDepth #> $MaxDepth,
+            <# enums as strings #> (-not $WithoutEnumStrings),
+            <# compress output #> $Compress )
+
+    return [Microsoft.PowerShell.Commands.JsonObject]::ConvertToJson( $InputObject, [ref]$conText )
+}
 
 function Dotils.List.Collect.Pipeline {
     <#
@@ -20980,6 +21391,12 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-08-01
+        'HexLiteral'
+        'Quick.HexLiteral'
+
+        # 2024-07-22
+        'Quick.BatLog'
         # 2024-07-05
         'GoItem'
 
