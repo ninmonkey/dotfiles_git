@@ -8281,33 +8281,56 @@ function Dotils.Render.FindMember {
 
 function Dotils.Render.Error.CategoryInfo {
     <#
-    .NOTES
-    ErrorCategoryInfo
-    #>
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory, ValueFromPipeline)]
-        [object]$InputObject
-    )
-    if($InputObject -is [Management.Automation.ErrorCategoryInfo] ) {
-        $Target = $InputObject
-    }
-    if($InputObject -is [Management.Automation.ErrorRecord] ) {
-        $Target = $InputObject.CategoryInfo
-    }
-    if($null -eq $Target) {
-        throw 'Target Is Null'
-        # [System.Management.Automation.ErrorCategoryInfo]
-        # Write-Error
-    }
+    .SYNOPSIS
+        Converts [ErrorRecord] or [ErrorRecord.ErrorCategoryInfo] to a string ( because  .ToString() truncates info )
+    .EXAMPLE
+        Pwsh> $error[0].CategoryInfo | Flatten.Error.CategoryInfo
 
-    $Target
-        | Join-String -sep ', ' -p {
-                #| Select-Object 'Category', 'Activity', 'Reason', 'TargetName', 'TargetType'
-            $_
-                | %{$_.PSObject.Properties }
-                | Join-string -f "`n    {0}" { $_.Name, $_.value  -join ' ==> ' }
+        Out-Git ⁞ reason: Exception, cat: NotSpecified
+            target: [String]
+            => fatal: repository 'https://github.com/PowerShell/Powerdddhell/' not found
+    .EXAMPLE
+
+        Pwsh> $error[0].CategoryInfo | Flatten.Error.CategoryInfo -OneLine
+
+        Out-Git, Exception, NotSpecified, [String] ⁞ fatal: repository 'https://github.com/PowerShell/Powerdddhell/' not found
+    #>
+    param(
+
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('CategoryInfo', 'ErrorRecord')]
+        [object] $InputObject,
+
+        # output as one long line, no newlines
+        [switch] $OneLine
+    )
+    process {
+        [string] $Render = ''
+        if( $InputObject -is [ErrorRecord]) {
+            [ErrorCategoryInfo] $T = $InputObject.CategoryInfo
+        } else {
+            [ErrorCategoryInfo] $T = $InputObject
         }
+        if( -not $OneLine ) {
+            $Render = "{0} ⁞ {1}, {2}`n  {3}`n  {4}" -f @(
+                $t.Activity
+                'reason: ', $t.Reason -join ''
+                'cat: ', $t.Category -join ''
+                'target: [{0}]' -f $t.TargetType
+                "=> ", $t.TargetName -join ''
+            )
+        } else {
+            $Render = "{0}, {1}, {2}, {3} ⁞ {4}" -f @(
+                $t.Activity
+                $t.Reason -join ''
+                $t.Category -join ''
+                '[{0}]' -f $t.TargetType
+                $t.TargetName -join ''
+            )
+        }
+
+        return $Render
+    }
 }
 write-warning 'wip func: Dotils.Describe.ErrorRecord'
 function Dotils.Describe.ErrorRecord {
