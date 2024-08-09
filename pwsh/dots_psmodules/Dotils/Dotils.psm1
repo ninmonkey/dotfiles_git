@@ -10079,6 +10079,57 @@ function Dotils.Start-WatchForFilesModified {
         | write-host -fore green
 
 }
+
+function Dotils.Summarize.TypeDef.Properties {
+    <#
+    .SYNOPSIS
+        using class explorer (static type definition)
+    .EXAMPLE
+        Pwsh> _summarizeTypeDefProperties ([ErrorRecord])
+    .EXAMPLE
+        Pwsh> [ErrorRecord] | _summarizeTypeDefProperties
+
+        ParentType  Property              Type
+        ----------  --------              ----
+        ErrorRecord Exception             Exception
+        ErrorRecord TargetObject          Object
+        ErrorRecord CategoryInfo          ErrorCategoryInfo
+        ErrorRecord FullyQualifiedErrorId String
+        ErrorRecord ErrorDetails          ErrorDetails
+        ErrorRecord InvocationInfo        InvocationInfo
+        ErrorRecord ScriptStackTrace      String
+        ErrorRecord PipelineIterationInfo ReadOnlyCollection`1
+    #>
+    param(
+        [Parameter(ValueFromPipeline)]
+        [Alias('InputObject')]
+        [object] $TypeInfo
+    )
+    begin {
+        # AssertCondition: ModuleExists:
+        if( -not (gcm  -ea 'ignore' 'Find-Type' -Module ClassExplorer) ) {
+            Import-Module -ea 'stop' 'ClassExplorer'
+        }
+    }
+    process {
+        if( $TypeInfo -is [type] ) {
+            [Type] $Tinfo = $TypeInfo
+        } else {
+            [Type] $Tinfo = ($TypeInfo).GetType()
+        }
+        $Tinfo | Find-Member -MemberType Property | %{
+            $curProp = $_
+            [pscustomobject]@{
+                PSTypeName = 'dotils.TypeInfo.Property.Summary'
+                ParentType   = $Tinfo.Name
+                Property   = $curProp.Name
+                Type       = $curProp.PropertyType.Name
+            }
+        }
+    }
+}
+
+
 function Dotils.Format-TaggedUnionString {
     <#
     .synopsis
@@ -11183,14 +11234,15 @@ function Dotils.IsBlank {
 
         # this parameter will auto complete
         [Parameter()]
-        [validateset('TrueNull', 'Empty', 'EmptyString', 'Whitespace')]
+        [ValidateSet('TrueNull', 'Empty', 'EmptyString', 'Whitespace')]
         $Mode = 'Whitespace'
     )
     switch( $Mode ) {
-        'TrueNull' {    $null -eq $Obj }
-        'Empty' {       [string]::IsNullOrEmpty( $Obj ) }
-        'WhiteSpace' {  [string]::IsNullOrWhiteSpace( $Obj ) }
+        'TrueNull'    { $null -eq $Obj }
+        'Empty'       { [string]::IsNullOrEmpty( $Obj ) }
+        'WhiteSpace'  { [string]::IsNullOrWhiteSpace( $Obj ) }
         'EmptyString' { $Obj -is [string] -and $Obj.Length -eq 0 }
+
         default { throw "ShouldNeverReach: Unhandled Mode: $Mode" }
     }
 }
@@ -19959,7 +20011,20 @@ function Dotils.Build-Gh.RepoList.AsMdTable {
     #>
 
 }
-
+function Dotils.Gh.ParseJsonFieldNames.FromHelp {
+    [OutputType( [string] )]
+    param(
+        [string] $RawText
+    )
+    [string[]] $terms = @(
+        ($rawText -split '\r?\n').
+        ForEach({ $_.Trim() -split ',\s*' } ).
+        where( {$_} )
+        | Sort-object -Unique
+    )
+        # | Join.UL <# parse gh fields docs to names #>
+    return $Terms
+}
 function Dotils.Gh.Gist.Cmds {
     <#
     .SYNOPSIS
