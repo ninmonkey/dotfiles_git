@@ -1736,7 +1736,37 @@ function Dotils.Format.HumanizeFileSize {
     }
 }
 
+function Dotils.Example.DateTime-FormatStrings {
+    <#
+    .SYNOPSIS
+        Show Format strings and results as a quick example. Using [Datetime]::Now.ToString and [Datetime]::Now.ToUniversalTime().ToString
+    #>
+    [CmdletBinding()]
+    param()
 
+    $Now = [Datetime]::Now
+    hr
+    'Uni   ▸ u'
+    $Now.ToUniversalTime().ToString('u') | Join-String -f "    {0}`n"
+    'Local ▸ u'
+    $Now.ToString('u') | Join-String -f "    {0}`n"
+
+    'Uni   ▸ o'
+    $Now.ToUniversalTime().ToString('o') | Join-String -f "    {0}`n"
+    'Local ▸ o'
+
+    $Now.ToString('o') | Join-String -f "    {0}`n"
+    'Uni   ▸ O'
+    $Now.ToUniversalTime().ToString('O') | Join-String -f "    {0}`n"
+    'Local ▸ O'
+
+    $Now.ToString('O') | Join-String -f "    {0}`n"
+    'Uni   ▸ U'
+    $Now.ToUniversalTime().ToString('U') | Join-String -f "    {0}`n"
+    'Local ▸ U'
+    $Now.ToString('U') | Join-String -f "    {0}`n"
+    hr
+}
 function Dotils.Format.NumberedList {
     <#
     .SYNOPSIS
