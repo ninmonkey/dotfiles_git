@@ -21157,7 +21157,67 @@ function Dotils.SaveLink {
 #     throw 'nyi: see justingrote demo that modifies the error string preserving the rest'
 
 # }
+function Dotils.CommandTemplate {
+    param(
+        # future: autocomplete
+        [Parameter(Position = 0, Mandatory )]
+        [ArgumentCompletions(
+            'GitLogger.Build',
+            'GitLogger.TypeTest',
+            'GitLogger.EnterDocker',
+            'GitLogger.WatchLog'
+        )]
+        [string] $TemplateName
+    )
 
+    switch( $TemplateName ) {
+        'GitLogger.Build' {
+@'
+GlRun.RebuildTypes; GlRun.DockerBuild; # [2024-09-10] build and copy gh sample gitlogger repo (after image)
+(impo -ea 'stop' 'H:\data\2024\pwsh\Modules.devNin.🦍\Rocktil\Rocktil\Rocktil.psd1' -Force -PassThru).IterCommands | Write-Verbose
+$CopySource = gi -ea 'stop' ('C:\Users\cppmo_000\AppData\Local\Temp\glclone\GitLogger'.ToLower())
+Rocktil.Container.CopyTo -Source $CopySource -ContainerName git-logger -DestinationPath /Repos/startautomating/gitlogger
+# Start-Process -FilePath 'http://localhost:8080/Logs'
+Sleep -Milliseconds 150
+#GlRun.OpenUrlWhenResponding -Url 'http://localhost:8080/Logs' -WithToastNotification
+hr -fg magenta
+'done'
+# Start -FilePath 'http://localhost:8080//Docs/docker/show-gitlogger.html'
+'@
+
+        }
+        'GitLogger.TypeTest' {
+@'
+# 📌[Type test] minimal logic [2024-09] external test of module typebuilder logic
+$Error.Clear(); remove-module gitlogger*, ugit* -ea 'ignore'
+$builder = gi -ea 'stop' (Join-Path $Glpath.GitLoggerRepoRoot 'Build/GitLogger.ezout.ps1')
+$module = gi -ea 'stop' (Join-path $GlPath.GitLoggerRepoRoot 'GitLogger.psd1')
+. $builder
+($psmod = ipmo -PassThru -Force $module )
+$psmod.IterCommands|ft
+if( $Error.Count -gt 0) { $Error }
+
+hr
+GItLogger.serve -Request 'http://localhost:8080/dsfds' #| Select -First 3
+'@
+
+        }
+        'GitLogger.WatchLog' {
+@'
+GlGet.LogPath-StartTailLoopChanges -DelayMsBetweenConsoleWrites 30 # live log docker [2024-09]
+'@
+
+        }
+        'GitLogger.EnterDocker' {
+@'
+Dotils.Docker.Native.Start-WaitConnectLoop # live docker connect [2024-08]
+'@
+        }
+        default {
+            throw "Unhandled TemplateName: '$TemplateName'"
+        }
+    }
+}
 
 
 $exportModuleMemberSplat = @{
