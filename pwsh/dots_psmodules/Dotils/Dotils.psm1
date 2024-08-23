@@ -14219,6 +14219,34 @@ function Bdg.Go {
 
     $binArgs | Join-String -op "`ran fzf => " | write-host -bg 'gray60' -fg 'gray30'
 }
+function Dotils.Git.FindRepos {
+    <#
+    .SYNOPSIS
+        find get repos under a depth of N
+    .EXAMPLE
+        Dotils.Git.FindRepos -Depth 4
+    #>
+    [CmdletBinding()]
+    [OutputType( [System.IO.DirectoryInfo] )]
+    param(
+        [Parameter(Position = 0)]
+        [int] $Depth = 3
+    )
+    $Found = @(
+        fd @(
+            '^\.git$',
+            '--type', 'directory'
+            '--max-depth', $Depth
+            '--hidden', '--no-ignore'
+        ) | Get-Item -Force
+    )
+
+    $Found.count
+        | Join-String -f 'Found {0} files'
+        | write-host -fg 'gray30' -bg 'gray80'
+
+    return $Found
+ }
 function Dotils.Git.Select {
     [Alias('Dotils.GitSel', '.GitSel')]
     param()
@@ -18833,6 +18861,35 @@ function Dotils.EventViewer.FindRecentDefenderLogs {
     return $clean
 }
 
+function Dotils.CommandInfo.ScriptMethodParams {
+    <#
+    .SYNOPSIS
+        Quickly show params for ScriptMethods, like EzOut\Types\Name.ps1
+    .EXAMPLE
+        $GitLogger.hasRoute | ScriptMethodParams | ft
+    .EXAMPLE
+        $PSSVG.Show | ScriptMethodParams | Ft
+
+        Attributes                                    Name
+        ----------                                    ----
+        {Parameter, PSObject[]}                       $Content
+        {Parameter, PSObject[]}                       $Metadata
+        {Parameter, Alias, PSObject[]}                $DataRow
+        {Parameter, string}                           $Title
+        {Parameter, Alias, int}                       $CopyCount
+    #>
+    [Alias(
+        'Quick.ScriptMethodParams',
+        'ScriptMethodParams'
+    )]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline )]
+        [object] $InputObject )
+
+    process {
+        $InputObject.Script.Ast.ParamBlock.Parameters
+    }
+}
 function Dotils.Select-VariableByType {
     <#
     .SYNOPSIS
@@ -21569,6 +21626,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-08-23
+        'Quick.ScriptMethodParams' # => 'Dotils.CommandInfo.ScriptMethodParams'
+        'ScriptMethodParams' #       => 'Dotils.CommandInfo.ScriptMethodParams'
         # 2024-08-01
         'HexLiteral'
         'Quick.HexLiteral'
