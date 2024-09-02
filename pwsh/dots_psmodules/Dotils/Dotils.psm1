@@ -214,6 +214,64 @@ function Dotils.Impo.PSReadLineExtensions {
 }
 
 
+function Dotils.Module.RequireLoaded {
+    <#
+    .synopsis
+        internal func. should be cached for complexity: O(1)
+    #>
+    [Alias(
+        'Dotils.Module.IsLoaded',
+        'Dotils.Module.AssertIsLoaded'
+    )]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [Alias( 'Name')]
+        [ArgumentCompletions(
+            "'ugit'",
+            "'PSParseHtml'",
+            "'ImportExcel'",
+            "'Rocker'",
+            "'BurntToast'",
+            "'EzOut'",
+            "'GitLogger'"
+        )]
+        [string[]] $ModuleName
+    )
+    foreach( $curModule in $ModuleName ) { # manual enumeration because it's a sketch
+        if( Get-Module $curModule ) { return }
+
+        Import-Module -Name $curModule -PassThru
+            | Join-String -f 'Auto-loading required module: "{0}"' -p { $_.Name, $_.Version -join ': ' }
+            | write-host -fg '#b3dfff' -bg '#2e3440'
+    }
+}
+function Dotils.Module.RequireNotLoaded {
+    <#
+    .synopsis
+
+    #>
+    # [Alias(
+    # )]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [Alias( 'Name')]
+        [ArgumentCompletions(
+            "'ugit'",
+            "'PSParseHtml'",
+            "'ImportExcel'",
+            "'Rocker'",
+            "'BurntToast'",
+            "'EzOut'",
+            "'GitLogger'"
+        )]
+        [string[]] $ModuleName
+    )
+    foreach( $curModule in $ModuleName ) { # manual enumeration because it's a sketch
+        Remove-Module "${curModule}$*"
+    }
+}
+
+
 function Dotils.Goto.Error {
     param(
         [Parameter(
@@ -9378,7 +9436,7 @@ function Dotils.Write-TypeOf {
                     | Format-TypeName -WithBrackets
                     | Write-host -bg 'gray30' -fg 'gray80'
             }
-            default { throw "UnhandledOutputMode: $switch"}
+            default { throw "UnhandledOutputMo: $switch"}
         }
     }
 
@@ -10283,6 +10341,67 @@ function Dotils.Format-TaggedUnionString {
         # $sample | Dotils.Format-TaggedUnionString | Dotils.Join.Brace
 }
 # $sample | Dotils.Format-TaggedUnionString | Dotils.Join.Brace
+
+function Dotils.Html.Parse.New-HtmlDocument {
+    <#
+    .synopsis
+        Quickly parse an Html doc using either CSS Selector queries or XPath queries
+    .NOTES
+        uses PSParseHtml
+    .EXAMPLE
+        $cssDoc = quick.Html.Doc -Kind Css -Url 'https://xkcd.com/'
+        $cssDoc.QuerySelectorAll('img') | Ft
+    .EXAMPLE
+        $xDoc = quick.Html.Doc -Kind XPath -Url 'https://xkcd.com/'
+        $xDoc.SelectNodes('//img') | ft
+    #>
+    [Alias('Quick.Html.Doc')]
+    [OutputType(
+        'HtmlAgilityPack.HtmlNode', # XPath from AgilityPack
+        'AngleSharp.Html.Dom.HtmlHtmlElement' # Css from AngleSharp
+    )]
+    param(
+        # Should it return a document that uses CSS Selector queries, or XPath queries?
+        # Xpath returns [HtmlAgilityPack.HtmlNode]
+        # Css returns   [AngleSharp.Html.Dom.HtmlHtmlElement]
+        [Parameter(Mandatory, Position = 0)]
+        [Alias('As')]
+        [ValidateSet( 'Css', 'XPath' )]
+        [string] $Kind,
+
+        [Parameter(Position = 1)]
+        [Alias('FromUrl')]
+        [Uri] $Url,
+
+        [Parameter(Position = 1)]
+        [Alias('FromHtml')]
+        [Uri] $Content
+    )
+    if( $Url -and $Content ) { throw "Unexpected combined params: -Url and -Content !" }
+
+    $splatHtml = @{}
+    if( $Url ) { $splatHtml.Url = $Url }
+    if( $Content ) { $splatHtml.Content = $Content }
+
+    if( -not ( Import-Module 'PSParseHtml' -PassThru) ) { throw "Mandatory Module missing!: 'PSParseHtml'" }
+
+    try {
+        switch( $Kind ) {
+            'Css' {
+                $Doc = ConvertFrom-Html @splatHtml -Engine AngleSharp
+            }
+            'XPath' {
+                $Doc = ConvertFrom-Html @splatHtml -Engine AgilityPack
+            }
+            default { throw "UnhandledKind: $Kind !" }
+        }
+    } catch {
+        "Failed to create '$Kind' for '$Url'" | Write-Warning
+        throw $_
+    }
+    if( -not $Doc ) { throw "Document was null" }
+    return $Doc
+}
 
 function Dotils.Html.Table.FromHashtable {
     <#
@@ -20135,6 +20254,49 @@ function Dotils.Gh.ParseJsonFieldNames.FromHelp {
         # | Join.UL <# parse gh fields docs to names #>
     return $Terms
 }
+function Dotils.Gh.Gist.List.Export {
+    <#
+    .SYNOPSIS
+        Quickly list your own gists and pipe
+    #>
+    param(
+        [int] $Limit = 200,
+        [string] $Pattern,
+        [switch] $OutGridView
+    )
+    $query = gh repo list --limit $Limit
+        | ConvertFrom-Csv -Delimiter "`t" -Header 'Name', 'Desc', 'Info', 'Updated'
+        | Sort-Object { -not [string]::IsNullOrWhiteSpace( $Pattern ) -and  $_.Desc -match $Pattern } -Descending
+
+    if( -not $GridView ) { return $Query }
+    ( $Selected = $Query | Out-GridView -PassThru )
+}
+
+function Dotils.Gh.Gist.List.FromApi {
+    <#
+    .SYNOPSIS
+        use gh api to list gists. Need to lookup paging.
+    .EXAMPLE
+
+        Dotils.Gh.Gist.List.FromApi SeeminglyScience
+            | Select-Object Name, html_url, Description, '*_at', '*url*' -ea 'ignore'
+    #>
+    param(
+        [Parameter(Position = 0)]
+        [ArgumentCompletions( 'SeeminglyScience', 'trackd' )]
+        [string] $UserName,
+
+        # [int] $Limit = 200,
+        [string] $Pattern,
+        [switch] $OutGridView
+    )
+
+    $target = $UserName | Join-String -f '/users/{0}/gists'
+    $query = gh api $target | ConvertFrom-Json -Depth 20
+    return $query | Sort-Object { -not [string]::IsNullOrWhiteSpace( $Pattern ) -and $_.Description -match $Pattern }
+
+}
+
 function Dotils.Gh.Gist.Cmds {
     <#
     .SYNOPSIS
@@ -21626,6 +21788,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-09-02
+        'Quick.Html.Doc'
         # 2024-08-23
         'Quick.ScriptMethodParams' # => 'Dotils.CommandInfo.ScriptMethodParams'
         'ScriptMethodParams' #       => 'Dotils.CommandInfo.ScriptMethodParams'
