@@ -218,6 +218,14 @@ function Dotils.Module.RequireLoaded {
     <#
     .synopsis
         internal func. should be cached for complexity: O(1)
+    .EXAMPLE
+        Dotils.Module.RequireLoaded -Name 'ugit'
+        Dotils.Module.RequireLoaded -Name 'GitLogger' -UsingForce
+    .EXAMPLE
+        Dotils.Module.RequireLoaded -Name 'ImportExcel', 'ClassExplorer' -WithoutGlobal
+    .EXAMPLE
+        Dotils.Module.RequireLoaded -Name 'ImportExcel', 'ClassExplorer' -Force
+
     #>
     [Alias(
         'Dotils.Module.IsLoaded',
@@ -235,14 +243,28 @@ function Dotils.Module.RequireLoaded {
             "'EzOut'",
             "'GitLogger'"
         )]
-        [string[]] $ModuleName
-    )
-    foreach( $curModule in $ModuleName ) { # manual enumeration because it's a sketch
-        if( Get-Module $curModule ) { return }
+        [string[]] $ModuleName,
 
-        Import-Module -Name $curModule -PassThru
-            | Join-String -f 'Auto-loading required module: "{0}"' -p { $_.Name, $_.Version -join ': ' }
-            | write-host -fg '#b3dfff' -bg '#2e3440'
+        [Alias('Force')]
+        [switch] $UsingForce,
+
+        # because otherwise module is loaded in module's scope
+        [switch] $WithoutGlobal
+    )
+
+    foreach( $curModule in $ModuleName ) { # manual enumeration because it's a sketch
+        if( Get-Module $curModule ) { continue }
+
+        $importModuleSplat = @{
+            Name     = $curModule
+            PassThru = $true
+            Global   = -not $WithoutGlobal
+            Force    = -not $UsingForce
+        }
+
+        Import-Module @importModuleSplat
+            | Join-String -f '::Auto-loading required module: "{0}"' -p { $_.Name, $_.Version -join ': ' }
+            | Write-Host -fg '#b3dfff' -bg '#2e3440'
     }
 }
 function Dotils.Module.RequireNotLoaded {
@@ -266,8 +288,9 @@ function Dotils.Module.RequireNotLoaded {
         )]
         [string[]] $ModuleName
     )
+    write-warning 'NYI: Does not seem to affect users scope when invoke within a module context'
     foreach( $curModule in $ModuleName ) { # manual enumeration because it's a sketch
-        Remove-Module "${curModule}$*"
+        Remove-Module "${curModule}$*" -Verbose
     }
 }
 
