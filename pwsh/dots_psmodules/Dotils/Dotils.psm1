@@ -1221,18 +1221,30 @@ function Dotils.Fd.Main {
         invoke fd, sort using file object properties, then render preserving  fd's ansi color
         clean re-write at 2024-09-05
     .DESCRIPTION
+        see: https://github.com/sharkdp/fd
         clean re-write at 2024-09-05
     .EXAMPLE
         > Quick.Fd -Type file, dir
 
         # Find files adjacent to the profile
         > Quick.Fd  -Verbose -MaxDepth 1 -SearchPath ($PROFILE | Split-Path) -SortBy Extension -Type file
+
+    .Example
+        # for --relative-path using another base directory
+        # include --base-directory but do not use --search-path or else it's not relative.
+
+        > Quick.Fd -Type dir -d 2 -WorkingDirectory 'G:\2024-git\'
+
+        # is equivalent to:
+        > fd -td -d2 --base-directory (gi 'G:\2024-git')
     .EXAMPLE
         # to view command output without running
         > Quick.Fd -Verbose -WhatIf
 
         # or to view command as verbose
         > Quick.Fd -Verbose
+    .link
+        https://github.com/sharkdp/fd
     .NOTES
     default invoke of the native command
         is
@@ -1414,12 +1426,13 @@ function Dotils.Fd.Main {
     [CmdletBinding()]
     param(
         # List of Base directories to include in search, is: fd --search-path <path>
+        # This can be relativepaths
+        #
         # When paths are relative, they will use -WorkingDirectory to resolve paths
-        # Changes 'fd' syntax from: [OPTIONS]
-        #   fd [options] --search-path <path> --search-path <path2> [pattern]
+        # default is not set so that you can use relative paths of -WorkingDirectory
         [Parameter()]
-            [Alias('InputObject', 'Path', 'RootDirs', 'BaseDirs')]
-            [string[]] $SearchPath = '.',
+            [Alias('InputObject', 'Path', 'RelativePath' )]
+            [string[]] $SearchPath,
 
         # Current Working Directory of fd to path, is fd: --base-directory <path>
             # Change the current working directory of fd to the provided path.
@@ -1428,7 +1441,7 @@ function Dotils.Fd.Main {
             #   which are passed to fd via the positional <path> argument or the '--search-path' option
             #   will also be resolved relative to this directory.
         [Parameter()]
-            [Alias('CWD', 'SetCwd')]
+            [Alias('CWD', 'SetCwd', 'BaseDirectory', 'FromWorkingDirectory')]
             [string[]] $WorkingDirectory,
 
         # (Get-Item) property names to use for sorting
@@ -1454,7 +1467,7 @@ function Dotils.Fd.Main {
 
         # is: fd --filtype < file | dir | executable | empty | symlink | socket | pipe | block-device | char-device
         [Parameter()]
-            [Alias('Is')]
+            [Alias('Is', 't')]
             [ValidateSet(
                 'file', 'dir', 'symlink', 'empty', 'executable', 'pipe',  'socket', "'block-device'", "'char-device'",
                 'f', 'd', 's', 'p', 'b', 'c', 'x', 'e'
@@ -1479,6 +1492,7 @@ function Dotils.Fd.Main {
 
         # is: fd --max-depth <int>
         [Parameter()]
+            [Alias('Depth', 'd')]
             [int] $MaxDepth,
 
         # is: fd --min-depth <int>
@@ -1534,7 +1548,6 @@ function Dotils.Fd.Main {
         #     fd --glob -p '**/.git/config'
         [Parameter()]
             [Alias('MatchFullPath')]
-            [ValidateScript({throw 'nyi. is the'})]
             [switch] $FullPath,
 
 
@@ -1562,7 +1575,7 @@ function Dotils.Fd.Main {
     $binFd = Get-Command -CommandType Application 'fd' -TotalCount 1 -ea 'stop'
 
     [List[Object]] $binArgs = @(
-        '--color=always',
+        '--color=always'
         '--path-separator=/'
     )
 
@@ -1595,15 +1608,17 @@ function Dotils.Fd.Main {
         }
     ))
 
-    if( $PSBoundParameters.ContainsKey('WorkingDirectory')) {
-        '--base-directory'
-        (Get-Item -ea 'stop' $WorkingDirectory )
-    }
+    $binArgs.AddRange(@(
+        if( $PSBoundParameters.ContainsKey('WorkingDirectory')) {
+            '--base-directory'
+            (Get-Item -ea 'stop' $WorkingDirectory )
+        }
 
 
-    if( $PSBoundParameters.ContainsKey('AppendArgs') ) {
-        $BinArgs.AddRange( $AppendArgs )
-    }
+        if( $PSBoundParameters.ContainsKey('AppendArgs') ) {
+            $BinArgs.AddRange( $AppendArgs )
+        }
+    ))
 
     # simplify invoke pattern by always passing an explicit --search-path
     # to always use:
@@ -1645,7 +1660,15 @@ function Dotils.Fd.Main {
 
     & $binFd @BinArgs
         | Sort-Object -Descending:$( -not $Ascending ) {
-            $_ | StripAnsi | Get-Item | % $SortBy }
+            # $_ | StripAnsi | Get-Item | % $SortBy
+            $clean = $_ | StripAnsi
+            $Item = Get-Item -ea 'ignore' $clean
+            if( -not $Item ) {
+                $clean
+            } else {
+                $clean | % $SortBy
+            }
+        }
 
     # fd -tf --color=always --base-directory ( gi -ea 'stop' $Path )
     #     | Sort-Object -Descending { $_ | StripAnsi | Get-Item | % $SortBy }
