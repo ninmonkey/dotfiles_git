@@ -1178,6 +1178,8 @@ function Dotils.Fd.Recent {
         Dotils.Find-MyWorkspace
     .LINK
         Dotils.Fd.Recent
+    .LINK
+        Dotils.Fd.Main
     #>
     [CmdletBinding()]
     param(
@@ -1224,11 +1226,19 @@ function Dotils.Fd.Main {
         see: https://github.com/sharkdp/fd
         clean re-write at 2024-09-05
     .EXAMPLE
+        # useful params:
         > Quick.Fd -Type file, dir
 
+
+        > Quick.Fd -Type file, dir -SortBy LastWriteTime
+        > Quick.Fd -Type file -SortBy Extension
+        > Quick.Fd -Type file -SortBy Fullname
+
+        > Quick.Fd -Verbose -CWD 'G:\2024-git' -ChangedWithin 4months -SortBy LastWriteTime
+
+    .EXAMPLE
         # Find files adjacent to the profile
         > Quick.Fd  -Verbose -MaxDepth 1 -SearchPath ($PROFILE | Split-Path) -SortBy Extension -Type file
-
     .Example
         # for --relative-path using another base directory
         # include --base-directory but do not use --search-path or else it's not relative.
@@ -1490,6 +1500,26 @@ function Dotils.Fd.Main {
             [Alias('ArgsSuffix')]
             [string[]] $AppendArgs,
 
+        # DateModified is newer than < date | duration >
+        # is: fd --changed-within < date | duration >
+        # is: fd alias: '--change-newer-than', '--newer', '--changed-after'
+        [Parameter()]
+            [Alias('ChangeNewerThan', 'NewerThan')]
+            [ArgumentCompletions(
+               '4hours', '2weeks', '4months', '10h', '1d', '35min',
+               "'2024-01-03'", "'2023-09-18 10:00:00'" )]
+            [string] $ChangedWithin,
+
+        # DateModified is older than < date | duration >
+        # is: fd --changed-before < date | duration >
+        # is: fd alias: '--change-older-than' or '--older' can be used as aliases.
+        [Parameter()]
+            [Alias('ChangeOlderThan', 'OlderThan')]
+            [ArgumentCompletions(
+               '4hours', '2weeks', '4months', '10h', '1d', '35min',
+               "'2024-01-03'", "'2023-09-18 10:00:00'" )]
+            [string] $ChangedBefore,
+
         # is: fd --max-depth <int>
         [Parameter()]
             [Alias('Depth', 'd')]
@@ -1505,28 +1535,24 @@ function Dotils.Fd.Main {
 
         # is: fd -I, --no-ignore
         [Parameter()]
-            [ValidateScript({throw 'nyi'})]
             [switch] $NoIgnore,
 
-        # is: fd -I, --no-ignore
+        # is: fd --no-ignore-parent
         [Parameter()]
-            [ValidateScript({throw 'nyi'})]
             [switch] $NoIgnoreParent,
 
         # show hidden. is: fd -H, --hidden
         [Parameter()]
-            [ValidateScript({throw 'nyi'})]
             [switch] $Hidden,
 
         # case sensitive. is: fd -s, --case-sensitive
         [Parameter()]
-            [ValidateScript({throw 'nyi'})]
             [switch] $CaseSensitive,
 
         # case insensitive. is: fd -i, --ignore-case
         [Parameter()]
-            [ValidateScript({throw 'nyi'})]
-            [switch] $CaseInsensitive,
+            [Alias('CaseInsensitive')]
+            [switch] $NotCaseSensitive,
 
         # glob or regex search? is: fd -g, --glob
             #  default is: fd --regex
@@ -1551,15 +1577,6 @@ function Dotils.Fd.Main {
             [switch] $FullPath,
 
 
-
-        # [Parameter()]
-        #     [ValidateScript({throw 'nyi'})]
-        #     [switch] $Hidden,
-
-        # # is: fd --max-depth <int>
-        # [Parameter()]
-        #     [ValidateScript({throw 'nyi'})]
-        #     [int] $MaxDepth,
 
         # is: fd --exclude <pattern>
         # to test:
@@ -1594,6 +1611,13 @@ function Dotils.Fd.Main {
         if( $UsingGlob ) { '--glob' }
         if( $FullPath ) { '--full-path' }
         if( $Prune ) { '--prune' }
+        if( $NoIgnore) { '--no-ignore' }
+        if( $NoIgnoreParent ) { '--no-ignore-parent' }
+        if( $Hidden ) { '--hidden' }
+        if( $CaseSensitive ) { '--case-sensitive' }
+        if( $NotCaseSensitive ) { '--ignore-case' }
+        if( $ChangedWithin ) {  '--changed-within'; $ChangedWithin }
+        if( $ChangedBefore ) {   '--changed-before'; $ChangedBeforer }
     ))
 
     $BinArgs.AddRange(@(
