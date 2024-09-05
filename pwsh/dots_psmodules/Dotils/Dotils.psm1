@@ -17824,7 +17824,26 @@ function __compare-Is.Type {
     return $false
 }
 
-
+function Dotils.File.NewPathItem {
+    <#
+    .synopsis
+        Ensure you always get a string, but attempt to resolve a (Get-Item) instance
+    .EXAMPLE
+        > NewPathItem 'temp:\missing'    # out [string]: temp:\missing
+        > NewPathItem $Env:LocalAppData  # out [IO.DirectoryInfo]:
+    #>
+    [CmdletBinding()]
+    [OutputType(
+        [System.IO.FileInfo], [System.IO.DirectoryInfo],
+        [System.String] )]
+    param(
+        [Alias('InputObject')]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [string] $Path
+    )
+    $item = Get-Item $Path -ea 'ignore'
+    $Item ?? $Path
+}
 function Dotils.Show-Escapes {
     <#
     .SYNOPSIS
