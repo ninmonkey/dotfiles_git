@@ -1213,6 +1213,196 @@ function Dotils.Fd.Recent {
     $fdArgs | Join-String -sep ' ' | Dotils.Write-DimText
             | Join-string -op 'Dotils.Fd.recent: ' | write-verbose
 }
+
+
+function Dotils.Fd.Main {
+    <#
+    .SYNOPSIS
+        invoke fd, sort using file object properties, then render preserving  fd's ansi color
+        clean re-write at 2024-09-05
+    .DESCRIPTION
+        Bad paths should throw without invoking the native command, ex
+
+            Quick.Fd -SearchPath 'g:\temp\DoesNotExist'
+
+        clean re-write at 2024-09-05
+    .EXAMPLE
+        > Quick.Fd -Type file, dir
+
+        # Find files adjacent to the profile
+        > Quick.Fd  -Verbose -MaxDepth 1 -SearchPath ($PROFILE | Split-Path) -SortBy Extension -Type file
+    .EXAMPLE
+        # to view command output without running
+        > Quick.Fd -Verbose -WhatIf
+
+        # or to view command as verbose
+        > Quick.Fd -Verbose
+    .NOTES
+    from fd --help:
+
+        -t, --type <filetype>
+            Note that the 'executable' and 'empty' filters work differently: '--type executable' implies
+            '--type file' by default. And '--type empty' searches for empty files and directories,
+            unless either '--type file' or '--type directory' is specified in addition.
+
+        -q, --quiet
+            When the flag is present, the program does not print anything and will return with an
+            exit code of 0 if there is at least one match. Otherwise, the exit code will be 1.
+            '--has-results' can be used as an alias.
+
+        --show-errors
+            Enable the display of filesystem errors for situations such as insufficient permissions
+            or dead symlinks.
+
+        --base-directory <path>
+            Change the current working directory of fd to the provided path. This means that search
+            results will be shown with respect to the given base path. Note that relative paths
+            which are passed to fd via the positional <path> argument or the '--search-path' option
+            will also be resolved relative to this directory.
+
+        --path-separator <separator>
+            Set the path separator to use when printing file paths. The default is the OS-specific
+            separator ('/' on Unix, '\' on Windows).
+
+        --search-path <search-path>
+            Provide paths to search as an alternative to the positional <path> argument. Changes the
+            usage to `fd [OPTIONS] --search-path <path> --search-path <path2> [<pattern>]`
+
+        --strip-cwd-prefix[=<when>]
+            By default, relative paths are prefixed with './' when -x/--exec, -X/--exec-batch, or
+            -0/--print0 are given, to reduce the risk of a path starting with '-' being treated as a
+            command line option. Use this flag to change this behavior. If this flag is used without
+            a value, it is equivalent to passing "always".
+
+            Possible values:
+            - auto:   Use the default behavior
+            - always: Always strip the ./ at the beginning of paths
+            - never:  Never strip the ./
+    #>
+    [Alias('Quick.Fd')]
+    [CmdletBinding()]
+    param(
+        # Base directories to include in search, is: fd --search-path
+        [Parameter()]
+            [Alias('InputObject', 'Path', 'RootDirs')]
+            [string[]] $SearchPath = '.',
+
+        # (Get-Item) property names to use for sorting
+        [Parameter()]
+            [ArgumentCompletions(
+                'Extension', 'LastWriteTime', 'Length', 'Name',
+                'FullName', 'Directory' )]
+            [string] $SortBy = 'LastWriteTime',
+
+        # Print the generated CLI command, then exit without calling native command
+        [Parameter()]
+            [Alias('WithoutRunning')]
+            [switch] $WhatIf,
+
+        # Default sort is Descending
+        [Parameter()]
+            [switch] $Ascending,
+
+        # Do not parse as an Item or sort. emits the raw output incuding ansi color strings from 'fd'
+        [Parameter()]
+            [Alias('WithoutObjectConversion')]
+            [switch] $PassThru,
+
+        # is: fd --filtype < file | dir | executable | empty | symlink | socket | pipe | block-device | char-device
+        [Parameter()]
+            [Alias('Is')]
+            [ValidateSet(
+                'file', 'dir', 'symlink', 'empty', 'executable', 'pipe',  'socket', "'block-device'", "'char-device'",
+                'f', 'd', 's', 'p', 'b', 'c', 'x', 'e'
+            )]
+            [string[]] $Type,
+
+        # is: fd --max-depth <int>
+        [Parameter()]
+            [int] $MaxDepth,
+
+        # is: fd --min-depth <int>
+        [Parameter()]
+            [int] $MinDepth,
+
+        # is alias for: fd: --min-depth n --max-depth n
+        [Parameter()]
+            [int] $ExactDepth,
+
+        # is: fd --max-depth <int>
+        [Parameter()]
+            [ValidateScript({throw 'nyi'})]
+            [int] $MaxDepth,
+
+        # # is: fd --max-depth <int>
+        # [Parameter()]
+        #     [ValidateScript({throw 'nyi'})]
+        #     [int] $MaxDepth,
+
+        # is: fd --exclude <pattern>
+        #   Exclude files/directories that match the given glob pattern. This overrides any other
+        #   ignore logic. Multiple exclude patterns can be specified.
+        [Parameter()]
+            [ValidateScript({throw 'nyi'})]
+            [string[]] $ExcludeGlob
+
+    )
+    $binFd = Get-Command -CommandType Application 'fd' -TotalCount 1 -ea 'stop'
+
+    [List[Object]] $binArgs = @(
+        '--color=always',
+        '--path-separator=/'
+    )
+
+    if( $ExactDepth ) {
+        $MinDepth = $ExactDepth
+        $MaxDepth = $ExactDepth
+    }
+    $BinArgs.AddRange(@(
+        if( $PSBoundParameters.ContainsKey('MinDepth') ) { '--min-depth'; $MinDepth }
+        if( $PSBoundParameters.ContainsKey('MaxDepth') ) { '--max-depth'; $MaxDepth }
+    ))
+
+    $BinArgs.AddRange(@(
+        foreach($curPath in $SearchPath) {
+            '--search-path'
+            (Get-Item -ea 'stop' $curPath )
+        }
+    ))
+
+    $BinArgs.AddRange(@(
+        foreach($t in $Type) {
+            '--type'
+            $t
+        }
+    ))
+
+    [string] $ArgsStr = $BinArgs | Join-String -op 'invoke => fd ' -sep ' '
+    $ArgsStr | Write-Verbose
+
+    if( $WhatIf ) {
+        $PSBoundParameters | ConvertTo-Json -depth 0
+            | Join-String -op "PSBoundParameters: " # -f '{0}'
+            | Write-host -fg 'gray70' -bg 'gray10'
+        $ArgsStr | Join-String -sep ' ' -op '    fd '
+            | Write-Host -fg 'gray80' -bg 'gray20'
+        return
+    }
+
+    if( $PassThru ) {
+        & $binFd @BinArgs
+        return
+    }
+
+    & $binFd @BinArgs
+        | Sort-Object -Descending:$( -not $Ascending ) {
+            $_ | StripAnsi | Get-Item | % $SortBy }
+
+    # fd -tf --color=always --base-directory ( gi -ea 'stop' $Path )
+    #     | Sort-Object -Descending { $_ | StripAnsi | Get-Item | % $SortBy }
+}
+
+
 function Dotils.Git.AddRecent {
     param(
         [ArgumentCompletions(
@@ -21838,6 +22028,8 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2024-09-05
+        'Quick.Fd' # => 'Dotils.Fd.Main'
         # 2024-09-02
         'Quick.Html.Doc'
         # 2024-08-23
