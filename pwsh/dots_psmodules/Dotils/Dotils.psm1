@@ -1221,10 +1221,6 @@ function Dotils.Fd.Main {
         invoke fd, sort using file object properties, then render preserving  fd's ansi color
         clean re-write at 2024-09-05
     .DESCRIPTION
-        Bad paths should throw without invoking the native command, ex
-
-            Quick.Fd -SearchPath 'g:\temp\DoesNotExist'
-
         clean re-write at 2024-09-05
     .EXAMPLE
         > Quick.Fd -Type file, dir
@@ -1238,6 +1234,141 @@ function Dotils.Fd.Main {
         # or to view command as verbose
         > Quick.Fd -Verbose
     .NOTES
+    default invoke of the native command
+        is
+            fd [OPTIONS] [pattern] [path] ...
+        if --search-path is used, then
+            fd [OPTIONS] --search-path <path> --search-path <path2> [<pattern>]`
+
+
+    future adds:
+        --format <fmt> ( rust )
+        --follow
+        --color=<auto | always | never>
+        --max-results <int>
+        -j, --threads <int>
+        -1   alias for: --max-results=1
+
+        --prune
+            --exclude=<>
+
+        --base-directory <path>
+        --search-path <search-path>
+        -a, --absolute-path
+        -l, --list-details
+        -p, --full-path
+        -0, --print0
+        -q, --quiet, --has-results
+        --show-errors
+        --strip-cwd-prefix=< auto | always | never >
+        --one-file-system
+        -E, --exclude <pattern>
+        -S, --size <size>
+            <+-><int><unit>
+
+            units:
+                'b':  bytes
+                'k':  kilobytes (base ten, 10^3 = 1000 bytes)
+                'm':  megabytes
+                'g':  gigabytes
+                't':  terabytes
+                'ki': kibibytes (base two, 2^10 = 1024 bytes)
+                'mi': mebibytes
+                'gi': gibibytes
+                'ti': tebibytes
+
+        --changed-within <date|duration>
+
+          Filter results based on the file modification time. Files with modification times
+          greater than the argument are returned. The argument can be provided as a specific point
+          in time (YYYY-MM-DD HH:MM:SS or @timestamp) or as a duration (10h, 1d, 35min). If the
+          time is not specified, it defaults to 00:00:00. '--change-newer-than', '--newer', or
+          '--changed-after' can be used as aliases.
+
+            Examples:
+                --changed-within 2weeks
+                --change-newer-than '2018-10-27 10:00:00'
+                --newer 2018-10-27
+                --changed-after 1day
+
+        --changed-before <date|dur>
+
+            Filter results based on the file modification time. Files with modification times less
+            than the argument are returned. The argument can be provided as a specific point in time
+            (YYYY-MM-DD HH:MM:SS or @timestamp) or as a duration (10h, 1d, 35min).
+            '--change-older-than' or '--older' can be used as aliases.
+
+            Examples:
+                --changed-before '2018-10-27 10:00:00'
+                --change-older-than 2weeks
+                --older 2018-10-27
+
+
+  -x, --exec <cmd>...
+          Execute a command for each search result in parallel (use --threads=1 for sequential
+          command execution). There is no guarantee of the order commands are executed in, and the
+          order should not be depended upon. All positional arguments following --exec are
+          considered to be arguments to the command - not to fd. It is therefore recommended to
+          place the '-x'/'--exec' option last.
+          The following placeholders are substituted before the command is executed:
+            '{}':   path (of the current search result)
+            '{/}':  basename
+            '{//}': parent directory
+            '{.}':  path without file extension
+            '{/.}': basename without file extension
+            '{{':   literal '{' (for escaping)
+            '}}':   literal '}' (for escaping)
+
+          If no placeholder is present, an implicit "{}" at the end is assumed.
+
+          Examples:
+
+            - find all *.zip files and unzip them:
+
+                fd -e zip -x unzip
+
+            - find *.h and *.cpp files and run "clang-format -i .." for each of them:
+
+                fd -e h -e cpp -x clang-format -i
+
+            - Convert all *.jpg files to *.png files:
+
+                fd -e jpg -x convert {} {.}.png
+
+        -X, --exec-batch <cmd>...
+            Execute the given command once, with all search results as arguments.
+                The order of the arguments is non-deterministic, and should not be relied upon.
+                One of the following placeholders is substituted before the command is executed:
+                '{}':   path (of all search results)
+                '{/}':  basename
+                '{//}': parent directory
+                '{.}':  path without file extension
+                '{/.}': basename without file extension
+                '{{':   literal '{' (for escaping)
+                '}}':   literal '}' (for escaping)
+
+          If no placeholder is present, an implicit "{}" at the end is assumed.
+
+          Examples:
+
+            - Find all test_*.py files and open them in your favorite editor:
+                fd -g 'test_*.py' -X vim
+
+            - Find all *.rs files and count the lines with "wc -l ...":
+                fd -e rs -X wc -l
+
+        --batch-size <size>
+            Maximum number of arguments to pass to the command given with -X. If the number of
+            results is greater than the given size, the command given with -X is run again with
+            remaining arguments. A batch size of zero means there is no limit (default), but note
+            that batching might still happen due to OS restrictions on the maximum length of command
+            lines.
+
+
+
+
+
+
     from fd --help:
 
         -t, --type <filetype>
@@ -1282,10 +1413,23 @@ function Dotils.Fd.Main {
     [Alias('Quick.Fd')]
     [CmdletBinding()]
     param(
-        # Base directories to include in search, is: fd --search-path
+        # List of Base directories to include in search, is: fd --search-path <path>
+        # When paths are relative, they will use -WorkingDirectory to resolve paths
+        # Changes 'fd' syntax from: [OPTIONS]
+        #   fd [options] --search-path <path> --search-path <path2> [pattern]
         [Parameter()]
-            [Alias('InputObject', 'Path', 'RootDirs')]
+            [Alias('InputObject', 'Path', 'RootDirs', 'BaseDirs')]
             [string[]] $SearchPath = '.',
+
+        # Current Working Directory of fd to path, is fd: --base-directory <path>
+            # Change the current working directory of fd to the provided path.
+            # This means that search
+            #   results will be shown with respect to the given base path. Note that relative paths
+            #   which are passed to fd via the positional <path> argument or the '--search-path' option
+            #   will also be resolved relative to this directory.
+        [Parameter()]
+            [Alias('CWD', 'SetCwd')]
+            [string[]] $WorkingDirectory,
 
         # (Get-Item) property names to use for sorting
         [Parameter()]
@@ -1317,6 +1461,22 @@ function Dotils.Fd.Main {
             )]
             [string[]] $Type,
 
+        # pattern is a regex by default
+        [Parameter()]
+            [string] $Pattern,
+
+        # arbitrary cli args to prepend
+        # See 'fd --help' for valid options
+        [Parameter()]
+            [Alias('ArgsPrefix')]
+            [string[]] $PrependArgs,
+
+                # arbitrary cli args to append
+        # See 'fd --help' for valid options
+        [Parameter()]
+            [Alias('ArgsSuffix')]
+            [string[]] $AppendArgs,
+
         # is: fd --max-depth <int>
         [Parameter()]
             [int] $MaxDepth,
@@ -1329,10 +1489,59 @@ function Dotils.Fd.Main {
         [Parameter()]
             [int] $ExactDepth,
 
-        # is: fd --max-depth <int>
+        # is: fd -I, --no-ignore
         [Parameter()]
             [ValidateScript({throw 'nyi'})]
-            [int] $MaxDepth,
+            [switch] $NoIgnore,
+
+        # is: fd -I, --no-ignore
+        [Parameter()]
+            [ValidateScript({throw 'nyi'})]
+            [switch] $NoIgnoreParent,
+
+        # show hidden. is: fd -H, --hidden
+        [Parameter()]
+            [ValidateScript({throw 'nyi'})]
+            [switch] $Hidden,
+
+        # case sensitive. is: fd -s, --case-sensitive
+        [Parameter()]
+            [ValidateScript({throw 'nyi'})]
+            [switch] $CaseSensitive,
+
+        # case insensitive. is: fd -i, --ignore-case
+        [Parameter()]
+            [ValidateScript({throw 'nyi'})]
+            [switch] $CaseInsensitive,
+
+        # glob or regex search? is: fd -g, --glob
+            #  default is: fd --regex
+        [Parameter()]
+            [switch] $UsingGlob,
+
+        # do not traverse into directories that match the search
+        # is fd: --prune
+        # to exclude specific directories, use --exclude <pattern>
+            #  default is: fd --regex
+        [Parameter()]
+            [switch] $Prune,
+
+
+
+        #  math pattern against fullname (verses filename) is: fd -p, --full-path
+        # By default, the search pattern is only matched against the filename (or directory name).
+        #     Using this flag, the pattern is matched against the full (absolute) path. Example:
+        #     fd --glob -p '**/.git/config'
+        [Parameter()]
+            [Alias('MatchFullPath')]
+            [ValidateScript({throw 'nyi. is the'})]
+            [switch] $FullPath,
+
+
+
+        # [Parameter()]
+        #     [ValidateScript({throw 'nyi'})]
+        #     [switch] $Hidden,
 
         # # is: fd --max-depth <int>
         # [Parameter()]
@@ -1340,11 +1549,14 @@ function Dotils.Fd.Main {
         #     [int] $MaxDepth,
 
         # is: fd --exclude <pattern>
+        # to test:
+        #    Is this always glob, or defaults regex?
+        # notes:
         #   Exclude files/directories that match the given glob pattern. This overrides any other
         #   ignore logic. Multiple exclude patterns can be specified.
         [Parameter()]
-            [ValidateScript({throw 'nyi'})]
-            [string[]] $ExcludeGlob
+            [ArgumentCompletions( "'*.pyc'", "'node_modules'")]
+            [string[]] $Exclude
 
     )
     $binFd = Get-Command -CommandType Application 'fd' -TotalCount 1 -ea 'stop'
@@ -1358,22 +1570,59 @@ function Dotils.Fd.Main {
         $MinDepth = $ExactDepth
         $MaxDepth = $ExactDepth
     }
+
+    if( $PSBoundParameters.ContainsKey('PrependArgs') ) {
+        $BinArgs.AddRange( $PrependArgs )
+    }
+
     $BinArgs.AddRange(@(
         if( $PSBoundParameters.ContainsKey('MinDepth') ) { '--min-depth'; $MinDepth }
         if( $PSBoundParameters.ContainsKey('MaxDepth') ) { '--max-depth'; $MaxDepth }
-    ))
-
-    $BinArgs.AddRange(@(
-        foreach($curPath in $SearchPath) {
-            '--search-path'
-            (Get-Item -ea 'stop' $curPath )
-        }
+        if( $UsingGlob ) { '--glob' }
+        if( $FullPath ) { '--full-path' }
+        if( $Prune ) { '--prune' }
     ))
 
     $BinArgs.AddRange(@(
         foreach($t in $Type) {
             '--type'
             $t
+        }
+
+        foreach($ex in $Exclude) {
+            '--exclude'
+            $ex
+        }
+    ))
+
+    if( $PSBoundParameters.ContainsKey('WorkingDirectory')) {
+        '--base-directory'
+        (Get-Item -ea 'stop' $WorkingDirectory )
+    }
+
+
+    if( $PSBoundParameters.ContainsKey('AppendArgs') ) {
+        $BinArgs.AddRange( $AppendArgs )
+    }
+
+    # simplify invoke pattern by always passing an explicit --search-path
+    # to always use:
+    #   fd [OPTIONS] --search-path <path> --search-path <path2> [<pattern>]
+
+    $BinArgs.AddRange(@(
+        foreach($curPath in $SearchPath) {
+            '--search-path'
+            (Get-Item -ea 'stop' $curPath )
+        }
+
+        # doc: "if your pattern starts with a dash (-), make sure to pass '--' first, or it will be
+        #   considered as a flag (fd -- '-foo') "
+
+        if ($PSBoundParameters.ContainsKey('Pattern')) {
+            @(
+                if( $Pattern.StartsWith('-')) { '--' }
+                $Pattern
+            )
         }
     ))
 
