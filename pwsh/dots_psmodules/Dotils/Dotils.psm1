@@ -17831,18 +17831,26 @@ function Dotils.File.NewPathItem {
     .EXAMPLE
         > NewPathItem 'temp:\missing'    # out [string]: temp:\missing
         > NewPathItem $Env:LocalAppData  # out [IO.DirectoryInfo]:
+    .EXAMPLE
+        $Env:LocalAppData, 'temp:\', '.'  | Dotils.File.NewPathItem
     #>
     [CmdletBinding()]
     [OutputType(
         [System.IO.FileInfo], [System.IO.DirectoryInfo],
         [System.String] )]
     param(
+        # Pipe or pass strings, IO.FileSystemInfo, etc...
         [Alias('InputObject')]
         [Parameter(Mandatory, ValueFromPipeline)]
         [string] $Path
     )
-    $item = Get-Item $Path -ea 'ignore'
-    $Item ?? $Path
+    process {
+        if( [string]::IsNullOrWhiteSpace( $Path ) ) {
+            throw "BlankValue: Invalid -Path Parameter!"
+        }
+        $item = Get-Item $Path -ea 'ignore'
+        $Item ?? $Path
+    }
 }
 function Dotils.Show-Escapes {
     <#
