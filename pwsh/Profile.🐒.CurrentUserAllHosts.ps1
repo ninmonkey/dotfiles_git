@@ -78,6 +78,7 @@ $xl8r::Add('LangyPrims',   [System.Management.Automation.LanguagePrimitives]) # 
     # import-module -PassThru -Force 'H:\data\2023\pwsh\my🍴\ugit.🍴.beta\ugit.psm1'
     Import-Module -passThru 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.LocalHost.Serve.GitLoggerAzureFunc\nin.LocalHost.Serve.GitLogger.psd1'
     Import-Module -passThru 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.GittingGood\nin.GittingGood.psd1'
+    Import-Module -PassThru 'H:\data\2024\pwsh\PSModules.🐒.miniLocal\n🐒.JsonIt.Simple\nin.JsonIt.Simple.psd1'
     Import-Module -passThru 'H:\data\2024\pwsh\Modules.devNin.🦍\Rocktil\Rocktil\Rocktil.psd1'
 
 ) | Join-String -sep ', ' -Prop ModuleName | Write-Host -fore 'darkgray'
