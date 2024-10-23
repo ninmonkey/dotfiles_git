@@ -7688,6 +7688,34 @@ function Dotils.WriteColor {
     @(  WriteFg $ColorFg
         WriteBg $ColorBg ) -join ''
 }
+function Dotils.Quick.PathIsChildPath {
+    <#
+    .SYNOPSIS
+        test if paths are subdirectories, even if the paths do not exist. uses UnresolvedProviderPath
+    .EXAMPLE
+        Test-IsChildPath -Root 'c:\bats\..\bats' -RelativePath 'c:\bats\cat.jpg' -PassThru
+    #>
+
+    # Test-IsChildPath
+    [CmdletBinding()]
+    param(
+        [string] $Root,
+        [String] $RelativePath,
+        [switch] $PassThru
+    )
+    $Root = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Root)
+    $RelativePath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($RelativePath)
+    if( -not $PassThru ) {
+        $Root -ne $RelativePath -and $RelativePath.StartsWith($Root, 'CurrentCultureIgnoreCase')
+        return
+    }
+
+    [pscustomobject]@{ Root = $Root; Relative = $RelativePath; IsChild =
+        $Root -ne $RelativePath -and $RelativePath.StartsWith($Root, 'CurrentCultureIgnoreCase')
+    }
+}
+
+
 
 # class NinColor {
 #     static [NinColor] ConvertFrom_PStyle ( $FromObject ) {
