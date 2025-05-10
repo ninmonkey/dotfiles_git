@@ -139,7 +139,12 @@ function b.Text.WrapString {
 function b.Text.WrapString.prof.v0 {
     <#
     .EXAMPLE
-        b.Text.WrapString ('a'..'z' -join '_') -MaxWidth 10
+        > b.Text.WrapString ('a'..'z' -join ' -> ') -MaxWidth 9
+        > b.Text.WrapString ('a'..'z' -join '__') -MaxWidth 9
+        > b.Text.WrapString ('a'..'z' -join 'a_') -MaxWidth 9
+        > b.Text.WrapString ('a'..'z' -join ' - - > ') -MaxWidth 9
+    .EXAMPLE
+        > b.Text.WrapString ('a'..'z' -join '_') -MaxWidth 10
 
             a_b_c_d_e_
             f_g_h_i_j_
@@ -147,6 +152,54 @@ function b.Text.WrapString.prof.v0 {
             p_q_r_s_t_
             u_v_w_x_y_
             z
+    .example
+        > b.Text.WrapString ('a'..'l' -join '') -MaxWidth 4
+
+            abcd
+            efgh
+            ijkl
+    .example
+        > b.Text.WrapString ('a'..'m' -join '   ') -MaxWidth 12
+
+            a   b   c
+            d   e   f
+            g   h   i
+            j   k   l
+            m
+
+        > b.Text.WrapString ((get-random -Minimum 399 -Maximum 10000 -Count 100) -join ',') -MaxWidth 4
+
+            775,
+            2150
+            ,542
+            6,35
+            59,2
+            772,
+            9905
+    .EXAMPLE
+        > b.Text.WrapString (get-process | join-string -p Name -sep ', ') -MaxWidth 28
+
+            st, steam, SteamService, ste
+            amwebhelper, steamwebhelper,
+            steamwebhelper, steamwebhel
+            per, steamwebhelper, steamwe
+            bhelper, steamwebhelper, svc
+            host, svchost, svchost, svch
+            ost, svchost, svchost, svcho
+            st, svchost, svchost, svchos
+            t, svchost, svchost, svchost
+            , svchost, svchost, svchost,
+            svchost, svchost, svchost,
+            svchost, svchost, svchost, s
+            vchost, svchost, svchost, sv
+            chost, svchost, svchost, svc
+            host, svchost, svchost, svch
+            ost, svchost, svchost, svcho
+            st, svchost, svchost, svchos
+            t, svchost, svchost, svchost
+            , svchost, svchost, svchost,
+            svchost, svchost, svchost,
+            svchost, svchost, svchost, s
     #>
     [Alias('Join.WrapText')]
     [CmdletBinding()]
