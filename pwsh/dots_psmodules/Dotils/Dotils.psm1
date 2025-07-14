@@ -5,6 +5,8 @@ using namespace System.Management.Automation.Language
 
 $global:StringModule_DontInjectJoinString = $true # this matters, because Nop imports the polyfill which breaks code on Join-String:  context/reason: <https://discord.com/channels/180528040881815552/446531919644065804/1181626954185724055> or just delete the module
 
+'Dotils.psm1 [2023] should be refactored. Entered: <file:///{0}>' -f $PSCommandPath | Write-Warning
+
 $script:CountersListForAddLabel ??= @{}
 $script:Bdg_LastSelect = @()
 $script:QuerySave = @{}
@@ -15,7 +17,7 @@ $PROFILE | Add-Member -NotePropertyName 'Dotils' -NotePropertyValue (Get-item $P
 
 $saGlobSplat = @{
     PassThru    = $true
-    ErrorAction = 'ignore'
+    ErrorAction = 'SilentlyContinue' # 'ignore'
     Scope       = 'Global'
     # Force       = $true
 }
@@ -33,22 +35,24 @@ Import-Module -force -pass 'Picky'
     Set-Alias @saGlobSplat -name 'Yaml'         -Value 'powershell-yaml\ConvertTo-Yaml'
     Set-Alias @saGlobSplat -name 'Yaml.From'    -Value 'powershell-yaml\ConvertFrom-Yaml'
     Set-Alias @saGlobSplat -Name 'Text.TakeN'   -value 'Picky\Picky.Text.FirstN'
-    # experimentijng with wierd names
+    # experimenting with weird names
+
+    Set-Alias @saGlobSplat -name 'pyDoc' -value 'Dotils\Dotils.Python.PyDoc'
 )
 
 write-warning 'super experimental bindings'
 @(
     Set-Alias @saGlobSplat -Name 'Pk!Empty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
-    Set-Alias @saGlobSplat -Name '?NotEmpty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
+    Set-Alias @saGlobSplat -Name '?NotEmpty'    -value 'Picky\Picky.Text.Where-IsNotEmpty'
     Set-Alias @saGlobSplat -Name 'Pk?Empty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
-    Set-Alias @saGlobSplat -Name 'Pk.?Empty'     -value 'Picky\Picky.Text.Where-IsNotEmpty'
+    Set-Alias @saGlobSplat -Name 'Pk.?Empty'    -value 'Picky\Picky.Text.Where-IsNotEmpty'
     Set-Alias @saGlobSplat -Name 'Pk.?NotEmpty' -value 'Picky\Picky.Text.Where-IsNotEmpty'
-    Set-Alias @saGlobSplat -Name 'Pk.?<' -value 'Picky\Picky.Text.SkipBeforeMatch'
-    Set-Alias @saGlobSplat -Name 'Pk>Skip' -value 'Picky\Picky.Text.SkipBeforeMatch'
-    Set-Alias @saGlobSplat -Name 'Pk<Skip' -value 'Picky\Picky.Text.SkipAfterMatch'
+    Set-Alias @saGlobSplat -Name 'Pk.?<'        -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk>Skip'      -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk<Skip'      -value 'Picky\Picky.Text.SkipAfterMatch'
     Set-Alias @saGlobSplat -Name 'Pk?SkipBefore' -value 'Picky\Picky.Text.SkipBeforeMatch'
-    Set-Alias @saGlobSplat -Name 'Pk?Skip<' -value 'Picky\Picky.Text.SkipBeforeMatch'
-    Set-Alias @saGlobSplat -Name 'Pk.B4↪' -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk?Skip<'     -value 'Picky\Picky.Text.SkipBeforeMatch'
+    Set-Alias @saGlobSplat -Name 'Pk.B4↪'       -value 'Picky\Picky.Text.SkipBeforeMatch'
 ) | Ft -auto | Out-String | Write-host
 
 
@@ -769,6 +773,45 @@ function Dotils.Color.SavedPairs.Get {
 
 }
 
+function Dotils.Quick.GitRepoList {
+    <#
+    .SYNOPSIS
+        Quick get Gh repo listing, stats and export.
+        For more parameters use the full GitLogger.FindGithubRepos
+    .link
+        GitLogger.FindGithubRepos
+    #>
+    param(
+        [ArgumentCompletions(
+            'Ninmonkey', 'Microsoft', 'StartAutomating', 'PowerShell'
+        )]
+        [string]$Owner,
+
+        [Alias('ExportExcel')]
+        [Parameter()]
+        [switch]$AsExcel,
+        # [switch]$Show,
+        [string]$Outputpath = 'H:/data/2024/tabular/Github.RepoList'
+    )
+    if( ! (gcm 'GitLogger.FindGithubRepos' -ea 'ignore')) { throw "Requires module GitLogger"}
+
+    $Root  = Get-Item -ea 'stop' $Outputpath
+    $Dest  = join-path $Root "${Owner}.xlsx"
+
+    $findGitLogger_splat = @{
+        OwnerName = $Owner
+        RepositoryType = 'owner'
+        SortBy = 'pushed'
+        PerPage = 100
+    }
+
+    $results = GitLogger.FindGithubRepos @findGitLogger_splat desc
+    if( ! $AsExcel ) {  return $results }
+
+    $Results | Export-Excel -TableName 'gits' -TableStyle Light5 -Show -Path $Dest -AutoSize
+    "Wrote: ${Dest}" | Write-Host -fore green
+    # if( $Show ) { Invoke-Item $Dest }
+}
 
 function Dotils.Quick.ColorPairs {
     <#
@@ -3569,10 +3612,80 @@ function Console.GetWindowWidth {
     $w = $host.ui.RawUI.WindowSize.Width
     return $w
 }
+
+Function Dotils.GetEncoding {
+    <#
+    .SYNOPSIS
+        autocomplete common encodings
+    .link
+        Dotils.Console.GetEncoding
+    .link
+        Dotils.Console.SetEncoding
+    .link
+        Dotils.Encoding.FindEncoding
+    .link
+        Dotils.To.Encoding
+    .LINK
+        Dotils.GetEncoding
+    #>
+    [CmdletBinding(DefaultParameterSetName = 'GetEncoding')]
+    [OutputType('System.Text.Encoding', ParameterSetName = 'GetEncoding')]
+    [OutputType('System.Text.EncodingInfo', ParameterSetName = 'ListEncodings')]
+    [Alias('Enc')]
+    Param(
+        # Name of [Text.Encoding]
+        [Alias('Name')]
+        [Parameter(Mandatory, Position=0, ParameterSetName = 'GetEncoding')]
+        [ArgumentCompletions(
+            'utf-8',
+            'utf-16le', 'utf-16be',
+            'Unicode',
+            # 'BigEndianUnicode',
+            'Latin1', 'ascii',
+            'utf-8BOM',
+            'utf-8NoBOM'
+        )]
+        # [System.Text.Encoding] $Name,
+        [string] $EncodingName,
+
+        # outputs: [Text.Encoding]::GetEncodings()
+        [Parameter(Mandatory, ParameterSetName = 'ListEncodings')]
+        [switch] $ListEncodings
+    )
+    if( $ListEncodings ) {
+        return [System.Text.Encoding]::GetEncodings()
+    }
+
+    switch( $EncodingName ) {
+        'utf-8NoBOM' {
+            [Text.UTF8Encoding]::new(
+                <# encoderShouldEmitUTF8Identifier #> $false
+                <# , throwOnInvalidBytes #> )
+        }
+        'utf-8BOM' {
+            [Text.UTF8Encoding]::new(
+                <# encoderShouldEmitUTF8Identifier #> $true
+                <# , throwOnInvalidBytes #> )
+        }
+        default {
+            return [System.Text.Encoding]::GetEncoding( $Name )
+        }
+    }
+
+}
+
 function Dotils.Console.GetEncoding {
     <#
     .synopsis
         set the right defaults
+    .link
+        Dotils.Console.GetEncoding
+    .link
+        Dotils.Console.SetEncoding
+    .link
+        Dotils.Encoding.FindEncoding
+    .link
+        Dotils.To.Encoding
     #>
     [Alias('Console.Encoding')]
     [CmdletBinding()]
@@ -4035,23 +4148,33 @@ function Dotils.Select.NoMore.Template {
 function Dotils.Select.Some.NoMore {
     <#
     .SYNOPSIS
-        better version of 'one' and 'some' that exits early if possible, and saves the value
+        better version of 'one' and 'some' that exits early if possible, and saves the value to '$some' or '$one'
     .NOTES
-        - [ ] future: rewrite using steppable pipeline for an earlier exit
+        Smart aliases start
+
+        Saves results to global variables: '$Some' and '$One'
+
+        future:
+
+          - [ ] rewrite using steppable pipeline for an earlier exit
     .EXAMPLE
-        Get-Process | One    # returns 1 item
-        Get-Command | Some   # returns 5 items
-        Get-Process | Some 3 # returns 3 item
+        > Get-Culture -ListAvailable
+            | Some -Random 7
+            | Join-String -sep ', ' -Property DisplayName
     .EXAMPLE
-        gci .
-        gci . | One
-        gci . | Some 3
-        get-process | one
-        get-process | some
-        get-process | some 3
-        get-process | some -LastOne 2
+        > Get-Process | One    # returns 1 item
+        > Get-Command | Some   # returns 5 items
+        > Get-Process | Some 3 # returns 3 item
+    .EXAMPLE
+        > gci .
+        > gci . | One
+        > gci . | Some 3
+        > get-process | one
+        > get-process | some
+        > get-process | some 3
+        > get-process | some -LastOne 2
     #>
-    [Alias('Some', 'One')]
+    [Alias('Some', 'One', 'SomeRand')]
     param(
         # Source
         [Parameter(Mandatory, ValueFromPipeline)]
@@ -4064,7 +4187,10 @@ function Dotils.Select.Some.NoMore {
 
         # first N items from the start, or end?
         [Alias('Reverse', 'FromEnd', 'End')]
-        [switch]$LastOne
+        [switch]$LastOne,
+
+        # choose n-number of random items rather than the front/ends.
+        [switch]$Random
     )
 
     begin {
@@ -4084,7 +4210,11 @@ function Dotils.Select.Some.NoMore {
     }
     end {
         # future: performance: use steppable
-        $query = @($Items | Select @SelectSplat) # simplifes missing tes
+        if( -not $Random ) {
+            $query = @($Items | Select-Object @SelectSplat) # simplifes missing test
+        } else {
+            $query = @($Items | Get-Random -count $FirstN )
+        }
         if($Query.Count -eq 0 ) { 'No inputs' | Write-Debug; return; }
         if($IsUsingOne) {
             $Query
@@ -4093,6 +4223,7 @@ function Dotils.Select.Some.NoMore {
                 $Global:One | Format-ShortTypeName
             )   | Dotils.Write-DimText
                 | Infa
+            return
         } else {
             $Query
             $global:Some = @( $query )
@@ -4101,6 +4232,7 @@ function Dotils.Select.Some.NoMore {
                 | CountOf | Format-ShortTypeName
             )   | Dotils.Write-DimText
                 | Infa
+            return
         }
     }
 }
@@ -15531,6 +15663,94 @@ function Dotils.Object.QuickInfo {
                 $tInfoFromStr
       }
     }
+}
+
+function Dotils.Python.Pydoc {
+    <#
+    .SYNOPSIS
+        wraps python cli for docs
+    .DESCRIPTION
+        sugar for: python -m pydoc <query>
+    .LINK
+        https://docs.astral.sh/uv/pip/environments/
+    .example
+        > pyDoc str
+    .EXAMPLE
+        # original cli. future: add support
+        # list index for each:
+        > python.exe -m pydoc keywords
+        > python.exe -m pydoc topics
+        > python.exe -m pydoc modules
+
+        # view <topics>
+        > python.exe -m pydoc UNICODE
+
+        # view <keywords>
+        # python.exe -m pydoc yield
+        > python.exe -m pydoc -k bytes
+
+        # search by keyword
+
+        # Search modules by name
+        > python -m pydoc modules pickle
+    #>
+    [CmdletBinding()]
+    param(
+        # What to query pydoc with
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]] $QueryArgs,
+
+        [ValidateSet('Keywords', 'Topics', 'Modules')]
+        [string] $List,
+
+        # Show Help
+        [Alias('ShowHelp')]
+        [switch] $Help,
+        # Attempt to use `py` vs `python` on windows?
+        [switch] $ForceAsPy,
+
+        # Keyword based search?. empty string will list values
+        [ArgumentCompletions('text')]
+        [string] $Keyword
+    )
+
+    $cmdName = $forceAsPy ? 'py' : 'python'
+    $binPy = Get-Command -ea 'Stop' -CommandType Application -Name $cmdName -TotalCount 1
+
+    $binPy | Join-String -p Source -f 'Found: {0}'
+        | Write-Verbose
+
+    # written quickly, cleanup if used.
+    if($Help) {
+        $binArgs = @( '-m', 'pydoc' )
+    } elseif ( $PSBoundParameters.ContainsKey('List') )  {
+        $binArgs = @(
+            '-m'; 'pydoc';
+            $List
+            # Like 'pydoc -list Modules spam'
+            if( $QueryArgs.count -gt 0  ) {
+                $QueryArgs
+            }
+        )
+    } elseif ( $PSBoundParameters.ContainsKey('Keywords') )  {
+        # blank keys is the same as listing keywords
+        $binArgs = @(
+            '-m'; 'pydoc';
+            '-k'
+            if( -not [String]::IsNullOrWhiteSpace( $Keywords )) {
+                $Keywords
+            }
+        )
+    } else {
+        $binArgs = @(
+            '-m'; 'pydoc';
+
+            $QueryArgs
+        )
+    }
+
+    $binArgs | Join-String -sep ' ' -op 'Args: ' | Write-Verbose
+    & $binPy @binArgs
 }
 
 function Dotils.Type.Info {
