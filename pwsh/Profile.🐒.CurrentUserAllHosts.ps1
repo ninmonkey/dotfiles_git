@@ -519,3 +519,9 @@ function demo.AsyncSelectString {
         code $result.FocusedEntry.UserData.Path
     }
 }
+
+# Add path for 7zip's cli '7z'
+$env:Path = $env:Path, ';H:\Apps.WinGet\7zip' -join ''
+
+'2025-01:: this is Old dotfiles, merge with surface' | Write-Host -fg 'gray60' -bg 'gray20'
+'2025-07-14::this is Old dotfiles.psm1, merge with surface. 🦍' | Write-Warning

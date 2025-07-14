@@ -16,6 +16,12 @@ using namespace Microsoft.PowerShell
 #     ) -join ''
 # }
 
+if( $PSVersionTable.PSVersion.Major -lt 7 ) {
+    'Current file expected to only run for WinPowershell, not Pwsh! Source = <file:///{0}> ( Continue for now )' -f $PSCommandPath
+        | Write-Warning
+
+}
+
 $PROFILE | Add-Member -NotePropertyMembers @{
     Nin_PS5_Profile           = gi $PSCommandPath
     Nin_Dotfiles              = Get-Item $PSCommandPath | Split-path
@@ -96,6 +102,14 @@ Set-PSReadLineOption -ContinuationPrompt '  '
 Set-PSReadLineOption -ShowToolTips
 Set-PSReadLineKeyHandler -Chord 'Ctrl+@' -Function 'MenuComplete'
 Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function 'MenuComplete'
+
+### [2024-11] updated PS5 enter commands
+
+'Enter: multi, ctrl+enter: submit, ctrl+alt+enter: line before' | Write-Verbose -verb
+Set-PSReadLineKeyHandler -Key enter -Function InsertLineBelow
+Set-PSReadLineKeyHandler -Key ctrl+enter -Function AcceptLine
+Set-PSReadLineKeyHandler -Key ctrl+alt+enter -Function InsertLineAbove
+
 
 Set-PSReadLineOption -CompletionQueryItems 128
 

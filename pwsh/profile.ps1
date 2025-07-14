@@ -574,8 +574,15 @@ function nin.GroupByLinqChunk {
 function nin.RenderUnicodeRange {
     <#
     .EXAMPLE
+        > '👨‍👩‍👦'.EnumerateRunes() | nin.RenderUnicodeRange
+
+        1f468 => 👨, 200d => ‍, 1f469 => 👩, 200d => ‍, 1f466 => 👦
+        total runes: 5
+    .EXAMPLE
         Pwsh> nin.RenderUnicodeRange -InputRunes @(0x2400..0x2410)
         Pwsh> nin.RenderUnicodeRange -InputRunes (0x2400..0x2410 -as [Text.Rune[]])
+    .EXAMPLE
+        > 'h! 🐒'.EnumerateRunes() | nin.RenderUnicodeRange
     .NOTES
         # cleanup: delete or go to ninmonkey/notebooks/pwsh
     #>

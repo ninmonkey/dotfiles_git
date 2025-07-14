@@ -1,5 +1,30 @@
-$PSDefaultParameterValues.remove('import-module:verbose')
+# $PSDefaultParameterValues.remove('import-module:verbose')
+$PSCommandPath | Join-String -f ' ==> Entering: "{0}"' | Out-Host
+$PSCommandPath | Get-Item | Join-String -f ' ==> Entering: <file:///{0}>' -p FullName | Write-Warning
 
+
+# Short log, followed by extra details on which script[s] execute
+if( $Pseditor ) {
+    'is $PSEditor ?: Yes' | New-Text -fg 'darkred' | Write-warning
+} else {
+    'is $PSEditor ?: No'  | new-Text -fg 'darkgreen' | Write-warning
+}
+if ( $psEditor ) {
+    Write-Host '📌 from pwsh, at path: ''<file:///H:\data\2023\dotfiles.2023\pwsh\Profile.🐒.CurrentUser_VsCodeHost.ps1>''. <added: 2025-07-14>'
+    write-host "Should clean up old PS Command suite config, below: $( $PSCommandPath ) "
+    write-warning "Early exit: PSEditor was found! ( from: '$PSCommandPath' ). 🙀";
+
+    "  => Should Import PSES / Language Service? : 'Import-CommandSuite -Verbose' ? " | Write-Warning
+    "       Came from: <file:///H:/data/2023/dotfiles.2023/pwsh/Profile.🐒.CurrentUser_VsCodeHost.ps1> " | Write-Warning
+
+    if( $false ) {
+        'running: "Import-CommandSuite"' | Write-Verbose
+        Import-CommandSuite -Verbose
+    } else {
+        'skipped: "Import-CommandSuite"' | Write-Warning
+    }
+
+}
 # WhoAmI?
 #   whoAmI? => $PROFILE.CurrentUserCurrentHost
 #   pathAbs => $Env:UserProfile\SkyDrive\Documents\PowerShell\Microsoft.VSCode_profile.ps1
@@ -9,8 +34,11 @@ $PSDefaultParameterValues.remove('import-module:verbose')
 #     $Env:PSModulePath
 # ) | Join-String -sep ([IO.Path]::PathSeparator)
 
-$PSCommandPath.Name | Join-String -op 'entry: vscode => ' | write-host -fg 'gray50' -bg 'gray20'
-Import-CommandSuite -Verbose
+$PSCommandPath | Join-String -op 'End Of: ' -f  -p FullName
+    | write-host -fg 'gray50' -bg 'gray20'
+
+return
+
 
 <#
 New PSeditorServiceds install.
