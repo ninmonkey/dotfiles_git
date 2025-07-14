@@ -4158,6 +4158,10 @@ function Dotils.Select.Some.NoMore {
 
           - [ ] rewrite using steppable pipeline for an earlier exit
     .EXAMPLE
+        # Smart alias that uses: -Random and -FirstN 10
+        > Get-Culture -ListAvailable
+            | SomeRand 10
+    .EXAMPLE
         > Get-Culture -ListAvailable
             | Some -Random 7
             | Join-String -sep ', ' -Property DisplayName
@@ -4175,6 +4179,7 @@ function Dotils.Select.Some.NoMore {
         > get-process | some -LastOne 2
     #>
     [Alias('Some', 'One', 'SomeRand')]
+    [CmdletBinding()]
     param(
         # Source
         [Parameter(Mandatory, ValueFromPipeline)]
@@ -4183,7 +4188,7 @@ function Dotils.Select.Some.NoMore {
         # how many items? default is 5, unless you use 'one', then it's 1
         [Alias('Count', 'Limit')]
         [Parameter(Position = 0)]
-        [int] $FirstN = 5,
+        [int] $FirstN = 8,
 
         # first N items from the start, or end?
         [Alias('Reverse', 'FromEnd', 'End')]
@@ -4194,9 +4199,11 @@ function Dotils.Select.Some.NoMore {
     )
 
     begin {
-        [bool] $IsUsingOne = $MyInvocation.InvocationName -eq 'One'
+        [bool] $usingSmartAlias_one = $MyInvocation.InvocationName -eq 'One'
+        [bool] $usingSmartAlias_someRand = $MyInvocation.InvocationName -eq 'SomeRand'
+
         $selectSplat = @{}
-        if( $IsUsingOne ) { $FirstN = 1 }
+        if( $usingSmartAlias_one ) { $FirstN = 1 }
 
         if( $LastOne ) { $selectSplat.Last = $FirstN }
         else { $selectSplat.First = $FirstN }
@@ -4210,13 +4217,13 @@ function Dotils.Select.Some.NoMore {
     }
     end {
         # future: performance: use steppable
-        if( -not $Random ) {
+        if( -not $Random -and -not $usingSmartAlias_someRand ) {
             $query = @($Items | Select-Object @SelectSplat) # simplifes missing test
         } else {
             $query = @($Items | Get-Random -count $FirstN )
         }
         if($Query.Count -eq 0 ) { 'No inputs' | Write-Debug; return; }
-        if($IsUsingOne) {
+        if($usingSmartAlias_one) {
             $Query
             $global:One = @( $Query )
             'One := {0}' -f @(
@@ -22572,6 +22579,9 @@ $exportModuleMemberSplat = @{
     )
     | Sort-Object -Unique
     Alias    = @(
+        # 2025-07-14
+        'SomeRand' # => 'Dotils.Select.Some.NoMore'
+
         # 2024-09-05
         'Quick.Fd' # => 'Dotils.Fd.Main'
         # 2024-09-02
