@@ -16,10 +16,8 @@ using namespace Microsoft.PowerShell
 #     ) -join ''
 # }
 
-if( $PSVersionTable.PSVersion.Major -lt 7 ) {
-    'Current file expected to only run for WinPowershell, not Pwsh! Source = <file:///{0}> ( Continue for now )' -f $PSCommandPath
-        | Write-Warning
-
+if( $PSVersionTable.PSVersion.Major -gt 5  -or  $PSVersionTable.PSEdition -ne 'Desktop' ) {
+    'Current file expected to only run for WinPowershell, not Pwsh! Source = <file:///{0}> ( Continue for now )' -f $PSCommandPath | Write-Warning
 }
 
 $PROFILE | Add-Member -NotePropertyMembers @{
