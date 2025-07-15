@@ -6254,6 +6254,8 @@ function Dotils.Distinct {
     param(
         [object]$Property
     )
+    write-warning 'Replaced by better, recent version for distincts (see snippets)'
+
     $splat = @{ Unique = $true }
     if($PSBoundParameters.ContainsKey('PropertyName')){
         $splat.Property = $Property
