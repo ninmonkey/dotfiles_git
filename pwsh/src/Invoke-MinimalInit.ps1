@@ -30,6 +30,7 @@ function minimal.prompt.render.crumbs {
         $innerConfig = @{
             hideSameLocation = $true
         }
+	# can error if user is in a folder that no longer exists.
         $isSameDir = (Get-Item .).FullName -eq $script:__bagLastLocation.FullName
         $script:__bagLastLocation = (Get-Item .)
 
@@ -148,20 +149,50 @@ function minimal.Prompt {
         ''
         minimal.prompt.render.crumbs
 
+
+
         # amazon AWS profile set?
-        if (Test-Path env:\AWS_PROFILE) { # appears to never load
-            $Env:AWS_PROFILE | Join-String -f "aws:{0}`n"
-        }
+        # if (Test-Path env:\AWS_PROFILE) { # appears to never load
+        #     $Env:AWS_PROFILE | Join-String -f "aws:{0}`n"
+        # }
     ) | Join-String
 }
 # ⟞⊢
 
 
 
+function minimal.Prompt.WriteCwdSequence {
+    <#
+    .SYNOPSIS
+        writes the sequence: ␛]9;9;"c:\foo\bar"␛\PS c:\foo\bar>
+    .link
+        https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory#configure-your-shell
+    #>
+    param(
+        # don't write a prompt at all, just the escapes
+        [bool] $AsEscapeOnly
+    )
+    @(
+        $loc = $executionContext.SessionState.Path.CurrentLocation
+        [string] $str = ''
+
+        if ( $loc.Provider.Name -eq "FileSystem" ) {
+            $str += "`e]9;9;`"$($loc.ProviderPath)`"`e\"
+        }
+        if( -not $AsEscapeOnly ) {
+            $str += "Pwsh> $loc$('>' * ($nestedPromptLevel + 1)) ";
+        }
+        $str
+        # if you want to debug: if( $true ) {  $str -replace "`e", '␛' | Write-Host -fg 'green' -NoNewline }
+    ) | Join-String -sep "`n"
+}
+
+
 
 function prompt {
     # todo: capture previous prompt
     @(
+        minimal.Prompt.WriteCwdSequence -AsEscapeOnly
         "`n"
         minimal.Prompt
     ) | Join-String
